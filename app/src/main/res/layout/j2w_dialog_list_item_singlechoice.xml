@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<j2w.team.common.widget.CheckableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/J2W.ListItem">
+
+    <RadioButton style="@style/J2W.ListItemControl" />
+
+    <TextView
+        android:id="@+id/j2w_text"
+        style="@style/J2W.TextView.MultiChoice"
+        tools:text="Item" />
+
+</j2w.team.common.widget.CheckableLinearLayout>

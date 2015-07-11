@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/J2W.Layout.Progress">
+
+    <ProgressBar
+        style="@style/J2W.Layout.Wrap.ProgressBar"
+        android:layout_margin="4dp"
+        android:id="@+id/J2W_progress"/>
+
+    <TextView
+        android:id="@+id/j2w_message"
+        style="@style/J2W.TextView.Message.Progress"
+        tools:text="@string/progress_dialog_value" />
+
+</LinearLayout>

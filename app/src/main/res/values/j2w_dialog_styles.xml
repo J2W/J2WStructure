@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="J2W.Dialog" parent="android:Theme">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowActionBar" tools:ignore="NewApi">false</item>
+        <item name="android:windowActionModeOverlay" tools:ignore="NewApi">true</item>
+        <item name="android:windowCloseOnTouchOutside" tools:ignore="NewApi">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowBackground">@drawable/j2w_dialog_background</item>
+    </style>
+
+    <style name="J2W.Layout.Content">
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="J2W.Layout.Custom">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="J2W.Layout.Buttons">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_height">12dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+    </style>
+
+    <style name="J2W.Layout.Buttons.Stacked">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
+
+    <style name="J2W.Layout.Progress">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="J2W.ScrollView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="J2W.TextView" parent="@android:style/Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="J2W.TextView.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/j2w_text_primary</item>
+        <!-- paddings set in code -->
+    </style>
+
+    <style name="J2W.TextView.Message">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/j2w_text_secondary</item>
+        <!-- paddings set in code -->
+    </style>
+
+    <style name="J2W.TextView.Message.Progress">
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <style name="J2W.TextView.ListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">13dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/j2w_text_primary</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+    </style>
+
+    <style name="J2W.TextView.MultiChoice">
+        <item name="android:minHeight">13dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/j2w_text_primary</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingRight">13dp</item>
+    </style>
+
+    <style name="J2W.ListItemControl">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:minHeight">13dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">13dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
+
+    <style name="J2W.ListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical|start</item>
+        <item name="android:descendantFocusability">blocksDescendants</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+    </style>
+
+    <style name="J2W.Button">
+        <item name="android:background">@drawable/j2w_dialog_button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">16dp</item>
+        <item name="android:layout_height">9dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="J2W.Button.Stacked">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">12dp</item>
+        <item name="android:gravity">center_vertical|end</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+    </style>
+
+    <style name="J2W.Expander">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="J2W.Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/j2w_divider</item>
+    </style>
+
+    <style name="J2W.Space">
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="J2W.Space.ButtonsBottom">
+        <item name="android:layout_height">2dp</item>
+    </style>
+
+    <style name="J2W.Progress" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <style name="J2W.DatePicker">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:spinnersShown" tools:ignore="NewApi">true</item>
+        <item name="android:calendarViewShown" tools:ignore="NewApi">false</item>
+    </style>
+
+    <style name="J2W.ListView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:scrollbarStyle">outsideOverlay</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:listSelector">@drawable/j2w_dialog_list</item>
+    </style>
+
+    <style name="J2W.TextView.Title.Dark" parent="J2W.TextView.Title">
+        <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
+        <!-- paddings set in code -->
+    </style>
+
+    <style name="J2W.TextView.Message.Dark" parent="J2W.TextView.Message">
+        <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
+        <!-- paddings set in code -->
+    </style>
+
+    <style name="J2W.TextView.ListItem.Dark" parent="J2W.TextView.ListItem">
+        <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
+    </style>
+
+    <style name="J2W.TextView.MultiChoice.Dark" parent="J2W.TextView.MultiChoice">
+        <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
+    </style>
+
+    <style name="J2W.TextView.Message.Progress.Dark" parent="J2W.TextView.Message.Progress">
+        <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
+    </style>
+
+</resources>

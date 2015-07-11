@@ -1,0 +1,38 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="None" />
+
+    <style name="J2W" />
+
+    <!-- 默认布局 -->
+    <style name="J2W.Layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="J2W.Layout.Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="J2W.Layout.Wrap.View">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+    </style>
+
+    <!-- 进度条样式. -->
+    <style name="J2W.Layout.Wrap.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/j2w_progress_indeterminate</item>
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:indeterminateDuration">900</item>
+        <item name="android:minWidth">40dp</item>
+        <item name="android:maxWidth">40dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:maxHeight">40dp</item>
+    </style>
+
+
+</resources>
