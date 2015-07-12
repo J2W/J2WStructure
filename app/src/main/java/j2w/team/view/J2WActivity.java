@@ -141,12 +141,13 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
 		Preconditions.checkNotNull(biz, "请指定业务接口～");
-		if (stackBiz.get(biz.getSimpleName()) == null) {// 如果没有索索到
-			stackBiz.put(biz.getSimpleName(), J2WBizUtils.createBiz(biz, this, display));
+		Object obj = stackBiz.get(biz.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createBiz(biz, this, display);
+			stackBiz.put(biz.getSimpleName(), obj);
 		}
-		return (B) stackBiz.get(biz.getSimpleName());
+		return (B) obj;
 	}
-
 
 	/**
 	 * 业务初始化

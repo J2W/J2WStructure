@@ -74,14 +74,13 @@ public final class DynamicProxyUtils {
 	}
 
 	/**
-	 * 代理类 - 业务
+	 * 代理类 - 视图
 	 *
 	 * @param d
 	 * @param <D>
 	 * @return
 	 */
 	public static <D> D newProxyUI(D d, J2WBiz j2WBiz) {
-		/** 根据日志 **/
 		// 获取Classloader
 		ClassLoader loader = d.getClass().getClassLoader();
 		// 获得接口数组

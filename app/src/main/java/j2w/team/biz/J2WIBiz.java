@@ -1,5 +1,6 @@
 package j2w.team.biz;
 
+import j2w.team.biz.exception.J2WBizException;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.http.J2WRestAdapter;
 
@@ -47,6 +48,14 @@ public interface J2WIBiz {
 	 *            异常
 	 */
 	void methodError(String methodName, Throwable throwable);
+
+	/**
+	 * 检查异常
+	 * 
+	 * @param methodName
+	 * @param j2WBizException
+	 */
+	void checkError(String methodName, J2WBizException j2WBizException);
 
 	/**
 	 * 网络异常

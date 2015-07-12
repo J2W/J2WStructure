@@ -1,12 +1,13 @@
 package j2w.team.biz;
 
-import com.google.common.base.Preconditions;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import j2w.team.J2WHelper;
-import j2w.team.common.utils.proxy.DynamicProxyUtils;
+import j2w.team.biz.exception.J2WArgumentException;
+import j2w.team.biz.exception.J2WBizException;
+import j2w.team.biz.exception.J2WNullPointerException;
+import j2w.team.biz.exception.J2WIndexOutOfException;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.view.J2WActivity;
@@ -26,7 +27,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	private T					display;
 
-	/** 业务逻辑对象 **/
+	/** View层 **/
 	private Map<String, Object>	stackUI			= null;
 
 	/**
@@ -69,12 +70,16 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param <U>
 	 * @return
 	 */
-	@Override public synchronized  <U> U ui(Class<U> ui) {
-		Preconditions.checkNotNull(ui, "请指定View接口～");
-		if (stackUI.get(ui.getSimpleName()) == null) {// 如果没有索索到
-			stackUI.put(ui.getSimpleName(), DynamicProxyUtils.newProxyUI(activity, this));
+	@Override public synchronized <U> U ui(Class<U> ui) {
+		checkNotNull(ui, "请指定View接口～");
+
+		Object obj = stackUI.get(ui.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createUI(ui, activity, this);
+			checkNotNull(obj, "View层没有实现该接口～");
+			stackUI.put(ui.getSimpleName(), obj);
 		}
-		return (U) stackUI.get(ui.getSimpleName());
+		return (U) obj;
 	}
 
 	/**
@@ -104,6 +109,45 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	}
 
 	/**
+	 * 检查是否为空
+	 * 
+	 * @param reference
+	 * 
+	 * @param errorMessageTemplate
+	 * @return
+	 */
+	public <T> void checkNotNull(T reference, String errorMessageTemplate) {
+		if (reference == null) {
+			throw new J2WNullPointerException(errorMessageTemplate);
+		}
+	}
+
+	/**
+	 * 检查参数
+	 * 
+	 * @param expression
+	 * @param errorMessageTemplate
+	 */
+	public static void checkArgument(boolean expression, String errorMessageTemplate) {
+		if (!expression) {
+			throw new J2WArgumentException(errorMessageTemplate);
+		}
+	}
+
+	/**
+	 * 检查是否越界
+	 *
+	 * @param index
+	 * @param size
+	 * @param desc
+	 */
+	public static void checkPositionIndex(int index, int size, String desc) {
+		if (index < 0 || index > size) {
+			throw new J2WIndexOutOfException(desc);
+		}
+	}
+
+	/**
 	 * 错误处理
 	 * 
 	 * @param methodName
@@ -116,13 +160,20 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 			} else {
 				methodHttpError(methodName, (J2WError) throwable.getCause());
 			}
+		} else if (throwable.getCause() instanceof J2WBizException) {
+			checkError(methodName, (J2WBizException) throwable.getCause());
 		} else {
 			methodCodingError(methodName, throwable.getCause());
 		}
 	}
 
+	/** 检查异常 **/
+	@Override public void checkError(String methodName, J2WBizException j2WBizException) {
+		j2WBizException.printStackTrace();
+	}
+
 	/** 网络异常 **/
-	public final void methodHttpError(String methodName, J2WError j2WError) {
+	@Override public final void methodHttpError(String methodName, J2WError j2WError) {
 		if (j2WError.getKind() == J2WError.Kind.NETWORK) { // 请求发送前，网络问题
 			errorNetWork();
 		} else if (j2WError.getKind() == J2WError.Kind.HTTP) {// 请求响应后，网络错误
@@ -133,18 +184,18 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	}
 
 	/** 发送请求前取消 **/
-	public void errorCancel() {}
+	@Override public void errorCancel() {}
 
 	/** 发送请求前错误 **/
-	public void errorNetWork() {}
+	@Override public void errorNetWork() {}
 
 	/** 请求得到响应后错误 **/
-	public void errorHttp() {}
+	@Override public void errorHttp() {}
 
 	/** 请求或者响应 意外错误 **/
-	public void errorUnexpected() {}
+	@Override public void errorUnexpected() {}
 
 	/** 编码异常 **/
-	public void methodCodingError(String methodName, Throwable throwable) {}
+	@Override public void methodCodingError(String methodName, Throwable throwable) {}
 
 }

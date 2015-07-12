@@ -4,9 +4,13 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.google.common.base.Preconditions;
 
+import java.lang.reflect.InvocationHandler;
+
 import j2w.team.J2WHelper;
+import j2w.team.common.log.L;
 import j2w.team.common.utils.AppUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
+import j2w.team.common.utils.proxy.J2WBizHandler;
 import j2w.team.view.J2WActivity;
 
 /**
@@ -55,6 +59,32 @@ public final class J2WBizUtils {
 			throw new IllegalArgumentException(String.valueOf(iView) + "，访问权限异常！");
 		}
 		return interfaceBiz;
+	}
+
+	/**
+	 * 创建View层类
+	 *
+	 * @return
+	 */
+	public static final <B extends J2WBiz, V extends ActionBarActivity> Object createUI(Class ui, V iView, B biz) {
+		Object obj = null;
+		try{
+			// 获得接口数组
+			Class<?>[] interfaces = iView.getClass().getInterfaces();
+			// 如果没有实现接口，获取父类接口
+			if (interfaces.length == 0) {
+				interfaces = iView.getClass().getSuperclass().getInterfaces();
+			}
+			for (Class clazz : interfaces) {
+				if (clazz.getSimpleName().equals(ui.getSimpleName())) {
+					obj = DynamicProxyUtils.newProxyUI(iView, biz);
+					break;
+				}
+			}
+		}catch (Exception e){
+			return obj;
+		}
+		return obj;
 	}
 
 	/**
