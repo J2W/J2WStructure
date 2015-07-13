@@ -58,7 +58,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	public T display(Object... objects) {
 		if (objects.length > 0) {
-			display.setActivity(activity, objects);
+			display.initDisplay(activity, objects);
 		}
 		return display;
 	}

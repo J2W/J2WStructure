@@ -11,7 +11,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	protected ActionBarActivity	mActionBarActivity;
 
-	@Override public void setActivity(ActionBarActivity activity, Object... objects) {
+	@Override public void initDisplay(ActionBarActivity activity, Object... objects) {
 		mActionBarActivity = activity;
 	}
 }

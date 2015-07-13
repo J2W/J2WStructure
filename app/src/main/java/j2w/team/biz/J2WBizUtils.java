@@ -113,6 +113,7 @@ public final class J2WBizUtils {
 			implDisplay = (D) clazz.newInstance();
 			/** 赋值给接口 **/
 			iDisplay = (T) implDisplay;
+			iDisplay.initDisplay(iView);
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException(String.valueOf(displayClass) + "，没有找到业务类！");
 		} catch (java.lang.InstantiationException e) {
@@ -134,7 +135,7 @@ public final class J2WBizUtils {
 		Preconditions.checkNotNull(j2WBiz, "biz层 业务实体类不能为空～");
 		T iDisplay;
 		/** 初始化业务类 **/
-		((T) display).setActivity(actionBarActivity, objects);
+		((T) display).initDisplay(actionBarActivity, objects);
 		/** 动态代理 - 线程系统 **/
 		iDisplay = DynamicProxyUtils.newProxyUI(((T) display), j2WBiz);
 		return iDisplay;

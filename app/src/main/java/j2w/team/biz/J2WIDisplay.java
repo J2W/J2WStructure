@@ -15,5 +15,5 @@ public interface J2WIDisplay {
 	 * @param activity activity
 	 * @param objects 参数
 	 */
-	void setActivity(ActionBarActivity activity, Object... objects);
+	void initDisplay(ActionBarActivity activity, Object... objects);
 }
