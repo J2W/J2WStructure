@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import j2w.team.view.J2WActivity;
 
 /**
@@ -152,13 +153,15 @@ public class J2WListAdapter extends BaseAdapter {
 			convertView = mLayoutInflater.inflate(item.getItemLayout(), parent, false);
 			// 初始化布局
 			item.init(convertView);
+			// 初始化
+			ButterKnife.bind(item, convertView);
 			// 设置Tag标记
 			convertView.setTag(item);
 		}
 		// 获取item
 		item = item == null ? (J2WAdapterItem) convertView.getTag() : item;
 		// 绑定数据
-		item.bindData(getItem(position), position, getCount(), j2WActivity);
+		item.bindData(getItem(position), position, getCount());
 		return convertView;
 	}
 
@@ -168,7 +171,9 @@ public class J2WListAdapter extends BaseAdapter {
 	 * @return
 	 */
 	private J2WAdapterItem createItem() {
-		return this.j2WAdapterItem;
+		J2WAdapterItem itemClone = (J2WAdapterItem) this.j2WAdapterItem.clone();
+		itemClone.setJ2WActivity(j2WActivity);
+		return itemClone;
 	}
 
 	/**

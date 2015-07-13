@@ -256,7 +256,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			return isOpenEventBus;
 		}
 
-		public void setIsOpenEventBus(boolean isOpenEventBus) {
+		public void isOpenEventBus(boolean isOpenEventBus) {
 			this.isOpenEventBus = isOpenEventBus;
 		}
 
@@ -269,7 +269,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			return layoutId;
 		}
 
-		public void setLayoutId(int layoutId) {
+		public void layoutId(int layoutId) {
 			this.layoutId = layoutId;
 		}
 
@@ -360,28 +360,28 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		// 设置
-		public void setListHeaderLayoutId(int listHeaderLayoutId) {
+		public void listHeaderLayoutId(int listHeaderLayoutId) {
 			this.listHeaderLayoutId = listHeaderLayoutId;
 		}
 
-		public void setListFooterLayoutId(int listFooterLayoutId) {
+		public void listFooterLayoutId(int listFooterLayoutId) {
 			this.listFooterLayoutId = listFooterLayoutId;
 		}
 
-		public void setListViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
+		public void listViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
 			this.itemListener = itemListener;
 		}
 
-		public void setListViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
+		public void listViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
 			this.itemLongListener = itemLongListener;
 		}
 
-		public void setListViewId(int listId, J2WAdapterItem j2WAdapterItem) {
+		public void listViewId(int listId, J2WAdapterItem j2WAdapterItem) {
 			this.listId = listId;
 			this.j2WAdapterItem = j2WAdapterItem;
 		}
 
-		public void setListViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
+		public void listViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
 			this.listId = listId;
 			this.j2WListViewMultiLayout = j2WListViewMultiLayout;
 		}
