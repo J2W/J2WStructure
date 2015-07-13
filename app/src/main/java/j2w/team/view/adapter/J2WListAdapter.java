@@ -90,7 +90,7 @@ public class J2WListAdapter extends BaseAdapter {
 		if (list == null || list.size() < 1 || mItems == null || position < 0 || position > mItems.size()) {
 			return;
 		}
-		mItems.add(position, list);
+		mItems.addAll(position, list);
 		notifyDataSetChanged();
 	}
 
@@ -98,7 +98,7 @@ public class J2WListAdapter extends BaseAdapter {
 		if (list == null || list.size() < 1 || mItems == null) {
 			return;
 		}
-		mItems.add(list);
+		mItems.addAll(list);
 		notifyDataSetChanged();
 	}
 
