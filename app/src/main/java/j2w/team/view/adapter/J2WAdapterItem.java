@@ -2,6 +2,8 @@ package j2w.team.view.adapter;
 
 import android.view.View;
 
+import j2w.team.view.J2WActivity;
+
 /**
  * Created by sky on 15/2/6. 适配器
  */
@@ -32,6 +34,6 @@ public abstract class J2WAdapterItem<T> {
 	 * @param count
 	 *            数量
 	 */
-	public abstract void bindData(T t, int position, int count);
+	public abstract void bindData(T t, int position, int count, J2WActivity j2WActivity);
 
 }

@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.google.common.base.Preconditions;
 
@@ -20,6 +22,9 @@ import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WBizUtils;
+import j2w.team.view.adapter.J2WAdapterItem;
+import j2w.team.view.adapter.J2WListAdapter;
+import j2w.team.view.adapter.J2WListViewMultiLayout;
 
 /**
  * @创建人 sky
@@ -112,6 +117,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (builder.isOpenEventBus()) {
 			J2WHelper.getEventBus().unregister(this);
 		}
+		/** 移除builder **/
+		builder.detach();
+		builder = null;
 		/** 从堆栈里移除 **/
 		J2WHelper.screenHelper().popActivity(this);
 		J2WHelper.getInstance().onDestroy(this);
@@ -191,21 +199,58 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		return super.dispatchTouchEvent(ev);
 	}
 
+	/********************** ListView业务代码 *********************/
+
+	protected void addListHeader() {
+		builder.addListHeader();
+	}
+
+	protected void addListFooter() {
+		builder.addListFooter();
+	}
+
+	protected void removeListHeader() {
+		builder.removeListHeader();
+	}
+
+	protected void removeListFooter() {
+		builder.removeListFooter();
+	}
+
+	protected J2WListAdapter adapter() {
+		return builder.getAdapter();
+	}
+
+	protected ListView listView() {
+		return builder.getListView();
+	}
+
 	/**
 	 * 自定义对话框生成器
 	 */
 	protected static class Builder {
 
 		/** 上下文 **/
-		private final Context			mContext;
+		private J2WActivity		mContext;
 
 		/** 布局加载器 **/
-		private final LayoutInflater	mInflater;
+		private LayoutInflater	mInflater;
+
+		/**
+		 * 构造器
+		 *
+		 * @param context
+		 * @param inflater
+		 */
+		public Builder(J2WActivity context, LayoutInflater inflater) {
+			this.mContext = context;
+			this.mInflater = inflater;
+		}
 
 		/**
 		 * EventBus开关
 		 */
-		private boolean					isOpenEventBus;
+		private boolean	isOpenEventBus;
 
 		boolean isOpenEventBus() {
 			return isOpenEventBus;
@@ -229,14 +274,134 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		/**
-		 * 构造器
-		 *
-		 * @param context
-		 * @param inflater
+		 * ListView
 		 */
-		public Builder(Context context, LayoutInflater inflater) {
-			this.mContext = context;
-			this.mInflater = inflater;
+		J2WListAdapter								j2WListAdapter;
+
+		ListView									listView;
+
+		View										header;
+
+		View										footer;
+
+		private int									listId;
+
+		private int									listHeaderLayoutId;
+
+		private int									listFooterLayoutId;
+
+		private J2WAdapterItem						j2WAdapterItem;
+
+		private J2WListViewMultiLayout				j2WListViewMultiLayout;
+
+		private AdapterView.OnItemClickListener		itemListener;
+
+		private AdapterView.OnItemLongClickListener	itemLongListener;
+
+		// 获取
+		int getListId() {
+			return listId;
+		}
+
+		J2WAdapterItem getJ2WAdapterItem() {
+			return j2WAdapterItem;
+		}
+
+		J2WListViewMultiLayout getJ2WListViewMultiLayout() {
+			return j2WListViewMultiLayout;
+		}
+
+		AdapterView.OnItemClickListener getItemListener() {
+			return itemListener;
+		}
+
+		AdapterView.OnItemLongClickListener getItemLongListener() {
+			return itemLongListener;
+		}
+
+		int getListHeaderLayoutId() {
+			return listHeaderLayoutId;
+		}
+
+		int getListFooterLayoutId() {
+			return listFooterLayoutId;
+		}
+
+		void addListHeader() {
+			if (listView != null && header != null) {
+				listView.addHeaderView(header);
+			}
+		}
+
+		void addListFooter() {
+			if (listView != null && footer != null) {
+				listView.addFooterView(footer);
+			}
+		}
+
+		void removeListHeader() {
+			if (listView != null && header != null) {
+				listView.removeHeaderView(header);
+			}
+		}
+
+		void removeListFooter() {
+			if (listView != null && footer != null) {
+				listView.removeFooterView(footer);
+			}
+		}
+
+		J2WListAdapter getAdapter() {
+			return j2WListAdapter;
+		}
+
+		ListView getListView() {
+			return listView;
+		}
+
+		// 设置
+		public void setListHeaderLayoutId(int listHeaderLayoutId) {
+			this.listHeaderLayoutId = listHeaderLayoutId;
+		}
+
+		public void setListFooterLayoutId(int listFooterLayoutId) {
+			this.listFooterLayoutId = listFooterLayoutId;
+		}
+
+		public void setListViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
+			this.itemListener = itemListener;
+		}
+
+		public void setListViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
+			this.itemLongListener = itemLongListener;
+		}
+
+		public void setListViewId(int listId, J2WAdapterItem j2WAdapterItem) {
+			this.listId = listId;
+			this.j2WAdapterItem = j2WAdapterItem;
+		}
+
+		public void setListViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
+			this.listId = listId;
+			this.j2WListViewMultiLayout = j2WListViewMultiLayout;
+		}
+
+		/**
+		 * 清空所有
+		 */
+		void detach() {
+			// 基础清楚
+			mContext = null;
+			mInflater = null;
+			// listview清楚
+			j2WListAdapter = null;
+			listView = null;
+			header = null;
+			footer = null;
+			j2WAdapterItem = null;
+			j2WListViewMultiLayout = null;
+			itemListener = null;
+			itemLongListener = null;
 		}
 
 		/**
@@ -246,12 +411,39 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		 */
 		View create() {
 			L.i("Builder.create()");
+			/** 检查主布局 **/
 			Preconditions.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
 			View view = mInflater.inflate(getLayoutId(), null, false);
 			Preconditions.checkNotNull(view, "无法根据布局文件ID,获取View");
+			/** listview **/
+			listView = ButterKnife.findById(view, getListId());
+			Preconditions.checkNotNull(listView, "无法根据布局文件ID,获取ListView");
+			// 添加头布局
+			if (getListHeaderLayoutId() != 0) {
+				header = mInflater.inflate(getListHeaderLayoutId(), null, false);
+				Preconditions.checkNotNull(header, "无法根据布局文件ID,获取ListView 头布局");
+				addListHeader();
+			}
+			// 添加尾布局
+			if (getListFooterLayoutId() != 0) {
+				footer = mInflater.inflate(getListFooterLayoutId(), null, false);
+				Preconditions.checkNotNull(footer, "无法根据布局文件ID,获取ListView 尾布局");
+				addListFooter();
+			}
+			// 添加点击事件
+			if (getItemListener() != null) {
+				listView.setOnItemClickListener(getItemListener());
+			}
+			if (getItemLongListener() != null) {
+				listView.setOnItemLongClickListener(getItemLongListener());
+			}
+			// 创建适配器
+			j2WListAdapter = j2WListViewMultiLayout == null ? new J2WListAdapter(mContext, getJ2WAdapterItem()) : new J2WListAdapter(mContext, j2WListViewMultiLayout);
+			Preconditions.checkNotNull(j2WListAdapter, "适配器创建失败");
+			// 设置适配器
+			listView.setAdapter(j2WListAdapter);
 
 			return view;
 		}
-
 	}
 }
