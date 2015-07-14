@@ -639,7 +639,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/** 自动加载更多 **/
 
 		@Override public void onScrollStateChanged(AbsListView view, int scrollState) {
-			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom && !swipe_container.isRefreshing()) {
+			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 				if (j2WRefreshListener.onScrolledToBottom()) {
 					mLoadMoreRequestedItemCount = view.getCount();
 					mLoadMoreIsAtBottom = false;
