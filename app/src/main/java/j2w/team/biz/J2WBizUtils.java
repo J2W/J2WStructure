@@ -92,7 +92,7 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <T extends J2WIDisplay, D extends J2WDisplay, V extends ActionBarActivity> T createDisplay(V iView) {
+	public static final <T extends J2WIDisplay, D extends J2WDisplay, V extends J2WActivity> T createDisplay(V iView) {
 		T iDisplay;
 		D implDisplay;
 		Class clazz;
@@ -129,13 +129,13 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <T extends J2WIDisplay> T createDisplay(Object display, ActionBarActivity actionBarActivity, J2WBiz j2WBiz, Object... objects) {
+	public static final <T extends J2WIDisplay> T createDisplay(Object display,J2WActivity j2WActivity, J2WBiz j2WBiz) {
 		Preconditions.checkNotNull(display, "biz层 display 不能为空~～");
-		Preconditions.checkNotNull(actionBarActivity, "biz层 activity不能为空～");
+		Preconditions.checkNotNull(j2WActivity, "biz层 activity不能为空～");
 		Preconditions.checkNotNull(j2WBiz, "biz层 业务实体类不能为空～");
 		T iDisplay;
 		/** 初始化业务类 **/
-		((T) display).initDisplay(actionBarActivity, objects);
+		((T) display).initDisplay(j2WActivity);
 		/** 动态代理 - 线程系统 **/
 		iDisplay = DynamicProxyUtils.newProxyUI(((T) display), j2WBiz);
 		return iDisplay;

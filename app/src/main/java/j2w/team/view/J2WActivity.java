@@ -3,7 +3,7 @@ package j2w.team.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -18,7 +19,6 @@ import com.google.common.base.Preconditions;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 import butterknife.ButterKnife;
 import j2w.team.biz.J2WIDisplay;
@@ -77,6 +77,13 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		setContentView(build(builder).create());
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this);
+		/** 判断头布局尾部局删除 **/
+		if (!builder.listFooterLayoutIsShow) {
+			builder.removeListHeader();
+		}
+		if (!builder.listFooterLayoutIsShow) {
+			builder.removeListFooter();
+		}
 		/** 添加到堆栈 **/
 		J2WHelper.screenHelper().pushActivity(this);
 		/** 初始化视图 **/
@@ -140,7 +147,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 */
 	public D display(Object... objects) {
 		if (objects.length > 0) {
-			display.initDisplay(this, objects);
+			display.initDisplay(this);
 		}
 		return display;
 	}
@@ -219,26 +226,36 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	}
 
 	/********************** Actionbar业务代码 *********************/
-	protected Toolbar toolbar() {
+	public Toolbar toolbar() {
 		return builder.getToolbar();
 	}
 
 	/********************** ListView业务代码 *********************/
 
-	protected void addListHeader() {
+	public void addListHeader() {
 		builder.addListHeader();
 	}
 
-	protected void addListFooter() {
+	public void addListFooter() {
+		listView().setStackFromBottom(true);
 		builder.addListFooter();
 	}
 
-	protected void removeListHeader() {
+	public void removeListHeader() {
 		builder.removeListHeader();
 	}
 
-	protected void removeListFooter() {
+	public void removeListFooter() {
+		listView().setStackFromBottom(false);
 		builder.removeListFooter();
+	}
+
+	public void listRefreshing(boolean bool) {
+		builder.listRefreshing(bool);
+	}
+
+	public void listLoadMoreOpen() {
+		builder.loadMoreOpen();
 	}
 
 	protected J2WListAdapter adapter() {
@@ -252,7 +269,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	/**
 	 * 自定义对话框生成器
 	 */
-	protected static class Builder {
+	protected static class Builder implements AbsListView.OnScrollListener {
 
 		/** 上下文 **/
 		private J2WActivity		mContext;
@@ -358,11 +375,29 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 		View										footer;
 
+		SwipeRefreshLayout							swipe_container;
+
+		J2WRefreshListener							j2WRefreshListener;
+
+		private boolean								mLoadMoreIsAtBottom;			// 加载更多
+																					// 开关
+
+		private int									mLoadMoreRequestedItemCount;	// 加载更多
+																					// 数量
+
+		private int									colorResIds[];
+
+		private int									swipRefreshId;
+
 		private int									listId;
 
 		private int									listHeaderLayoutId;
 
+		boolean										listHeaderLayoutIsShow;
+
 		private int									listFooterLayoutId;
+
+		boolean										listFooterLayoutIsShow;
 
 		private J2WAdapterItem						j2WAdapterItem;
 
@@ -401,6 +436,63 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			return listFooterLayoutId;
 		}
 
+		J2WListAdapter getAdapter() {
+			Preconditions.checkNotNull(j2WListAdapter, "适配器没有初始化");
+			return j2WListAdapter;
+		}
+
+		ListView getListView() {
+			Preconditions.checkNotNull(listView, "没有设置布局文件ID,无法获取ListView");
+			return listView;
+		}
+
+		int getSwipRefreshId() {
+			return swipRefreshId;
+		}
+
+		public int[] getSwipeColorResIds() {
+			return colorResIds;
+		}
+
+		// 设置
+		public void listHeaderLayoutId(int listHeaderLayoutId, boolean isShow) {
+			this.listHeaderLayoutId = listHeaderLayoutId;
+			this.listHeaderLayoutIsShow = isShow;
+		}
+
+		public void listFooterLayoutId(int listFooterLayoutId, boolean isShow) {
+			this.listFooterLayoutId = listFooterLayoutId;
+			this.listFooterLayoutIsShow = isShow;
+		}
+
+		public void listViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
+			this.itemListener = itemListener;
+		}
+
+		public void listViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
+			this.itemLongListener = itemLongListener;
+		}
+
+		public void listViewId(int listId, J2WAdapterItem j2WAdapterItem) {
+			this.listId = listId;
+			this.j2WAdapterItem = j2WAdapterItem;
+		}
+
+		public void listViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
+			this.listId = listId;
+			this.j2WListViewMultiLayout = j2WListViewMultiLayout;
+		}
+
+		public void listSwipRefreshId(int swipRefreshId, J2WRefreshListener j2WRefreshListener) {
+			this.swipRefreshId = swipRefreshId;
+			this.j2WRefreshListener = j2WRefreshListener;
+		}
+
+		public void listSwipeColorResIds(int... colorResIds) {
+			this.colorResIds = colorResIds;
+		}
+
+		// 功能
 		void addListHeader() {
 			if (listView != null && header != null) {
 				listView.addHeaderView(header);
@@ -425,55 +517,15 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			}
 		}
 
-		J2WListAdapter getAdapter() {
-			Preconditions.checkNotNull(j2WListAdapter, "适配器没有初始化");
-			return j2WListAdapter;
+		void listRefreshing(boolean bool) {
+			if (swipe_container != null) {
+				swipe_container.setRefreshing(bool);
+			}
 		}
 
-		ListView getListView() {
-			Preconditions.checkNotNull(listView, "没有设置布局文件ID,无法获取ListView");
-			return listView;
-		}
-
-		// 设置
-		public void listHeaderLayoutId(int listHeaderLayoutId) {
-			this.listHeaderLayoutId = listHeaderLayoutId;
-		}
-
-		public void listFooterLayoutId(int listFooterLayoutId) {
-			this.listFooterLayoutId = listFooterLayoutId;
-		}
-
-		public void listViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
-			this.itemListener = itemListener;
-		}
-
-		public void listViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
-			this.itemLongListener = itemLongListener;
-		}
-
-		public void listViewId(int listId, J2WAdapterItem j2WAdapterItem) {
-			this.listId = listId;
-			this.j2WAdapterItem = j2WAdapterItem;
-		}
-
-		public void listViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
-			this.listId = listId;
-			this.j2WListViewMultiLayout = j2WListViewMultiLayout;
-		}
-
-		/**
-		 * 清空所有
-		 */
-		void detach() {
-			// 基础清除
-			mContext = null;
-			mInflater = null;
-			// actionbar清除
-			detachActionbar();
-			// listview清除
-			detachListView();
-
+		void loadMoreOpen() {
+			mLoadMoreIsAtBottom = true;
+			mLoadMoreRequestedItemCount = 0;
 		}
 
 		/**
@@ -496,6 +548,19 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		/**
+		 * 清空所有
+		 */
+		void detach() {
+			// 基础清除
+			mContext = null;
+			mInflater = null;
+			// actionbar清除
+			detachActionbar();
+			// listview清除
+			detachListView();
+		}
+
+		/**
 		 * 标题栏
 		 * 
 		 * @param view
@@ -504,17 +569,18 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			if (getToolbarId() > 0) {
 				toolbar = ButterKnife.findById(view, getToolbarId());
 				Preconditions.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
+
+				if (getToolbarDrawerId() > 0) {
+					DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
+					Preconditions.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
+					ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(mContext, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+					mDrawerToggle.syncState();
+					drawerLayout.setDrawerListener(mDrawerToggle);
+				}
 				mContext.setSupportActionBar(toolbar);
 				// 添加点击事件
 				if (getMenuListener() != null) {
 					toolbar.setOnMenuItemClickListener(getMenuListener());
-				}
-				if(getToolbarDrawerId() > 0){
-					DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
-					Preconditions.checkNotNull(toolbar, "无法根据布局文件ID,获取DrawerLayout");
-					ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(mContext, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
-					mDrawerToggle.syncState();
-					drawerLayout.setDrawerListener(mDrawerToggle);
 				}
 			}
 		}
@@ -544,6 +610,19 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 					Preconditions.checkNotNull(footer, "无法根据布局文件ID,获取ListView 尾布局");
 					addListFooter();
 				}
+				// 设置上拉和下拉事件
+				if (getSwipRefreshId() != 0) {
+					swipe_container = ButterKnife.findById(view, getSwipRefreshId());
+					Preconditions.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
+					Preconditions.checkNotNull(j2WRefreshListener, " ListView的SwipRefresh 下拉刷新和上拉加载事件没有设置");
+					swipe_container.setOnRefreshListener(j2WRefreshListener);// 下载刷新
+					listView.setOnScrollListener(this);// 加载更多
+				}
+				// 设置进度颜色
+				if (getSwipeColorResIds() != null) {
+					Preconditions.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
+					swipe_container.setColorSchemeResources(getSwipeColorResIds());
+				}
 				// 添加点击事件
 				if (getItemListener() != null) {
 					listView.setOnItemClickListener(getItemListener());
@@ -568,6 +647,21 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			j2WListViewMultiLayout = null;
 			itemListener = null;
 			itemLongListener = null;
+		}
+
+		/** 自动加载更多 **/
+
+		@Override public void onScrollStateChanged(AbsListView view, int scrollState) {
+			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom && !swipe_container.isRefreshing()) {
+				if (j2WRefreshListener.onScrolledToBottom()) {
+					mLoadMoreRequestedItemCount = view.getCount();
+					mLoadMoreIsAtBottom = false;
+				}
+			}
+		}
+
+		@Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			mLoadMoreIsAtBottom = totalItemCount > mLoadMoreRequestedItemCount && firstVisibleItem + visibleItemCount == totalItemCount;
 		}
 	}
 }

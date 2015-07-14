@@ -1,6 +1,6 @@
 package j2w.team.biz;
 
-import android.support.v7.app.ActionBarActivity;
+import j2w.team.view.J2WActivity;
 
 /**
  * @创建人 sky
@@ -9,9 +9,9 @@ import android.support.v7.app.ActionBarActivity;
  */
 public class J2WDisplay implements J2WIDisplay {
 
-	protected ActionBarActivity	mActionBarActivity;
+	protected J2WActivity	mJ2WActivity;
 
-	@Override public void initDisplay(ActionBarActivity activity, Object... objects) {
-		mActionBarActivity = activity;
+	@Override public void initDisplay(J2WActivity j2WActivity) {
+		mJ2WActivity = j2WActivity;
 	}
 }

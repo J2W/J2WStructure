@@ -2,6 +2,8 @@ package j2w.team.biz;
 
 import android.support.v7.app.ActionBarActivity;
 
+import j2w.team.view.J2WActivity;
+
 /**
  * @创建人 sky
  * @创建时间 15/7/11 下午2:40
@@ -13,7 +15,6 @@ public interface J2WIDisplay {
 	 * 设置 activity
 	 * 
 	 * @param activity activity
-	 * @param objects 参数
 	 */
-	void initDisplay(ActionBarActivity activity, Object... objects);
+	void initDisplay(J2WActivity activity);
 }

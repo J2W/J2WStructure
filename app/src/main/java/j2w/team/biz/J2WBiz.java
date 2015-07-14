@@ -56,9 +56,9 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 *            参数
 	 * @return
 	 */
-	public T display(Object... objects) {
+	protected T display(Object... objects) {
 		if (objects.length > 0) {
-			display.initDisplay(activity, objects);
+			display.initDisplay(activity);
 		}
 		return display;
 	}
@@ -116,7 +116,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param errorMessageTemplate
 	 * @return
 	 */
-	public <T> void checkNotNull(T reference, String errorMessageTemplate) {
+	protected  <T> void checkNotNull(T reference, String errorMessageTemplate) {
 		if (reference == null) {
 			throw new J2WNullPointerException(errorMessageTemplate);
 		}
@@ -128,7 +128,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param expression
 	 * @param errorMessageTemplate
 	 */
-	public static void checkArgument(boolean expression, String errorMessageTemplate) {
+	protected void checkArgument(boolean expression, String errorMessageTemplate) {
 		if (!expression) {
 			throw new J2WArgumentException(errorMessageTemplate);
 		}
@@ -141,7 +141,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param size
 	 * @param desc
 	 */
-	public static void checkPositionIndex(int index, int size, String desc) {
+	protected void checkPositionIndex(int index, int size, String desc) {
 		if (index < 0 || index > size) {
 			throw new J2WIndexOutOfException(desc);
 		}
