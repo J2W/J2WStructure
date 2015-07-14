@@ -77,13 +77,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		setContentView(build(builder).create());
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this);
-		/** 判断头布局尾部局删除 **/
-		if (!builder.listFooterLayoutIsShow) {
-			builder.removeListHeader();
-		}
-		if (!builder.listFooterLayoutIsShow) {
-			builder.removeListFooter();
-		}
 		/** 添加到堆栈 **/
 		J2WHelper.screenHelper().pushActivity(this);
 		/** 初始化视图 **/
@@ -237,7 +230,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	}
 
 	public void addListFooter() {
-		listView().setStackFromBottom(true);
 		builder.addListFooter();
 	}
 
@@ -246,7 +238,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	}
 
 	public void removeListFooter() {
-		listView().setStackFromBottom(false);
 		builder.removeListFooter();
 	}
 
@@ -393,11 +384,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 		private int									listHeaderLayoutId;
 
-		boolean										listHeaderLayoutIsShow;
-
 		private int									listFooterLayoutId;
 
-		boolean										listFooterLayoutIsShow;
+		private int									footerCount;
 
 		private J2WAdapterItem						j2WAdapterItem;
 
@@ -455,14 +444,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		// 设置
-		public void listHeaderLayoutId(int listHeaderLayoutId, boolean isShow) {
+		public void listHeaderLayoutId(int listHeaderLayoutId) {
 			this.listHeaderLayoutId = listHeaderLayoutId;
-			this.listHeaderLayoutIsShow = isShow;
 		}
 
-		public void listFooterLayoutId(int listFooterLayoutId, boolean isShow) {
+		public void listFooterLayoutId(int listFooterLayoutId) {
 			this.listFooterLayoutId = listFooterLayoutId;
-			this.listFooterLayoutIsShow = isShow;
 		}
 
 		public void listViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
