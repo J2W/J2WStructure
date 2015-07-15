@@ -13,7 +13,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WTextUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.annotations.Body;
 import j2w.team.modules.http.annotations.Header;
 import j2w.team.modules.http.annotations.Path;
@@ -342,7 +342,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 				headerBuilder.add("Content-Type", contentTypeHeader);
 			}
 		}
-		if (!J2WTextUtils.isEmpty(tag)) {
+		if (!J2WCheckUtils.isEmpty(tag)) {
 			methodName = tag;
 		}
 		// 打印完整路径

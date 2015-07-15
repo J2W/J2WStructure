@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.squareup.okhttp.Headers;
 
-import j2w.team.common.utils.J2WTextUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 
 
 /**
@@ -35,7 +35,7 @@ public class J2WUploadRequest extends J2WBaseRequest {
 	 *            类型
 	 */
 	public J2WUploadRequest(Uri uri, J2WUploadBody j2WUploadBody, J2WContentType j2WContentType) {
-		if (J2WTextUtils.isEmpty(j2WUploadBody.headerName) || J2WTextUtils.isEmpty(j2WUploadBody.headerValue)) {
+		if (J2WCheckUtils.isEmpty(j2WUploadBody.headerName) || J2WCheckUtils.isEmpty(j2WUploadBody.headerValue)) {
 			throw new IllegalArgumentException("文件体头信息不能为空！");
 		}
 		if (j2WUploadBody.file == null) {

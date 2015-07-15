@@ -16,7 +16,7 @@ import android.content.res.Resources;
 
 
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WTextUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.J2WHelper;
 
 /**
@@ -165,7 +165,7 @@ public abstract class J2WProperties {
 		String value = null;
 		try {
 			value = mProperties.getProperty(key);
-			if (J2WTextUtils.isEmpty(value)) {
+			if (J2WCheckUtils.isEmpty(value)) {
 				return 0;
 			}
 			return Integer.parseInt(mProperties.getProperty(key));
@@ -180,7 +180,7 @@ public abstract class J2WProperties {
 		String value = null;
 		try {
 			value = mProperties.getProperty(key);
-			if (J2WTextUtils.isEmpty(value)) {
+			if (J2WCheckUtils.isEmpty(value)) {
 				return 0;
 			}
 			return Long.parseLong(mProperties.getProperty(key));
@@ -195,7 +195,7 @@ public abstract class J2WProperties {
 		String value = null;
 		try {
 			value = mProperties.getProperty(key);
-			if (J2WTextUtils.isEmpty(value)) {
+			if (J2WCheckUtils.isEmpty(value)) {
 				return 0;
 			}
 			return Float.parseFloat(mProperties.getProperty(key));
@@ -210,7 +210,7 @@ public abstract class J2WProperties {
 		String value = null;
 		try {
 			value = mProperties.getProperty(key);
-			if (J2WTextUtils.isEmpty(value)) {
+			if (J2WCheckUtils.isEmpty(value)) {
 				return 0;
 			}
 			return Double.parseDouble(mProperties.getProperty(key));
@@ -225,7 +225,7 @@ public abstract class J2WProperties {
 		String value = null;
 		try {
 			value = mProperties.getProperty(key);
-			if (J2WTextUtils.isEmpty(value)) {
+			if (J2WCheckUtils.isEmpty(value)) {
 				return false;
 			}
 			return Boolean.parseBoolean(mProperties.getProperty(key));

@@ -2,11 +2,9 @@ package j2w.team;
 
 import android.os.Looper;
 
-import com.google.common.eventbus.EventBus;
 import com.squareup.picasso.PicassoTools;
 
-import j2w.team.biz.J2WBizUtils;
-import j2w.team.biz.J2WIDisplay;
+import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
@@ -39,7 +37,7 @@ public class J2WHelper {
 	 * @param j2WApplication
 	 *            系统上下文
 	 */
-	public static void with(J2WApplication j2WApplication) {
+	static void with(J2WApplication j2WApplication) {
 		if (mJ2WApplication == null) {
 			synchronized (J2WHelper.class) {
 				if (mJ2WApplication == null) {
@@ -52,14 +50,14 @@ public class J2WHelper {
 	/**
 	 * 单例模式 - EventBus
 	 */
-	private volatile static EventBus	bus	= new EventBus();
+	private volatile static EventBus bus	= EventBus.getDefault();
 
 	/**
 	 * 获取EventBus
 	 *
 	 * @return
 	 */
-	public static EventBus getEventBus() {
+	public static EventBus eventBus() {
 		return bus;
 	}
 
@@ -73,7 +71,7 @@ public class J2WHelper {
 	 *
 	 * @return
 	 */
-	public static J2WRestAdapter getHttpAdapter() {
+	public static J2WRestAdapter httpAdapter() {
 		return mJ2WRestAdapter;
 	}
 
@@ -103,7 +101,7 @@ public class J2WHelper {
 	 *
 	 * @return
 	 */
-	public static final J2WRestAdapter.Builder getJ2WRestBuilder() {
+	public static final J2WRestAdapter.Builder j2WRestBuilder() {
 		return j2WRestAdapterBuilder;
 	}
 
@@ -168,135 +166,11 @@ public class J2WHelper {
 			mainLooper().execute(new Runnable() {
 
 				@Override public void run() {
-					getEventBus().post(object);
+					eventBus().post(object);
 				}
 			});
 		} else {
-			getEventBus().post(object);
+			eventBus().post(object);
 		}
 	}
-
-	//
-	// /**
-	// * 显示FragmentDilaog 弹框
-	// */
-	// public static void showDialog(Class<? extends J2WDialogFragment> mClass)
-	// {
-	// final J2WDialogFragment fragment = (J2WDialogFragment)
-	// Fragment.instantiate(getScreenHelper().currentActivity(),
-	// mClass.getName(), null);
-	// showDialog(fragment);
-	// }
-	//
-	// /**
-	// * 显示FragmentDilaog 弹框
-	// */
-	// public static void showDialog(J2WDialogFragment j2WDialogFragment) {
-	// getScreenHelper().currentActivity().getSupportFragmentManager().beginTransaction().add(j2WDialogFragment,
-	// j2WDialogFragment.getClass().getSimpleName()).commitAllowingStateLoss();
-	// }
-	// /**
-	// * Activity 跳转工具
-	// *
-	// * @param clazz
-	// */
-	// public static final void intentTo(Class clazz) {
-	// Intent intent = new Intent();
-	// intent.setClass(J2WHelper.getScreenHelper().currentActivity(), clazz);
-	// J2WHelper.getScreenHelper().currentActivity().startActivity(intent);
-	// }
-	//
-	// public static final void intentTo(Class clazz, int animstart, int
-	// animstop) {
-	// Intent intent = new Intent();
-	// intent.setClass(J2WHelper.getScreenHelper().currentActivity(), clazz);
-	// J2WHelper.getScreenHelper().currentActivity().startActivity(intent);
-	// J2WHelper.getScreenHelper().currentActivity().overridePendingTransition(animstart,
-	// animstop);
-	// }
-	//
-	// public static final void intentTo(Class clazz, Bundle bundle) {
-	// Intent intent = new Intent();
-	// intent.setClass(J2WHelper.getScreenHelper().currentActivity(), clazz);
-	// intent.putExtras(bundle);
-	// J2WHelper.getScreenHelper().currentActivity().startActivity(intent);
-	// }
-	//
-	// public static final void intentTo(Class clazz, int requestCode) {
-	// Intent intent = new Intent();
-	// intent.setClass(J2WHelper.getScreenHelper().currentActivity(), clazz);
-	// J2WHelper.getScreenHelper().currentActivity().startActivityForResult(intent,
-	// requestCode);
-	// }
-	//
-	// public static final void intentTo(Class clazz, Bundle bundle, int
-	// requestCode) {
-	// Intent intent = new Intent();
-	// intent.setClass(J2WHelper.getScreenHelper().currentActivity(), clazz);
-	// intent.putExtras(bundle);
-	// J2WHelper.getScreenHelper().currentActivity().startActivityForResult(intent,
-	// requestCode);
-	// }
-	//
-	// /**
-	// * Fragment 跳转工具
-	// */
-	// public static final void commitDialogFragment(DialogFragment
-	// dialogFragment) {
-	// FragmentManager fragmentManager =
-	// J2WHelper.getScreenHelper().currentActivity().getSupportFragmentManager();
-	// fragmentManager.beginTransaction().add(dialogFragment,
-	// dialogFragment.getClass().getSimpleName()).commitAllowingStateLoss();
-	// }
-	//
-	// public static final void commitFragment(Fragment fragment) {
-	// commitFragment(fragment, fragment.getClass().getSimpleName());
-	// }
-	//
-	// public static final void commitFragment(Fragment fragment, String tag) {
-	// FragmentManager fragmentManager =
-	// J2WHelper.getScreenHelper().currentActivity().getSupportFragmentManager();
-	// fragmentManager.beginTransaction().add(android.R.id.custom, fragment,
-	// tag).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-	// }
-	//
-	// public static final void commitFragment(int layoutId, Fragment fragment)
-	// {
-	// commitFragment(layoutId, fragment, fragment.getClass().getSimpleName());
-	// }
-	//
-	// public static final void commitFragment(int layoutId, Fragment fragment,
-	// String tag) {
-	// FragmentManager fragmentManager =
-	// J2WHelper.getScreenHelper().currentActivity().getSupportFragmentManager();
-	// fragmentManager.beginTransaction().add(layoutId, fragment,
-	// tag).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-	// }
-	//
-	// public static final void commitBackStackFragment(Fragment fragment) {
-	// commitBackStackFragment(fragment, fragment.getClass().getSimpleName());
-	// }
-	//
-	// public static final void commitBackStackFragment(Fragment fragment,
-	// String tag) {
-	// FragmentManager fragmentManager =
-	// J2WHelper.getScreenHelper().currentActivity().getSupportFragmentManager();
-	// fragmentManager.beginTransaction().add(android.R.id.custom, fragment,
-	// tag).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-	// }
-	//
-	// public static final void commitBackStackFragment(int layoutId, Fragment
-	// fragment) {
-	// commitBackStackFragment(layoutId, fragment,
-	// fragment.getClass().getSimpleName());
-	// }
-	//
-	// public static final void commitBackStackFragment(int layoutId, Fragment
-	// fragment, String tag) {
-	// FragmentManager fragmentManager =
-	// J2WHelper.getScreenHelper().currentActivity().getSupportFragmentManager();
-	// fragmentManager.beginTransaction().add(layoutId, fragment,
-	// tag).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-	// }
-
 }

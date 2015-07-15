@@ -15,14 +15,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.common.base.Preconditions;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.log.L;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
@@ -96,7 +95,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		super.onResume();
 		attachBiz();
 		if (builder.isOpenEventBus()) {
-			J2WHelper.getEventBus().register(this);
+			J2WHelper.eventBus().register(this);
 		}
 		J2WHelper.getInstance().onResume(this);
 	}
@@ -119,10 +118,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	@Override protected void onDestroy() {
 		super.onDestroy();
-		/** 判断EventBus 然后销毁 **/
-		if (builder.isOpenEventBus()) {
-			J2WHelper.getEventBus().unregister(this);
-		}
 		/** 移除builder **/
 		builder.detach();
 		builder = null;
@@ -154,7 +149,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		Preconditions.checkNotNull(biz, "请指定业务接口～");
+		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
 			obj = J2WBizUtils.createBiz(biz, this, display);
@@ -186,6 +181,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		stackBiz.clear();
 		stackBiz = null;
 		display = null;
+		/** 判断EventBus 然后销毁 **/
+		if (builder.isOpenEventBus()) {
+			J2WHelper.eventBus().unregister(this);
+		}
 	}
 
 	/**
@@ -426,12 +425,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		J2WListAdapter getAdapter() {
-			Preconditions.checkNotNull(j2WListAdapter, "适配器没有初始化");
+			J2WCheckUtils.checkNotNull(j2WListAdapter, "适配器没有初始化");
 			return j2WListAdapter;
 		}
 
 		ListView getListView() {
-			Preconditions.checkNotNull(listView, "没有设置布局文件ID,无法获取ListView");
+			J2WCheckUtils.checkNotNull(listView, "没有设置布局文件ID,无法获取ListView");
 			return listView;
 		}
 
@@ -523,9 +522,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		View create() {
 			L.i("Builder.create()");
 			/** layout **/
-			Preconditions.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
+			J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
 			View view = mInflater.inflate(getLayoutId(), null, false);
-			Preconditions.checkNotNull(view, "无法根据布局文件ID,获取View");
+			J2WCheckUtils.checkNotNull(view, "无法根据布局文件ID,获取View");
 			/** actoinbar **/
 			createActionbar(view);
 			/** listview **/
@@ -555,16 +554,15 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		private void createActionbar(View view) {
 			if (getToolbarId() > 0) {
 				toolbar = ButterKnife.findById(view, getToolbarId());
-				Preconditions.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
-
+				J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
+				mContext.setSupportActionBar(toolbar);
 				if (getToolbarDrawerId() > 0) {
 					DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
-					Preconditions.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
+					J2WCheckUtils.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
 					ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(mContext, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
 					mDrawerToggle.syncState();
 					drawerLayout.setDrawerListener(mDrawerToggle);
 				}
-				mContext.setSupportActionBar(toolbar);
 				// 添加点击事件
 				if (getMenuListener() != null) {
 					toolbar.setOnMenuItemClickListener(getMenuListener());
@@ -584,30 +582,30 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		private void createListView(View view) {
 			if (getListId() > 0) {
 				listView = ButterKnife.findById(view, getListId());
-				Preconditions.checkNotNull(listView, "无法根据布局文件ID,获取ListView");
+				J2WCheckUtils.checkNotNull(listView, "无法根据布局文件ID,获取ListView");
 				// 添加头布局
 				if (getListHeaderLayoutId() != 0) {
 					header = mInflater.inflate(getListHeaderLayoutId(), null, false);
-					Preconditions.checkNotNull(header, "无法根据布局文件ID,获取ListView 头布局");
+					J2WCheckUtils.checkNotNull(header, "无法根据布局文件ID,获取ListView 头布局");
 					addListHeader();
 				}
 				// 添加尾布局
 				if (getListFooterLayoutId() != 0) {
 					footer = mInflater.inflate(getListFooterLayoutId(), null, false);
-					Preconditions.checkNotNull(footer, "无法根据布局文件ID,获取ListView 尾布局");
+					J2WCheckUtils.checkNotNull(footer, "无法根据布局文件ID,获取ListView 尾布局");
 					addListFooter();
 				}
 				// 设置上拉和下拉事件
 				if (getSwipRefreshId() != 0) {
 					swipe_container = ButterKnife.findById(view, getSwipRefreshId());
-					Preconditions.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
-					Preconditions.checkNotNull(j2WRefreshListener, " ListView的SwipRefresh 下拉刷新和上拉加载事件没有设置");
+					J2WCheckUtils.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
+					J2WCheckUtils.checkNotNull(j2WRefreshListener, " ListView的SwipRefresh 下拉刷新和上拉加载事件没有设置");
 					swipe_container.setOnRefreshListener(j2WRefreshListener);// 下载刷新
 					listView.setOnScrollListener(this);// 加载更多
 				}
 				// 设置进度颜色
 				if (getSwipeColorResIds() != null) {
-					Preconditions.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
+					J2WCheckUtils.checkNotNull(swipe_container, "无法根据布局文件ID,获取ListView的SwipRefresh下载刷新布局");
 					swipe_container.setColorSchemeResources(getSwipeColorResIds());
 				}
 				// 添加点击事件
@@ -619,7 +617,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 				}
 				// 创建适配器
 				j2WListAdapter = j2WListViewMultiLayout == null ? new J2WListAdapter(mContext, getJ2WAdapterItem()) : new J2WListAdapter(mContext, j2WListViewMultiLayout);
-				Preconditions.checkNotNull(j2WListAdapter, "适配器创建失败");
+				J2WCheckUtils.checkNotNull(j2WListAdapter, "适配器创建失败");
 				// 设置适配器
 				listView.setAdapter(j2WListAdapter);
 			}

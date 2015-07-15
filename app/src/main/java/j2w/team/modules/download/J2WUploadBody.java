@@ -4,7 +4,7 @@ import com.squareup.okhttp.Headers;
 
 import java.io.File;
 
-import j2w.team.common.utils.J2WTextUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 
 /**
  * @创建人 sky
@@ -29,7 +29,7 @@ public class J2WUploadBody {
 			buffer.append("form-data; name=\"");
 			buffer.append(this.headerValue);
 			buffer.append("\"");
-			if (file != null && !J2WTextUtils.isEmpty(file.getName())) {
+			if (file != null && !J2WCheckUtils.isEmpty(file.getName())) {
 				buffer.append("; filename=\"");
 				buffer.append(this.file.getName());
 				buffer.append("\"");

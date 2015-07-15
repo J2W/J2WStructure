@@ -1,13 +1,12 @@
 package j2w.team.common.utils.proxy;
 
-import com.google.common.base.Preconditions;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
 import j2w.team.biz.J2WBiz;
 import j2w.team.common.log.L;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WMethodInfo;
 import j2w.team.modules.threadpool.BackgroundType;
 import j2w.team.modules.threadpool.Background;
@@ -60,7 +59,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 				if (j2WRepeat == null || !j2WRepeat.value()) { // 拦截
 					stack.push(key); // 入栈
 				}
-				Preconditions.checkNotNull(t, "UI和BIZ已经被销毁~");
+				J2WCheckUtils.checkNotNull(t, "UI和BIZ已经被销毁~");
 				returnObject = method.invoke(t, args);// 执行
 				return returnObject;
 			} catch (Throwable throwable) {
@@ -111,7 +110,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 				if (super.j2WRepeat == null || !super.j2WRepeat.value()) { // 拦截
 					stack.push(super.mehtodName); // 入栈
 				}
-				Preconditions.checkNotNull(t, "UI和BIZ已经被销毁~");
+				J2WCheckUtils.checkNotNull(t, "UI和BIZ已经被销毁~");
 				super.method.invoke(t, args);// 执行
 			} catch (Throwable e) {
 				try {
@@ -119,7 +118,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 					if (!checkUI()) {
 						return;
 					}
-					Preconditions.checkNotNull(t, "UI和BIZ已经被销毁~");
+					J2WCheckUtils.checkNotNull(t, "UI和BIZ已经被销毁~");
 					super.methodError.invoke(t, new Object[] { method.getName(), e });
 				} catch (IllegalAccessException e1) {
 					e1.printStackTrace();

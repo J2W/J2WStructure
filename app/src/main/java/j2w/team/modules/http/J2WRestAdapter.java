@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WTextUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.dialog.provided.ProgressDailogFragment;
 import j2w.team.modules.http.converter.GsonConverter;
@@ -96,7 +96,7 @@ public class J2WRestAdapter {
 		// 创建动态代理-网络层
 		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), tag);
 		// 缓存当前接口
-		mService =  J2WTextUtils.isEmpty(tag) ? service : null;
+		mService =  J2WCheckUtils.isEmpty(tag) ? service : null;
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}

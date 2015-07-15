@@ -5,12 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-
 import java.util.List;
 
 import butterknife.ButterKnife;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
 
 /**
@@ -48,23 +46,23 @@ public class J2WListAdapter extends BaseAdapter {
 	private LayoutInflater			mLayoutInflater;
 
 	public J2WListAdapter(J2WActivity j2WActivity, J2WAdapterItem j2WAdapterItem) {
-		Preconditions.checkNotNull(j2WActivity, "View层不存在");
-		Preconditions.checkNotNull(j2WAdapterItem, "ListView Item类不存在");
+		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
+		J2WCheckUtils.checkNotNull(j2WAdapterItem, "ListView Item类不存在");
 		this.j2WActivity = j2WActivity;
 		this.j2WAdapterItem = j2WAdapterItem;
 		this.mLayoutInflater = j2WActivity.getLayoutInflater();
 	}
 
 	public J2WListAdapter(J2WActivity j2WActivity, J2WListViewMultiLayout j2WListViewMultiLayout) {
-		Preconditions.checkNotNull(j2WActivity, "View层不存在");
-		Preconditions.checkNotNull(j2WListViewMultiLayout, "ListView 多布局接口不存在");
+		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
+		J2WCheckUtils.checkNotNull(j2WListViewMultiLayout, "ListView 多布局接口不存在");
 		this.j2WActivity = j2WActivity;
 		this.j2WListViewMultiLayout = j2WListViewMultiLayout;
 		this.mLayoutInflater = j2WActivity.getLayoutInflater();
 	}
 
 	public void setItems(List items) {
-		if (!Objects.equal(items, mItems)) {
+		if (!J2WCheckUtils.equal(items, mItems)) {
 			mItems = items;
 			notifyDataSetChanged();
 		}

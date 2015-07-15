@@ -8,6 +8,7 @@ import j2w.team.biz.exception.J2WArgumentException;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WNullPointerException;
 import j2w.team.biz.exception.J2WIndexOutOfException;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.view.J2WActivity;
@@ -46,7 +47,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * 获取网络
 	 */
 	@Override public J2WRestAdapter http() {
-		return J2WHelper.getHttpAdapter();
+		return J2WHelper.httpAdapter();
 	}
 
 	/**
@@ -116,10 +117,9 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param errorMessageTemplate
 	 * @return
 	 */
-	protected  <T> void checkNotNull(T reference, String errorMessageTemplate) {
-		if (reference == null) {
-			throw new J2WNullPointerException(errorMessageTemplate);
-		}
+	protected <T> void checkNotNull(T reference, String errorMessageTemplate) {
+		J2WCheckUtils.checkNotNull(reference, errorMessageTemplate);
+
 	}
 
 	/**
@@ -129,9 +129,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param errorMessageTemplate
 	 */
 	protected void checkArgument(boolean expression, String errorMessageTemplate) {
-		if (!expression) {
-			throw new J2WArgumentException(errorMessageTemplate);
-		}
+		J2WCheckUtils.checkArgument(expression, errorMessageTemplate);
 	}
 
 	/**
@@ -142,9 +140,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param desc
 	 */
 	protected void checkPositionIndex(int index, int size, String desc) {
-		if (index < 0 || index > size) {
-			throw new J2WIndexOutOfException(desc);
-		}
+		J2WCheckUtils.checkPositionIndex(index, size, desc);
 	}
 
 	/**

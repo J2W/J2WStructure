@@ -2,15 +2,9 @@ package j2w.team.biz;
 
 import android.support.v7.app.ActionBarActivity;
 
-import com.google.common.base.Preconditions;
-
-import java.lang.reflect.InvocationHandler;
-
-import j2w.team.J2WHelper;
-import j2w.team.common.log.L;
 import j2w.team.common.utils.AppUtils;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
-import j2w.team.common.utils.proxy.J2WBizHandler;
 import j2w.team.view.J2WActivity;
 
 /**
@@ -29,20 +23,20 @@ public final class J2WBizUtils {
 	 * @return
 	 */
 	public static final <I extends J2WIBiz, B extends J2WBiz, V extends ActionBarActivity, D extends J2WIDisplay> I createBiz(Class<I> iBiz, V iView, D iDisplay) {
-		Preconditions.checkNotNull(iView, "View层实体类不能为空～");
+		J2WCheckUtils.checkNotNull(iView, "View层实体类不能为空～");
 		I interfaceBiz;
 		B implBiz;
 		Class clazz;
 		try {
-			Preconditions.checkNotNull(iBiz, "业务类型不能为空");
+			J2WCheckUtils.checkNotNull(iBiz, "业务类型不能为空");
 			// 检查
 			DynamicProxyUtils.validateServiceClass(iBiz);
 			// 获取注解
 			Impl impl = iBiz.getAnnotation(Impl.class);
-			Preconditions.checkNotNull(impl, "该接口没有指定实现类～");
+			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
 			/** 加载类 **/
 			clazz = Class.forName(impl.value().getName());
-			Preconditions.checkNotNull(clazz, "Biz类为空～");
+			J2WCheckUtils.checkNotNull(clazz, "Biz类为空～");
 			/** 创建类BIZ **/
 			implBiz = (B) clazz.newInstance();
 			/** 初始化业务类 **/
@@ -102,13 +96,13 @@ public final class J2WBizUtils {
 			displayClass = AppUtils.getSuperClassGenricType(iView.getClass(), 0);
 
 			// 获取Application的泛型类
-			Preconditions.checkNotNull(displayClass, "View第二个泛型类不能为空～");
+			J2WCheckUtils.checkNotNull(displayClass, "View第二个泛型类不能为空～");
 			// 获取注解
 			Impl impl = displayClass.getAnnotation(Impl.class);
-			Preconditions.checkNotNull(impl, "该接口没有指定实现类～");
+			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
 			/** 加载类 **/
 			clazz = Class.forName(impl.value().getName());
-			Preconditions.checkNotNull(clazz, "Display实现类类为空～");
+			J2WCheckUtils.checkNotNull(clazz, "Display实现类类为空～");
 			/** 创建类Display **/
 			implDisplay = (D) clazz.newInstance();
 			/** 赋值给接口 **/
@@ -130,9 +124,9 @@ public final class J2WBizUtils {
 	 * @return
 	 */
 	public static final <T extends J2WIDisplay> T createDisplay(Object display,J2WActivity j2WActivity, J2WBiz j2WBiz) {
-		Preconditions.checkNotNull(display, "biz层 display 不能为空~～");
-		Preconditions.checkNotNull(j2WActivity, "biz层 activity不能为空～");
-		Preconditions.checkNotNull(j2WBiz, "biz层 业务实体类不能为空～");
+		J2WCheckUtils.checkNotNull(display, "biz层 display 不能为空~～");
+		J2WCheckUtils.checkNotNull(j2WActivity, "biz层 activity不能为空～");
+		J2WCheckUtils.checkNotNull(j2WBiz, "biz层 业务实体类不能为空～");
 		T iDisplay;
 		/** 初始化业务类 **/
 		((T) display).initDisplay(j2WActivity);
