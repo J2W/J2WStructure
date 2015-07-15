@@ -94,9 +94,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	@Override protected void onResume() {
 		super.onResume();
 		attachBiz();
-		if (builder.isOpenEventBus()) {
-			J2WHelper.eventBus().register(this);
-		}
+
 		J2WHelper.getInstance().onResume(this);
 	}
 
@@ -169,6 +167,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (display == null) {
 			display = J2WBizUtils.createDisplay(this);
 		}
+		/** 判断EventBus 是否注册 **/
+		if (builder.isOpenEventBus()) {
+			J2WHelper.eventBus().register(this);
+		}
 	}
 
 	/**
@@ -181,7 +183,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		stackBiz.clear();
 		stackBiz = null;
 		display = null;
-		/** 判断EventBus 然后销毁 **/
+		/** 判断EventBus 是否销毁 **/
 		if (builder.isOpenEventBus()) {
 			J2WHelper.eventBus().unregister(this);
 		}
