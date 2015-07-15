@@ -8,4 +8,5 @@
         <item name="android:progressBarStyle">@style/J2W.Layout.Wrap.ProgressBar</item>
     </style>
 
+    <color name="J2WTabsBackground">#6633B5E5</color>
 </resources>

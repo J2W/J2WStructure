@@ -76,19 +76,4 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 
 	}
 
-	@Override public int fragmentLoadingLayout() {
-		return 0;
-	}
-
-	@Override public int fragmentEmptyLayout() {
-		return 0;
-	}
-
-	@Override public int fragmentErrorLayout() {
-		return 0;
-	}
-
-	@Override public int listFragmentFooterLayout() {
-		return 0;
-	}
 }

@@ -33,32 +33,32 @@ public interface J2WIViewCommon {
 
 	void onRestart(J2WActivity j2WIView);
 
-
 	/**
-	 * 初始化fragment状态布局 - 进度
+	 * 进度布局
 	 *
 	 * @return
 	 */
-	int fragmentLoadingLayout();
+	int layoutLoading();
 
 	/**
-	 * 初始化fragment状态布局 - 空
+	 * 空布局
 	 *
 	 * @return
 	 */
-	int fragmentEmptyLayout();
+	int layoutEmpty();
 
 	/**
-	 * 初始化fragment状态布局 - 错误
+	 * 网络业务错误
 	 *
 	 * @return
 	 */
-	int fragmentErrorLayout();
+	int layoutBizError();
 
 	/**
-	 * listFragment底部布局
+	 * 网络错误
 	 * 
 	 * @return
 	 */
-	int listFragmentFooterLayout();
+	int layoutHttpError();
+
 }

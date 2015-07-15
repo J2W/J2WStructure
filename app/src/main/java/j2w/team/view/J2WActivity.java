@@ -7,12 +7,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.HashMap;
@@ -26,6 +32,8 @@ import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WBizUtils;
+import j2w.team.common.utils.view.J2WViewPager;
+import j2w.team.common.utils.view.PagerSlidingTabStrip;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WAdapterItem;
 import j2w.team.view.adapter.J2WListAdapter;
@@ -94,7 +102,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	@Override protected void onResume() {
 		super.onResume();
 		attachBiz();
-
+		/** 判断EventBus 是否注册 **/
+		if (builder.isOpenEventBus()) {
+			J2WHelper.eventBus().register(this);
+		}
 		J2WHelper.getInstance().onResume(this);
 	}
 
@@ -167,10 +178,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (display == null) {
 			display = J2WBizUtils.createDisplay(this);
 		}
-		/** 判断EventBus 是否注册 **/
-		if (builder.isOpenEventBus()) {
-			J2WHelper.eventBus().register(this);
-		}
 	}
 
 	/**
@@ -187,6 +194,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (builder.isOpenEventBus()) {
 			J2WHelper.eventBus().unregister(this);
 		}
+		// 恢复初始化
+		listRefreshing(false);
+		listLoadMoreOpen();
 	}
 
 	/**
@@ -217,6 +227,28 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			getMenuInflater().inflate(builder.getToolbarMenuId(), menu);
 		}
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	/********************** Actionbar业务代码 *********************/
+
+	public void showContent() {
+		builder.layoutContent();
+	}
+
+	public void showLoading() {
+		builder.layoutLoading();
+	}
+
+	public void showBizError() {
+		builder.layoutBizError();
+	}
+
+	public void showEmpty() {
+		builder.layoutEmpty();
+	}
+
+	public void showHttpError() {
+		builder.layoutHttpError();
 	}
 
 	/********************** Actionbar业务代码 *********************/
@@ -283,7 +315,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/**
 		 * 布局ID
 		 */
-		private int	layoutId;
+		private int			layoutId;
+
+		private FrameLayout	contentRoot;
 
 		int getLayoutId() {
 			return layoutId;
@@ -294,6 +328,109 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		/**
+		 * 显示状态切换
+		 */
+
+		private int		layoutLoadingId;
+
+		private int		layoutEmptyId;
+
+		private int		layoutBizErrorId;
+
+		private int		layoutHttpErrorId;
+
+		private View	layoutContent;
+
+		private View	layoutLoading;
+
+		private View	layoutEmpty;
+
+		private View	layoutBizError;
+
+		private View	layoutHttpError;
+
+		// 设置
+		public void layoutLoadingId(int layoutLoadingId) {
+			this.layoutLoadingId = layoutLoadingId;
+		}
+
+		public void layoutEmptyId(int layoutEmptyId) {
+			this.layoutEmptyId = layoutEmptyId;
+		}
+
+		public void layoutBizErrorId(int layoutBizErrorId) {
+			this.layoutBizErrorId = layoutBizErrorId;
+		}
+
+		public void layoutHttpErrorId(int layoutHttpErrorId) {
+			this.layoutHttpErrorId = layoutHttpErrorId;
+		}
+
+		// 功能
+		void layoutContent() {
+			changeShowAnimation(layoutLoading, false);
+			changeShowAnimation(layoutEmpty, false);
+			changeShowAnimation(layoutBizError, false);
+			changeShowAnimation(layoutHttpError, false);
+			changeShowAnimation(layoutContent, true);
+		}
+
+		void layoutLoading() {
+			changeShowAnimation(layoutEmpty, false);
+			changeShowAnimation(layoutBizError, false);
+			changeShowAnimation(layoutHttpError, false);
+			changeShowAnimation(layoutContent, false);
+			changeShowAnimation(layoutLoading, true);
+		}
+
+		void layoutEmpty() {
+			changeShowAnimation(layoutBizError, false);
+			changeShowAnimation(layoutHttpError, false);
+			changeShowAnimation(layoutContent, false);
+			changeShowAnimation(layoutLoading, false);
+			changeShowAnimation(layoutEmpty, true);
+		}
+
+		void layoutBizError() {
+			changeShowAnimation(layoutEmpty, false);
+			changeShowAnimation(layoutHttpError, false);
+			changeShowAnimation(layoutContent, false);
+			changeShowAnimation(layoutLoading, false);
+			changeShowAnimation(layoutBizError, true);
+		}
+
+		void layoutHttpError() {
+			changeShowAnimation(layoutEmpty, false);
+			changeShowAnimation(layoutBizError, false);
+			changeShowAnimation(layoutContent, false);
+			changeShowAnimation(layoutLoading, false);
+			changeShowAnimation(layoutHttpError, true);
+		}
+
+		void changeShowAnimation(View view, boolean visible) {
+			if (view == null) {
+				return;
+			}
+			Animation anim;
+			if (visible) {
+				if (view.getVisibility() == View.VISIBLE) {
+					return;
+				}
+				view.setVisibility(View.VISIBLE);
+				anim = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in);
+			} else {
+				if (view.getVisibility() == View.GONE) {
+					return;
+				}
+				view.setVisibility(View.GONE);
+				anim = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_out);
+			}
+
+			anim.setDuration(mContext.getResources().getInteger(android.R.integer.config_shortAnimTime));
+			view.startAnimation(anim);
+		}
+
+		/**
 		 * actionbar
 		 */
 
@@ -301,11 +438,24 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 		private Toolbar.OnMenuItemClickListener	menuListener;
 
-		private int								toolbarId;
+		private int								toolbarLayoutId	= R.layout.j2w_include_toolbar;
+
+		private int								toolbarId		= R.id.toolbar;
 
 		private int								toolbarMenuId;
 
 		private int								toolbarDrawerId;
+
+		private boolean							isOpenToolbar;
+
+		// 获取
+		int getToolbarLayoutId() {
+			return toolbarLayoutId;
+		}
+
+		boolean isOpenToolbar() {
+			return isOpenToolbar;
+		}
 
 		int getToolbarId() {
 			return toolbarId;
@@ -327,6 +477,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			return menuListener;
 		}
 
+		// 设置
+
 		public void toolbarDrawerId(int toolbarDrawerId) {
 			this.toolbarDrawerId = toolbarDrawerId;
 		}
@@ -335,8 +487,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			this.menuListener = menuListener;
 		}
 
-		public void toolbarId(int toolbarId) {
-			this.toolbarId = toolbarId;
+		public void toolbarIsOpen(boolean isOpenToolbar) {
+			this.isOpenToolbar = isOpenToolbar;
 		}
 
 		public void toolbarMenuId(int toolbarMenuId) {
@@ -348,10 +500,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		 */
 		private boolean	isOpenEventBus;
 
+		// 获取
 		boolean isOpenEventBus() {
 			return isOpenEventBus;
 		}
 
+		// 设置
 		public void isOpenEventBus(boolean isOpenEventBus) {
 			this.isOpenEventBus = isOpenEventBus;
 		}
@@ -359,43 +513,43 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/**
 		 * ListView
 		 */
-		J2WListAdapter								j2WListAdapter;
+		private J2WListAdapter				j2WListAdapter;
 
-		ListView									listView;
+		private ListView					listView;
 
-		View										header;
+		private View						header;
 
-		View										footer;
+		private View						footer;
 
-		SwipeRefreshLayout							swipe_container;
+		private SwipeRefreshLayout			swipe_container;
 
-		J2WRefreshListener							j2WRefreshListener;
+		private J2WRefreshListener			j2WRefreshListener;
 
-		private boolean								mLoadMoreIsAtBottom;			// 加载更多
-																					// 开关
+		private boolean						mLoadMoreIsAtBottom;			// 加载更多
 
-		private int									mLoadMoreRequestedItemCount;	// 加载更多
-																					// 数量
+		// 开关
 
-		private int									colorResIds[];
+		private int							mLoadMoreRequestedItemCount;	// 加载更多
 
-		private int									swipRefreshId;
+		// 数量
 
-		private int									listId;
+		private int							colorResIds[];
 
-		private int									listHeaderLayoutId;
+		private int							swipRefreshId;
 
-		private int									listFooterLayoutId;
+		private int							listId;
 
-		private int									footerCount;
+		private int							listHeaderLayoutId;
 
-		private J2WAdapterItem						j2WAdapterItem;
+		private int							listFooterLayoutId;
 
-		private J2WListViewMultiLayout				j2WListViewMultiLayout;
+		J2WAdapterItem						j2WAdapterItem;
 
-		private AdapterView.OnItemClickListener		itemListener;
+		J2WListViewMultiLayout				j2WListViewMultiLayout;
 
-		private AdapterView.OnItemLongClickListener	itemLongListener;
+		AdapterView.OnItemClickListener		itemListener;
+
+		AdapterView.OnItemLongClickListener	itemLongListener;
 
 		// 获取
 		int getListId() {
@@ -440,7 +594,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			return swipRefreshId;
 		}
 
-		public int[] getSwipeColorResIds() {
+		int[] getSwipeColorResIds() {
 			return colorResIds;
 		}
 
@@ -517,6 +671,14 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		/**
+		 * ViewPager
+		 */
+
+		private J2WViewPager			j2WViewPager;
+
+		private PagerSlidingTabStrip	tabs;
+
+		/**
 		 * 创建
 		 *
 		 * @return
@@ -524,15 +686,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		View create() {
 			L.i("Builder.create()");
 			/** layout **/
-			J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
-			View view = mInflater.inflate(getLayoutId(), null, false);
-			J2WCheckUtils.checkNotNull(view, "无法根据布局文件ID,获取View");
-			/** actoinbar **/
-			createActionbar(view);
+			createLayout();
 			/** listview **/
-			createListView(view);
-
-			return view;
+			createListView(contentRoot);
+			/** actoinbar **/
+			View toolbarRoot = createActionbar(contentRoot);
+			return toolbarRoot;
 		}
 
 		/**
@@ -540,8 +699,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		 */
 		void detach() {
 			// 基础清除
-			mContext = null;
-			mInflater = null;
+			detachLayout();
 			// actionbar清除
 			detachActionbar();
 			// listview清除
@@ -549,13 +707,82 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 
 		/**
+		 * 布局
+		 * 
+		 * @return
+		 */
+		private void createLayout() {
+			contentRoot = new FrameLayout(mContext);
+			// 内容布局
+			J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
+			layoutContent = mInflater.inflate(getLayoutId(), null, false);
+			J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
+			FrameLayout.LayoutParams layoutContentParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			contentRoot.addView(layoutContent, layoutContentParams);
+
+			// 进度条
+			layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
+			J2WCheckUtils.checkArgument(layoutLoadingId > 0, "进度错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
+			layoutLoading = mInflater.inflate(layoutLoadingId, null, false);
+			J2WCheckUtils.checkNotNull(layoutLoading, "无法根据布局文件ID,获取layoutLoading");
+			FrameLayout.LayoutParams layoutLoadingParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			contentRoot.addView(layoutLoading, layoutLoadingParams);
+			layoutLoading.setVisibility(View.GONE);
+
+			// 空布局
+			layoutEmptyId = layoutEmptyId > 0 ? layoutEmptyId : J2WHelper.getInstance().layoutEmpty();
+			J2WCheckUtils.checkArgument(layoutEmptyId > 0, "空状态布局Id不能为空,重写公共布局Application.layoutEmpty 或者 在Buider.layout里设置");
+			layoutEmpty = mInflater.inflate(layoutEmptyId, null, false);
+			J2WCheckUtils.checkNotNull(layoutEmpty, "无法根据布局文件ID,获取layoutEmpty");
+			FrameLayout.LayoutParams layoutEmptyParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			contentRoot.addView(layoutEmpty, layoutEmptyParams);
+			layoutEmpty.setVisibility(View.GONE);
+
+			// 业务错误布局
+			layoutBizErrorId = layoutBizErrorId > 0 ? layoutBizErrorId : J2WHelper.getInstance().layoutBizError();
+			J2WCheckUtils.checkArgument(layoutBizErrorId > 0, "业务错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
+			layoutBizError = mInflater.inflate(layoutBizErrorId, null, false);
+			J2WCheckUtils.checkNotNull(layoutBizError, "无法根据布局文件ID,获取layoutBizError");
+			FrameLayout.LayoutParams layoutBizErrorParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			contentRoot.addView(layoutBizError, layoutBizErrorParams);
+			layoutBizError.setVisibility(View.GONE);
+
+			// 网络错误布局
+			layoutHttpErrorId = layoutHttpErrorId > 0 ? layoutHttpErrorId : J2WHelper.getInstance().layoutHttpError();
+			J2WCheckUtils.checkArgument(layoutHttpErrorId > 0, "网络错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
+			layoutHttpError = mInflater.inflate(layoutHttpErrorId, null, false);
+			J2WCheckUtils.checkNotNull(layoutHttpError, "无法根据布局文件ID,获取layoutHttpError");
+			FrameLayout.LayoutParams layoutHttpErrorParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			contentRoot.addView(layoutHttpError, layoutHttpErrorParams);
+			layoutHttpError.setVisibility(View.GONE);
+		}
+
+		private void detachLayout() {
+			mContext = null;
+			contentRoot = null;
+			mInflater = null;
+			layoutContent = null;
+			layoutBizError = null;
+			layoutHttpError = null;
+			layoutEmpty = null;
+		}
+
+		/**
 		 * 标题栏
 		 * 
 		 * @param view
 		 */
-		private void createActionbar(View view) {
-			if (getToolbarId() > 0) {
-				toolbar = ButterKnife.findById(view, getToolbarId());
+		private View createActionbar(View view) {
+			if (isOpenToolbar()) {
+				final LinearLayout toolbarRoot = new LinearLayout(mContext);
+				toolbarRoot.setOrientation(LinearLayout.VERTICAL);
+
+				mInflater.inflate(getToolbarLayoutId(), toolbarRoot, true);
+
+				toolbarRoot.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+
+				toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
+
 				J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 				mContext.setSupportActionBar(toolbar);
 				if (getToolbarDrawerId() > 0) {
@@ -569,6 +796,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 				if (getMenuListener() != null) {
 					toolbar.setOnMenuItemClickListener(getMenuListener());
 				}
+				toolbarRoot.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+				return toolbarRoot;
+			} else {
+				return view;
 			}
 		}
 
@@ -634,10 +866,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			j2WListViewMultiLayout = null;
 			itemListener = null;
 			itemLongListener = null;
+			swipe_container = null;
+			colorResIds = null;
 		}
 
 		/** 自动加载更多 **/
-
 		@Override public void onScrollStateChanged(AbsListView view, int scrollState) {
 			if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 				if (j2WRefreshListener.onScrolledToBottom()) {
