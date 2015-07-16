@@ -17,6 +17,7 @@ import com.nineoldandroids.view.ViewHelper;
  */
 public class J2WViewPager extends ViewPager {
 
+
 	public static final String			TAG		= "J2WViewPager";
 
 	private HashMap<Integer, Object>	mObjs	= new LinkedHashMap<Integer, Object>();

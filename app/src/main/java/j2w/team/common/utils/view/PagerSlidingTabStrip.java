@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -27,25 +26,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import j2w.team.structure.R;
-
+import j2w.team.view.adapter.J2WViewPagerAdapter;
+import j2w.team.view.model.TabsType;
 
 /**
  * Created by sky on 14-11-20.ViewPager Tab
  */
 public class PagerSlidingTabStrip extends HorizontalScrollView {
 
-	public interface IconTabProvider {
+	public interface TabsTypeProvider {
 
 		int getPageIconResId(int position);
-	}
-
-	public interface TitleCountTabProvider {
 
 		String getPageCount(int position);
-
-	}
-
-	public interface CustomTabProvider {
 
 		int getCustomTabView();
 
@@ -53,77 +46,77 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	}
 
 	// @formatter:off
-	private static final int[]			ATTRS					= new int[] { android.R.attr.textSize, android.R.attr.textColor };
+	private static final int[]				ATTRS					= new int[] { android.R.attr.textSize, android.R.attr.textColor };
 
 	// @formatter:on
 
-	private LinearLayout.LayoutParams	defaultTabLayoutParams;
+	private LinearLayout.LayoutParams		defaultTabLayoutParams;
 
-	private LinearLayout.LayoutParams	expandedTabLayoutParams;
+	private LinearLayout.LayoutParams		expandedTabLayoutParams;
 
-	private final PageListener			pageListener			= new PageListener();
+	private final PageListener				pageListener			= new PageListener();
 
-	public OnPageChangeListener delegatePageListener;
+	public ViewPager.OnPageChangeListener	delegatePageListener;
 
-	public LinearLayout					tabsContainer;
+	public LinearLayout						tabsContainer;
 
-	private ViewPager pager;
+	private ViewPager						pager;
 
-	private int							tabCount;
+	private int								tabCount;
 
-	private int							currentPosition			= 0;
+	private int								currentPosition			= 0;
 
-	private int							selectedPosition		= 0;
+	private int								selectedPosition		= 0;
 
-	private float						currentPositionOffset	= 0f;
+	private float							currentPositionOffset	= 0f;
 
-	private Paint						rectPaint;
+	private Paint							rectPaint;
 
-	private Paint						dividerPaint;
+	private Paint							dividerPaint;
 
-	private int							indicatorColor			= 0xFF666666;
+	private int								indicatorColor			= 0xFF666666;
 
-	private int							underlineColor			= 0x1A000000;
+	private int								underlineColor			= 0x1A000000;
 
-	private int							dividerColor			= 0x1A000000;
+	private int								dividerColor			= 0x1A000000;
 
-	private boolean						shouldExpand			= false;
+	private boolean							shouldExpand			= false;
 
-	private boolean						textAllCaps				= true;
+	private boolean							textAllCaps				= true;
 
-	private int							scrollOffset			= 52;
+	private int								scrollOffset			= 52;
 
-	private int							indicatorHeight			= 8;
+	private int								indicatorHeight			= 8;
 
-	private int							underlineHeight			= 2;
+	private int								underlineHeight			= 2;
 
-	private int							dividerPadding			= 12;
+	private int								dividerPadding			= 12;
 
-	private int							tabPadding				= 20;
+	private int								tabPadding				= 20;
 
-	private int							dividerWidth			= 1;
+	private int								dividerWidth			= 1;
 
-	private int							tabTextSize				= 12;
+	private int								tabTextSize				= 12;
 
-	private int							tabTextColor			= 0xFF666666;
+	private int								tabTextColor			= 0xFF666666;
 
-	private int							selectedTabTextColor	= 0xFF666666;
+	private int								selectedTabTextColor	= 0xFF666666;
 
-	private Typeface					tabTypeface				= null;
+	private Typeface						tabTypeface				= null;
 
-	private int							tabTypefaceStyle		= Typeface.NORMAL;
+	private int								tabTypefaceStyle		= Typeface.NORMAL;
 
-	private int							lastScrollX				= 0;
+	private int								lastScrollX				= 0;
 
-	private int							tabBackgroundResId		= R.drawable.j2w_tabs_background;
+	private int								tabBackgroundResId		= R.drawable.j2w_tabs_background;
 
-	private Locale						locale;
+	private Locale							locale;
 
-	private int							tabWidth;
+	private int								tabWidth;
 
-	private int							rectPaintWidth;
+	private int								rectPaintWidth;
 
-	private boolean						isCurrentItemAnimation	= false;
+	private boolean							isCurrentItemAnimation	= false;
 
 	public PagerSlidingTabStrip(Context context) {
 		this(context, null);
@@ -223,31 +216,34 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		}
 
 		pager.setOnPageChangeListener(pageListener);
-
-		notifyDataSetChanged();
 	}
 
-	public void setOnPageChangeListener(OnPageChangeListener listener) {
+	public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
 		this.delegatePageListener = listener;
 	}
 
 	public void notifyDataSetChanged() {
 
 		tabsContainer.removeAllViews();
+		J2WViewPagerAdapter j2WViewPagerAdapter = (J2WViewPagerAdapter) pager.getAdapter();
 
-		tabCount = pager.getAdapter().getCount();
-
+		tabCount = j2WViewPagerAdapter.getCount();
 		for (int i = 0; i < tabCount; i++) {
-			if (pager.getAdapter() instanceof TitleCountTabProvider) {
-				addTextIconTab(i, pager.getAdapter().getPageTitle(i).toString(), ((TitleCountTabProvider) pager.getAdapter()).getPageCount(i));
-			} else if (pager.getAdapter() instanceof IconTabProvider) {
-				addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
-			} else if (pager.getAdapter() instanceof CustomTabProvider) {
-				addCustomTab(i);
-			} else {
-				addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
-			}
 
+			switch (j2WViewPagerAdapter.getTabsType()) {
+				case TabsType.TABS_TYPE_COUNT:
+					addTextIconTab(i, j2WViewPagerAdapter.getPageTitle(i).toString(), j2WViewPagerAdapter.getPageCount(i));
+					break;
+				case TabsType.TABS_TYPE_ICON:
+					addIconTab(i, j2WViewPagerAdapter.getPageIconResId(i));
+					break;
+				case TabsType.TABS_TYPE_CUSTOM:
+					addCustomTab(i, j2WViewPagerAdapter);
+					break;
+				default:
+					addTextTab(i, j2WViewPagerAdapter.getPageTitle(i).toString());
+					break;
+			}
 		}
 
 		updateTabStyles();
@@ -270,9 +266,9 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 	}
 
-	private void addCustomTab(final int position) {
-		View tab = LayoutInflater.from(getContext()).inflate(((CustomTabProvider) pager.getAdapter()).getCustomTabView(), null);
-		((CustomTabProvider) pager.getAdapter()).initTabsItem(tab, position);
+	private void addCustomTab(final int position, J2WViewPagerAdapter j2WViewPagerAdapter) {
+		View tab = LayoutInflater.from(getContext()).inflate(j2WViewPagerAdapter.getCustomTabView(), null);
+		j2WViewPagerAdapter.initTabsItem(tab, position);
 		tab.setFocusable(true);
 		tab.setOnClickListener(new OnClickListener() {
 
@@ -314,7 +310,6 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 		ImageButton tab = new ImageButton(getContext());
 		tab.setImageResource(resId);
-
 		addTab(position, tab);
 
 	}
@@ -430,12 +425,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		}
 	}
 
-	private class PageListener implements OnPageChangeListener {
+	private class PageListener implements ViewPager.OnPageChangeListener {
 
 		@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 			currentPosition = position;
 			currentPositionOffset = positionOffset;
-
 			scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
 
 			invalidate();
@@ -636,6 +630,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 	/**
 	 * 切换是否有动画
+	 * 
 	 * @param isCurrentItemAnimation
 	 */
 	public void setIsCurrentItemAnimation(boolean isCurrentItemAnimation) {
