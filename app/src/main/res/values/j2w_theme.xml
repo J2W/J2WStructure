@@ -11,8 +11,8 @@
     <style name="J2WToolbar" parent="Widget.AppCompat.Toolbar"/>
 
     <style name="J2WToolbar.Custom">
-        <!-- 设置该属性解决空白部分-->
-        <item name="contentInsetStart">0dp</item>
+        <!-- 设置该属性解决空白部分 默认 16dp-->
+        <item name="contentInsetStart">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
         <item name="android:background">?colorPrimary</item>
