@@ -23,6 +23,7 @@ import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
+import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
  * @创建人 sky
@@ -163,6 +164,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (display == null) {
 			display = J2WBizUtils.createDisplay(this);
 		}
+		listLoadMoreOpen();
 	}
 
 	/**
@@ -181,7 +183,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 		// 恢复初始化
 		listRefreshing(false);
-		listLoadMoreOpen();
 	}
 
 	/**
@@ -239,6 +240,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
+	}
+
+	/********************** RecyclerView业务代码 *********************/
+
+	public J2WRVAdapterItem adapterRecycler() {
+		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
 	/********************** ListView业务代码 *********************/

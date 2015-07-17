@@ -5,6 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -31,6 +36,9 @@ import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.J2WListViewMultiLayout;
 import j2w.team.view.adapter.J2WTabsCustomListener;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
+import j2w.team.view.adapter.recycleview.DividerGridItemDecoration;
+import j2w.team.view.adapter.recycleview.DividerItemDecoration;
+import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
  * @创建人 sky
@@ -407,11 +415,103 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		if (swipe_container != null) {
 			swipe_container.setRefreshing(bool);
 		}
+		if (recyclerviewSwipeContainer != null) {
+			recyclerviewSwipeContainer.setRefreshing(bool);
+		}
 	}
 
 	void loadMoreOpen() {
 		mLoadMoreIsAtBottom = true;
 		mLoadMoreRequestedItemCount = 0;
+	}
+
+	/**
+	 * RecyclerView 替代ListView GradView 可以实现瀑布流
+	 */
+
+	private int							recyclerviewId;
+
+	private int							recyclerviewColorResIds[];
+
+	private int							recyclerviewSwipRefreshId;
+
+	private RecyclerView				recyclerView;
+
+	private J2WRVAdapterItem			j2WRVAdapterItem;
+
+	private RecyclerView.LayoutManager	layoutManager;					// 布局管理器
+
+	private RecyclerView.ItemAnimator	itemAnimator;					// 动画
+
+	private RecyclerView.ItemDecoration	itemDecoration;				// 分割线
+
+	private SwipeRefreshLayout			recyclerviewSwipeContainer;
+
+	private J2WRefreshListener			recyclerviewJ2WRefreshListener;
+
+	// 获取
+	int getRecyclerviewId() {
+		return recyclerviewId;
+	}
+
+	J2WRVAdapterItem getJ2WRVAdapterItem() {
+		return j2WRVAdapterItem;
+	}
+
+	RecyclerView.LayoutManager getLayoutManager() {
+		return layoutManager;
+	}
+
+	RecyclerView.ItemAnimator getItemAnimator() {
+		return itemAnimator;
+	}
+
+	RecyclerView.ItemDecoration getItemDecoration() {
+		return itemDecoration;
+	}
+
+	int[] getRecyclerviewColorResIds() {
+		return recyclerviewColorResIds;
+	}
+
+	int getRecyclerviewSwipRefreshId() {
+		return recyclerviewSwipRefreshId;
+	}
+
+	// 设置
+	public void recyclerviewId(int recyclerviewId) {
+		this.recyclerviewId = recyclerviewId;
+	}
+
+	public void recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem) {
+		this.j2WRVAdapterItem = j2WRVAdapterItem;
+	}
+
+	public void recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
+		this.layoutManager = new LinearLayoutManager(mContext, direction, reverseLayout == null ? true : false);
+		this.itemDecoration = itemDecoration == null ? new DividerItemDecoration(mContext, direction) : itemDecoration;
+		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
+	}
+
+	public void recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
+		this.layoutManager = new GridLayoutManager(mContext, direction, spanCount, reverseLayout == null ? true : false);
+		this.itemDecoration = itemDecoration == null ? new DividerGridItemDecoration(mContext) : itemDecoration;
+		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
+	}
+
+	public void recyclerviewStaggeredGridyoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
+		this.layoutManager = new StaggeredGridLayoutManager(spanCount, direction);
+		this.itemDecoration = itemDecoration == null ? new DividerGridItemDecoration(mContext) : itemDecoration;
+		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
+	}
+
+	public void recyclerviewColorResIds(int... recyclerviewColorResIds) {
+		this.recyclerviewColorResIds = recyclerviewColorResIds;
+	}
+
+	public void recyclerviewSwipRefreshId(int recyclerviewSwipRefreshId, J2WRefreshListener recyclerviewJ2WRefreshListener) {
+		this.recyclerviewSwipRefreshId = recyclerviewSwipRefreshId;
+		this.recyclerviewJ2WRefreshListener = recyclerviewJ2WRefreshListener;
 	}
 
 	/**
@@ -648,6 +748,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		createLayout();
 		/** listview **/
 		createListView(contentRoot);
+		/** recyclerview **/
+		createRecyclerView(contentRoot);
 		/** viewpager **/
 		createViewPager(contentRoot);
 		/** actoinbar **/
@@ -665,6 +767,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		detachActionbar();
 		// listview清除
 		detachListView();
+		// recyclerview清楚
+		detachRecyclerView();
 		// viewpager清楚
 		detachViewPager();
 	}
@@ -838,6 +942,70 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 *
 	 * @param view
 	 */
+	private void createRecyclerView(View view) {
+		if (getRecyclerviewId() > 0) {
+			recyclerView = ButterKnife.findById(view, getRecyclerviewId());
+			J2WCheckUtils.checkNotNull(recyclerView, "无法根据布局文件ID,获取recyclerView");
+			J2WCheckUtils.checkNotNull(layoutManager, "LayoutManger不能为空");
+			J2WCheckUtils.checkNotNull(j2WRVAdapterItem, "J2WRVAdapterItem适配器不能为空");
+			recyclerView.setLayoutManager(layoutManager);
+			recyclerView.setAdapter(j2WRVAdapterItem);
+			// 设置Item增加、移除动画
+			recyclerView.setItemAnimator(getItemAnimator());
+			// 添加分割线
+			recyclerView.addItemDecoration(getItemDecoration());
+			// 优化
+			recyclerView.setHasFixedSize(true);
+			// 设置上拉和下拉事件
+			if (getRecyclerviewSwipRefreshId() != 0) {
+				recyclerviewSwipeContainer = ButterKnife.findById(view, getRecyclerviewSwipRefreshId());
+				J2WCheckUtils.checkNotNull(recyclerviewSwipeContainer, "无法根据布局文件ID,获取recyclerview的SwipRefresh下载刷新布局");
+				J2WCheckUtils.checkNotNull(recyclerviewJ2WRefreshListener, " recyclerview的SwipRefresh 下拉刷新和上拉加载事件没有设置");
+				recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+					@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+						super.onScrollStateChanged(recyclerView, newState);
+						if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
+							if (recyclerviewJ2WRefreshListener.onScrolledToBottom()) {
+								mLoadMoreRequestedItemCount = j2WRVAdapterItem.getItemCount();
+								mLoadMoreIsAtBottom = false;
+							}
+						}
+					}
+
+					@Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+						super.onScrolled(recyclerView, dx, dy);
+						if (layoutManager instanceof LinearLayoutManager) {
+							int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+							mLoadMoreIsAtBottom = j2WRVAdapterItem.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == j2WRVAdapterItem.getItemCount();
+						}
+					}
+				});// 加载更多
+				recyclerviewSwipeContainer.setOnRefreshListener(recyclerviewJ2WRefreshListener);// 下载刷新
+			}
+			// 设置进度颜色
+			if (getRecyclerviewColorResIds() != null) {
+				J2WCheckUtils.checkNotNull(recyclerviewSwipeContainer, "无法根据布局文件ID,获取recyclerview的SwipRefresh下载刷新布局");
+				recyclerviewSwipeContainer.setColorSchemeResources(getSwipeColorResIds());
+			}
+		}
+	}
+
+	private void detachRecyclerView() {
+		recyclerView = null;
+		j2WRVAdapterItem = null;
+		layoutManager = null;
+		itemAnimator = null;
+		itemDecoration = null;
+		recyclerviewSwipeContainer = null;
+		recyclerviewJ2WRefreshListener = null;
+	}
+
+	/**
+	 * Viewpager
+	 *
+	 * @param view
+	 */
 
 	private void createViewPager(View view) {
 		if (getViewpagerId() > 0) {
@@ -897,6 +1065,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private void detachViewPager() {
 		j2WViewPager = null;
 		tabs = null;
+		j2WViewPagerAdapter = null;
+		fragmentManager = null;
+		viewPagerChangeListener = null;
+		j2WTabsCustomListener = null;
 	}
 
 	/** 自动加载更多 **/

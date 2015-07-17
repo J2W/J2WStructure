@@ -101,7 +101,7 @@ public class J2WListAdapter extends BaseAdapter {
 	}
 
 	public void delete(int position) {
-		if (mItems == null || position < 1 || mItems.size() < position) {
+		if (mItems == null || position < 0 || mItems.size() < position) {
 			return;
 		}
 		mItems.remove(position);
@@ -149,10 +149,10 @@ public class J2WListAdapter extends BaseAdapter {
 				item = createMultiItem(position);// 多类型
 			}
 			convertView = mLayoutInflater.inflate(item.getItemLayout(), parent, false);
-			// 初始化布局
-			item.init(convertView);
 			// 初始化
 			ButterKnife.bind(item, convertView);
+			// 初始化布局
+			item.init(convertView);
 			// 设置Tag标记
 			convertView.setTag(item);
 		}

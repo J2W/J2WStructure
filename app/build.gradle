@@ -32,6 +32,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
 }
 //打包
 apply from: 'maven-release-aar.gradle'

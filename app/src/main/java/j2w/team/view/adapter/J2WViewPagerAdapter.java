@@ -109,7 +109,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 */
 	@Override public void replaceModelPagers(J2WModelPager... modelPagers) {
 		J2WCheckUtils.checkNotNull(viewPagerDatas, "J2WModelPager 不能为空");
-		J2WCheckUtils.checkNotNull(container, "container 不能为空");
+		J2WCheckUtils.checkNotNull(container, "container 不能为空,初始化的时候不要调用该方法");
 
 		replacePosition = pager.getCurrentItem();
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 动态改变大小textview-->
+    <attr name="RecyclerViewDivider" format="integer" />
+    <attr name="RecyclerViewGridDivider" format="integer" />
+</resources>
