@@ -43,17 +43,17 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	/**
 	 * 数据
 	 */
-	private List			mItems;
+	private List				mItems;
 
 	/**
 	 * activity
 	 */
-	private J2WActivity		j2WActivity;
+	protected J2WActivity		j2WActivity;
 
 	/**
 	 * 布局加载起
 	 */
-	private LayoutInflater	mLayoutInflater;
+	protected LayoutInflater	mLayoutInflater;
 
 	public J2WRVAdapterItem(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
@@ -71,69 +71,40 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		bindData(v, getItem(position), position, getItemCount());
 	}
 
+	public List getItems() {
+		return mItems;
+	}
+
 	public void setItems(List items) {
-		if (!J2WCheckUtils.equal(items, mItems)) {
-			mItems = items;
-			notifyDataSetChanged();
-		}
+		mItems = items;
 	}
 
 	public void add(int position, Object object) {
-		if (object == null || mItems == null || position < 0 || position > mItems.size()) {
-			return;
-		}
 		mItems.add(position, object);
-        notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
-		if (object == null || mItems == null) {
-			return;
-		}
 		mItems.add(object);
-
-		notifyDataSetChanged();
 	}
 
 	public void addList(int position, List list) {
-		if (list == null || list.size() < 1 || mItems == null || position < 0 || position > mItems.size()) {
-			return;
-		}
 		mItems.addAll(position, list);
-        notifyItemInserted(position);
-
-    }
+	}
 
 	public void addList(List list) {
-		if (list == null || list.size() < 1 || mItems == null) {
-			return;
-		}
 		mItems.addAll(list);
-		notifyDataSetChanged();
 	}
 
 	public void delete(int position) {
-		if (mItems == null || position < 0 || mItems.size() < position) {
-			return;
-		}
 		mItems.remove(position);
-        notifyItemRemoved(position);
 	}
 
 	public void delete(Object object) {
-		if (mItems == null || mItems.size() < 1) {
-			return;
-		}
 		mItems.remove(object);
-		notifyDataSetChanged();
 	}
 
 	public void clear() {
-		if (mItems == null) {
-			return;
-		}
 		mItems.clear();
-		notifyDataSetChanged();
 	}
 
 	public T getItem(int position) {
@@ -143,6 +114,4 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	@Override public int getItemCount() {
 		return mItems.size();
 	}
-
-
 }

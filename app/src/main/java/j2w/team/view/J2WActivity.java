@@ -23,6 +23,7 @@ import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
+import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
 import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
@@ -244,7 +245,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/********************** RecyclerView业务代码 *********************/
 
-	public J2WRVAdapterItem adapterRecycler() {
+	public HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 

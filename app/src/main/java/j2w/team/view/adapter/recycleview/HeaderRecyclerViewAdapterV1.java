@@ -1,0 +1,157 @@
+package j2w.team.view.adapter.recycleview;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+
+import java.util.List;
+
+import j2w.team.common.utils.J2WCheckUtils;
+
+/**
+ * @创建人 sky
+ * @创建时间 15/7/17 下午9:40
+ * @类描述 适配器扩展 增加头部和尾部布局
+ */
+public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends RecyclerView.Adapter<V> {
+
+	private static final int		TYPE_HEADER			= Integer.MIN_VALUE;
+
+	private static final int		TYPE_FOOTER			= Integer.MIN_VALUE + 1;
+
+	private static final int		TYPE_ADAPTEE_OFFSET	= 2;
+
+	private final J2WRVAdapterItem	mAdaptee;
+
+	public HeaderRecyclerViewAdapterV1(J2WRVAdapterItem adaptee) {
+		mAdaptee = adaptee;
+	}
+
+	public RecyclerView.Adapter getAdaptee() {
+		return mAdaptee;
+	}
+
+	@Override public V onCreateViewHolder(ViewGroup parent, int viewType) {
+		if (viewType == TYPE_HEADER && mAdaptee instanceof HeaderRecyclerView) {
+			return (V) ((HeaderRecyclerView) mAdaptee).onCreateHeaderViewHolder(parent, viewType);
+		} else if (viewType == TYPE_FOOTER && mAdaptee instanceof FooterRecyclerView) {
+			return (V) ((FooterRecyclerView) mAdaptee).onCreateFooterViewHolder(parent, viewType);
+		}
+		return (V) mAdaptee.onCreateViewHolder(parent, viewType - TYPE_ADAPTEE_OFFSET);
+	}
+
+	@Override public void onBindViewHolder(V holder, int position) {
+		if (position == 0 && holder.getItemViewType() == TYPE_HEADER && useHeader()) {
+			((HeaderRecyclerView) mAdaptee).onBindHeaderView(holder, position);
+		} else if (position == mAdaptee.getItemCount() && holder.getItemViewType() == TYPE_FOOTER && useFooter()) {
+			((FooterRecyclerView) mAdaptee).onBindFooterView(holder, position);
+		} else {
+			mAdaptee.onBindViewHolder(holder, position - (useHeader() ? 1 : 0));
+		}
+	}
+
+	@Override public int getItemCount() {
+		int itemCount = mAdaptee.getItemCount();
+		if (useHeader()) {
+			itemCount += 1;
+		}
+		if (useFooter()) {
+			itemCount += 1;
+		}
+		return itemCount;
+	}
+
+	private boolean useHeader() {
+		if (mAdaptee instanceof HeaderRecyclerView) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean useFooter() {
+		if (mAdaptee instanceof FooterRecyclerView) {
+			return true;
+		}
+		return false;
+	}
+
+	public void setItems(List items) {
+		if (!J2WCheckUtils.equal(items, mAdaptee.getItems())) {
+			mAdaptee.setItems(items);
+			notifyDataSetChanged();
+		}
+	}
+
+	public void add(int position, Object object) {
+		if (object == null || mAdaptee.getItems() == null || position < 0 || position > mAdaptee.getItems().size()) {
+			return;
+		}
+		mAdaptee.add(position, object);
+		notifyItemInserted(position);
+	}
+
+	public void add(Object object) {
+		if (object == null || mAdaptee.getItems() == null) {
+			return;
+		}
+		mAdaptee.add(object);
+		notifyDataSetChanged();
+	}
+
+	public void addList(int position, List list) {
+		if (list == null || list.size() < 1 || mAdaptee.getItems() == null || position < 0 || position > mAdaptee.getItems().size()) {
+			return;
+		}
+		mAdaptee.addList(position, list);
+		notifyItemInserted(position);
+	}
+
+	public void addList(List list) {
+		if (list == null || list.size() < 1 || mAdaptee.getItems() == null) {
+			return;
+		}
+		mAdaptee.addList(list);
+		notifyDataSetChanged();
+	}
+
+	public void delete(int position) {
+		if (mAdaptee.getItems() == null || position < 0 || mAdaptee.getItems().size() < position) {
+			return;
+		}
+		mAdaptee.delete(position);
+		notifyItemRemoved(position);
+	}
+
+	public void delete(Object object) {
+		if (mAdaptee.getItems() == null || mAdaptee.getItems().size() < 1) {
+			return;
+		}
+		mAdaptee.delete(object);
+		notifyDataSetChanged();
+	}
+
+	public void clear() {
+		if (mAdaptee.getItems() == null) {
+			return;
+		}
+		mAdaptee.clear();
+		notifyDataSetChanged();
+	}
+	public <T> T getItem(int position) {
+		return (T) mAdaptee.getItem(position);
+	}
+
+	@Override public int getItemViewType(int position) {
+		if (position == 0 && useHeader()) {
+			return TYPE_HEADER;
+		}
+		if (position == mAdaptee.getItemCount() && useFooter()) {
+			return TYPE_FOOTER;
+		}
+		if (mAdaptee.getItemCount() >= Integer.MAX_VALUE - TYPE_ADAPTEE_OFFSET) {
+			new IllegalStateException("HeaderRecyclerViewAdapter offsets your BasicItemType by " + TYPE_ADAPTEE_OFFSET + ".");
+		}
+		return mAdaptee.getItemViewType(position) + TYPE_ADAPTEE_OFFSET;
+	}
+
+
+}

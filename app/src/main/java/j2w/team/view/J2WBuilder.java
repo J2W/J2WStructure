@@ -38,6 +38,7 @@ import j2w.team.view.adapter.J2WTabsCustomListener;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
 import j2w.team.view.adapter.recycleview.DividerGridItemDecoration;
 import j2w.team.view.adapter.recycleview.DividerItemDecoration;
+import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
 import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
@@ -439,6 +440,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private J2WRVAdapterItem			j2WRVAdapterItem;
 
+	private HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
+
 	private RecyclerView.LayoutManager	layoutManager;					// 布局管理器
 
 	private RecyclerView.ItemAnimator	itemAnimator;					// 动画
@@ -454,8 +457,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return recyclerviewId;
 	}
 
-	J2WRVAdapterItem getJ2WRVAdapterItem() {
-		return j2WRVAdapterItem;
+	HeaderRecyclerViewAdapterV1 getJ2WRVAdapterItem() {
+		return headerRecyclerViewAdapterV1;
 	}
 
 	RecyclerView.LayoutManager getLayoutManager() {
@@ -949,7 +952,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			J2WCheckUtils.checkNotNull(layoutManager, "LayoutManger不能为空");
 			J2WCheckUtils.checkNotNull(j2WRVAdapterItem, "J2WRVAdapterItem适配器不能为空");
 			recyclerView.setLayoutManager(layoutManager);
-			recyclerView.setAdapter(j2WRVAdapterItem);
+			// 扩展适配器
+			headerRecyclerViewAdapterV1 = new HeaderRecyclerViewAdapterV1(j2WRVAdapterItem);
+			recyclerView.setAdapter(headerRecyclerViewAdapterV1);
 			// 设置Item增加、移除动画
 			recyclerView.setItemAnimator(getItemAnimator());
 			// 添加分割线
@@ -967,7 +972,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						super.onScrollStateChanged(recyclerView, newState);
 						if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 							if (recyclerviewJ2WRefreshListener.onScrolledToBottom()) {
-								mLoadMoreRequestedItemCount = j2WRVAdapterItem.getItemCount();
+								mLoadMoreRequestedItemCount = headerRecyclerViewAdapterV1.getItemCount();
 								mLoadMoreIsAtBottom = false;
 							}
 						}
@@ -977,7 +982,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						super.onScrolled(recyclerView, dx, dy);
 						if (layoutManager instanceof LinearLayoutManager) {
 							int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-							mLoadMoreIsAtBottom = j2WRVAdapterItem.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == j2WRVAdapterItem.getItemCount();
+							mLoadMoreIsAtBottom = headerRecyclerViewAdapterV1.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == headerRecyclerViewAdapterV1.getItemCount();
 						}
 					}
 				});// 加载更多
@@ -999,6 +1004,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		itemDecoration = null;
 		recyclerviewSwipeContainer = null;
 		recyclerviewJ2WRefreshListener = null;
+		headerRecyclerViewAdapterV1 = null;
 	}
 
 	/**
