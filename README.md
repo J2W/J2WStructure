@@ -108,15 +108,15 @@ MVP使用说明帮助
 
 ## J2WHelper 帮助API说明
 
+[J2WThreadPoolManager threadPoolHelper() //获取线程池](https://github.com/J2W/J2WStructure/wiki/ThreadPoolHelper)
+
+[SynchronousExecutor mainLooper() //获取主线程](https://github.com/J2W/J2WStructure/wiki/MainLooper)
+
     J2WApplication getInstance() //获取Application全局上下文
 
     J2WRestAdapter httpAdapter() //获取网络适配器,创建接口实例
 
     J2WIScreenManager screenHelper() //获取Activity堆栈管理
-
-    J2WThreadPoolManager threadPoolHelper() //获取线程池
-
-    SynchronousExecutor mainLooper() //获取主线程
 
     J2WDownloadManager downloader() //获取下载管理器，用于下载文件
 
