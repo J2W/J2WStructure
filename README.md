@@ -48,11 +48,10 @@ MVP使用说明帮助
 -----------------------------------
 ## 继承 J2WAppliaction
 
+[public abstract J2WRestAdapter getRestAdapter(); //生成方法 点击查看说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
+
     public abstract boolean isLogOpen() //是否打印日志 true 打印 false  不打印
 
-    public abstract J2WRestAdapter getRestAdapter(); //网络适配器
-
-[1.J2WRestAdapter网络适配 使用说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
 
 #### Activity 生命周期公共回调方法 说明:可以重写下面方法来做公共的事情
 
