@@ -24,7 +24,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	public static final String	METHOD_CHECKUI	= "checkUI";		// UI检查方法
 
-	private J2WActivity			activity;
+	private Object			view;
 
 	private T					display;
 
@@ -38,9 +38,9 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 *            view层引用
 	 */
 	void initPresenter(Object iView, Object object) {
-		this.activity = (J2WActivity) iView;
+		this.view = iView;
 		this.stackUI = new HashMap<>();
-		this.display = J2WBizUtils.createDisplay(object, activity, this);// 设置显示调度
+		this.display = J2WBizUtils.createDisplay(object, iView, this);// 设置显示调度
 	}
 
 	/**
@@ -53,14 +53,9 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	/**
 	 * 统一控制TitleBar、Drawer以及所有Activity和Fragment跳转
 	 *
-	 * @param objects
-	 *            参数
 	 * @return
 	 */
-	protected T display(Object... objects) {
-		if (objects.length > 0) {
-			display.initDisplay(activity);
-		}
+	protected T display() {
 		return display;
 	}
 
@@ -76,7 +71,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 		Object obj = stackUI.get(ui.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createUI(ui, activity, this);
+			obj = J2WBizUtils.createUI(ui, view, this);
 			checkNotNull(obj, "View层没有实现该接口～");
 			stackUI.put(ui.getSimpleName(), obj);
 		}
@@ -105,7 +100,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	@Override public void detachUI() {
 		stackUI.clear();
 		stackUI = null;
-		activity = null;
+		view = null;
 		display = null;
 	}
 

@@ -497,7 +497,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	public void recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
-		this.layoutManager = new GridLayoutManager(mContext, direction, spanCount, reverseLayout == null ? true : false);
+		this.layoutManager = new GridLayoutManager(mContext, spanCount, direction, reverseLayout == null ? true : false);
 		this.itemDecoration = itemDecoration == null ? new DividerGridItemDecoration(mContext) : itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}

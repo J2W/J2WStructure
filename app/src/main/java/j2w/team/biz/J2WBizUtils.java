@@ -6,6 +6,7 @@ import j2w.team.common.utils.AppUtils;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WFragment;
 
 /**
  * Created by sky on 15/2/18.业务工具类
@@ -22,7 +23,7 @@ public final class J2WBizUtils {
 	 *            视图
 	 * @return
 	 */
-	public static final <I extends J2WIBiz, B extends J2WBiz, V extends ActionBarActivity, D extends J2WIDisplay> I createBiz(Class<I> iBiz, V iView, D iDisplay) {
+	public static final <I extends J2WIBiz, B extends J2WBiz, V, D extends J2WIDisplay> I createBiz(Class<I> iBiz, V iView, D iDisplay) {
 		J2WCheckUtils.checkNotNull(iView, "View层实体类不能为空～");
 		I interfaceBiz;
 		B implBiz;
@@ -60,9 +61,9 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <B extends J2WBiz, V extends ActionBarActivity> Object createUI(Class ui, V iView, B biz) {
+	public static final <B extends J2WBiz, V> Object createUI(Class ui, V iView, B biz) {
 		Object obj = null;
-		try{
+		try {
 			// 获得接口数组
 			Class<?>[] interfaces = iView.getClass().getInterfaces();
 			// 如果没有实现接口，获取父类接口
@@ -75,7 +76,7 @@ public final class J2WBizUtils {
 					break;
 				}
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			return obj;
 		}
 		return obj;
@@ -86,7 +87,7 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <T extends J2WIDisplay, D extends J2WDisplay, V extends J2WActivity> T createDisplay(V iView) {
+	public static final <T extends J2WIDisplay, D extends J2WDisplay, V> T createDisplay(V iView) {
 		T iDisplay;
 		D implDisplay;
 		Class clazz;
@@ -107,7 +108,11 @@ public final class J2WBizUtils {
 			implDisplay = (D) clazz.newInstance();
 			/** 赋值给接口 **/
 			iDisplay = (T) implDisplay;
-			iDisplay.initDisplay(iView);
+			if (iView instanceof J2WFragment) {
+				iDisplay.initDisplay((J2WActivity) ((J2WFragment) iView).getActivity());
+			} else {
+				iDisplay.initDisplay((J2WActivity) iView);
+			}
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException(String.valueOf(displayClass) + "，没有找到业务类！");
 		} catch (java.lang.InstantiationException e) {
@@ -123,13 +128,17 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <T extends J2WIDisplay> T createDisplay(Object display,J2WActivity j2WActivity, J2WBiz j2WBiz) {
+	public static final <T extends J2WIDisplay> T createDisplay(Object display, Object obj, J2WBiz j2WBiz) {
 		J2WCheckUtils.checkNotNull(display, "biz层 display 不能为空~～");
-		J2WCheckUtils.checkNotNull(j2WActivity, "biz层 activity不能为空～");
+		J2WCheckUtils.checkNotNull(obj, "biz层 activity或fragment不能为空～");
 		J2WCheckUtils.checkNotNull(j2WBiz, "biz层 业务实体类不能为空～");
 		T iDisplay;
 		/** 初始化业务类 **/
-		((T) display).initDisplay(j2WActivity);
+		if (obj instanceof J2WFragment) {
+			((T) display).initDisplay((J2WActivity) ((J2WFragment) obj).getActivity());
+		} else {
+			((T) display).initDisplay((J2WActivity) obj);
+		}
 		/** 动态代理 - 线程系统 **/
 		iDisplay = DynamicProxyUtils.newProxyUI(((T) display), j2WBiz);
 		return iDisplay;

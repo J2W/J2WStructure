@@ -1,6 +1,5 @@
 package j2w.team.biz;
 
-import android.support.v7.app.ActionBarActivity;
 
 import j2w.team.view.J2WActivity;
 

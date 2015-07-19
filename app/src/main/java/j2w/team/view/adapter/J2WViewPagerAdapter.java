@@ -27,8 +27,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 	protected int						currentPageIndex	= -1;	// 当前page索引（切换之前）
 
-	protected int						replacePosition		= -1;	// 替换标识
-
 	protected String					tag;						// 标记
 
 	protected PagerSlidingTabStrip		tabs;						// 标题
@@ -110,8 +108,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	@Override public void replaceModelPagers(J2WModelPager... modelPagers) {
 		J2WCheckUtils.checkNotNull(viewPagerDatas, "J2WModelPager 不能为空");
 		J2WCheckUtils.checkNotNull(container, "container 不能为空,初始化的时候不要调用该方法");
-
-		replacePosition = pager.getCurrentItem();
 
 		for (J2WModelPager modelPager : modelPagers) {
 			int position = modelPager.position;
@@ -222,15 +218,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 			 */
 			fragmentManager.executePendingTransactions();
 			fragment.setHasOptionsMenu(false);// 设置actionbar不执行
-			if (replacePosition != -1) {
-				// ((J2WFragment)
-				// viewPagerDatas[replacePosition].fragment).isDelayedData();
-				// ((J2WFragment)
-				// viewPagerDatas[replacePosition].fragment).onActionBar();
-				// ((J2WFragment)
-				// viewPagerDatas[replacePosition].fragment).onResume();
-				replacePosition = -1;
-			}
 		}
 		if (fragment.getView() == null) {
 			throw new NullPointerException("fragment,没有给布局，导致获取不到View");
@@ -269,24 +256,16 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 */
 	@Override public void onPageSelected(int position) {
 		if (currentPageIndex == -1) {
-			currentPageIndex = position;
+			currentPageIndex = 0;
 			oldView = pager.getChildAt(0);
+			oldPosition = 0;
+		}else{
+			viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
 		}
-		viewPagerDatas[currentPageIndex].fragment.onPause(); // 调用切换前Fargment的onPause()
+
 		// 调用切换前Fargment的onStop()
 		if (viewPagerDatas[position].fragment.isAdded()) {
-
-			// ((J2WFragment)
-			// viewPagerDatas[position].fragment).isDelayedData(); // 调用延迟加载
-
-			if (pager.getCurrentItem() == position) {
-				// 更新actionbar
-				// ((J2WFragment)
-				// viewPagerDatas[position].fragment).onActionBar();
-			}
-
-			viewPagerDatas[position].fragment.onResume(); // 调用切换后Fargment的onResume()
-
+			viewPagerDatas[position].fragment.onVisible(); // 调用切换后Fargment的onResume()
 		}
 
 		currentPageIndex = position;

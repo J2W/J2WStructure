@@ -1,13 +1,14 @@
 package j2w.team.view;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.HashMap;
@@ -19,23 +20,20 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
-import j2w.team.view.adapter.J2WViewPagerAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
  * @创建人 sky
- * @创建时间 15/7/8 上午12:15
- * @类描述 activity
+ * @创建时间 15/7/18 上午11:49
+ * @类描述 View层碎片
  */
-public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivity {
+public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implements View.OnTouchListener {
 
 	/**
 	 * 定制
-	 * 
+	 *
 	 * @param initialJ2WBuilder
 	 * @return
 	 **/
@@ -58,82 +56,71 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	/** 显示调度对象 **/
 	private D					display		= null;
 
-	/**
-	 * 初始化
-	 * 
-	 * @param savedInstanceState
-	 */
-	@Override protected final void onCreate(Bundle savedInstanceState) {
+	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/** 打开开关触发菜单项 **/
+		setHasOptionsMenu(true);
+	}
+
+	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** 初始化视图 **/
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		j2WBuilder = new J2WBuilder(this, inflater);
-		setContentView(build(j2WBuilder).create());
+		j2WBuilder = new J2WBuilder((J2WActivity) getActivity(), inflater);
+		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
-		ButterKnife.bind(this);
-		/** 添加到堆栈 **/
-		J2WHelper.screenHelper().pushActivity(this);
-		/** 初始化视图 **/
-		J2WHelper.getInstance().onCreate(this, savedInstanceState);
+		ButterKnife.bind(this, view);
 		/** 初始化业务 **/
 		attachBiz();
-		/** 初始化视图组建 **/
+		/** 初始化点击事件 **/
+		view.setOnTouchListener(this);// 设置点击事件
+		return view;
+	}
+
+	@Override public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		initData(savedInstanceState);
 	}
 
-	@Override protected void onStart() {
-		super.onStart();
-		J2WHelper.getInstance().onStart(this);
-	}
-
-	@Override protected void onResume() {
+	@Override public void onResume() {
 		super.onResume();
 		attachBiz();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().register(this);
 		}
-		J2WHelper.getInstance().onResume(this);
 	}
 
-	@Override protected void onPause() {
+	@Override public void onPause() {
 		super.onPause();
 		detachBiz();
-		J2WHelper.getInstance().onPause(this);
 	}
 
-	@Override protected void onRestart() {
-		super.onRestart();
-		J2WHelper.getInstance().onRestart(this);
-	}
-
-	@Override protected void onStop() {
-		super.onStop();
-		J2WHelper.getInstance().onStop(this);
-	}
-
-	@Override protected void onDestroy() {
-		super.onDestroy();
+	@Override public void onDestroyView() {
+		super.onDestroyView();
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 从堆栈里移除 **/
-		J2WHelper.screenHelper().popActivity(this);
-		J2WHelper.getInstance().onDestroy(this);
+
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
 	}
 
 	/**
 	 * 获取显示调度
-	 * 
+	 *
+	 * @param objects
+	 *            参数
 	 * @return
 	 */
-	public D display() {
+	public D display(Object... objects) {
+		if (objects.length > 0) {
+			display.initDisplay((J2WActivity) getActivity());
+		}
 		return display;
 	}
 
 	/**
 	 * 获取业务
-	 * 
+	 *
 	 * @param biz
 	 *            泛型
 	 * @param <B>
@@ -182,33 +169,29 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	}
 
 	/**
-	 * 屏幕点击事件 - 关闭键盘
-	 *
-	 * @param ev
-	 * @return
-	 */
-	@Override public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
-			View v = getCurrentFocus();
-			if (KeyboardUtils.isShouldHideInput(v, ev)) {
-				KeyboardUtils.hideSoftInput(J2WHelper.screenHelper().currentActivity());
-			}
-		}
-		return super.dispatchTouchEvent(ev);
-	}
-
-	/**
 	 * 创建menu
-	 * 
+	 *
 	 * @param menu
 	 * @return
 	 */
-	@Override public boolean onCreateOptionsMenu(Menu menu) {
+	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
 		if (j2WBuilder.getToolbarMenuId() > 0) {
-			getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
+			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
 		}
-		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * 防止事件穿透
+	 *
+	 * @param v
+	 *            View
+	 * @param event
+	 *            事件
+	 * @return true 拦截 false 不拦截
+	 */
+	@Override public boolean onTouch(View v, MotionEvent event) {
+		return true;
 	}
 
 	/********************** Actionbar业务代码 *********************/
@@ -283,4 +266,14 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	public J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();
 	}
+
+	/**
+	 * 可见
+	 */
+	public void onVisible() {}
+
+	/**
+	 * 不可见
+	 */
+	public void onInvisible() {}
 }

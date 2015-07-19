@@ -117,6 +117,9 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	@Override public int getItemCount() {
+		if(mItems == null){
+			return 0;
+		}
 		return mItems.size();
 	}
 
