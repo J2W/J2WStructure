@@ -44,9 +44,63 @@ App-build.gradle:
         compile 'j2w.team:structure:1.0.0'
      }
 
-使用说明帮助
+MVP使用说明帮助
 -----------------------------------
-# 继承 J2WActivity 和 J2WFragment
+## 继承 J2WAppliaction
+
+    public abstract boolean isLogOpen() //是否打印日志 true 打印 false  不打印
+
+    public abstract J2WRestAdapter getRestAdapter(); //网络适配器
+
+[1.J2WRestAdapter网络适配 使用说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
+
+    //Activity 生命周期公共回调方法 说明:可以重写下面方法来做公共的事情
+    onSaveInstanceState(J2WActivity j2WIView, Bundle outState)
+
+    onCreate(J2WActivity j2WIView, Bundle bundle)
+
+    onStart(J2WActivity j2WIView)
+
+    onResume(J2WActivity j2WIView)
+
+    onPause(J2WActivity j2WIView)
+
+    onStop(J2WActivity j2WIView)
+
+    onDestroy(J2WActivity j2WIView)
+
+    onRestart(J2WActivity j2WIView)
+
+## View : J2WActivity<J2WIDisplay> Biz : J2WBiz<AndroidIDisplay>
+
+*Display   Intent跳转,toolbar,DrawerView 统一控制
+
+    接口 : 继承 J2WIDisplay
+    实现类: 继承 J2WDisplay
+    使用 : super.display()
+
+*BIZ  业务处理
+
+    接口 : 继承 J2WIBiz
+    实现类: 继承 J2WBiz
+    View层使用 : super.biz(MainIBiz.class)   //参数:业务接口Class
+    API提供:
+        1. 方法 @Background(BackgroundType.HTTP) 注解 子线程执行方法 注: @Background 默认网络线程池
+
+                参数类型     BackgroundType.HTTP        并行 网络线程池
+                            BackgroundType.Work        并行 工作线程池
+                            BackgroundType.SINGLEWORK  串行 工作线程池
+
+        2. 方法 @J2WRepeat(true) 注解  方法是否可以重复执行  注: 默认可以重复执行
+
+        3. 方法执行完毕后,需要回调View层进行更新UI
+
+               提供方法: Super.ui(HomeUI.class) //参数:显示层接口Class
+
+
+
+## J2WHelper 帮助API说明
+
 
 ## J2WBuilder 使用API说明
 
