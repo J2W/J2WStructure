@@ -106,48 +106,46 @@ App-build.gradle:
 
 ### ViewPager
 
-* ViewPager
-
-
-    viewPagerId(int viewpagerId, FragmentManager fragmentManager); //设置VP 布局ID 和 碎片管理器
+    //ViewPager
 
     //设置TabId 和 类型
     1、J2WBuilder.TABS_TYPE_CUSTOM - 自定义  2、J2WBuilder.TABS_TYPE_COUNT -  数量
     3、J2WBuilder.TABS_TYPE_ICON   - 图标    4、J2WBuilder.TABS_TYPE_DEFAULT - 默认
     viewPagerTabsId(int tabsId, int tabsType)
 
+    viewPagerId(int viewpagerId, FragmentManager fragmentManager); //设置VP 布局ID 和 碎片管理器
+
     viewPagerChangeListener(J2WViewPagerChangeListener viewPagerChangeListener) //设置滑动事件
 
     viewPageroffScreenPageLimit(int viewPageroffScreenPageLimit) //设置预加载数量 最小 1
 
-* Tabs
+    //Tabs
 
+    tabsShouldExpand(boolean tabsShouldExpand) //设置Tab是自动填充满屏幕的
 
-    tabsShouldExpand(boolean tabsShouldExpand) //
+    tabsDividerColor(int tabsDividerColor) //设置Tab的分割线是透明的
 
-    tabsDividerColor(int tabsDividerColor)
+    tabsUnderlineHeight(int tabsUnderlineHeight)//设置Tab底部线的高度
 
-    tabsUnderlineHeight(int tabsUnderlineHeight)
+    tabsUnderlineColor(int tabsUnderlineColor) //设置Tab底部线的颜色
 
-    tabsUnderlineColor(int tabsUnderlineColor)
+    tabsIndicatorHeight(int tabsIndicatorHeight) //设置Tab Indicator 指示灯的高度
 
-    tabsIndicatorHeight(int tabsIndicatorHeight);
+    tabsIndicatorColor(int tabsIndicatorColor) //设置Tab Indicator 指示灯的颜色
 
-    tabsTextSize(int tabsTextSize)
+    tabsTextSize(int tabsTextSize) // 设置Tab 文字大小
 
-    tabsIndicatorColor(int tabsIndicatorColor)
+    tabsSelectedTextColor(int tabsSelectedTextColor) // 设置选中Tab文字的颜色
 
-    tabsSelectedTextColor(int tabsSelectedTextColor)
+    tabsTextColor(int tabsTextColor) // 设置Tab的文字颜色
 
-    tabsTextColor(int tabsTextColor)
+    tabsBackgroundResource(int tabsBackgroundResource) // 背景颜色
 
-    tabsBackgroundResource(int tabsBackgroundResource)
+    tabsTabBackground(int tabsTabBackground) //Tabs Item 背景颜色
 
-    tabsTabBackground(int tabsTabBackground)
+    tabsTabWidth(int tabsTabWidth) // 设置每个Tab宽度
 
-    tabsTabWidth(int tabsTabWidth)
-
-    tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation)
+    tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation)  // 设置切换是否有动画
 
 
 
