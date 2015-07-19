@@ -75,15 +75,13 @@ MVP使用说明帮助
 
 ## View : J2WActivity<J2WIDisplay> Biz : J2WBiz<AndroidIDisplay>
 
-* Display 说明:  Intent跳转,toolbar,DrawerView 统一控制
-
+#### Display 说明:  Intent跳转,toolbar,DrawerView 统一控制
 
     接口 : 继承 J2WIDisplay
     实现类: 继承 J2WDisplay
     使用 : super.display()
 
-* BIZ  业务处理
-
+#### BIZ  业务处理
 
     接口 : 继承 J2WIBiz 并 注解 @Impl(实现类)   //必须要写
     实现类: 继承 J2WBiz
@@ -97,8 +95,7 @@ MVP使用说明帮助
         3. 方法执行完毕后,需要回调View层进行更新UI
                提供方法: super.ui(HomeUI.class) //参数:显示层接口Class
 
-* UI 显示层处理
-
+#### UI 显示层处理
 
     接口 : 注解 @Impl(实现类)   //必须要写
     实现类: 继承 J2WActivity 或 J2WFragment
