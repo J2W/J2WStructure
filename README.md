@@ -227,6 +227,6 @@ MVP使用说明帮助
 整体结构使用项目
 -----------------------------------
 
-[完整使用用例](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
+[完整使用用例](https://github.com/skyJinc/J2WStructureTest)
 
 
