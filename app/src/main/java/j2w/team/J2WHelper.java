@@ -81,7 +81,7 @@ public class J2WHelper {
 	 * @param j2WRestAdapter
 	 *            网络适配器
 	 */
-	public static void createRestAdapter(J2WRestAdapter j2WRestAdapter) {
+	static void createRestAdapter(J2WRestAdapter j2WRestAdapter) {
 		if (mJ2WRestAdapter == null) {
 			synchronized (J2WHelper.class) {
 				if (mJ2WRestAdapter == null) {
@@ -94,7 +94,7 @@ public class J2WHelper {
 	/**
 	 * 生成器
 	 **/
-	private static final J2WRestAdapter.Builder	j2WRestAdapterBuilder	= new J2WRestAdapter.Builder();
+	static final J2WRestAdapter.Builder	j2WRestAdapterBuilder	= new J2WRestAdapter.Builder();
 
 	/**
 	 * 网络适配器-生成器
@@ -108,7 +108,7 @@ public class J2WHelper {
 	/**
 	 * activity管理器
 	 */
-	private static final J2WScreenManager	j2WScreenManager	= new J2WScreenManager();
+	static final J2WScreenManager	j2WScreenManager	= new J2WScreenManager();
 
 	/**
 	 * activity管理器

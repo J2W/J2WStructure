@@ -48,7 +48,9 @@ MVP使用说明帮助
 -----------------------------------
 ## 继承 J2WAppliaction
 
-[public abstract J2WRestAdapter getRestAdapter(); //生成方法 点击查看说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
+[J2WRestAdapter生成方法 点击查看说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
+
+    public abstract J2WRestAdapter getRestAdapter() //生成方法 点上面连接
 
     public abstract boolean isLogOpen() //是否打印日志 true 打印 false  不打印
 
@@ -73,7 +75,7 @@ MVP使用说明帮助
 
 ## View : J2WActivity<J2WIDisplay> Biz : J2WBiz<AndroidIDisplay>
 
-*Display   Intent跳转,toolbar,DrawerView 统一控制
+*Display 说明:  Intent跳转,toolbar,DrawerView 统一控制
 
     接口 : 继承 J2WIDisplay
     实现类: 继承 J2WDisplay
@@ -81,9 +83,9 @@ MVP使用说明帮助
 
 *BIZ  业务处理
 
-    接口 : 继承 J2WIBiz
+    接口 : 继承 J2WIBiz 并 注解 @Impl(实现类)   //必须要写
     实现类: 继承 J2WBiz
-    View层使用 : super.biz(MainIBiz.class)   //参数:业务接口Class
+    使用 : super.biz(MainIBiz.class)   //参数:业务接口Class
     API提供:
         1. 方法 @Background(BackgroundType.HTTP) 注解 子线程执行方法 注: @Background 默认网络线程池
 
@@ -95,12 +97,37 @@ MVP使用说明帮助
 
         3. 方法执行完毕后,需要回调View层进行更新UI
 
-               提供方法: Super.ui(HomeUI.class) //参数:显示层接口Class
+               提供方法: super.ui(HomeUI.class) //参数:显示层接口Class
+
+*UI 显示层处理
+
+    接口 : 注解 @Impl(实现类)   //必须要写
+    实现类: 继承 J2WActivity 或 J2WFragment
+    使用 : super.ui(HomeUI.class) //参数:显示层接口Class
+    API提供
+        1.需要执行业务处理时，调用业务接口进行处理
+
+            提供方法 : super.biz(MainIBiz.class)   //参数:业务接口Class
 
 
 
 ## J2WHelper 帮助API说明
 
+    J2WApplication getInstance() //获取Application全局上下文
+
+    J2WRestAdapter httpAdapter() //获取网络适配器,创建接口实例
+
+    J2WIScreenManager screenHelper() //获取Activity堆栈管理
+
+    J2WThreadPoolManager threadPoolHelper() //获取线程池
+
+    SynchronousExecutor mainLooper() //获取主线程
+
+    J2WDownloadManager downloader() //获取下载管理器，用于下载文件
+
+    PicassoTools picassoHelper() //获取Picasso图片下载，已经做了很多优化的第三方图片下载
+
+    eventPost(event) //发送Event
 
 ## J2WBuilder 使用API说明
 
