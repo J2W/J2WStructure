@@ -29,19 +29,20 @@ Project-build.gradle
      }
 
 App-build.gradle:
-    android {
+
+     android {
         //配置信息
         packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         }
-    }
+     }
 
-    dependencies {
+     dependencies {
         compile fileTree(dir: 'libs', include: ['*.jar'])
         compile 'j2w.team:structure:1.0.0'
-    }
+     }
 
 使用说明帮助
 -----------------------------------

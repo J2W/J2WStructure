@@ -16,6 +16,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
@@ -84,23 +85,25 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 * 显示状态切换
 	 */
 
-	private int		layoutLoadingId;
+	private int			layoutLoadingId;
 
-	private int		layoutEmptyId;
+	private int			layoutEmptyId;
 
-	private int		layoutBizErrorId;
+	private int			layoutBizErrorId;
 
-	private int		layoutHttpErrorId;
+	private int			layoutHttpErrorId;
 
-	private View	layoutContent;
+	private View		layoutContent;
 
-	private View	layoutLoading;
+	private ViewStub	vsLoading;
 
-	private View	layoutEmpty;
+	private View		layoutLoading;
 
-	private View	layoutBizError;
+	private View		layoutEmpty;
 
-	private View	layoutHttpError;
+	private View		layoutBizError;
+
+	private View		layoutHttpError;
 
 	// 设置
 	public void layoutLoadingId(int layoutLoadingId) {
@@ -133,6 +136,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		changeShowAnimation(layoutBizError, false);
 		changeShowAnimation(layoutHttpError, false);
 		changeShowAnimation(layoutContent, false);
+		if (layoutLoading == null) {
+			layoutLoading = vsLoading.inflate();
+			J2WCheckUtils.checkNotNull(layoutLoading, "无法根据布局文件ID,获取layoutLoading");
+		}
 		changeShowAnimation(layoutLoading, true);
 	}
 
@@ -793,11 +800,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		// 进度条
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
 		J2WCheckUtils.checkArgument(layoutLoadingId > 0, "进度错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
-		layoutLoading = mInflater.inflate(layoutLoadingId, null, false);
-		J2WCheckUtils.checkNotNull(layoutLoading, "无法根据布局文件ID,获取layoutLoading");
+		vsLoading = new ViewStub(mContext);
+		vsLoading.setLayoutResource(layoutLoadingId);
 		FrameLayout.LayoutParams layoutLoadingParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutLoading, layoutLoadingParams);
-		layoutLoading.setVisibility(View.GONE);
+		contentRoot.addView(vsLoading, layoutLoadingParams);
 
 		// 空布局
 		layoutEmptyId = layoutEmptyId > 0 ? layoutEmptyId : J2WHelper.getInstance().layoutEmpty();
