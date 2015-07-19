@@ -227,5 +227,9 @@ MVP使用说明帮助
     tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation)  // 设置切换是否有动画
 
 
+整体结构使用项目
+-----------------------------------
+
+[完整使用用例](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
 
 
