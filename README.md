@@ -54,7 +54,8 @@ MVP使用说明帮助
 
 [1.J2WRestAdapter网络适配 使用说明](https://github.com/J2W/J2WStructure/wiki/J2WRestAdapter)
 
-    //Activity 生命周期公共回调方法 说明:可以重写下面方法来做公共的事情
+#### Activity 生命周期公共回调方法 说明:可以重写下面方法来做公共的事情
+
     onSaveInstanceState(J2WActivity j2WIView, Bundle outState)
 
     onCreate(J2WActivity j2WIView, Bundle bundle)
