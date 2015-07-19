@@ -28,10 +28,10 @@
 
     <style name="J2W.Layout.Buttons">
         <item name="android:orientation">horizontal</item>
-        <item name="android:layout_height">12dp</item>
+        <item name="android:layout_height">48dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">3dp</item>
-        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
     </style>
 
     <style name="J2W.Layout.Buttons.Stacked">
@@ -72,26 +72,26 @@
     </style>
 
     <style name="J2W.TextView.Message.Progress">
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="J2W.TextView.ListItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">13dp</item>
+        <item name="android:minHeight">52dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/j2w_text_primary</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">6dp</item>
-        <item name="android:paddingRight">6dp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
     </style>
 
     <style name="J2W.TextView.MultiChoice">
-        <item name="android:minHeight">13dp</item>
+        <item name="android:minHeight">52dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/j2w_text_primary</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingRight">13dp</item>
+        <item name="android:paddingRight">24dp</item>
     </style>
 
     <style name="J2W.ListItemControl">
@@ -100,9 +100,9 @@
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:clickable">false</item>
-        <item name="android:minHeight">13dp</item>
+        <item name="android:minHeight">52dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">13dp</item>
+        <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingRight">0dp</item>
     </style>
 
@@ -112,20 +112,20 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center_vertical|start</item>
         <item name="android:descendantFocusability">blocksDescendants</item>
-        <item name="android:paddingLeft">6dp</item>
-        <item name="android:paddingRight">6dp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
     </style>
 
     <style name="J2W.Button">
         <item name="android:background">@drawable/j2w_dialog_button</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:minWidth">16dp</item>
-        <item name="android:layout_height">9dp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:layout_height">36dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingRight">2dp</item>
-        <item name="android:paddingLeft">2dp</item>
-        <item name="android:layout_marginRight">1dp</item>
-        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/accent</item>
@@ -133,10 +133,10 @@
 
     <style name="J2W.Button.Stacked">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">12dp</item>
+        <item name="android:layout_height">48dp</item>
         <item name="android:gravity">center_vertical|end</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:paddingLeft">32dp</item>
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:layout_marginLeft">0dp</item>
     </style>
@@ -158,16 +158,16 @@
     </style>
 
     <style name="J2W.Space.ButtonsBottom">
-        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_height">8dp</item>
     </style>
 
     <style name="J2W.Progress" parent="Widget.AppCompat.ProgressBar">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">1dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginTop">4dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
     </style>
 
     <style name="J2W.DatePicker">

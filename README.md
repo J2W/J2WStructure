@@ -73,6 +73,23 @@ MVP使用说明帮助
 
     onRestart(J2WActivity j2WIView)
 
+    //状态布局 - 加载
+    @Override public int layoutLoading() {
+    	return R.layout.j2w_fragment_loading;
+    }
+    //状态布局 - 空布局
+    @Override public int layoutEmpty() {
+    	return R.layout.j2w_fragment_empty;
+    }
+    //状态布局 - 业务错误布局
+    @Override public int layoutBizError() {
+    	return R.layout.j2w_fragment_bizerror;
+    }
+    //状态布局 - 网络错误布局
+    @Override public int layoutHttpError() {
+    	return R.layout.j2w_fragment_error;
+    }
+
 ## View : J2WActivity<J2WIDisplay> Biz : J2WBiz<AndroidIDisplay>
 
 #### Display 说明:  Intent跳转,toolbar,DrawerView 统一控制
