@@ -1,7 +1,5 @@
 package j2w.team.biz;
 
-import android.support.v7.app.ActionBarActivity;
-
 import j2w.team.common.utils.AppUtils;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
@@ -139,7 +137,7 @@ public final class J2WBizUtils {
 		} else {
 			((T) display).initDisplay((J2WActivity) obj);
 		}
-		/** 动态代理 - 线程系统 **/
+		/** 动态代理 - UI **/
 		iDisplay = DynamicProxyUtils.newProxyUI(((T) display), j2WBiz);
 		return iDisplay;
 	}

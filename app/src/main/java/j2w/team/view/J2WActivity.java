@@ -22,9 +22,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.KeyboardUtils;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
-import j2w.team.view.adapter.J2WViewPagerAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
  * @创建人 sky
