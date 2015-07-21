@@ -206,6 +206,8 @@ MVP使用说明帮助
     3、J2WBuilder.TABS_TYPE_ICON   - 图标    4、J2WBuilder.TABS_TYPE_DEFAULT - 默认
     viewPagerTabsId(int tabsId, int tabsType)
 
+    tabsCustomListener(J2WTabsCustomListener j2WTabsCustomListener) // 如果tabsType ＝ J2WBuilder.TABS_TYPE_CUSTOM  必须实现
+
     viewPagerId(int viewpagerId, FragmentManager fragmentManager); //设置VP 布局ID 和 碎片管理器
 
     viewPagerChangeListener(J2WViewPagerChangeListener viewPagerChangeListener) //设置滑动事件
