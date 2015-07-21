@@ -177,6 +177,8 @@ MVP使用说明帮助
 
 ### RecyclerView (替代 ListView GridView)
 
+[J2WRVAdapterItem生成方法 点击查看说明](https://github.com/J2W/J2WStructure/wiki/J2WRVAdapterItem)
+
     recyclerviewId(int recyclerviewId); //设置View ID
 
     recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem)//设置适配器 ，多布局可在适配器里实现

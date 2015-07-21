@@ -29,14 +29,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	 */
 	public abstract void bindData(V viewholder, T t, int position, int count);
 
-	public abstract V newViewHolder(ViewGroup viewGroup, View view, int type);
-
-	/**
-	 * 设置布局
-	 *
-	 * @return 布局ID
-	 */
-	public abstract int getItemLayout();
+	public abstract V newViewHolder(ViewGroup viewGroup, int type);
 
 	private J2WRVAdapterItem() {}
 
@@ -62,13 +55,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-		V v = null;
-		if (getItemLayout() == 0) {
-			v = newViewHolder(viewGroup, null, viewType);
-		} else {
-			View view = mLayoutInflater.inflate(getItemLayout(), viewGroup, false);
-			v = newViewHolder(viewGroup, view, viewType);
-		}
+		V v = newViewHolder(viewGroup, viewType);
 		return v;
 	}
 
@@ -117,7 +104,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	@Override public int getItemCount() {
-		if(mItems == null){
+		if (mItems == null) {
 			return 0;
 		}
 		return mItems.size();
