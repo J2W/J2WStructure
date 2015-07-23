@@ -22,4 +22,5 @@
     </style>
 
     <color name="J2WTabsBackground">#6633B5E5</color>
+    <color name="J2WTabsText">#FF666666</color>
 </resources>

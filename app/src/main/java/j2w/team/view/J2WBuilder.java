@@ -569,7 +569,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private int							tabsUnderlineColor			= 0;
 
-	private int							tabsIndicatorHeight			= 2;
+	private int							tabsIndicatorHeight			= 1;
 
 	private int							tabsTextSize				= 12;
 
@@ -577,15 +577,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private int							tabsSelectedTextColor		= R.color.J2WTabsBackground;
 
-	private int							tabsTextColor				= Color.parseColor("#FF666666");
+	private int							tabsTextColor				= R.color.J2WTabsText;
 
 	private int							tabsBackgroundResource		= android.R.color.transparent;
 
-	private int							tabsTabBackground			= 0;
+	private int							tabsItemBackground		= 0;
 
 	private int							tabsTabWidth				= 0;
 
 	private boolean						tabsIsCurrentItemAnimation	= false;
+
+	private int							tabsMargins					= 0;
+
+	private int							tabsPaddingLeftRight		= 20;
 
 	// 获取
 	int getViewpagerId() {
@@ -644,8 +648,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return tabsTextColor;
 	}
 
-	int getTabsTabBackground() {
-		return tabsTabBackground;
+	int getTabsItemBackground() {
+		return tabsItemBackground;
 	}
 
 	int getTabsBackgroundResource() {
@@ -658,6 +662,14 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	boolean getTabsIsCurrentItemAnimation() {
 		return tabsIsCurrentItemAnimation;
+	}
+
+	int getTabsMargins() {
+		return tabsMargins;
+	}
+
+	int getTabsPaddingLeftRight() {
+		return tabsPaddingLeftRight;
 	}
 
 	J2WViewPagerChangeListener getViewPagerChangeListener() {
@@ -735,8 +747,16 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.tabsBackgroundResource = tabsBackgroundResource;
 	}
 
-	public void tabsTabBackground(int tabsTabBackground) {
-		this.tabsTabBackground = tabsTabBackground;
+	public void tabsItemBackground(int tabsItemBackground) {
+		this.tabsItemBackground = tabsItemBackground;
+	}
+
+	public void setTabsMargins(int tabsMargins) {
+		this.tabsMargins = tabsMargins;
+	}
+
+	public void setTabsPaddingLeftRight(int tabsPaddingLeftRight) {
+		this.tabsPaddingLeftRight = tabsPaddingLeftRight;
 	}
 
 	public void tabsTabWidth(int tabsTabWidth) {
@@ -1027,19 +1047,18 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			if (getTabsId() > 0) {
 				tabs = ButterKnife.findById(view, getTabsId());
 				J2WCheckUtils.checkNotNull(tabs, "无法根据布局文件ID,获取tabs");
-				DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
 				// 设置Tab是自动填充满屏幕的
 				tabs.setShouldExpand(getTabsShouldExpand());
 				// 设置Tab的分割线是透明的
 				tabs.setDividerColor(getTabsDividerColor());
 				// 设置Tab底部线的高度
-				tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getTabsUnderlineHeight(), dm));
+				tabs.setUnderlineHeight(getTabsUnderlineHeight());
 				// 设置Tab底部线的颜色
 				tabs.setUnderlineColor(getTabsUnderlineColor());
 				// 设置Tab 指示灯的高度
-				tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getTabsIndicatorHeight(), dm));
+				tabs.setIndicatorHeight(getTabsIndicatorHeight());
 				// 设置Tab标题文字的大小
-				tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, getTabsTextSize(), dm));
+				tabs.setTextSize(getTabsTextSize());
 				// 设置Tab Indicator 指示灯的颜色
 				tabs.setIndicatorColor(getTabsIndicatorColor());
 				// 设置选中Tab文字的颜色 (这是我自定义的一个方法)
@@ -1047,14 +1066,17 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				// 设置Tab文字颜色
 				tabs.setTextColor(getTabsTextColor());
 				// 取消点击Tab时的背景色
-				tabs.setTabBackground(getTabsTabBackground());
+				tabs.setTabItemBackground(getTabsItemBackground());
 				// 设置背景颜色
 				tabs.setBackgroundResource(getTabsBackgroundResource());
 				// 设置Tabs宽度
 				tabs.setTabWidth(getTabsTabWidth());
 				// 设置Tasb切换动画
 				tabs.setIsCurrentItemAnimation(getTabsIsCurrentItemAnimation());
-
+				// 设置间距
+				tabs.setTabMarginsLeftRight(getTabsMargins());
+				// 设置padding
+				tabs.setTabPaddingLeftRight(getTabsPaddingLeftRight());
 			}
 			J2WCheckUtils.checkNotNull(fragmentManager, "fragmentManager不能为空");
 
