@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import java.util.List;
 import java.lang.reflect.ParameterizedType;
@@ -215,11 +216,35 @@ public final class AppUtils {
 	public static boolean isSimMode(Context context) {
 		TelephonyManager mTelephonyManager = (TelephonyManager) context.getSystemService(Service.TELEPHONY_SERVICE);
 		int state = mTelephonyManager.getSimState();
-		switch (state){
+		switch (state) {
 			case TelephonyManager.SIM_STATE_UNKNOWN:
 			case TelephonyManager.SIM_STATE_ABSENT:
 				return true;
 		}
 		return false;
+	}
+
+	/**
+	 * PX 转换DP
+	 * 
+	 * @param context
+	 * @param px
+	 * @return
+	 */
+	public static int getDIP(Context context, int px) {
+		DisplayMetrics dm = context.getResources().getDisplayMetrics();
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, dm);
+	}
+
+	/**
+	 * PX 转换 SP
+	 * 
+	 * @param context
+	 * @param px
+	 * @return
+	 */
+	public static int getSP(Context context, int px) {
+		DisplayMetrics dm = context.getResources().getDisplayMetrics();
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, px, dm);
 	}
 }
