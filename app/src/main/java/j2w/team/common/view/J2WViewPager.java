@@ -1,4 +1,4 @@
-package j2w.team.common.utils.view;
+package j2w.team.common.view;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

@@ -19,7 +19,7 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.KeyboardUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -189,8 +189,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
 			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
 			View v = getCurrentFocus();
-			if (KeyboardUtils.isShouldHideInput(v, ev)) {
-				KeyboardUtils.hideSoftInput(J2WHelper.screenHelper().currentActivity());
+			if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
+				J2WKeyboardUtils.hideSoftInput(J2WHelper.screenHelper().currentActivity());
 			}
 		}
 		return super.dispatchTouchEvent(ev);

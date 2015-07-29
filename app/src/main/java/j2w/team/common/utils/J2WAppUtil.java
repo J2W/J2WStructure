@@ -24,7 +24,7 @@ import j2w.team.J2WHelper;
 /**
  * Created by sky on 15/1/29 程序工具包
  */
-public final class AppUtils {
+public final class J2WAppUtil {
 
 	/**
 	 * 获取当前App内存使用量

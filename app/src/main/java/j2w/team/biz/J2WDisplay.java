@@ -25,6 +25,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void jump(Class clazz) {
+		if(clazz == null){
+			return;
+		}
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
@@ -38,6 +41,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void jump(Class clazz, int animstart, int animstop) {
+		if(clazz == null){
+			return;
+		}
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
@@ -52,6 +58,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void jump(Class clazz, Bundle bundle) {
+		if(clazz == null){
+			return;
+		}
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
@@ -66,6 +75,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void jump(Class clazz, int requestCode) {
+		if(clazz == null){
+			return;
+		}
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
@@ -79,6 +91,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void jump(Class clazz, Bundle bundle, int requestCode) {
+		if(clazz == null){
+			return;
+		}
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");

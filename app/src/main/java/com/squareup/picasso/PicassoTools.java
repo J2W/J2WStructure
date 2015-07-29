@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import j2w.team.common.log.L;
-import j2w.team.common.utils.AppUtils;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.J2WHelper;
 
 /**
@@ -148,7 +148,7 @@ public final class PicassoTools {
 		private void defaults() {
 			// 创建文件
 			if (file == null) {
-				if (AppUtils.isSDCardState()) {
+				if (J2WAppUtil.isSDCardState()) {
 					file = new File(Environment.getExternalStorageDirectory(), CACHE_PATH);
 				} else {
 					file = new File(J2WHelper.getInstance().getApplicationContext().getCacheDir(), CACHE_PATH);

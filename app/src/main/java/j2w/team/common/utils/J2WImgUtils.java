@@ -15,7 +15,7 @@ import android.provider.MediaStore;
  * @创建时间 15/6/1 下午9:18
  * @类描述 图片工具类
  */
-public class ImgUtils {
+public class J2WImgUtils {
 
 	/**
 	 * 获取相册地址

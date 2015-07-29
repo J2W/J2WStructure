@@ -1,6 +1,6 @@
 package j2w.team.biz;
 
-import j2w.team.common.utils.AppUtils;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.view.J2WActivity;
@@ -92,7 +92,7 @@ public final class J2WBizUtils {
 		Class<Object> displayClass = null;
 		try {
 			// 获取当前类的泛型类
-			displayClass = AppUtils.getSuperClassGenricType(iView.getClass(), 0);
+			displayClass = J2WAppUtil.getSuperClassGenricType(iView.getClass(), 0);
 
 			// 获取Application的泛型类
 			J2WCheckUtils.checkNotNull(displayClass, "View第二个泛型类不能为空～");
