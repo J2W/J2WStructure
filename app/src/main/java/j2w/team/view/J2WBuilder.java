@@ -1100,6 +1100,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private void detachViewPager() {
 		j2WViewPager = null;
 		tabs = null;
+		if(j2WViewPagerAdapter != null){
+			j2WViewPagerAdapter.clearData();
+		}
 		j2WViewPagerAdapter = null;
 		fragmentManager = null;
 		viewPagerChangeListener = null;

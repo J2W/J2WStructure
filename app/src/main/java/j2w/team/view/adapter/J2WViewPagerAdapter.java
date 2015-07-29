@@ -99,6 +99,11 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		}
 	}
 
+
+	public void clearData(){
+		this.viewPagerDatas = null;
+	}
+
 	/**
 	 * 替换
 	 * 
