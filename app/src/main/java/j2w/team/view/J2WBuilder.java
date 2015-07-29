@@ -40,6 +40,8 @@ import j2w.team.view.adapter.recycleview.DividerGridItemDecoration;
 import j2w.team.view.adapter.recycleview.DividerItemDecoration;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
 import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
+import j2w.team.view.common.J2WRefreshListener;
+import j2w.team.view.common.J2WViewPagerChangeListener;
 
 /**
  * @创建人 sky
@@ -282,7 +284,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private SwipeRefreshLayout			swipe_container;
 
-	private J2WRefreshListener			j2WRefreshListener;
+	private J2WRefreshListener j2WRefreshListener;
 
 	private boolean						mLoadMoreIsAtBottom;			// 加载更多
 
@@ -539,7 +541,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private PagerSlidingTabStrip		tabs;
 
-	private J2WViewPagerChangeListener	viewPagerChangeListener;
+	private J2WViewPagerChangeListener viewPagerChangeListener;
 
 	private J2WTabsCustomListener		j2WTabsCustomListener;
 

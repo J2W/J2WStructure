@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.common.view.PagerSlidingTabStrip;
-import j2w.team.view.J2WViewPagerChangeListener;
+import j2w.team.view.common.J2WViewPagerChangeListener;
 import j2w.team.view.model.J2WModelPager;
 
 /**

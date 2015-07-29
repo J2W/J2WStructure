@@ -1,4 +1,4 @@
-package j2w.team.view;
+package j2w.team.view.common;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
