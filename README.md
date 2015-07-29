@@ -145,6 +145,28 @@ MVP使用说明帮助
 
 ### Toobar
 
+
+    样式修改 - 重写
+
+        <style name="J2WToolbar.Custom">
+           <!-- 设置该属性解决空白部分 默认 16dp-->
+           <item name="contentInsetStart">16dp</item>
+           <item name="android:layout_width">match_parent</item>
+           <item name="android:layout_height">?actionBarSize</item>
+           <item name="android:background">?colorPrimary</item>
+        </style>
+
+    文字颜色 - 添加
+        <style name="MyAppTheme" parent="AppTheme">
+            <item name="colorPrimary">@color/default_color</item>
+            <item name="colorPrimaryDark">@color/default_color</item>
+            <item name="colorAccent">@color/default_color</item>
+            <!-- 文字颜色 -->
+            <item name="android:textColorPrimary">@android:color/white</item>
+            <!-- Menu文字颜色 -->
+            <item name="android:actionMenuTextColor">@android:color/black</item>
+        </style>
+
     toolbarDrawerId(int toolbarDrawerId); //设置DrawerLayout ID， 与Toolbar联动
 
     toolbarMenuListener(Toolbar.OnMenuItemClickListener menuListener); //设置MENU 点击事件
