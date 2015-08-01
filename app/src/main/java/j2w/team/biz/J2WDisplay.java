@@ -1,5 +1,6 @@
 package j2w.team.biz;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,10 @@ public class J2WDisplay implements J2WIDisplay {
 
 	protected J2WActivity	mJ2WActivity;
 
+	@Override public Context context() {
+		return mJ2WActivity;
+	}
+
 	@Override public void initDisplay(J2WActivity j2WActivity) {
 		mJ2WActivity = j2WActivity;
 	}
@@ -24,8 +29,8 @@ public class J2WDisplay implements J2WIDisplay {
 		return mJ2WActivity.getSupportFragmentManager();
 	}
 
-	@Override public void jump(Class clazz) {
-		if(clazz == null){
+	protected void jump(Class clazz) {
+		if (clazz == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
@@ -40,8 +45,8 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivity(intent);
 	}
 
-	@Override public void jump(Class clazz, int animstart, int animstop) {
-		if(clazz == null){
+	protected void jump(Class clazz, int animstart, int animstop) {
+		if (clazz == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
@@ -57,8 +62,8 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.overridePendingTransition(animstart, animstop);
 	}
 
-	@Override public void jump(Class clazz, Bundle bundle) {
-		if(clazz == null){
+	protected void jump(Class clazz, Bundle bundle) {
+		if (clazz == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
@@ -74,8 +79,8 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivity(intent);
 	}
 
-	@Override public void jump(Class clazz, int requestCode) {
-		if(clazz == null){
+	protected void jump(Class clazz, int requestCode) {
+		if (clazz == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
@@ -90,8 +95,8 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivityForResult(intent, requestCode);
 	}
 
-	@Override public void jump(Class clazz, Bundle bundle, int requestCode) {
-		if(clazz == null){
+	protected void jump(Class clazz, Bundle bundle, int requestCode) {
+		if (clazz == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
