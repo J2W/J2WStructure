@@ -1,6 +1,5 @@
 package j2w.team.view;
 
-import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -209,9 +208,15 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private boolean							isOpenToolbar;
 
+	private boolean							isOpenCustomToolbar;
+
 	// 获取
 	int getToolbarLayoutId() {
 		return toolbarLayoutId;
+	}
+
+	public boolean isOpenCustomToolbar() {
+		return isOpenCustomToolbar;
 	}
 
 	boolean isOpenToolbar() {
@@ -239,6 +244,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	// 设置
+
+	public void toolbarId(int toolbarId) {
+		this.toolbarId = toolbarId;
+		this.isOpenCustomToolbar = true;
+	}
 
 	public void toolbarDrawerId(int toolbarDrawerId) {
 		this.toolbarDrawerId = toolbarDrawerId;
@@ -284,7 +294,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private SwipeRefreshLayout			swipe_container;
 
-	private J2WRefreshListener j2WRefreshListener;
+	private J2WRefreshListener			j2WRefreshListener;
 
 	private boolean						mLoadMoreIsAtBottom;			// 加载更多
 
@@ -541,7 +551,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private PagerSlidingTabStrip		tabs;
 
-	private J2WViewPagerChangeListener viewPagerChangeListener;
+	private J2WViewPagerChangeListener	viewPagerChangeListener;
 
 	private J2WTabsCustomListener		j2WTabsCustomListener;
 
@@ -582,7 +592,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private int							tabsBackgroundResource		= android.R.color.transparent;
 
-	private int							tabsItemBackground		= 0;
+	private int							tabsItemBackground			= 0;
 
 	private int							tabsTabWidth				= 0;
 
@@ -896,6 +906,21 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			toolbarRoot.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 			return toolbarRoot;
+		} else if (isOpenCustomToolbar()) {
+			toolbar = ButterKnife.findById(view, getToolbarId());
+			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
+			if (getToolbarDrawerId() > 0) {
+				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
+				J2WCheckUtils.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
+				ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(mContext, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+				mDrawerToggle.syncState();
+				drawerLayout.setDrawerListener(mDrawerToggle);
+			}
+			// 添加点击事件
+			if (getMenuListener() != null) {
+				toolbar.setOnMenuItemClickListener(getMenuListener());
+			}
+			return view;
 		} else {
 			return view;
 		}
@@ -1100,7 +1125,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private void detachViewPager() {
 		j2WViewPager = null;
 		tabs = null;
-		if(j2WViewPagerAdapter != null){
+		if (j2WViewPagerAdapter != null) {
 			j2WViewPagerAdapter.clearData();
 		}
 		j2WViewPagerAdapter = null;
