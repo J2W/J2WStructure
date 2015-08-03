@@ -564,11 +564,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private boolean						tabsShouldExpand			= true;
 
-	private int							tabsDividerColor			= Color.TRANSPARENT;
+	private int							tabsDividerColor			= android.R.color.transparent;
 
 	private int							tabsUnderlineHeight			= 1;
 
-	private int							tabsUnderlineColor			= 0;
+	private int							tabsUnderlineColor			= android.R.color.transparent;
 
 	private int							tabsIndicatorHeight			= 1;
 

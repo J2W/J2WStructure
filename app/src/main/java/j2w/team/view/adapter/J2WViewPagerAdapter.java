@@ -99,8 +99,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		}
 	}
 
-
-	public void clearData(){
+	public void clearData() {
 		this.viewPagerDatas = null;
 	}
 
@@ -245,13 +244,15 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param positionOffsetPixels
 	 */
 	@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		left = pager.getChildAt(position);
-		right = pager.getChildAt(position + 1);
+		if (tabs == null) {
+			return;
+		}
+		left = tabs.tabsContainer.getChildAt(position);
+		right = tabs.tabsContainer.getChildAt(position + 1);
 
 		if (j2WViewPagerChangeListener != null) {
 			j2WViewPagerChangeListener.onExtraPageScrolled(left, right, positionOffset, positionOffsetPixels);
 		}
-
 	}
 
 	/**
@@ -260,11 +261,14 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param position
 	 */
 	@Override public void onPageSelected(int position) {
+		if (tabs == null) {
+			return;
+		}
 		if (currentPageIndex == -1) {
 			currentPageIndex = 0;
-			oldView = pager.getChildAt(0);
+			oldView = tabs.tabsContainer.getChildAt(0);
 			oldPosition = 0;
-		}else{
+		} else {
 			viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
 		}
 
@@ -275,10 +279,10 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 		currentPageIndex = position;
 		if (j2WViewPagerChangeListener != null) {
-			j2WViewPagerChangeListener.onExtraPageSelected(pager.getChildAt(position), oldView, position, oldPosition);
+			j2WViewPagerChangeListener.onExtraPageSelected(tabs.tabsContainer.getChildAt(position), oldView, position, oldPosition);
 		}
 
-		oldView = pager.getChildAt(position);// 缓存视图
+		oldView = tabs.tabsContainer.getChildAt(position);// 缓存视图
 		oldPosition = position; // 缓存坐标
 	}
 
