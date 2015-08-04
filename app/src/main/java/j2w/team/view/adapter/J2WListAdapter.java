@@ -140,6 +140,10 @@ public class J2WListAdapter extends BaseAdapter {
 		return j2WListViewMultiLayout == null ? 1 : j2WListViewMultiLayout.getJ2WViewTypeCount();
 	}
 
+	@Override public int getItemViewType(int position) {
+		return j2WListViewMultiLayout.getJ2WViewType(position);
+	}
+
 	@Override public View getView(int position, View convertView, ViewGroup parent) {
 		J2WAdapterItem item = null;
 		if (convertView == null) {
@@ -148,7 +152,7 @@ public class J2WListAdapter extends BaseAdapter {
 			} else {
 				item = createMultiItem(position);// 多类型
 			}
-			convertView = mLayoutInflater.inflate(item.getItemLayout(), parent, false);
+			convertView = mLayoutInflater.inflate(item.getItemLayout(), null, false);
 			// 初始化
 			ButterKnife.bind(item, convertView);
 			// 初始化布局
@@ -181,7 +185,7 @@ public class J2WListAdapter extends BaseAdapter {
 	 * @return
 	 */
 	private J2WAdapterItem createMultiItem(int position) {
-		int type = j2WListViewMultiLayout.getJ2WViewType(position);
+		int type = getItemViewType(position);
 		return j2WListViewMultiLayout.getJ2WAdapterItem(type);
 	}
 }
