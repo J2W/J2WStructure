@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
 
@@ -101,6 +102,18 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public T getItem(int position) {
 		return (T) mItems.get(position);
+	}
+
+	/**
+	 * 获取业务
+	 *
+	 * @param biz
+	 *            泛型
+	 * @param <B>
+	 * @return
+	 */
+	protected  <B extends J2WIBiz> B biz(Class<B> biz) {
+		return (B) j2WActivity.biz(biz);
 	}
 
 	@Override public int getItemCount() {
