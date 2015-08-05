@@ -75,8 +75,8 @@ public abstract class J2WCusomToast {
 	 */
 	protected void cusomShow(String msg) {
 		if (mToast == null) {
-			mToast = new Toast(J2WHelper.screenHelper().currentActivity());
-			LayoutInflater inflate = (LayoutInflater) J2WHelper.screenHelper().currentActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			mToast = new Toast(J2WHelper.getInstance());
+			LayoutInflater inflate = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflate.inflate(layoutId(), null);
 			mToast.setView(v);
 			init(v, msg);

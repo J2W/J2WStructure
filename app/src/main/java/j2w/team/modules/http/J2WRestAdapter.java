@@ -187,9 +187,6 @@ public class J2WRestAdapter {
 	 */
 	Object invokeSync(J2WMethodInfo methodInfo, Request request) throws Throwable {
 		try {
-			// 搜索dialog
-			FragmentManager fragmentManager = J2WHelper.screenHelper().currentActivity().getSupportFragmentManager();
-			ProgressDailogFragment dialogFragment;
 			Call call = client.newCall(request);
 			// 发送请求
 			Response response = call.execute();

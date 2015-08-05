@@ -190,7 +190,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
 			View v = getCurrentFocus();
 			if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
-				J2WKeyboardUtils.hideSoftInput(J2WHelper.screenHelper().currentActivity());
+				J2WKeyboardUtils.hideSoftInput(this);
 			}
 		}
 		return super.dispatchTouchEvent(ev);

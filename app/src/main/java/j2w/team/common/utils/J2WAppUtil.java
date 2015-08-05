@@ -1,5 +1,6 @@
 package j2w.team.common.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Debug;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
@@ -123,8 +125,8 @@ public final class J2WAppUtil {
 	 * 
 	 * @return true 表示开启
 	 */
-	public static final boolean isOpenGps() {
-		LocationManager locationManager = (LocationManager) J2WHelper.screenHelper().currentActivity().getSystemService(Context.LOCATION_SERVICE);
+	public static final boolean isOpenGps(ActionBarActivity activity) {
+		LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 		// 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
 		boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		// 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
@@ -141,8 +143,8 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isNetworkConnected() {
-		ConnectivityManager mConnectivityManager = (ConnectivityManager) J2WHelper.screenHelper().currentActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+	public static boolean isNetworkConnected(ActionBarActivity activity) {
+		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
 		return mNetworkInfo == null ? false : mNetworkInfo.isAvailable();
 	}
@@ -152,8 +154,8 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isWifiConnected() {
-		ConnectivityManager mConnectivityManager = (ConnectivityManager) J2WHelper.screenHelper().currentActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+	public static boolean isWifiConnected(ActionBarActivity activity) {
+		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWiFiNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWiFiNetworkInfo == null ? false : mWiFiNetworkInfo.isAvailable();
 	}
@@ -163,8 +165,8 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isMobileConnected() {
-		ConnectivityManager mConnectivityManager = (ConnectivityManager) J2WHelper.screenHelper().currentActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+	public static boolean isMobileConnected(ActionBarActivity activity) {
+		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mMobileNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		return mMobileNetworkInfo == null ? false : mMobileNetworkInfo.isAvailable();
 
@@ -175,9 +177,9 @@ public final class J2WAppUtil {
 	 * 
 	 * @return 显示器信息实体类
 	 */
-	public static final DisplayMetrics getWindowsSize() {
+	public static final DisplayMetrics getWindowsSize(ActionBarActivity activity) {
 		DisplayMetrics dm = new DisplayMetrics();
-		J2WHelper.screenHelper().currentActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
 		return dm;
 	}
 

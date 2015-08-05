@@ -12,13 +12,16 @@ import j2w.team.modules.fresco.FrescoTools;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.screen.J2WScreenManager;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
+import j2w.team.modules.toast.J2WToast;
 
 /**
  * @创建人 sky
  * @创建时间 15/8/5 下午3:17
- * @类描述 管理
+ * @类描述 Modules管理
  */
 public class J2WModulesManage {
+
+	private final J2WApplication	mJ2WApplication;		// 全局上下文
 
 	private EventBus				bus;					// 事件总线
 
@@ -34,13 +37,13 @@ public class J2WModulesManage {
 
 	private PicassoTools			picassoTools;			// 图片加载器
 
-	private final J2WApplication	mJ2WApplication;		// 全局上下文
-
 	private J2WRestAdapter			mJ2WRestAdapter;		// 网络适配器
 
 	private FrescoTools				frescoTools;			// 图片架构
 
 	private ImagePipelineConfig		imagePipelineConfig;	// frescoTools图片架构配置
+
+	private J2WToast				j2WToast;				// 提示信息
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
@@ -123,5 +126,12 @@ public class J2WModulesManage {
 			frescoTools = new FrescoTools(imagePipelineConfig);
 		}
 		return frescoTools;
+	}
+
+	public J2WToast getJ2WToast() {
+		if (j2WToast == null) {
+			j2WToast = new J2WToast(mJ2WApplication);
+		}
+		return j2WToast;
 	}
 }
