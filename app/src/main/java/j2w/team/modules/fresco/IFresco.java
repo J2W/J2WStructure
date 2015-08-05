@@ -1,6 +1,5 @@
 package j2w.team.modules.fresco;
 
-
 /**
  * @创建人 sky
  * @创建时间 15/8/5 下午4:19
@@ -8,5 +7,9 @@ package j2w.team.modules.fresco;
  */
 public interface IFresco {
 
+	/**
+	 * 初始化
+	 */
+	void initialize();
 
 }

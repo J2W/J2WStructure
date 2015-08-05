@@ -1,8 +1,6 @@
 package j2w.team.modules;
 
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.squareup.picasso.PicassoTools;
-
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -34,8 +32,6 @@ public class J2WModulesManage {
 	private SynchronousExecutor		synchronousExecutor;	// 主线程
 
 	private J2WDownloadManager		j2WDownloadManager;	// 下载和上传管理
-
-	private PicassoTools			picassoTools;			// 图片加载器
 
 	private J2WRestAdapter			mJ2WRestAdapter;		// 网络适配器
 
@@ -114,16 +110,9 @@ public class J2WModulesManage {
 		return j2WDownloadManager;
 	}
 
-	public PicassoTools getPicassoTools() {
-		if (picassoTools == null) {
-			picassoTools = new PicassoTools();
-		}
-		return picassoTools;
-	}
-
 	public FrescoTools getFrescoTools() {
 		if (frescoTools == null) {
-			frescoTools = new FrescoTools(imagePipelineConfig);
+			frescoTools = new FrescoTools(mJ2WApplication, imagePipelineConfig);
 		}
 		return frescoTools;
 	}

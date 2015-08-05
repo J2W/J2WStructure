@@ -63,6 +63,8 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	}
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		/** 初始化图片架构 **/
+		J2WHelper.frescoHelper().initialize();
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder((J2WActivity) getActivity(), inflater);
 		View view = build(j2WBuilder).create();

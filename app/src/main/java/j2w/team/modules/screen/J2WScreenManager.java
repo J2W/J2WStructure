@@ -58,8 +58,6 @@ public class J2WScreenManager implements J2WIScreenManager {
 		fragmentActivities.remove(activity);
 		if (fragmentActivities.size() < 1) {
 			/** 清空内存缓存picasso **/
-			L.i("清空内存缓存-J2WHelper.getPicassoHelper().clearCache()");
-			J2WHelper.picassoHelper().clearCache();//缓存
             J2WHelper.threadPoolHelper().finish();//线程池
 		}
 		activity = null;

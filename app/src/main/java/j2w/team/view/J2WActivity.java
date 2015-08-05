@@ -63,6 +63,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 */
 	@Override protected final void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/** 初始化图片架构 **/
+		J2WHelper.frescoHelper().initialize();
 		/** 初始化视图 **/
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		j2WBuilder = new J2WBuilder(this, inflater);

@@ -2,8 +2,6 @@ package j2w.team;
 
 import android.os.Looper;
 
-import com.squareup.picasso.PicassoTools;
-
 import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.J2WModulesManage;
@@ -109,15 +107,6 @@ public class J2WHelper {
 	 */
 	public static final J2WDownloadManager downloader(int threadPoolSize) {
 		return mJ2WModulesManage.getJ2WDownloadManager(threadPoolSize);
-	}
-
-	/**
-	 * Picasso工具
-	 *
-	 * @return picasso
-	 */
-	public static final PicassoTools picassoHelper() {
-		return mJ2WModulesManage.getPicassoTools();
 	}
 
 	/**
