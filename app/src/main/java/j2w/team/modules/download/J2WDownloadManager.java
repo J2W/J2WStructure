@@ -15,20 +15,9 @@ import j2w.team.J2WHelper;
  */
 public class J2WDownloadManager implements J2WIDownloadMagnager {
 
-	private static J2WDownloadManager	instance	= new J2WDownloadManager();
-
 	private J2WDownloadRequest			j2WDownloadRequest;
 
 	private J2WUploadRequest			j2WUploadRequest;
-
-	/**
-	 * 初始化
-	 * 
-	 * @return
-	 */
-	public static J2WDownloadManager getInstance() {
-		return instance;
-	}
 
 	private J2WDownloadRequestQueue	mRequestQueue;
 

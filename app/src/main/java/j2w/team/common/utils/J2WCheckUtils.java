@@ -19,10 +19,11 @@ public final class J2WCheckUtils {
 	 * @param errorMessageTemplate
 	 * @return
 	 */
-	public static <T> void checkNotNull(T reference, String errorMessageTemplate) {
+	public static <T> T checkNotNull(T reference, String errorMessageTemplate) {
 		if (reference == null) {
 			throw new J2WNullPointerException(errorMessageTemplate);
 		}
+		return reference;
 	}
 
 	/**
@@ -63,6 +64,7 @@ public final class J2WCheckUtils {
 
 	/**
 	 * 判断是否为空
+	 * 
 	 * @param text
 	 * @return
 	 */

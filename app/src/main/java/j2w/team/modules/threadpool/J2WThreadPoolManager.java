@@ -9,15 +9,6 @@ import j2w.team.common.log.L;
  */
 public final class J2WThreadPoolManager {
 
-	/**
-	 * J2WThreadPoolManager 单例模式
-	 */
-	private static final J2WThreadPoolManager	instance	= new J2WThreadPoolManager();
-
-	public static J2WThreadPoolManager getInstance() {
-		return instance;
-	}
-
 	/** 线程服务-网络线程池 **/
 	private J2WHttpExecutorService			j2WHttpExecutorService;
 

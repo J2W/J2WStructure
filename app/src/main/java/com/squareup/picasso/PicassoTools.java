@@ -16,18 +16,6 @@ import j2w.team.J2WHelper;
  */
 public final class PicassoTools {
 
-	/**
-	 * 单例 *
-	 */
-	private static final PicassoTools	singleton	= new PicassoTools();
-
-	/**
-	 * 单例 *
-	 */
-	public static PicassoTools getInstance() {
-		return singleton;
-	}
-
 	static Picasso			picasso				= null;
 
 	static OkHttpDownloader	okHttpDownloader	= null;

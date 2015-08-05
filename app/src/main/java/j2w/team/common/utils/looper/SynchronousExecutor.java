@@ -10,13 +10,7 @@ import java.util.concurrent.Executor;
  */
 public class SynchronousExecutor implements Executor {
 
-	private static SynchronousExecutor	synchronousExecutor	= new SynchronousExecutor();
-
 	private final Handler				handler				= new Handler(Looper.getMainLooper());
-
-	public static SynchronousExecutor getInstance() {
-		return synchronousExecutor;
-	}
 
 	@Override public void execute(Runnable runnable) {
 		handler.post(runnable);
