@@ -141,7 +141,7 @@ public class J2WListAdapter extends BaseAdapter {
 	}
 
 	@Override public int getItemViewType(int position) {
-		return j2WListViewMultiLayout.getJ2WViewType(position);
+		return j2WListViewMultiLayout == null ? 0 : j2WListViewMultiLayout.getJ2WViewType(position);
 	}
 
 	@Override public View getView(int position, View convertView, ViewGroup parent) {
