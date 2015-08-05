@@ -50,7 +50,7 @@ public class J2WHelper {
 	/**
 	 * 单例模式 - EventBus
 	 */
-	private volatile static EventBus bus	= EventBus.getDefault();
+	private volatile static EventBus	bus	= EventBus.getDefault();
 
 	/**
 	 * 获取EventBus
