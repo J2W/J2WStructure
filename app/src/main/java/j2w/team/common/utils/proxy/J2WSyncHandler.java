@@ -76,6 +76,9 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 		}
 		// 获取后台线程池类型
 		BackgroundType backgroundType = background.value();
+		if (j2WRepeat == null || !j2WRepeat.value()) { // 拦截
+			stack.push(key); // 入栈
+		}
 		// 生成执行任务
 		SyncHandlerCall syncHandlerCall = new SyncHandlerCall(key, j2WRepeat, method, methodError, args);
 		switch (backgroundType) {
@@ -106,9 +109,6 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 				// 获取UI检查方法
 				if (!checkUI()) {
 					return;
-				}
-				if (super.j2WRepeat == null || !super.j2WRepeat.value()) { // 拦截
-					stack.push(super.mehtodName); // 入栈
 				}
 				J2WCheckUtils.checkNotNull(t, "UI和BIZ已经被销毁~");
 				super.method.invoke(t, args);// 执行
