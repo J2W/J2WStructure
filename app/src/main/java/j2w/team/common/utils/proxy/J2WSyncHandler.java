@@ -49,7 +49,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 		if (j2WRepeat == null || !j2WRepeat.value()) { // 拦截
 			if (stack.search(key) != -1) { // 如果存在什么都不做
 				L.tag("J2W-Method");
-				L.i("正在执行该方法 : " + key);
+				L.i("该方法正在执行 - 多次点击无效 : " + key);
 				return returnObject;
 			}
 		}
