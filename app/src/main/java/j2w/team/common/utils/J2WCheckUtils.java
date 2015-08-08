@@ -3,6 +3,7 @@ package j2w.team.common.utils;
 import j2w.team.biz.exception.J2WArgumentException;
 import j2w.team.biz.exception.J2WIndexOutOfException;
 import j2w.team.biz.exception.J2WNullPointerException;
+import j2w.team.biz.exception.J2WUINullPointerException;
 
 /**
  * @创建人 sky
@@ -22,6 +23,21 @@ public final class J2WCheckUtils {
 	public static <T> T checkNotNull(T reference, String errorMessageTemplate) {
 		if (reference == null) {
 			throw new J2WNullPointerException(errorMessageTemplate);
+		}
+		return reference;
+	}
+
+	/**
+	 * 检查是否为空
+	 *
+	 * @param reference
+	 *
+	 * @param errorMessageTemplate
+	 * @return
+	 */
+	public static <T> T checkUINotNull(T reference, String errorMessageTemplate) {
+		if (reference == null) {
+			throw new J2WUINullPointerException(errorMessageTemplate);
 		}
 		return reference;
 	}

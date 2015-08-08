@@ -24,7 +24,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	public static final String	METHOD_CHECKUI	= "checkUI";		// UI检查方法
 
-	private Object			view;
+	private Object				view;
 
 	private T					display;
 
@@ -72,7 +72,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		Object obj = stackUI.get(ui.getSimpleName());
 		if (obj == null) {// 如果没有索索到
 			obj = J2WBizUtils.createUI(ui, view, this);
-			checkNotNull(obj, "View层没有实现该接口～");
+			checkUINotNull(obj, "View层没有实现该接口～");
 			stackUI.put(ui.getSimpleName(), obj);
 		}
 		return (U) obj;
@@ -113,6 +113,19 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	protected <T> void checkNotNull(T reference, String errorMessageTemplate) {
+		J2WCheckUtils.checkNotNull(reference, errorMessageTemplate);
+
+	}
+
+	/**
+	 * 检查是否为空
+	 * 
+	 * @param reference
+	 * 
+	 * @param errorMessageTemplate
+	 * @return
+	 */
+	private  <T> void checkUINotNull(T reference, String errorMessageTemplate) {
 		J2WCheckUtils.checkNotNull(reference, errorMessageTemplate);
 
 	}
