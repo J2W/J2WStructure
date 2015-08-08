@@ -6,7 +6,7 @@
 
     <ProgressBar
         style="@style/J2W.Layout.Wrap.ProgressBar"
-        android:layout_margin="4dp"
+        android:padding="15dp"
         android:id="@+id/J2W_progress"/>
 
     <TextView

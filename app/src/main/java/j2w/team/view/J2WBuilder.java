@@ -825,24 +825,22 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
 		layoutContent = mInflater.inflate(getLayoutId(), null, false);
 		J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
-		FrameLayout.LayoutParams layoutContentParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutContent, layoutContentParams);
+		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+		contentRoot.addView(layoutContent, layoutParams);
 
 		// 进度条
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
 		J2WCheckUtils.checkArgument(layoutLoadingId > 0, "进度错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
 		vsLoading = new ViewStub(mContext);
 		vsLoading.setLayoutResource(layoutLoadingId);
-		FrameLayout.LayoutParams layoutLoadingParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(vsLoading, layoutLoadingParams);
+		contentRoot.addView(vsLoading, layoutParams);
 
 		// 空布局
 		layoutEmptyId = layoutEmptyId > 0 ? layoutEmptyId : J2WHelper.getInstance().layoutEmpty();
 		J2WCheckUtils.checkArgument(layoutEmptyId > 0, "空状态布局Id不能为空,重写公共布局Application.layoutEmpty 或者 在Buider.layout里设置");
 		layoutEmpty = mInflater.inflate(layoutEmptyId, null, false);
 		J2WCheckUtils.checkNotNull(layoutEmpty, "无法根据布局文件ID,获取layoutEmpty");
-		FrameLayout.LayoutParams layoutEmptyParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutEmpty, layoutEmptyParams);
+		contentRoot.addView(layoutEmpty, layoutParams);
 		layoutEmpty.setVisibility(View.GONE);
 
 		// 业务错误布局
@@ -850,8 +848,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		J2WCheckUtils.checkArgument(layoutBizErrorId > 0, "业务错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
 		layoutBizError = mInflater.inflate(layoutBizErrorId, null, false);
 		J2WCheckUtils.checkNotNull(layoutBizError, "无法根据布局文件ID,获取layoutBizError");
-		FrameLayout.LayoutParams layoutBizErrorParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutBizError, layoutBizErrorParams);
+		contentRoot.addView(layoutBizError, layoutParams);
 		layoutBizError.setVisibility(View.GONE);
 
 		// 网络错误布局
@@ -859,8 +856,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		J2WCheckUtils.checkArgument(layoutHttpErrorId > 0, "网络错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
 		layoutHttpError = mInflater.inflate(layoutHttpErrorId, null, false);
 		J2WCheckUtils.checkNotNull(layoutHttpError, "无法根据布局文件ID,获取layoutHttpError");
-		FrameLayout.LayoutParams layoutHttpErrorParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutHttpError, layoutHttpErrorParams);
+		contentRoot.addView(layoutHttpError, layoutParams);
 		layoutHttpError.setVisibility(View.GONE);
 	}
 
