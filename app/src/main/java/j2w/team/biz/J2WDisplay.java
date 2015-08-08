@@ -29,7 +29,7 @@ public class J2WDisplay implements J2WIDisplay {
 		return mJ2WActivity.getSupportFragmentManager();
 	}
 
-	protected void jump(Class clazz) {
+	protected void intent(Class clazz) {
 		if (clazz == null) {
 			return;
 		}
@@ -45,7 +45,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivity(intent);
 	}
 
-	protected void jump(Class clazz, int animstart, int animstop) {
+	protected void intent(Class clazz, int animstart, int animstop) {
 		if (clazz == null) {
 			return;
 		}
@@ -62,7 +62,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.overridePendingTransition(animstart, animstop);
 	}
 
-	protected void jump(Class clazz, Bundle bundle) {
+	protected void intent(Class clazz, Bundle bundle) {
 		if (clazz == null) {
 			return;
 		}
@@ -79,7 +79,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivity(intent);
 	}
 
-	protected void jump(Class clazz, int requestCode) {
+	protected void intent(Class clazz, int requestCode) {
 		if (clazz == null) {
 			return;
 		}
@@ -95,7 +95,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivityForResult(intent, requestCode);
 	}
 
-	protected void jump(Class clazz, Bundle bundle, int requestCode) {
+	protected void intent(Class clazz, Bundle bundle, int requestCode) {
 		if (clazz == null) {
 			return;
 		}

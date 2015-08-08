@@ -131,6 +131,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		return display;
 	}
 
+	public <E extends J2WIDisplay> E display(Class<E> e) {
+		return (E) display;
+	}
+
 	/**
 	 * 获取业务
 	 * 

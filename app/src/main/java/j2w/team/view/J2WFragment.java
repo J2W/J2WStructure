@@ -109,15 +109,14 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	/**
 	 * 获取显示调度
 	 *
-	 * @param objects
-	 *            参数
 	 * @return
 	 */
-	public D display(Object... objects) {
-		if (objects.length > 0) {
-			display.initDisplay((J2WActivity) getActivity());
-		}
+	public D display() {
 		return display;
+	}
+
+	public <E extends J2WIDisplay> E display(Class<E> e) {
+		return (E) display;
 	}
 
 	/**
