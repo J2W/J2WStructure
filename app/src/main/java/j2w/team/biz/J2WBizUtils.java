@@ -1,5 +1,7 @@
 package j2w.team.biz;
 
+import android.support.v4.app.Fragment;
+
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
@@ -63,6 +65,17 @@ public final class J2WBizUtils {
 	public static final <B extends J2WBiz, V> Object createUI(Class ui, V iView, B biz) {
 		Object obj = null;
 		try {
+			if (iView instanceof J2WFragment) {
+				final Fragment targetFragment = ((J2WFragment)iView).getTargetFragment();
+				if(targetFragment != null){
+					iView = (V) targetFragment;
+				}
+			} else if (iView instanceof J2WDialogFragment) {
+				final Fragment targetFragment = ((J2WDialogFragment)iView).getTargetFragment();
+				if(targetFragment != null){
+					iView = (V) targetFragment;
+				}
+			}
 			// 获得接口数组
 			Class<?>[] interfaces = iView.getClass().getInterfaces();
 			// 如果没有实现接口，获取父类接口
@@ -137,7 +150,9 @@ public final class J2WBizUtils {
 		/** 初始化业务类 **/
 		if (obj instanceof J2WFragment) {
 			((T) display).initDisplay((J2WActivity) ((J2WFragment) obj).getActivity());
-		} else {
+		} else if (obj instanceof J2WDialogFragment) {
+			((T) display).initDisplay((J2WActivity) ((J2WDialogFragment) obj).getActivity());
+		}else {
 			((T) display).initDisplay((J2WActivity) obj);
 		}
 		/** 动态代理 - UI **/

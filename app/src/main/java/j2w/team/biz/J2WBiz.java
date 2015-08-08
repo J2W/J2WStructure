@@ -8,6 +8,8 @@ import j2w.team.biz.exception.J2WArgumentException;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WNullPointerException;
 import j2w.team.biz.exception.J2WIndexOutOfException;
+import j2w.team.biz.exception.J2WUINullPointerException;
+import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.http.J2WRestAdapter;
@@ -126,7 +128,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	private  <T> void checkUINotNull(T reference, String errorMessageTemplate) {
-		J2WCheckUtils.checkNotNull(reference, errorMessageTemplate);
+		J2WCheckUtils.checkUINotNull(reference, errorMessageTemplate);
 
 	}
 
@@ -173,6 +175,9 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	/** 检查异常 **/
 	@Override public void checkError(String methodName, J2WBizException j2WBizException) {
+		if(j2WBizException instanceof J2WUINullPointerException){
+			return;
+		}
 		j2WBizException.printStackTrace();
 	}
 
