@@ -6,5 +6,6 @@
     <dimen name="icon_indicator_img">10dp</dimen>
     <dimen name="dialog_title">6dp</dimen>
     <dimen name="dialog_msg">4dp</dimen>
-
+    <integer name="blur_dialog_animation_duration">300</integer>
+    <bool name="blur_dialog_has_bottom_navigation_bar">true</bool>
 </resources>
