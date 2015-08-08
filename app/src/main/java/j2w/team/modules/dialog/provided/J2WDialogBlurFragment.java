@@ -1,9 +1,10 @@
-package j2w.team.modules.dialog;
+package j2w.team.modules.dialog.provided;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import j2w.team.modules.dialog.blur.BlurDialogEngine;
+import j2w.team.view.J2WDialogFragment;
 
 /**
  * @创建人 sky
@@ -12,13 +13,13 @@ import j2w.team.modules.dialog.blur.BlurDialogEngine;
  */
 public abstract class J2WDialogBlurFragment extends J2WDialogFragment {
 
+	private static final String	TAG								= J2WDialogBlurFragment.class.getSimpleName();
+
 	public static final String	BUNDLE_KEY_DOWN_SCALE_FACTOR	= "bundle_key_down_scale_factor";
 
 	public static final String	BUNDLE_KEY_BLUR_RADIUS			= "bundle_key_blur_radius";
 
-	private static final String	TAG								= J2WDialogBlurFragment.class.getSimpleName();
-
-	private BlurDialogEngine	mBlurEngine;
+	private BlurDialogEngine mBlurEngine;
 
 	private boolean				mDebugEnable;
 

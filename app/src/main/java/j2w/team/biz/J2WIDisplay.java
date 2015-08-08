@@ -11,6 +11,7 @@ import j2w.team.view.J2WActivity;
  * @创建时间 15/7/11 下午2:40
  * @类描述 统一控制TitleBar、Drawer以及所有Activity和Fragment跳转
  */
+@Impl(J2WDisplay.class)
 public interface J2WIDisplay {
 
 	/**

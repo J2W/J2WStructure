@@ -4,6 +4,7 @@ import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
 
 /**
@@ -108,6 +109,8 @@ public final class J2WBizUtils {
 			iDisplay = (T) implDisplay;
 			if (iView instanceof J2WFragment) {
 				iDisplay.initDisplay((J2WActivity) ((J2WFragment) iView).getActivity());
+			} else if (iView instanceof J2WDialogFragment) {
+				iDisplay.initDisplay((J2WActivity) ((J2WDialogFragment) iView).getActivity());
 			} else {
 				iDisplay.initDisplay((J2WActivity) iView);
 			}

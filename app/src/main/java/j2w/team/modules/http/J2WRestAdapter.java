@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
-import j2w.team.modules.dialog.provided.ProgressDailogFragment;
 import j2w.team.modules.http.converter.GsonConverter;
 import j2w.team.modules.http.converter.J2WConverter;
 import j2w.team.view.model.J2WConstants;
