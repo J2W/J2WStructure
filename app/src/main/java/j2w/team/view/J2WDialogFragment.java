@@ -379,6 +379,12 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		return this;
 	}
 
+	@Override public DialogFragment show(FragmentManager fragmentManager, Fragment mTargetFragment) {
+		this.setTargetFragment(mTargetFragment, mRequestCode);
+		show(fragmentManager, this.getClass().getSimpleName());
+		return this;
+	}
+
 	@Override public DialogFragment show(FragmentManager fragmentManager, Fragment mTargetFragment, int mRequestCode) {
 		this.setTargetFragment(mTargetFragment, mRequestCode);
 		show(fragmentManager, this.getClass().getSimpleName());
@@ -399,6 +405,14 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, int mRequestCode) {
 		this.mRequestCode = mRequestCode;
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.add(this, this.getClass().getSimpleName());
+		ft.commitAllowingStateLoss();
+		return this;
+	}
+
+	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment) {
+		this.setTargetFragment(mTargetFragment, mRequestCode);
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		ft.add(this, this.getClass().getSimpleName());
 		ft.commitAllowingStateLoss();
