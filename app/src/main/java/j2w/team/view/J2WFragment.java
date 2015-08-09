@@ -30,6 +30,8 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  */
 public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implements View.OnTouchListener {
 
+	private boolean	targetActivity;
+
 	/**
 	 * 定制
 	 *
@@ -166,6 +168,24 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		}
 		// 恢复初始化
 		listRefreshing(false);
+	}
+
+	/**
+	 * 是否设置目标活动
+	 *
+	 * @return
+	 */
+	public boolean isTargetActivity() {
+		return targetActivity;
+	}
+
+	/**
+	 * 设置目标活动
+	 * 
+	 * @param targetActivity
+	 */
+	public void setTargetActivity(boolean targetActivity) {
+		this.targetActivity = targetActivity;
 	}
 
 	/**

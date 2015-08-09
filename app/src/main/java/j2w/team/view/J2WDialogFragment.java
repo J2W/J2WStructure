@@ -1,5 +1,6 @@
 package j2w.team.view;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -57,6 +58,8 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	/** 显示调度对象 **/
 	private D					display				= null;
 
+	private boolean				targetActivity;
+
 	/**
 	 * 定制
 	 *
@@ -89,6 +92,15 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 */
 	protected boolean isCancel() {
 		return true;
+	}
+
+	/**
+	 * 是否设置目标活动
+	 * 
+	 * @return
+	 */
+	public boolean isTargetActivity() {
+		return targetActivity;
 	}
 
 	/**
@@ -391,6 +403,19 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		return this;
 	}
 
+	@Override public DialogFragment show(FragmentManager fragmentManager, Activity activity) {
+		this.targetActivity = true;
+		show(fragmentManager, this.getClass().getSimpleName());
+		return this;
+	}
+
+	@Override public DialogFragment show(FragmentManager fragmentManager, Activity activity, int mRequestCode) {
+		this.targetActivity = true;
+		this.mRequestCode = mRequestCode;
+		show(fragmentManager, this.getClass().getSimpleName());
+		return this;
+	}
+
 	/**
 	 * 显示碎片-不保存activity状态
 	 *
@@ -421,6 +446,23 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment, int mRequestCode) {
 		this.setTargetFragment(mTargetFragment, mRequestCode);
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.add(this, this.getClass().getSimpleName());
+		ft.commitAllowingStateLoss();
+		return this;
+	}
+
+	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Activity activity) {
+		this.targetActivity = true;
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+		ft.add(this, this.getClass().getSimpleName());
+		ft.commitAllowingStateLoss();
+		return this;
+	}
+
+	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Activity activity, int mRequestCode) {
+		this.targetActivity = true;
+		this.mRequestCode = mRequestCode;
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		ft.add(this, this.getClass().getSimpleName());
 		ft.commitAllowingStateLoss();

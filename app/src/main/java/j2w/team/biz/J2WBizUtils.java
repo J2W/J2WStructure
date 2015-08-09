@@ -66,16 +66,27 @@ public final class J2WBizUtils {
 		Object obj = null;
 		try {
 			if (iView instanceof J2WFragment) {
-				final Fragment targetFragment = ((J2WFragment)iView).getTargetFragment();
-				if(targetFragment != null){
+				J2WFragment j2WFragment = (J2WFragment) iView;
+				final Fragment targetFragment = j2WFragment.getTargetFragment();
+				if (targetFragment != null) {
 					iView = (V) targetFragment;
+				}else{
+					if(j2WFragment.isTargetActivity()){
+						iView = (V) j2WFragment.getActivity();
+					}
 				}
 			} else if (iView instanceof J2WDialogFragment) {
-				final Fragment targetFragment = ((J2WDialogFragment)iView).getTargetFragment();
-				if(targetFragment != null){
+				J2WDialogFragment j2WDialogFragment = (J2WDialogFragment) iView;
+				final Fragment targetFragment = j2WDialogFragment.getTargetFragment();
+				if (targetFragment != null) {
 					iView = (V) targetFragment;
+				}else{
+					if(j2WDialogFragment.isTargetActivity()){
+						iView = (V) j2WDialogFragment.getActivity();
+					}
 				}
 			}
+
 			// 获得接口数组
 			Class<?>[] interfaces = iView.getClass().getInterfaces();
 			// 如果没有实现接口，获取父类接口
@@ -152,7 +163,7 @@ public final class J2WBizUtils {
 			((T) display).initDisplay((J2WActivity) ((J2WFragment) obj).getActivity());
 		} else if (obj instanceof J2WDialogFragment) {
 			((T) display).initDisplay((J2WActivity) ((J2WDialogFragment) obj).getActivity());
-		}else {
+		} else {
 			((T) display).initDisplay((J2WActivity) obj);
 		}
 		/** 动态代理 - UI **/

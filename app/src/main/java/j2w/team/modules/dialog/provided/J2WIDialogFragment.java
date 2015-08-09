@@ -1,5 +1,6 @@
 package j2w.team.modules.dialog.provided;
 
+import android.app.Activity;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +25,10 @@ public interface J2WIDialogFragment {
 
 	DialogFragment show(FragmentManager fragmentManager, Fragment mTargetFragment, int mRequestCode);
 
+	DialogFragment show(FragmentManager fragmentManager, Activity activity);
+
+	DialogFragment show(FragmentManager fragmentManager, Activity activity, int mRequestCode);
+
 	/**
 	 * 显示碎片-不保存activity状态
 	 *
@@ -36,4 +41,8 @@ public interface J2WIDialogFragment {
 	DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment);
 
 	DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment, int mRequestCode);
+
+	DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Activity activity);
+
+	DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Activity activity, int mRequestCode);
 }
