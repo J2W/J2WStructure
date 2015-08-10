@@ -124,6 +124,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	// 功能
 	void layoutContent() {
+		if(layoutContent  == null){
+			return;
+		}
 		changeShowAnimation(layoutLoading, false);
 		changeShowAnimation(layoutEmpty, false);
 		changeShowAnimation(layoutBizError, false);
@@ -132,11 +135,14 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutLoading() {
+		if(layoutLoading  == null){
+			return;
+		}
 		changeShowAnimation(layoutEmpty, false);
 		changeShowAnimation(layoutBizError, false);
 		changeShowAnimation(layoutHttpError, false);
 		changeShowAnimation(layoutContent, false);
-		if (layoutLoading == null) {
+		if (layoutLoading == null && vsLoading != null) {
 			layoutLoading = vsLoading.inflate();
 			J2WCheckUtils.checkNotNull(layoutLoading, "无法根据布局文件ID,获取layoutLoading");
 		}
@@ -144,6 +150,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutEmpty() {
+		if(layoutEmpty  == null){
+			return;
+		}
 		changeShowAnimation(layoutBizError, false);
 		changeShowAnimation(layoutHttpError, false);
 		changeShowAnimation(layoutContent, false);
@@ -152,6 +161,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutBizError() {
+		if(layoutBizError  == null){
+			return;
+		}
 		changeShowAnimation(layoutEmpty, false);
 		changeShowAnimation(layoutHttpError, false);
 		changeShowAnimation(layoutContent, false);
@@ -160,6 +172,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutHttpError() {
+		if(layoutHttpError  == null){
+			return;
+		}
 		changeShowAnimation(layoutEmpty, false);
 		changeShowAnimation(layoutBizError, false);
 		changeShowAnimation(layoutContent, false);
@@ -829,35 +844,43 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		contentRoot.addView(layoutContent, layoutParams);
 
 		// 进度条
+
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
-		J2WCheckUtils.checkArgument(layoutLoadingId > 0, "进度错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
-		vsLoading = new ViewStub(mContext);
-		vsLoading.setLayoutResource(layoutLoadingId);
-		contentRoot.addView(vsLoading, layoutParams);
+		if(layoutLoadingId > 0){
+			vsLoading = new ViewStub(mContext);
+			vsLoading.setLayoutResource(layoutLoadingId);
+			contentRoot.addView(vsLoading, layoutParams);
+		}
+
 
 		// 空布局
 		layoutEmptyId = layoutEmptyId > 0 ? layoutEmptyId : J2WHelper.getInstance().layoutEmpty();
-		J2WCheckUtils.checkArgument(layoutEmptyId > 0, "空状态布局Id不能为空,重写公共布局Application.layoutEmpty 或者 在Buider.layout里设置");
-		layoutEmpty = mInflater.inflate(layoutEmptyId, null, false);
-		J2WCheckUtils.checkNotNull(layoutEmpty, "无法根据布局文件ID,获取layoutEmpty");
-		contentRoot.addView(layoutEmpty, layoutParams);
-		layoutEmpty.setVisibility(View.GONE);
+		if(layoutEmptyId > 0){
+			layoutEmpty = mInflater.inflate(layoutEmptyId, null, false);
+			J2WCheckUtils.checkNotNull(layoutEmpty, "无法根据布局文件ID,获取layoutEmpty");
+			contentRoot.addView(layoutEmpty, layoutParams);
+			layoutEmpty.setVisibility(View.GONE);
+		}
+
 
 		// 业务错误布局
 		layoutBizErrorId = layoutBizErrorId > 0 ? layoutBizErrorId : J2WHelper.getInstance().layoutBizError();
-		J2WCheckUtils.checkArgument(layoutBizErrorId > 0, "业务错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
-		layoutBizError = mInflater.inflate(layoutBizErrorId, null, false);
-		J2WCheckUtils.checkNotNull(layoutBizError, "无法根据布局文件ID,获取layoutBizError");
-		contentRoot.addView(layoutBizError, layoutParams);
-		layoutBizError.setVisibility(View.GONE);
+		if(layoutBizErrorId > 0) {
+			layoutBizError = mInflater.inflate(layoutBizErrorId, null, false);
+			J2WCheckUtils.checkNotNull(layoutBizError, "无法根据布局文件ID,获取layoutBizError");
+			contentRoot.addView(layoutBizError, layoutParams);
+			layoutBizError.setVisibility(View.GONE);
+		}
 
 		// 网络错误布局
 		layoutHttpErrorId = layoutHttpErrorId > 0 ? layoutHttpErrorId : J2WHelper.getInstance().layoutHttpError();
-		J2WCheckUtils.checkArgument(layoutHttpErrorId > 0, "网络错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
-		layoutHttpError = mInflater.inflate(layoutHttpErrorId, null, false);
-		J2WCheckUtils.checkNotNull(layoutHttpError, "无法根据布局文件ID,获取layoutHttpError");
-		contentRoot.addView(layoutHttpError, layoutParams);
-		layoutHttpError.setVisibility(View.GONE);
+		if(layoutHttpErrorId > 0) {
+			J2WCheckUtils.checkArgument(layoutHttpErrorId > 0, "网络错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
+			layoutHttpError = mInflater.inflate(layoutHttpErrorId, null, false);
+			J2WCheckUtils.checkNotNull(layoutHttpError, "无法根据布局文件ID,获取layoutHttpError");
+			contentRoot.addView(layoutHttpError, layoutParams);
+			layoutHttpError.setVisibility(View.GONE);
+		}
 	}
 
 	private void detachLayout() {
