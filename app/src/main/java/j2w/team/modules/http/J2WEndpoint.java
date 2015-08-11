@@ -10,13 +10,13 @@ public abstract class J2WEndpoint {
 		checkNotNull(url, "url == null");
 		return new J2WEndpoint() {
 
-			@Override public String url() {
+			@Override public String url(String clazzName) {
 				return url;
 			}
 		};
 	}
 
-	public abstract String url();
+	public abstract String url(String clazzName);
 
 	/**
 	 * 检查是否为空

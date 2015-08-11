@@ -9,6 +9,11 @@ public interface J2WRequestInterceptor {
 
 	interface RequestFacade {
 
+		/** 添加路径. */
+		void addUrl(String value);
+
+		void addEncodedUrl(String value);
+
 		/** 向请求添加标题。这不会取代任何现有的标题. */
 		void addHeader(String name, String value);
 

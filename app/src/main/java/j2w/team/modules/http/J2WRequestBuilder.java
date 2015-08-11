@@ -61,7 +61,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 	private StringBuilder			queryParams;
 
 	/** 方法名 **/
-	private String			methodName;
+	private String					methodName;
 
 	J2WRequestBuilder(String apiUrl, J2WMethodInfo methodInfo, J2WConverter converter) {
 		/**
@@ -85,6 +85,35 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 		}
 		/** 判断方法是否是异步 **/
 		async = methodInfo.executionType == J2WMethodInfo.ExecutionType.ASYNC;
+	}
+
+	@Override public void addUrl(String value) {
+		if (value == null) {
+			throw new IllegalArgumentException("参数名称不能为空");
+		}
+		try {
+			StringBuilder stringBuilder = new StringBuilder(relativeUrl);
+			stringBuilder.append(value);
+			relativeUrl = stringBuilder.toString();
+
+			String encodedValue = URLEncoder.encode(relativeUrl, "UTF-8");
+
+			// http 编码规范-任何+号都以空格 %20 代替
+			encodedValue = encodedValue.replace("+", "%20");
+
+			relativeUrl = encodedValue;
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("无法转换路径参数  UTF-8:" + value, e);
+		}
+	}
+
+	@Override public void addEncodedUrl(String value) {
+		if (value == null) {
+			throw new IllegalArgumentException("参数名称不能为空");
+		}
+		StringBuilder stringBuilder = new StringBuilder(relativeUrl);
+		stringBuilder.append(value);
+		relativeUrl = stringBuilder.toString();
 	}
 
 	@Override public void addHeader(String name, String value) {
@@ -217,7 +246,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 			throw new IllegalArgumentException("参数名称不能为空");
 		}
 		if (value == null) {
-			throw new IllegalArgumentException("Path 参数  \"" + name + "\" 值不能唯恐");
+			throw new IllegalArgumentException("Path 参数  \"" + name + "\" 值不能为空");
 		}
 		try {
 			if (urlEncodeValue) {

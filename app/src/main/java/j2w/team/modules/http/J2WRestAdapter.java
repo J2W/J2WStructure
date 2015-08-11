@@ -1,7 +1,5 @@
 package j2w.team.modules.http;
 
-import android.support.v4.app.FragmentManager;
-
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -17,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.http.converter.GsonConverter;
 import j2w.team.modules.http.converter.J2WConverter;
@@ -47,9 +44,6 @@ public class J2WRestAdapter {
 	// 错误
 	private J2WErrorHandler									errorHandler;
 
-	// 接口缓存
-	private Class											mService;
-
 	/**
 	 * 构造器
 	 *
@@ -77,7 +71,7 @@ public class J2WRestAdapter {
 	 * @return
 	 */
 	public <T> T create(Class<T> service) {
-		return create(service, null);
+		return create(service, service.getSimpleName());
 	}
 
 	/**
@@ -94,8 +88,6 @@ public class J2WRestAdapter {
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
 		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), tag);
-		// 缓存当前接口
-		mService =  J2WCheckUtils.isEmpty(tag) ? service : null;
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
@@ -133,7 +125,6 @@ public class J2WRestAdapter {
 				client.cancel(methodString);
 			}
 		}
-		mService = null;
 	}
 
 	/**
@@ -155,7 +146,6 @@ public class J2WRestAdapter {
 			String methodString = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
 			client.cancel(methodString);
 		}
-		mService = null;
 	}
 
 	/**
@@ -166,16 +156,6 @@ public class J2WRestAdapter {
 			cancel(clazz);
 		}
 	}
-
-	/**
-	 * 接口
-	 *
-	 * @return
-	 */
-	public Class getService() {
-		return mService;
-	}
-
 	/**
 	 * 执行同步请求
 	 *
@@ -369,7 +349,7 @@ public class J2WRestAdapter {
 	 */
 	Request createRequest(J2WMethodInfo methodInfo, String requestTag, Object[] args) {
 		// 获取url
-		String serverUrl = j2WEndpoint.url();
+		String serverUrl = j2WEndpoint.url(requestTag);
 		// 编辑请求
 		J2WRequestBuilder requestBuilder = new J2WRequestBuilder(serverUrl, methodInfo, converter);
 		// 设置参数
