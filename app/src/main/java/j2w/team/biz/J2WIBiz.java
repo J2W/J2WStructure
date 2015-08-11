@@ -10,11 +10,6 @@ import j2w.team.modules.http.J2WRestAdapter;
 public interface J2WIBiz {
 
 	/**
-	 * 获取网络
-	 */
-	J2WRestAdapter http();
-
-	/**
 	 * View层 回调引用
 	 *
 	 * @param ui

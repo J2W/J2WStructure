@@ -70,8 +70,8 @@ public final class J2WBizUtils {
 				final Fragment targetFragment = j2WFragment.getTargetFragment();
 				if (targetFragment != null) {
 					iView = (V) targetFragment;
-				}else{
-					if(j2WFragment.isTargetActivity()){
+				} else {
+					if (j2WFragment.isTargetActivity()) {
 						iView = (V) j2WFragment.getActivity();
 					}
 				}
@@ -80,8 +80,8 @@ public final class J2WBizUtils {
 				final Fragment targetFragment = j2WDialogFragment.getTargetFragment();
 				if (targetFragment != null) {
 					iView = (V) targetFragment;
-				}else{
-					if(j2WDialogFragment.isTargetActivity()){
+				} else {
+					if (j2WDialogFragment.isTargetActivity()) {
 						iView = (V) j2WDialogFragment.getActivity();
 					}
 				}
@@ -146,6 +146,36 @@ public final class J2WBizUtils {
 			throw new IllegalArgumentException(String.valueOf(displayClass) + "，访问权限异常！");
 		}
 		return iDisplay;
+	}
+
+	/**
+	 * 根据接口创建 实现类
+	 * 
+	 * @param vClass
+	 * @param <V>
+	 * @return
+	 */
+	public static final <V> V createImpl(Class<V> vClass) {
+		V v;
+		Class clazz = null;
+		J2WCheckUtils.checkNotNull(vClass, "接口不能为空～");
+		/** 加载类 **/
+		try {
+			// 获取注解
+			Impl impl = vClass.getAnnotation(Impl.class);
+			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
+			clazz = Class.forName(impl.value().getName());
+			v = (V) clazz.newInstance();
+		} catch (ClassNotFoundException e) {
+			throw new IllegalArgumentException(String.valueOf(clazz) + "，没有找到业务类！");
+		} catch (java.lang.InstantiationException e) {
+			throw new IllegalArgumentException(String.valueOf(clazz) + "，实例化异常！");
+		} catch (IllegalAccessException e) {
+			throw new IllegalArgumentException(String.valueOf(clazz) + "，访问权限异常！");
+		}
+
+		return v;
+
 	}
 
 	/**
