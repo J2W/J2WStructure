@@ -116,8 +116,25 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return display;
 	}
 
+	/**
+	 * 获取调度
+	 * 
+	 * @param e
+	 * @param <E>
+	 * @return
+	 */
 	protected <E extends J2WIDisplay> E display(Class<E> e) {
 		return (E) display;
+	}
+
+	/**
+	 * 获取activity
+	 * 
+	 * @param <A>
+	 * @return
+	 */
+	protected <A extends J2WActivity> A activity() {
+		return (A) getActivity();
 	}
 
 	/**
