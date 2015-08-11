@@ -303,7 +303,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 				if (currentPageIndex == -1) {
 					currentPageIndex = 0;
 					oldView = customView.getChildAt(showItems[0]);
-					oldPosition = showItems[0];
+					oldPosition = 0;
 				} else {
 					viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
 				}
@@ -319,7 +319,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 				}
 
 				oldView = customView.getChildAt(showItems[position]);// 缓存视图
-				oldPosition = showItems[position]; // 缓存坐标
+				oldPosition = position; // 缓存坐标
 			}
 		}
 	}
