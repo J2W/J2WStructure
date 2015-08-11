@@ -7,6 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -60,6 +61,10 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 	private int							type;
 
+	private LinearLayout				customView;
+
+	int[]								showItems;
+
 	/**
 	 * 初始化
 	 * 
@@ -70,8 +75,8 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param pager
 	 *            内容
 	 */
-	public J2WViewPagerAdapter(int type, FragmentManager fragmentManager, PagerSlidingTabStrip tabs, J2WViewPager pager, J2WViewPagerChangeListener j2WViewPagerChangeListener,
-			J2WTabsCustomListener j2WTabsCustomListener) {
+	public J2WViewPagerAdapter(int type, FragmentManager fragmentManager, PagerSlidingTabStrip tabs, LinearLayout customView, int[] showItems, J2WViewPager pager,
+			J2WViewPagerChangeListener j2WViewPagerChangeListener, J2WTabsCustomListener j2WTabsCustomListener) {
 		this.type = type;
 		this.fragmentManager = fragmentManager;
 		this.tabs = tabs;
@@ -83,6 +88,8 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		}
 		this.j2WViewPagerChangeListener = j2WViewPagerChangeListener;
 		this.j2WTabsCustomListener = j2WTabsCustomListener;
+		this.customView = customView;
+		this.showItems = showItems;
 	}
 
 	/**
@@ -244,12 +251,20 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param positionOffsetPixels
 	 */
 	@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		if (tabs == null) {
-			return;
-		}
-		left = tabs.tabsContainer.getChildAt(position);
-		right = tabs.tabsContainer.getChildAt(position + 1);
 
+		if (tabs != null) {
+			left = tabs.tabsContainer.getChildAt(position);
+			right = tabs.tabsContainer.getChildAt(position + 1);
+		} else {
+			if (customView != null) {
+				left = customView.getChildAt(showItems[position]);
+				if (position + 1 < getCount()) {
+					right = customView.getChildAt(showItems[position + 1]);
+				}else{
+					right = null;
+				}
+			}
+		}
 		if (j2WViewPagerChangeListener != null) {
 			j2WViewPagerChangeListener.onExtraPageScrolled(left, right, positionOffset, positionOffsetPixels);
 		}
@@ -261,29 +276,52 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param position
 	 */
 	@Override public void onPageSelected(int position) {
-		if (tabs == null) {
-			return;
-		}
-		if (currentPageIndex == -1) {
-			currentPageIndex = 0;
-			oldView = tabs.tabsContainer.getChildAt(0);
-			oldPosition = 0;
+		if (tabs != null) {
+
+			if (currentPageIndex == -1) {
+				currentPageIndex = 0;
+				oldView = tabs.tabsContainer.getChildAt(0);
+				oldPosition = 0;
+			} else {
+				viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
+			}
+
+			// 调用切换前Fargment的onStop()
+			if (viewPagerDatas[position].fragment.isAdded()) {
+				viewPagerDatas[position].fragment.onVisible(); // 调用切换后Fargment的onResume()
+			}
+
+			currentPageIndex = position;
+			if (j2WViewPagerChangeListener != null) {
+				j2WViewPagerChangeListener.onExtraPageSelected(tabs.tabsContainer.getChildAt(position), oldView, position, oldPosition);
+			}
+
+			oldView = tabs.tabsContainer.getChildAt(position);// 缓存视图
+			oldPosition = position; // 缓存坐标
 		} else {
-			viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
-		}
+			if (customView != null) {
+				if (currentPageIndex == -1) {
+					currentPageIndex = 0;
+					oldView = customView.getChildAt(showItems[0]);
+					oldPosition = showItems[0];
+				} else {
+					viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
+				}
 
-		// 调用切换前Fargment的onStop()
-		if (viewPagerDatas[position].fragment.isAdded()) {
-			viewPagerDatas[position].fragment.onVisible(); // 调用切换后Fargment的onResume()
-		}
+				// 调用切换前Fargment的onStop()
+				if (viewPagerDatas[position].fragment.isAdded()) {
+					viewPagerDatas[position].fragment.onVisible(); // 调用切换后Fargment的onResume()
+				}
 
-		currentPageIndex = position;
-		if (j2WViewPagerChangeListener != null) {
-			j2WViewPagerChangeListener.onExtraPageSelected(tabs.tabsContainer.getChildAt(position), oldView, position, oldPosition);
-		}
+				currentPageIndex = position;
+				if (j2WViewPagerChangeListener != null) {
+					j2WViewPagerChangeListener.onExtraPageSelected(customView.getChildAt(showItems[position]), oldView, position, oldPosition);
+				}
 
-		oldView = tabs.tabsContainer.getChildAt(position);// 缓存视图
-		oldPosition = position; // 缓存坐标
+				oldView = customView.getChildAt(showItems[position]);// 缓存视图
+				oldPosition = showItems[position]; // 缓存坐标
+			}
+		}
 	}
 
 	/**

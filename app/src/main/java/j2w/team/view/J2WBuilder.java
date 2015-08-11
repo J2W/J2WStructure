@@ -124,7 +124,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	// 功能
 	void layoutContent() {
-		if(layoutContent  == null){
+		if (layoutContent == null) {
 			return;
 		}
 		changeShowAnimation(layoutLoading, false);
@@ -135,7 +135,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutLoading() {
-		if(layoutLoading  == null){
+		if (layoutLoading == null) {
 			return;
 		}
 		changeShowAnimation(layoutEmpty, false);
@@ -150,7 +150,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutEmpty() {
-		if(layoutEmpty  == null){
+		if (layoutEmpty == null) {
 			return;
 		}
 		changeShowAnimation(layoutBizError, false);
@@ -161,7 +161,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutBizError() {
-		if(layoutBizError  == null){
+		if (layoutBizError == null) {
 			return;
 		}
 		changeShowAnimation(layoutEmpty, false);
@@ -172,7 +172,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutHttpError() {
-		if(layoutHttpError  == null){
+		if (layoutHttpError == null) {
 			return;
 		}
 		changeShowAnimation(layoutEmpty, false);
@@ -566,6 +566,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private PagerSlidingTabStrip		tabs;
 
+	private LinearLayout				customView;
+
+	private int[]						showItems;
+
 	private J2WViewPagerChangeListener	viewPagerChangeListener;
 
 	private J2WTabsCustomListener		j2WTabsCustomListener;
@@ -573,6 +577,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private J2WViewPagerAdapter			j2WViewPagerAdapter;
 
 	private FragmentManager				fragmentManager;
+
+	private int							customLayout;
 
 	/**
 	 * ViewPager tabs 类型
@@ -628,6 +634,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	int getTabsType() {
 		return tabsType;
+	}
+
+	int getCustomLayout() {
+		return customLayout;
 	}
 
 	int getViewPageroffScreenPageLimit() {
@@ -793,6 +803,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.tabsIsCurrentItemAnimation = tabsIsCurrentItemAnimation;
 	}
 
+	public void setTabsCustomLayout(int customLayout,int... showItems) {
+		this.customLayout = customLayout;
+		this.showItems = showItems;
+	}
+
 	/**
 	 * 创建
 	 *
@@ -846,26 +861,24 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		// 进度条
 
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
-		if(layoutLoadingId > 0){
+		if (layoutLoadingId > 0) {
 			vsLoading = new ViewStub(mContext);
 			vsLoading.setLayoutResource(layoutLoadingId);
 			contentRoot.addView(vsLoading, layoutParams);
 		}
 
-
 		// 空布局
 		layoutEmptyId = layoutEmptyId > 0 ? layoutEmptyId : J2WHelper.getInstance().layoutEmpty();
-		if(layoutEmptyId > 0){
+		if (layoutEmptyId > 0) {
 			layoutEmpty = mInflater.inflate(layoutEmptyId, null, false);
 			J2WCheckUtils.checkNotNull(layoutEmpty, "无法根据布局文件ID,获取layoutEmpty");
 			contentRoot.addView(layoutEmpty, layoutParams);
 			layoutEmpty.setVisibility(View.GONE);
 		}
 
-
 		// 业务错误布局
 		layoutBizErrorId = layoutBizErrorId > 0 ? layoutBizErrorId : J2WHelper.getInstance().layoutBizError();
-		if(layoutBizErrorId > 0) {
+		if (layoutBizErrorId > 0) {
 			layoutBizError = mInflater.inflate(layoutBizErrorId, null, false);
 			J2WCheckUtils.checkNotNull(layoutBizError, "无法根据布局文件ID,获取layoutBizError");
 			contentRoot.addView(layoutBizError, layoutParams);
@@ -874,7 +887,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 		// 网络错误布局
 		layoutHttpErrorId = layoutHttpErrorId > 0 ? layoutHttpErrorId : J2WHelper.getInstance().layoutHttpError();
-		if(layoutHttpErrorId > 0) {
+		if (layoutHttpErrorId > 0) {
 			J2WCheckUtils.checkArgument(layoutHttpErrorId > 0, "网络错误布局Id不能为空,重写公共布局Application.layoutBizError 或者 在Buider.layout里设置");
 			layoutHttpError = mInflater.inflate(layoutHttpErrorId, null, false);
 			J2WCheckUtils.checkNotNull(layoutHttpError, "无法根据布局文件ID,获取layoutHttpError");
@@ -1122,10 +1135,13 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				tabs.setTabMarginsLeftRight(getTabsMargins());
 				// 设置padding
 				tabs.setTabPaddingLeftRight(getTabsPaddingLeftRight());
+			} else if (getCustomLayout() > 0) {
+				customView = ButterKnife.findById(view, getCustomLayout());
+				J2WCheckUtils.checkNotNull(customView, "无法根据布局文件ID,获取tabs");
 			}
 			J2WCheckUtils.checkNotNull(fragmentManager, "fragmentManager不能为空");
 
-			j2WViewPagerAdapter = new J2WViewPagerAdapter(getTabsType(), fragmentManager, tabs, j2WViewPager, viewPagerChangeListener, j2WTabsCustomListener);
+			j2WViewPagerAdapter = new J2WViewPagerAdapter(getTabsType(), fragmentManager, tabs, customView,showItems, j2WViewPager, viewPagerChangeListener, j2WTabsCustomListener);
 
 			j2WViewPager.setAdapter(j2WViewPagerAdapter);
 			// 间隔距离
