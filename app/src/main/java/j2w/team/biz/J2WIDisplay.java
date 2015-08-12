@@ -41,6 +41,15 @@ public interface J2WIDisplay {
 	/**
 	 * 跳转
 	 * 
+	 * @param clazz
+	 * @param fragment
+	 * @param requestCode
+	 */
+	void intentFromFragment(Class clazz, Fragment fragment, int requestCode);
+
+	/**
+	 * 跳转
+	 * 
 	 * @param intent
 	 * @param fragment
 	 * @param requestCode
