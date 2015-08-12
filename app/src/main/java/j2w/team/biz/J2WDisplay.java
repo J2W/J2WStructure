@@ -124,7 +124,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivityForResult(intent, requestCode);
 	}
 
-	protected void intentForResult(Intent intent, Fragment fragment, int requestCode) {
+	@Override public void intentFromFragment(Intent intent, Fragment fragment, int requestCode) {
 		if (intent == null || fragment == null) {
 			return;
 		}

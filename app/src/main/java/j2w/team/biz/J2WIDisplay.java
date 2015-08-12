@@ -1,7 +1,9 @@
 package j2w.team.biz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import j2w.team.view.J2WActivity;
@@ -16,6 +18,7 @@ public interface J2WIDisplay {
 
 	/**
 	 * 获取上下文
+	 * 
 	 * @return
 	 */
 	Context context();
@@ -35,4 +38,12 @@ public interface J2WIDisplay {
 	 */
 	FragmentManager manager();
 
+	/**
+	 * 跳转
+	 * 
+	 * @param intent
+	 * @param fragment
+	 * @param requestCode
+	 */
+	void intentFromFragment(Intent intent, Fragment fragment, int requestCode);
 }
