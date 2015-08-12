@@ -1,8 +1,11 @@
 package j2w.team.biz;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import j2w.team.common.log.L;
@@ -79,8 +82,8 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivity(intent);
 	}
 
-	protected void intent(Class clazz, int requestCode) {
-		if (clazz == null) {
+	protected void intent(Intent intent) {
+		if (intent == null) {
 			return;
 		}
 		L.tag("J2WDisplay");
@@ -88,14 +91,57 @@ public class J2WDisplay implements J2WIDisplay {
 		stringBuilder.append("从 ");
 		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
-		stringBuilder.append(clazz.getSimpleName());
+		stringBuilder.append(intent.getComponent().getClassName());
 		L.i(stringBuilder.toString());
-		Intent intent = new Intent();
-		intent.setClass(mJ2WActivity, clazz);
+		mJ2WActivity.startActivity(intent);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN) protected void intent(Intent intent, Bundle bundle) {
+		if (intent == null) {
+			return;
+		}
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("从 ");
+		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
+		stringBuilder.append(" 跳转到 ");
+		stringBuilder.append(intent.getComponent().getClassName());
+		L.i(stringBuilder.toString());
+		mJ2WActivity.startActivity(intent, bundle);
+	}
+
+	protected void intentForResult(Intent intent, int requestCode) {
+		if (intent == null) {
+			return;
+		}
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("从 ");
+		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
+		stringBuilder.append(" 跳转到 ");
+		stringBuilder.append(intent.getComponent().getClassName());
+		L.i(stringBuilder.toString());
 		mJ2WActivity.startActivityForResult(intent, requestCode);
 	}
 
-	protected void intent(Class clazz, Bundle bundle, int requestCode) {
+	protected void intentForResult(Intent intent, Fragment fragment, int requestCode) {
+		if (intent == null || fragment == null) {
+			return;
+		}
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("从 ");
+		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
+		stringBuilder.append(" 跳转到 ");
+		stringBuilder.append(intent.getComponent().getClassName());
+		stringBuilder.append(" Tag :");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+
+		L.i(stringBuilder.toString());
+		mJ2WActivity.startActivityFromFragment(fragment, intent, requestCode);
+	}
+
+	protected void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		if (clazz == null) {
 			return;
 		}
