@@ -1,7 +1,9 @@
 package j2w.team.biz;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -58,7 +60,6 @@ public class J2WDisplay implements J2WIDisplay {
 	protected void intent(Class clazz, Bundle bundle) {
 		Intent intent = new Intent();
 		intent.setClass(mJ2WActivity, clazz);
-		intent.putExtras(bundle);
 		intent(intent, bundle);
 	}
 
@@ -67,11 +68,7 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	protected void intent(Intent intent, Bundle options) {
-		if (options != null) {
-			intentForResult(intent, options, -1);
-		} else {
-			intentForResult(intent, -1);
-		}
+		intentForResult(intent, options, -1);
 	}
 
 	protected void intentForResult(Class clazz, int requestCode) {
@@ -81,7 +78,6 @@ public class J2WDisplay implements J2WIDisplay {
 	protected void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
 		intent.setClass(mJ2WActivity, clazz);
-		intent.putExtras(bundle);
 		intentForResult(intent, bundle, requestCode);
 	}
 
@@ -89,7 +85,7 @@ public class J2WDisplay implements J2WIDisplay {
 		intentForResult(intent, null, requestCod);
 	}
 
-	protected void intentForResult(Intent intent, Bundle options, int requestCode) {
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN) protected void intentForResult(Intent intent, Bundle options, int requestCode) {
 		J2WCheckUtils.checkNotNull(intent, "intent不能为空～");
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
@@ -98,6 +94,9 @@ public class J2WDisplay implements J2WIDisplay {
 		stringBuilder.append(" 跳转到 ");
 		stringBuilder.append(intent.getComponent().getClassName());
 		L.i(stringBuilder.toString());
-		mJ2WActivity.startActivityForResult(intent, requestCode, options);
+		if (options != null) {
+			intent.putExtras(options);
+		}
+		mJ2WActivity.startActivityForResult(intent, requestCode);
 	}
 }

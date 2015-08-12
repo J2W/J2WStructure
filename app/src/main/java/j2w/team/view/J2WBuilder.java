@@ -787,11 +787,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.tabsItemBackground = tabsItemBackground;
 	}
 
-	public void setTabsMargins(int tabsMargins) {
+	public void tabsMargins(int tabsMargins) {
 		this.tabsMargins = tabsMargins;
 	}
 
-	public void setTabsPaddingLeftRight(int tabsPaddingLeftRight) {
+	public void tabsPaddingLeftRight(int tabsPaddingLeftRight) {
 		this.tabsPaddingLeftRight = tabsPaddingLeftRight;
 	}
 
@@ -803,7 +803,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.tabsIsCurrentItemAnimation = tabsIsCurrentItemAnimation;
 	}
 
-	public void setTabsCustomLayout(int customLayout,int... showItems) {
+	public void tabsCustomLayout(int customLayout,int... showItems) {
 		this.customLayout = customLayout;
 		this.showItems = showItems;
 	}

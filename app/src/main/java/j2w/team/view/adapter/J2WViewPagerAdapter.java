@@ -266,7 +266,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 			}
 		}
 		if (j2WViewPagerChangeListener != null) {
-			j2WViewPagerChangeListener.onExtraPageScrolled(left, right, positionOffset, positionOffsetPixels);
+			j2WViewPagerChangeListener.onExtraPageScrolled(position,left, right, positionOffset, positionOffsetPixels);
 		}
 	}
 

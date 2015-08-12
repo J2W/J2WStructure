@@ -21,7 +21,7 @@ public interface J2WViewPagerChangeListener {
 	 * @param i2
 	 *            偏移量
 	 */
-	void onExtraPageScrolled(View left, View right, float v, int i2);
+	void onExtraPageScrolled(int position, View left, View right, float v, int i2);
 
 	/**
 	 * ViewPager 滑动事件 - 滑动完成
