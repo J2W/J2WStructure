@@ -1,6 +1,7 @@
 package j2w.team.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -213,6 +214,18 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 			getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
 		}
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * 回调
+	 * 
+	 * @param requestCode
+	 * @param resultCode
+	 * @param data
+	 */
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
 	}
 
 	/********************** Actionbar业务代码 *********************/
