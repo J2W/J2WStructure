@@ -66,6 +66,7 @@ public final class J2WBizHandler<T> extends BaseHandler<T> {
 		boolean isUI = j2WBiz.checkUI();
 
 		if (!isUI) {
+			j2WBiz.detachUI();
 			j2WBiz = null;
 			t = null;
 		}

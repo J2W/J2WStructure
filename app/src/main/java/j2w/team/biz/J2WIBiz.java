@@ -30,6 +30,11 @@ public interface J2WIBiz {
 	boolean checkUI();
 
 	/**
+	 * 销毁UI
+	 */
+	void detachUI();
+
+	/**
 	 * 异常捕捉
 	 * 
 	 * @param methodName

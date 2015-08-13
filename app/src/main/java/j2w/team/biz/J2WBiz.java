@@ -108,22 +108,12 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	public void detach() {
 		checkUI = false;
-		if (stackHttp != null) {
+		if(stackHttp != null){
 			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
 				J2WHelper.httpAdapter().cancel(entry.getValue());
 			}
 			stackHttp.clear();
-			stackHttp = null;
 		}
-
-
-		if (stack != null) {
-
-			stack.clear();
-			stack = null;
-		}
-		display = null;
-		view = null;
 	}
 
 	/**
@@ -133,6 +123,21 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	@Override public boolean checkUI() {
 		return checkUI;
+	}
+
+	/**
+	 * 销毁UI
+	 */
+	@Override public void detachUI() {
+		for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
+			J2WHelper.httpAdapter().cancel(entry.getValue());
+		}
+		stackHttp.clear();
+		stackHttp = null;
+		stack.clear();
+		stack = null;
+		display = null;
+		view = null;
 	}
 
 	/**
