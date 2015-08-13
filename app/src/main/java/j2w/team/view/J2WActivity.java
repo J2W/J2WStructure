@@ -173,10 +173,15 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 */
 	synchronized final void detachBiz() {
 		for (Object b : stackBiz.values()) {
-			((J2WIBiz) b).detach();
+			J2WIBiz j2WIBiz = (J2WIBiz) b;
+			if (j2WIBiz != null) {
+				j2WIBiz.detach();
+			}
 		}
-		stackBiz.clear();
-		stackBiz = null;
+		if(stackBiz != null){
+			stackBiz.clear();
+			stackBiz = null;
+		}
 		display = null;
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {

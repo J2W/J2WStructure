@@ -17,13 +17,10 @@ public class J2WRestHandler extends BaseHandler {
 
 	private final J2WRestAdapter				j2WRestAdapter;
 
-	private final String						tag;
-
-	public J2WRestHandler(J2WRestAdapter j2WRestAdapter, Map<Method, J2WMethodInfo> methodDetailsCache, String tag) {
+	public J2WRestHandler(J2WRestAdapter j2WRestAdapter, Map<Method, J2WMethodInfo> methodDetailsCache) {
 		super("");
 		this.j2WRestAdapter = j2WRestAdapter;
 		this.methodDetailsCache = methodDetailsCache;
-		this.tag = tag;
 	}
 
 	@SuppressWarnings("unchecked")//
@@ -37,8 +34,10 @@ public class J2WRestHandler extends BaseHandler {
 
 		// 获取方法
 		J2WMethodInfo methodInfo = J2WRestAdapter.getMethodInfo(methodDetailsCache, method);
+
+		String methodString = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
 		// 创建请求
-		Request request = j2WRestAdapter.createRequest(methodInfo, tag, args);
+		Request request = j2WRestAdapter.createRequest(methodInfo, methodString, args);
 
 		switch (methodInfo.executionType) {
 			case SYNC:

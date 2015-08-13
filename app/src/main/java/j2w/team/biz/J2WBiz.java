@@ -4,16 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import j2w.team.J2WHelper;
-import j2w.team.biz.exception.J2WArgumentException;
 import j2w.team.biz.exception.J2WBizException;
-import j2w.team.biz.exception.J2WNullPointerException;
-import j2w.team.biz.exception.J2WIndexOutOfException;
 import j2w.team.biz.exception.J2WUINullPointerException;
-import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WError;
-import j2w.team.modules.http.J2WRestAdapter;
-import j2w.team.view.J2WActivity;
 
 /**
  * Created by sky on 15/2/1. 中央处理器
@@ -33,6 +27,8 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	/** View层 **/
 	private Map<String, Object>	stack			= null;
 
+	private Map<String, Class>	stackHttp		= null;
+
 	/**
 	 * 初始化 - 业务
 	 *
@@ -42,19 +38,21 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	void initPresenter(Object iView, Object object) {
 		this.view = iView;
 		this.stack = new HashMap<>();
+		this.stackHttp = new HashMap<>();
 		this.display = J2WBizUtils.createDisplay(object, iView, this);// 设置显示调度
 	}
 
 	/**
 	 * 获取网络
 	 */
-	protected  <H> H http(Class<H> hClass) {
+	protected <H> H http(Class<H> hClass) {
 		checkNotNull(hClass, "请指定View接口～");
 		Object obj = stack.get(hClass.getSimpleName());
 		if (obj == null) {// 如果没有索索到
 			obj = J2WHelper.httpAdapter().create(hClass);
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(hClass.getSimpleName(), obj);
+			stackHttp.put(hClass.getSimpleName(), hClass);
 		}
 		return (H) obj;
 	}
@@ -110,6 +108,22 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	public void detach() {
 		checkUI = false;
+		if (stackHttp != null) {
+			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
+				J2WHelper.httpAdapter().cancel(entry.getValue());
+			}
+			stackHttp.clear();
+			stackHttp = null;
+		}
+
+
+		if (stack != null) {
+
+			stack.clear();
+			stack = null;
+		}
+		display = null;
+		view = null;
 	}
 
 	/**
@@ -119,16 +133,6 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	@Override public boolean checkUI() {
 		return checkUI;
-	}
-
-	/**
-	 * 销毁UI
-	 */
-	@Override public void detachUI() {
-		stack.clear();
-		stack = null;
-		view = null;
-		display = null;
 	}
 
 	/**

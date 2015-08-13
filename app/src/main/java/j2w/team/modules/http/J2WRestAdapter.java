@@ -6,7 +6,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -71,23 +70,12 @@ public class J2WRestAdapter {
 	 * @return
 	 */
 	public <T> T create(Class<T> service) {
-		return create(service, service.getSimpleName());
-	}
-
-	/**
-	 * 创建代理
-	 *
-	 * @param service
-	 * @param <T>
-	 * @return
-	 */
-	public <T> T create(Class<T> service, String tag) {
 		// 验证是否是接口
 		DynamicProxyUtils.validateServiceClass(service);
 		// 验证是否继承其他接口
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
-		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), tag);
+		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service));
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
@@ -156,6 +144,7 @@ public class J2WRestAdapter {
 			cancel(clazz);
 		}
 	}
+
 	/**
 	 * 执行同步请求
 	 *
