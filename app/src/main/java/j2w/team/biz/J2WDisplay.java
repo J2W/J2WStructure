@@ -21,12 +21,19 @@ public class J2WDisplay implements J2WIDisplay {
 
 	protected J2WActivity	mJ2WActivity;
 
+	private Context			context;
+
 	@Override public Context context() {
-		return mJ2WActivity;
+		return context;
 	}
 
 	@Override public void initDisplay(J2WActivity j2WActivity) {
 		mJ2WActivity = j2WActivity;
+		context = j2WActivity;
+	}
+
+	@Override public void initDisplay(Context context) {
+		this.context = context;
 	}
 
 	@Override public FragmentManager manager() {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import j2w.team.J2WHelper;
 import j2w.team.biz.exception.J2WBizException;
+import j2w.team.biz.exception.J2WHTTPException;
 import j2w.team.biz.exception.J2WUINullPointerException;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WError;
@@ -108,7 +109,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	public void detach() {
 		checkUI = false;
-		if(stackHttp != null){
+		if (stackHttp != null) {
 			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
 				J2WHelper.httpAdapter().cancel(entry.getValue());
 			}
@@ -185,6 +186,13 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	protected void checkPositionIndex(int index, int size, String desc) {
 		J2WCheckUtils.checkPositionIndex(index, size, desc);
+	}
+
+	/**
+	 * 抛异常
+	 */
+	protected void throwBizHttp(String msg) {
+		throw new J2WHTTPException(msg);
 	}
 
 	/**

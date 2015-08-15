@@ -97,6 +97,29 @@ public final class DynamicProxyUtils {
 	}
 
 	/**
+	 * 代理类 - Service视图
+	 *
+	 * @param d
+	 * @param <D>
+	 * @return
+	 */
+	public static <D> D newProxyServiceUI(D d) {
+		// 获取Classloader
+		ClassLoader loader = d.getClass().getClassLoader();
+		// 获得接口数组
+		Class<?>[] interfaces = d.getClass().getInterfaces();
+		// 如果没有实现接口，获取父类接口
+		if (interfaces.length == 0) {
+			interfaces = d.getClass().getSuperclass().getInterfaces();
+		}
+		// 获得Handler - 这里可以替换成其他代理方法
+		InvocationHandler invocationHandler = new J2WServiceHandler<>(d);
+		// 获取代理接口
+		D b = newProxyInstance(loader, interfaces, invocationHandler);
+		return b;
+	}
+
+	/**
 	 * 验证类 - 判断是否是一个接口
 	 * 
 	 * @param service

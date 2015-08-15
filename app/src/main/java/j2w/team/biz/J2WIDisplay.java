@@ -32,6 +32,13 @@ public interface J2WIDisplay {
 	void initDisplay(J2WActivity activity);
 
 	/**
+	 * 设置 上下文
+	 * 
+	 * @param context
+	 */
+	void initDisplay(Context context);
+
+	/**
 	 * 获取碎片管理
 	 * 
 	 * @return
