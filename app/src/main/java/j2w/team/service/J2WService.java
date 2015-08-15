@@ -40,7 +40,7 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	/**
 	 * 运行
 	 */
-	protected abstract void running();
+	protected abstract void running(Intent intent, int flags, int startId);
 
 	@Override public void onCreate() {
 		super.onCreate();
@@ -51,7 +51,7 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	}
 
 	@Override public int onStartCommand(Intent intent, int flags, int startId) {
-		running();
+		running(intent, flags, startId);
 		return START_NOT_STICKY;
 	}
 
