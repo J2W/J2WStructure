@@ -255,7 +255,7 @@ public class ContactManage implements J2WIContact {
 	 */
 	@Override public int getVersion() {
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, " desc limit 0,1 ", null, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, null, null, Contacts._ID + " desc limit 0,1 ");
 		idCursor.moveToFirst();
 		int contactId = idCursor.getInt(idCursor.getColumnIndex(Contacts._ID));
 		return contactId;
