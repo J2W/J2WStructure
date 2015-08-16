@@ -6,15 +6,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract;
+import android.provider.ContactsContract.*;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.*;
 import android.provider.ContactsContract.Contacts;
 
 /**
@@ -37,6 +35,8 @@ public class ContactUtils {
 		this.context = context;
 	}
 
+	private static final String[]	CONTACTS_ID			= new String[] { Contacts._ID };
+
 	private static final String[]	CONTACTS			= new String[] { Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY };
 
 	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID };
@@ -48,8 +48,8 @@ public class ContactUtils {
 	 * @return
 	 */
 	public Bitmap getContactPhotoByContactId(String id) {
-		Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, id);
-		InputStream photoInputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), contactUri);
+		Uri contactUri = Uri.withAppendedPath(Contacts.CONTENT_URI, id);
+		InputStream photoInputStream = Contacts.openContactPhotoInputStream(context.getContentResolver(), contactUri);
 		Bitmap photo = BitmapFactory.decodeStream(photoInputStream);
 		if (photo != null) {
 			return photo;
@@ -64,8 +64,8 @@ public class ContactUtils {
 	 * @param partialName
 	 * @return
 	 */
-	public PhoneContact getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail) {
-		PhoneContact contact = new PhoneContact();
+	public ContactModel getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail) {
+		ContactModel contact = new ContactModel();
 
 		ContentResolver contentResolver = context.getContentResolver();
 		Cursor c = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { partialName }, null);
@@ -94,8 +94,8 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<PhoneContact> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail) {
-		List<PhoneContact> contacts = new ArrayList<>();
+	public List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail) {
+		List<ContactModel> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("%");
@@ -104,12 +104,12 @@ public class ContactUtils {
 
 		ContentResolver contentResolver = context.getContentResolver();
 		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
-		PhoneContact contact = null;
+		ContactModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
 				String name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
-				contact = contact == null ? new PhoneContact() : (PhoneContact) contact.clone();
+				contact = contact == null ? new ContactModel() : (ContactModel) contact.clone();
 				contact.contactId = contactId;
 				contact.displayName = name;
 				contact.phoneNumbers = getContactPhoneNumbersById(contactId);
@@ -132,31 +132,32 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<PhoneContact> getAllPhoneContacts(boolean isPhone, boolean isEmail) {
+	public List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail) {
 		return getAllPhoneContacts("", isPhone, isEmail);
 	}
 
 	/**
 	 * 获取所有联系人
-	 * 
+	 *
 	 * @return
 	 */
-	public List<PhoneContact> getAllPhoneContacts() {
-		List<PhoneContact> contacts = new ArrayList<>();
+	public List<ContactModel> getAllPhoneContacts() {
+		List<ContactModel> contacts = new ArrayList<>();
 
 		Cursor phoneCursor = context.getContentResolver().query(Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
 		if (phoneCursor.moveToFirst()) {
-			PhoneContact contact = null;
+			ContactModel contact = null;
 
 			do {
-				contact = contact == null ? new PhoneContact() : (PhoneContact) contact.clone();
+				contact = contact == null ? new ContactModel() : (ContactModel) contact.clone();
 				contact.contactId = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.CONTACT_ID));
 				contact.displayName = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.DISPLAY_NAME));
-				String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.NUMBER));
-				String phoneNumberType = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.TYPE));
-				Map<String, String> phoneNumbers = new HashMap<>();
-				phoneNumbers.put(phoneNumberType, phoneNumber);
-				contact.phoneNumbers = phoneNumbers;
+				ContactPhone item = new ContactPhone();
+				item.phone = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.NUMBER));
+				item.phoneType = phoneCursor.getInt(phoneCursor.getColumnIndex(Phone.TYPE));
+				List<ContactPhone> items = new ArrayList<>();
+				items.add(item);
+				contact.phoneNumbers = items;
 				contacts.add(contact);
 			} while (phoneCursor.moveToNext());
 		}
@@ -171,15 +172,16 @@ public class ContactUtils {
 	 * @param contactId
 	 * @return
 	 */
-	private Map<String, String> getContactPhoneNumbersById(String contactId) {
-		Map<String, String> phoneNumbers = new HashMap<>();
-
+	private List<ContactPhone> getContactPhoneNumbersById(String contactId) {
+		List<ContactPhone> phoneNumbers = new ArrayList<>();
+		ContactPhone item = null;
 		Cursor phoneCursor = context.getContentResolver().query(Phone.CONTENT_URI, new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?", new String[] { contactId }, null);
 		if (phoneCursor.moveToFirst()) {
 			do {
-				String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.NUMBER));
-				String phoneNumberType = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.TYPE));
-				phoneNumbers.put(phoneNumberType, phoneNumber);
+				item = item == null ? new ContactPhone() : (ContactPhone) item.clone();
+				item.phone = phoneCursor.getString(phoneCursor.getColumnIndex(Phone.NUMBER));
+				item.phoneType = phoneCursor.getInt(phoneCursor.getColumnIndex(Phone.TYPE));
+				phoneNumbers.add(item);
 			} while (phoneCursor.moveToNext());
 		}
 
@@ -193,21 +195,155 @@ public class ContactUtils {
 	 * @param contactId
 	 * @return
 	 */
-	private Map<String, String> getContactEmailByContactId(String contactId) {
-		Cursor emailCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?",
-				new String[] { contactId }, null);
-		Map<String, String> emails = new HashMap<>();
+	private List<ContactEmail> getContactEmailByContactId(String contactId) {
+		List<ContactEmail> emails = new ArrayList<>();
+		ContactEmail item = null;
+		Cursor emailCursor = context.getContentResolver().query(Email.CONTENT_URI, new String[] { Phone.NUMBER, Phone.TYPE }, Phone.CONTACT_ID + " = ?", new String[] { contactId }, null);
 		if (emailCursor.moveToFirst()) {
 			do {
-				String emailAddress = null;
-				String emailType = null;
-				emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
-				emailType = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-				emails.put(emailType, emailAddress);
+				item = item == null ? new ContactEmail() : (ContactEmail) item.clone();
+				item.emailAddress = emailCursor.getString(emailCursor.getColumnIndex(Email.ADDRESS));
+				item.emailType = emailCursor.getInt(emailCursor.getColumnIndex(Email.TYPE));
+				emails.add(item);
 			} while (emailCursor.moveToNext());
 		}
 		emailCursor.close();
 		return emails;
 	}
 
+	/**
+	 * 获取所有联系人 - 详情
+	 *
+	 * @return
+	 */
+	public List<ContactDetailModel> getAllPhoneDetailContacts(String userName, boolean isPhone, boolean isEmail) {
+		List<ContactDetailModel> contacts = new ArrayList<>();
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("%");
+		stringBuilder.append(userName);
+		stringBuilder.append("%");
+
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
+		ContactDetailModel contact = null;
+		if (idCursor.moveToFirst()) {
+			do {
+				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				contact = getContactDataByContactId(contactId);
+				contacts.add(contact);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
+	/**
+	 * 获取所有联系人 - 详情
+	 *
+	 * @return
+	 */
+	public List<ContactDetailModel> getAllPhoneDetailContacts(boolean isPhone, boolean isEmail) {
+		return getAllPhoneDetailContacts("", isPhone, isEmail);
+	}
+
+	private ContactDetailModel getContactDataByContactId(String id) {
+		ContactDetailModel contactModel = new ContactDetailModel();
+		contactModel.contactId = id;
+		contactModel.photo = getContactPhotoByContactId(id);
+
+		// 邮件
+		List<ContactEmail> emailAddresses = null;
+		ContactEmail contactEmail = null;
+		// 电话
+		List<ContactPhone> phoneNumbers = null;
+		ContactPhone contactPhone = null;
+		// 网站
+		List<ContactWebsite> contactWebsites = null;
+		ContactWebsite contactWebsite = null;
+		// IM
+		List<ContactIM> contactIMs = null;
+		ContactIM contactIM = null;
+		// 地址
+		List<ContactAddress> contactAddresses = null;
+		ContactAddress contactAddress = null;
+		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] { Data.MIMETYPE, Data.DATA1, Data.DATA2 }, Data.CONTACT_ID + " = ?", new String[] { id }, null);
+
+		if (contactInfoCursor.moveToFirst()) {
+			do {
+				String mimeType = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.MIMETYPE));
+				String value = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.DATA1));
+				int type = contactInfoCursor.getInt(contactInfoCursor.getColumnIndex(Data.DATA2));
+
+				if (mimeType.contains("/name")) {// 名称
+					contactModel.name = value;
+				} else if (mimeType.contains("/organization")) {// 公司
+					contactModel.organization = value;
+				} else if (mimeType.contains("/phone_v2")) {// 手机
+					if (phoneNumbers == null) {
+						phoneNumbers = new ArrayList<>();
+					}
+					contactPhone = contactPhone == null ? new ContactPhone() : (ContactPhone) contactPhone.clone();
+					contactPhone.phone = value;
+					contactPhone.phoneType = type;
+					phoneNumbers.add(contactPhone);
+				} else if (mimeType.contains("/email_v2")) {// 邮箱
+					if (emailAddresses == null) {
+						emailAddresses = new ArrayList<>();
+					}
+					contactEmail = contactEmail == null ? new ContactEmail() : (ContactEmail) contactEmail.clone();
+					contactEmail.emailAddress = value;
+					contactEmail.emailType = type;
+					emailAddresses.add(contactEmail);
+				} else if (mimeType.contains("/website")) {// 网站
+					if (contactWebsites == null) {
+						contactWebsites = new ArrayList<>();
+					}
+					contactWebsite = contactWebsite == null ? new ContactWebsite() : (ContactWebsite) contactWebsite.clone();
+					contactWebsite.websit = value;
+					contactWebsite.type = type;
+					contactWebsites.add(contactWebsite);
+				} else if (mimeType.contains("/im")) {// IM
+					if (contactIMs == null) {
+						contactIMs = new ArrayList<>();
+					}
+					contactIM = contactIM == null ? new ContactIM() : (ContactIM) contactIM.clone();
+					contactIM.im = value;
+					contactIM.type = type;
+					contactIMs.add(contactIM);
+				} else if (mimeType.contains("/nickname")) {// 昵称
+					contactModel.nickname = value;
+				} else if (mimeType.contains("/postal-address_v2")) {// 地址
+					if (contactAddresses == null) {
+						contactAddresses = new ArrayList<>();
+					}
+					contactAddress = contactAddress == null ? new ContactAddress() : (ContactAddress) contactAddress.clone();
+					contactAddress.address = value;
+					contactAddress.type = type;
+					contactAddresses.add(contactAddress);
+				} else if (mimeType.contains("/sip_address")) {// 联网电话
+					contactModel.networkPhone = value;
+				} else if (mimeType.contains("/contact_event")) {// 生日
+					contactModel.birthday = value;
+				} else if (mimeType.contains("/note")) {// 备注
+					contactModel.note = value;
+				} else if (mimeType.contains("/lunarBirthday")) {// 农历生日
+					contactModel.lunarBirthday = value;
+				}
+
+			} while (contactInfoCursor.moveToNext());
+			// 邮件
+			contactModel.emailAddresses = emailAddresses;
+			// 电话
+			contactModel.phoneNumbers = phoneNumbers;
+			// 网站
+			contactModel.contactWebsites = contactWebsites;
+			// IM
+			contactModel.contactIMs = contactIMs;
+			// 地址
+			contactModel.contactAddresses = contactAddresses;
+		}
+		contactInfoCursor.close();
+		return contactModel;
+	}
 }
