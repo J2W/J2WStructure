@@ -1,4 +1,4 @@
-package j2w.team.common.utils.contact;
+package j2w.team.modules.contact;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -15,23 +15,24 @@ import java.util.List;
 import android.provider.ContactsContract.CommonDataKinds.*;
 import android.provider.ContactsContract.Contacts;
 
+import j2w.team.modules.contact.bean.ContactAddress;
+import j2w.team.modules.contact.bean.ContactDetailModel;
+import j2w.team.modules.contact.bean.ContactEmail;
+import j2w.team.modules.contact.bean.ContactIM;
+import j2w.team.modules.contact.bean.ContactModel;
+import j2w.team.modules.contact.bean.ContactPhone;
+import j2w.team.modules.contact.bean.ContactWebsite;
+
 /**
  * @创建人 sky
  * @创建时间 15/5/4 下午5:26
  * @类描述 电话本工具类
  */
-public class ContactUtils {
+public class ContactManage implements J2WIContact {
 
-	private static final ContactUtils	instance	= new ContactUtils();
+	private final Context	context;
 
-	private Context						context;
-
-	public static ContactUtils getInstance(Context context) {
-		instance.setContext(context);
-		return instance;
-	}
-
-	public void setContext(Context context) {
+	public ContactManage(Context context) {
 		this.context = context;
 	}
 
@@ -47,7 +48,7 @@ public class ContactUtils {
 	 * @param id
 	 * @return
 	 */
-	public Bitmap getContactPhotoByContactId(String id) {
+	@Override public Bitmap getContactPhotoByContactId(String id) {
 		Uri contactUri = Uri.withAppendedPath(Contacts.CONTENT_URI, id);
 		InputStream photoInputStream = Contacts.openContactPhotoInputStream(context.getContentResolver(), contactUri);
 		Bitmap photo = BitmapFactory.decodeStream(photoInputStream);
@@ -64,7 +65,7 @@ public class ContactUtils {
 	 * @param partialName
 	 * @return
 	 */
-	public ContactModel getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail) {
+	@Override public ContactModel getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail) {
 		ContactModel contact = new ContactModel();
 
 		ContentResolver contentResolver = context.getContentResolver();
@@ -94,7 +95,7 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail) {
+	@Override public List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail) {
 		List<ContactModel> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -132,7 +133,7 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail) {
+	@Override public List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail) {
 		return getAllPhoneContacts("", isPhone, isEmail);
 	}
 
@@ -141,7 +142,7 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<ContactModel> getAllPhoneContacts() {
+	@Override public List<ContactModel> getAllPhoneContacts() {
 		List<ContactModel> contacts = new ArrayList<>();
 
 		Cursor phoneCursor = context.getContentResolver().query(Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
@@ -216,7 +217,7 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<ContactDetailModel> getAllPhoneDetailContacts(String userName, boolean isPhone, boolean isEmail) {
+	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(String userName, boolean isPhone, boolean isEmail) {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -243,8 +244,21 @@ public class ContactUtils {
 	 *
 	 * @return
 	 */
-	public List<ContactDetailModel> getAllPhoneDetailContacts(boolean isPhone, boolean isEmail) {
+	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(boolean isPhone, boolean isEmail) {
 		return getAllPhoneDetailContacts("", isPhone, isEmail);
+	}
+
+	/**
+	 * 获取版本
+	 * 
+	 * @return
+	 */
+	@Override public int getVersion() {
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, " desc limit 0,1 ", null, null);
+		idCursor.moveToFirst();
+		int contactId = idCursor.getInt(idCursor.getColumnIndex(Contacts._ID));
+		return contactId;
 	}
 
 	private ContactDetailModel getContactDataByContactId(String id) {

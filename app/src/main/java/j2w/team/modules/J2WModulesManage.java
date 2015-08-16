@@ -4,6 +4,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.modules.contact.ContactManage;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.fresco.FrescoTools;
@@ -19,27 +20,29 @@ import j2w.team.modules.toast.J2WToast;
  */
 public class J2WModulesManage {
 
-	private final J2WApplication	mJ2WApplication;			// 全局上下文
+	private final J2WApplication	mJ2WApplication;		// 全局上下文
 
-	private EventBus				bus;						// 事件总线
+	private EventBus				bus;					// 事件总线
 
-	private J2WRestAdapter.Builder	j2WRestAdapterBuilder;		// 网络适配器编辑器
+	private J2WRestAdapter.Builder	j2WRestAdapterBuilder;	// 网络适配器编辑器
 
-	private J2WScreenManager		j2WScreenManager;			// Activity堆栈管理
+	private J2WScreenManager		j2WScreenManager;		// Activity堆栈管理
 
-	private J2WThreadPoolManager	j2WThreadPoolManager;		// 线程池管理
+	private J2WThreadPoolManager	j2WThreadPoolManager;	// 线程池管理
 
-	private SynchronousExecutor		synchronousExecutor;		// 主线程
+	private SynchronousExecutor		synchronousExecutor;	// 主线程
 
-	private J2WDownloadManager		j2WDownloadManager;		// 下载和上传管理
+	private J2WDownloadManager		j2WDownloadManager;	// 下载和上传管理
 
-	private J2WRestAdapter			mJ2WRestAdapter;			// 网络适配器
+	private J2WRestAdapter			mJ2WRestAdapter;		// 网络适配器
 
-	private FrescoTools				frescoTools;				// 图片架构
+	private FrescoTools				frescoTools;			// 图片架构
 
-	private ImagePipelineConfig		imagePipelineConfig;		// frescoTools图片架构配置
+	private ImagePipelineConfig		imagePipelineConfig;	// frescoTools图片架构配置
 
-	private J2WToast				j2WToast;					// 提示信息
+	private J2WToast				j2WToast;				// 提示信息
+
+	private ContactManage			contactManage;			// 通讯录
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
@@ -122,5 +125,12 @@ public class J2WModulesManage {
 			j2WToast = new J2WToast(mJ2WApplication);
 		}
 		return j2WToast;
+	}
+
+	public ContactManage getContactManage() {
+		if (contactManage == null) {
+			contactManage = new ContactManage(mJ2WApplication);
+		}
+		return contactManage;
 	}
 }

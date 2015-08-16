@@ -1,4 +1,4 @@
-package j2w.team.common.utils.contact;
+package j2w.team.modules.contact.bean;
 
 import android.graphics.Bitmap;
 

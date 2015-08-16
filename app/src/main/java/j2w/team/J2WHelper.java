@@ -5,6 +5,7 @@ import android.os.Looper;
 import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.J2WModulesManage;
+import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.fresco.IFresco;
 import j2w.team.modules.http.J2WRestAdapter;
@@ -128,12 +129,21 @@ public class J2WHelper {
 	}
 
 	/**
+	 * 通讯录管理器
+	 * 
+	 * @return
+	 */
+	public static final J2WIContact contact() {
+		return mJ2WModulesManage.getContactManage();
+	}
+
+	/**
 	 * 提交Event
 	 *
 	 * @param object
 	 */
 	public static final void eventPost(final Object object) {
-		boolean isMainLooper = Looper.getMainLooper().getThread() != Thread.currentThread();
+		boolean isMainLooper = isMainLooperThread();
 
 		if (isMainLooper) {
 			mainLooper().execute(new Runnable() {
@@ -145,5 +155,14 @@ public class J2WHelper {
 		} else {
 			eventBus().post(object);
 		}
+	}
+
+	/**
+	 * 判断是否是主线程
+	 * 
+	 * @return true 主线程 false 子线程
+	 */
+	public static final boolean isMainLooperThread() {
+		return Looper.getMainLooper().getThread() != Thread.currentThread();
 	}
 }
