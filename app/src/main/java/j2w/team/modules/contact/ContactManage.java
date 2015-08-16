@@ -217,7 +217,7 @@ public class ContactManage implements J2WIContact {
 	 *
 	 * @return
 	 */
-	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(String userName, boolean isPhone, boolean isEmail) {
+	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(String userName) {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -244,8 +244,32 @@ public class ContactManage implements J2WIContact {
 	 *
 	 * @return
 	 */
-	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(boolean isPhone, boolean isEmail) {
-		return getAllPhoneDetailContacts("", isPhone, isEmail);
+	@Override public List<ContactDetailModel> getAllPhoneDetailContacts() {
+		return getAllPhoneDetailContacts("");
+	}
+
+	/**
+	 * 获取
+	 * 
+	 * @param version
+	 *            版本
+	 * @return
+	 */
+	@Override public List<ContactDetailModel> getAllPhoneDetailContacts(int version) {
+		List<ContactDetailModel> contacts = new ArrayList<>();
+
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts._ID + " > ?", new String[] { String.valueOf(version) }, null);
+		ContactDetailModel contact = null;
+		if (idCursor.moveToFirst()) {
+			do {
+				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				contact = getContactDataByContactId(contactId);
+				contacts.add(contact);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
 	}
 
 	/**

@@ -57,14 +57,21 @@ public interface J2WIContact {
 	 * 获取所有联系人 详情
 	 * 
 	 * @param userName
-	 * @param isPhone
-	 * @param isEmail
+	 *            名称
 	 * @return
 	 */
-	List<ContactDetailModel> getAllPhoneDetailContacts(String userName, boolean isPhone, boolean isEmail);
+	List<ContactDetailModel> getAllPhoneDetailContacts(String userName);
 
-	List<ContactDetailModel> getAllPhoneDetailContacts(boolean isPhone, boolean isEmail);
+	List<ContactDetailModel> getAllPhoneDetailContacts();
 
+	/**
+	 * 获取联系人 - 找出大于 ID 的数据
+	 * 
+	 * @param version
+	 *            版本
+	 * @return
+	 */
+	List<ContactDetailModel> getAllPhoneDetailContacts(int version);
 
 	int getVersion();
 }
