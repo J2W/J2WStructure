@@ -32,6 +32,14 @@ public class J2WDisplay implements J2WIDisplay {
 
 	private Toolbar				toolbar;
 
+	protected static final int	ACTIVITY		= 99999;
+
+	protected static final int	FRAGMENT		= 88888;
+
+	protected static final int	DIALOGFRAGMENT	= 77777;
+
+	private int					type;
+
 	@Override public Context context() {
 		return context;
 	}
@@ -40,6 +48,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity = j2WActivity;
 		context = j2WActivity;
 		toolbar = mJ2WActivity.toolbar();
+		type = ACTIVITY;
 	}
 
 	@Override public void initDisplay(J2WFragment fragment) {
@@ -47,6 +56,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity = (J2WActivity) fragment.getActivity();
 		context = mJ2WActivity;
 		toolbar = mJ2WFragment.toolbar();
+		type = FRAGMENT;
 	}
 
 	@Override public void initDisplay(J2WDialogFragment fragment) {
@@ -54,6 +64,7 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity = (J2WActivity) fragment.getActivity();
 		context = mJ2WActivity;
 		toolbar = mJ2WDialogFragment.toolbar();
+		type = DIALOGFRAGMENT;
 	}
 
 	@Override public void initDisplay(Context context) {
@@ -84,9 +95,30 @@ public class J2WDisplay implements J2WIDisplay {
 		mJ2WActivity.startActivityFromFragment(fragment, intent, requestCode);
 	}
 
-	protected Toolbar toolbar() {
+	protected Toolbar toolbar(int... types) {
+		if (types.length > 0) {
+			type = types[0];
+		}
+		switch (type) {
+			case DIALOGFRAGMENT:
+				toolbar = mJ2WDialogFragment.toolbar();
+				toolbar = toolbar == null ? mJ2WActivity.toolbar() : toolbar;
+			case FRAGMENT:
+				toolbar = mJ2WFragment.toolbar();
+				toolbar = toolbar == null ? mJ2WActivity.toolbar() : toolbar;
+				break;
+			case ACTIVITY:
+				toolbar = mJ2WActivity.toolbar();
+				break;
+		}
+
 		J2WCheckUtils.checkNotNull(toolbar, "标题栏没有打开，无法调用");
 		return toolbar;
+	}
+
+	protected J2WActivity activity() {
+		J2WCheckUtils.checkNotNull(mJ2WActivity, "无法获取Activity，编码问题");
+		return mJ2WActivity;
 	}
 
 	protected void intent(Class clazz) {
