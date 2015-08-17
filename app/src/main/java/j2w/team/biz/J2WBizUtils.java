@@ -134,7 +134,7 @@ public final class J2WBizUtils {
 			/** 赋值给接口 **/
 			iDisplay = (T) implDisplay;
 			if (iView instanceof J2WFragment) {
-				iDisplay.initDisplay((J2WActivity) ((J2WFragment) iView).getActivity());
+				iDisplay.initDisplay((J2WFragment) iView);
 			} else if (iView instanceof J2WDialogFragment) {
 				iDisplay.initDisplay((J2WActivity) ((J2WDialogFragment) iView).getActivity());
 			} else if (iView instanceof J2WService) {

@@ -278,7 +278,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	}
 
 	/********************** Actionbar业务代码 *********************/
-	protected Toolbar toolbar() {
+	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
 	}
 

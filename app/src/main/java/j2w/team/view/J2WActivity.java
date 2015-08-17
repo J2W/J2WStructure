@@ -235,23 +235,23 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/********************** Actionbar业务代码 *********************/
 
-	public void showContent() {
+	protected void showContent() {
 		j2WBuilder.layoutContent();
 	}
 
-	public void showLoading() {
+	protected void showLoading() {
 		j2WBuilder.layoutLoading();
 	}
 
-	public void showBizError() {
+	protected void showBizError() {
 		j2WBuilder.layoutBizError();
 	}
 
-	public void showEmpty() {
+	protected void showEmpty() {
 		j2WBuilder.layoutEmpty();
 	}
 
-	public void showHttpError() {
+	protected void showHttpError() {
 		j2WBuilder.layoutHttpError();
 	}
 
@@ -262,33 +262,33 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/********************** RecyclerView业务代码 *********************/
 
-	public HeaderRecyclerViewAdapterV1 adapterRecycler() {
+	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
 	/********************** ListView业务代码 *********************/
 
-	public void addListHeader() {
+	protected void addListHeader() {
 		j2WBuilder.addListHeader();
 	}
 
-	public void addListFooter() {
+	protected void addListFooter() {
 		j2WBuilder.addListFooter();
 	}
 
-	public void removeListHeader() {
+	protected void removeListHeader() {
 		j2WBuilder.removeListHeader();
 	}
 
-	public void removeListFooter() {
+	protected void removeListFooter() {
 		j2WBuilder.removeListFooter();
 	}
 
-	public void listRefreshing(boolean bool) {
+	protected void listRefreshing(boolean bool) {
 		j2WBuilder.listRefreshing(bool);
 	}
 
-	public void listLoadMoreOpen() {
+	protected void listLoadMoreOpen() {
 		j2WBuilder.loadMoreOpen();
 	}
 
@@ -302,7 +302,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/********************** ViewPager业务代码 *********************/
 
-	public J2WIViewPagerAdapter viewPagerAdapter() {
+	protected J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();
 	}
 }

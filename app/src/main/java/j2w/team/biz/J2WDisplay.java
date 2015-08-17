@@ -7,10 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
+import j2w.team.view.J2WFragment;
 
 /**
  * @创建人 sky
@@ -19,9 +22,15 @@ import j2w.team.view.J2WActivity;
  */
 public class J2WDisplay implements J2WIDisplay {
 
-	protected J2WActivity	mJ2WActivity;
+	private J2WActivity			mJ2WActivity;
 
-	private Context			context;
+	private Context				context;
+
+	private J2WFragment			mJ2WFragment;
+
+	private J2WDialogFragment	mJ2WDialogFragment;
+
+	private Toolbar				toolbar;
 
 	@Override public Context context() {
 		return context;
@@ -30,6 +39,21 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void initDisplay(J2WActivity j2WActivity) {
 		mJ2WActivity = j2WActivity;
 		context = j2WActivity;
+		toolbar = mJ2WActivity.toolbar();
+	}
+
+	@Override public void initDisplay(J2WFragment fragment) {
+		mJ2WFragment = fragment;
+		mJ2WActivity = (J2WActivity) fragment.getActivity();
+		context = mJ2WActivity;
+		toolbar = mJ2WFragment.toolbar();
+	}
+
+	@Override public void initDisplay(J2WDialogFragment fragment) {
+		mJ2WDialogFragment = fragment;
+		mJ2WActivity = (J2WActivity) fragment.getActivity();
+		context = mJ2WActivity;
+		toolbar = mJ2WDialogFragment.toolbar();
 	}
 
 	@Override public void initDisplay(Context context) {
@@ -58,6 +82,11 @@ public class J2WDisplay implements J2WIDisplay {
 
 		L.i(stringBuilder.toString());
 		mJ2WActivity.startActivityFromFragment(fragment, intent, requestCode);
+	}
+
+	protected Toolbar toolbar() {
+		J2WCheckUtils.checkNotNull(toolbar, "标题栏没有打开，无法调用");
+		return toolbar;
 	}
 
 	protected void intent(Class clazz) {

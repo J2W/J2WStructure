@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
+import j2w.team.view.J2WFragment;
 
 /**
  * @创建人 sky
@@ -30,6 +32,20 @@ public interface J2WIDisplay {
 	 *            activity
 	 */
 	void initDisplay(J2WActivity activity);
+
+	/**
+	 * 设置 fragment
+	 * 
+	 * @param fragment
+	 */
+	void initDisplay(J2WFragment fragment);
+
+	/**
+	 * 设置 dialogfragment
+	 * 
+	 * @param fragment
+	 */
+	void initDisplay(J2WDialogFragment fragment);
 
 	/**
 	 * 设置 上下文
