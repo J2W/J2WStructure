@@ -75,7 +75,7 @@ public class J2WRestAdapter {
 		// 验证是否继承其他接口
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
-		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service));
+		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service),service.getSimpleName());
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
@@ -336,9 +336,9 @@ public class J2WRestAdapter {
 	 *            参数
 	 * @return
 	 */
-	Request createRequest(J2WMethodInfo methodInfo, String requestTag, Object[] args) {
+	Request createRequest(J2WMethodInfo methodInfo,String serviceName, String requestTag, Object[] args) {
 		// 获取url
-		String serverUrl = j2WEndpoint.url(requestTag);
+		String serverUrl = j2WEndpoint.url(serviceName);
 		// 编辑请求
 		J2WRequestBuilder requestBuilder = new J2WRequestBuilder(serverUrl, methodInfo, converter);
 		// 设置参数
@@ -377,7 +377,7 @@ public class J2WRestAdapter {
 		synchronized (serviceMethodInfoCache) {
 			Map<Method, J2WMethodInfo> methodInfoCache = serviceMethodInfoCache.get(service);
 			if (methodInfoCache == null) {
-				methodInfoCache = new LinkedHashMap<Method, J2WMethodInfo>();
+				methodInfoCache = new LinkedHashMap<>();
 				serviceMethodInfoCache.put(service, methodInfoCache);
 			}
 			return methodInfoCache;

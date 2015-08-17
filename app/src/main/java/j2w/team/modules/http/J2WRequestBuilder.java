@@ -94,7 +94,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 		try {
 			StringBuilder stringBuilder = new StringBuilder(relativeUrl);
 			stringBuilder.append(value);
-			relativeUrl = stringBuilder.toString();
+			relativeUrl = stringBuilder.toString().replace("//","/");
 
 			String encodedValue = URLEncoder.encode(relativeUrl, "UTF-8");
 
@@ -113,7 +113,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 		}
 		StringBuilder stringBuilder = new StringBuilder(relativeUrl);
 		stringBuilder.append(value);
-		relativeUrl = stringBuilder.toString();
+		relativeUrl = stringBuilder.toString().replace("//","/");
 	}
 
 	@Override public void addHeader(String name, String value) {
