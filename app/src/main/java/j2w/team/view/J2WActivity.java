@@ -75,7 +75,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/** 添加到堆栈 **/
 		J2WHelper.screenHelper().pushActivity(this);
 		/** 初始化视图 **/
-		J2WHelper.getInstance().onCreate(this, savedInstanceState);
+		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
 		/** 初始化业务 **/
 		attachBiz();
 		/** 初始化视图组建 **/

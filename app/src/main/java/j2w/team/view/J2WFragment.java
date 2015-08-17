@@ -80,7 +80,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		initData(savedInstanceState);
+		initData(getArguments());
 	}
 
 	@Override public void onResume() {
