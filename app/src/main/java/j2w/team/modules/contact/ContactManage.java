@@ -128,6 +128,33 @@ public class ContactManage implements J2WIContact {
 		return contacts;
 	}
 
+	@Override public List<ContactModel> getAllPhoneContactsByContactId(int id, boolean isPhone, boolean isEmail) {
+		List<ContactModel> contacts = new ArrayList<>();
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts._ID + " = ?", new String[] { String.valueOf(id) }, null);
+		ContactModel contact = null;
+		if (idCursor.moveToFirst()) {
+			do {
+				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				String name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
+				contact = contact == null ? new ContactModel() : (ContactModel) contact.clone();
+				contact.contactId = contactId;
+				contact.displayName = name;
+				contact.phoneNumbers = getContactPhoneNumbersById(contactId);
+				if (isPhone) {
+					contact.photo = getContactPhotoByContactId(contactId);
+				}
+				if (isEmail) {
+					contact.emailAddresses = getContactEmailByContactId(contactId);
+				}
+				contacts.add(contact);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+
+		return contacts;
+	}
+
 	/**
 	 * 获取所有联系人
 	 *

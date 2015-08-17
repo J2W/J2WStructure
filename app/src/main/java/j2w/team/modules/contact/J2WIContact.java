@@ -49,6 +49,8 @@ public interface J2WIContact {
 	 */
 	List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail);
 
+	List<ContactModel> getAllPhoneContactsByContactId(int id, boolean isPhone, boolean isEmail);
+
 	List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail);
 
 	List<ContactModel> getAllPhoneContacts();
