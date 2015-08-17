@@ -79,7 +79,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/** 初始化业务 **/
 		attachBiz();
 		/** 初始化视图组建 **/
-		initData(savedInstanceState);
+		initData(getIntent().getExtras());
 	}
 
 	@Override protected void onStart() {
