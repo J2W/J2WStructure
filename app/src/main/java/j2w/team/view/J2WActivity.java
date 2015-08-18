@@ -230,7 +230,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	 */
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
+		/** 初始化业务 **/
+		attachBiz();
 	}
 
 	/********************** Actionbar业务代码 *********************/

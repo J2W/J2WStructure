@@ -25,7 +25,6 @@ public class J2WImgUtils {
 	 * @return
 	 */
 	@TargetApi(Build.VERSION_CODES.KITKAT) public static String getPath(final Context context, final Uri uri) {
-
 		final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
 		// DocumentProvider

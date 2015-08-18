@@ -1,5 +1,6 @@
 package j2w.team.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -216,6 +217,12 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		if (j2WBuilder.getToolbarMenuId() > 0) {
 			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
 		}
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		/** 初始化业务 **/
+		attachBiz();
 	}
 
 	/**
