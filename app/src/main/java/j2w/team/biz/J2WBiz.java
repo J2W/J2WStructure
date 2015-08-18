@@ -133,11 +133,18 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
 			J2WHelper.httpAdapter().cancel(entry.getValue());
 		}
-		stackHttp.clear();
-		stackHttp = null;
-		stack.clear();
-		stack = null;
-		display = null;
+		if (stackHttp != null) {
+			stackHttp.clear();
+			stackHttp = null;
+		}
+		if(stack != null){
+			stack.clear();
+			stack = null;
+		}
+		if(display != null){
+			display.detach();
+			display = null;
+		}
 		view = null;
 	}
 

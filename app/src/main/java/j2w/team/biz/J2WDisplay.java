@@ -14,6 +14,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
+import j2w.team.view.J2WView;
 
 /**
  * @创建人 sky
@@ -22,62 +23,39 @@ import j2w.team.view.J2WFragment;
  */
 public class J2WDisplay implements J2WIDisplay {
 
-	private J2WActivity			mJ2WActivity;
-
-	private Context				context;
-
-	private J2WFragment			mJ2WFragment;
-
-	private J2WDialogFragment	mJ2WDialogFragment;
-
-	private Toolbar				toolbar;
-
-	protected static final int	ACTIVITY		= 99999;
-
-	protected static final int	FRAGMENT		= 88888;
-
-	protected static final int	DIALOGFRAGMENT	= 77777;
-
-	private int					type;
+	private J2WView	j2WView;
 
 	@Override public Context context() {
-		return context;
+		return j2WView.context();
 	}
 
 	@Override public void initDisplay(J2WActivity j2WActivity) {
-		mJ2WActivity = j2WActivity;
-		context = j2WActivity;
-		toolbar = mJ2WActivity.toolbar();
-		type = ACTIVITY;
+		j2WView = new J2WView();
+		j2WView.initUI(j2WActivity);
 	}
 
 	@Override public void initDisplay(J2WFragment fragment) {
-		mJ2WFragment = fragment;
-		mJ2WActivity = (J2WActivity) fragment.getActivity();
-		context = mJ2WActivity;
-		toolbar = mJ2WFragment.toolbar();
-		type = FRAGMENT;
+		j2WView = new J2WView();
+		j2WView.initUI(fragment);
 	}
 
 	@Override public void initDisplay(J2WDialogFragment fragment) {
-		mJ2WDialogFragment = fragment;
-		mJ2WActivity = (J2WActivity) fragment.getActivity();
-		context = mJ2WActivity;
-		toolbar = mJ2WDialogFragment.toolbar();
-		type = DIALOGFRAGMENT;
+		j2WView = new J2WView();
+		j2WView.initUI(fragment);
 	}
 
 	@Override public void initDisplay(Context context) {
-		this.context = context;
+		j2WView = new J2WView();
+		j2WView.initUI(context);
 	}
 
 	@Override public FragmentManager manager() {
-		return mJ2WActivity.getSupportFragmentManager();
+		return activity().getSupportFragmentManager();
 	}
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
 		Intent intent = new Intent();
-		intent.setClass(mJ2WActivity, clazz);
+		intent.setClass(activity(), clazz);
 		intentFromFragment(intent, fragment, requestCode);
 	}
 
@@ -85,40 +63,25 @@ public class J2WDisplay implements J2WIDisplay {
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
-		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
+		stringBuilder.append(activity().getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
 		stringBuilder.append(intent.getComponent().getClassName());
 		stringBuilder.append(" Tag :");
 		stringBuilder.append(fragment.getClass().getSimpleName());
 
 		L.i(stringBuilder.toString());
-		mJ2WActivity.startActivityFromFragment(fragment, intent, requestCode);
+		activity().startActivityFromFragment(fragment, intent, requestCode);
 	}
 
 	protected Toolbar toolbar(int... types) {
-		if (types.length > 0) {
-			type = types[0];
-		}
-		switch (type) {
-			case DIALOGFRAGMENT:
-				toolbar = mJ2WDialogFragment.toolbar();
-				toolbar = toolbar == null ? mJ2WActivity.toolbar() : toolbar;
-			case FRAGMENT:
-				toolbar = mJ2WFragment.toolbar();
-				toolbar = toolbar == null ? mJ2WActivity.toolbar() : toolbar;
-				break;
-			case ACTIVITY:
-				toolbar = mJ2WActivity.toolbar();
-				break;
-		}
-
+		Toolbar toolbar = j2WView.toolbar(types);
 		J2WCheckUtils.checkNotNull(toolbar, "标题栏没有打开，无法调用");
 		return toolbar;
 	}
 
 	protected J2WActivity activity() {
-		J2WCheckUtils.checkNotNull(mJ2WActivity, "无法获取Activity，编码问题");
-		return mJ2WActivity;
+		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
+		return j2WView.activity();
 	}
 
 	protected void intent(Class clazz) {
@@ -127,7 +90,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	protected void intent(Class clazz, Bundle bundle) {
 		Intent intent = new Intent();
-		intent.setClass(mJ2WActivity, clazz);
+		intent.setClass(activity(), clazz);
 		intent(intent, bundle);
 	}
 
@@ -145,7 +108,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	protected void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
-		intent.setClass(mJ2WActivity, clazz);
+		intent.setClass(activity(), clazz);
 		intentForResult(intent, bundle, requestCode);
 	}
 
@@ -158,13 +121,20 @@ public class J2WDisplay implements J2WIDisplay {
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("从 ");
-		stringBuilder.append(mJ2WActivity.getClass().getSimpleName());
+		stringBuilder.append(activity().getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
 		stringBuilder.append(intent.getComponent().getClassName());
 		L.i(stringBuilder.toString());
 		if (options != null) {
 			intent.putExtras(options);
 		}
-		mJ2WActivity.startActivityForResult(intent, requestCode);
+		activity().startActivityForResult(intent, requestCode);
+	}
+
+	@Override public void detach() {
+		if (j2WView != null) {
+			j2WView.detach();
+			j2WView = null;
+		}
 	}
 }

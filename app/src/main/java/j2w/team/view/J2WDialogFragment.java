@@ -137,7 +137,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		/** 初始化图片架构 **/
 		J2WHelper.frescoHelper().initialize();
 		/** 初始化视图 **/
-		j2WBuilder = new J2WBuilder((J2WActivity) getActivity(), inflater);
+		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
@@ -231,9 +231,14 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		for (Object b : stackBiz.values()) {
 			((J2WIBiz) b).detach();
 		}
-		stackBiz.clear();
-		stackBiz = null;
-		display = null;
+		if (stackBiz != null) {
+			stackBiz.clear();
+			stackBiz = null;
+		}
+		if (display != null) {
+			display.detach();
+			display = null;
+		}
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().unregister(this);

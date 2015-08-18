@@ -136,7 +136,7 @@ public final class J2WBizUtils {
 			if (iView instanceof J2WFragment) {
 				iDisplay.initDisplay((J2WFragment) iView);
 			} else if (iView instanceof J2WDialogFragment) {
-				iDisplay.initDisplay((J2WActivity) ((J2WDialogFragment) iView).getActivity());
+				iDisplay.initDisplay((J2WDialogFragment) iView);
 			} else if (iView instanceof J2WService) {
 				iDisplay.initDisplay(J2WHelper.getInstance());
 				iDisplay = DynamicProxyUtils.newProxyServiceUI(iDisplay);
@@ -195,9 +195,9 @@ public final class J2WBizUtils {
 		T iDisplay;
 		/** 初始化业务类 **/
 		if (obj instanceof J2WFragment) {
-			((T) display).initDisplay((J2WActivity) ((J2WFragment) obj).getActivity());
+			((T) display).initDisplay((J2WFragment) obj);
 		} else if (obj instanceof J2WDialogFragment) {
-			((T) display).initDisplay((J2WActivity) ((J2WDialogFragment) obj).getActivity());
+			((T) display).initDisplay((J2WDialogFragment) obj);
 		} else if (obj instanceof J2WService) {
 			((T) display).initDisplay(J2WHelper.getInstance());
 			iDisplay = DynamicProxyUtils.newProxyServiceUI(((T) display));

@@ -178,11 +178,14 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 				j2WIBiz.detach();
 			}
 		}
-		if(stackBiz != null){
+		if (stackBiz != null) {
 			stackBiz.clear();
 			stackBiz = null;
 		}
-		display = null;
+		if (display != null) {
+			display.detach();
+			display = null;
+		}
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().unregister(this);

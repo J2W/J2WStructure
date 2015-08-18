@@ -10,6 +10,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WView;
 
 /**
  * @创建人 sky
@@ -26,9 +27,10 @@ public class J2WListAdapter extends BaseAdapter {
 	private List					mItems;
 
 	/**
-	 * activity
+	 * View
 	 */
-	private J2WActivity				j2WActivity;
+
+	J2WView							j2WView;
 
 	/**
 	 * 适配器Item
@@ -45,20 +47,20 @@ public class J2WListAdapter extends BaseAdapter {
 	 */
 	private LayoutInflater			mLayoutInflater;
 
-	public J2WListAdapter(J2WActivity j2WActivity, J2WAdapterItem j2WAdapterItem) {
-		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
+	public J2WListAdapter(J2WView j2WView, J2WAdapterItem j2WAdapterItem) {
+		J2WCheckUtils.checkNotNull(j2WView, "View层不存在");
 		J2WCheckUtils.checkNotNull(j2WAdapterItem, "ListView Item类不存在");
-		this.j2WActivity = j2WActivity;
+		this.j2WView = j2WView;
 		this.j2WAdapterItem = j2WAdapterItem;
-		this.mLayoutInflater = j2WActivity.getLayoutInflater();
+		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
-	public J2WListAdapter(J2WActivity j2WActivity, J2WListViewMultiLayout j2WListViewMultiLayout) {
-		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
+	public J2WListAdapter(J2WView j2WView, J2WListViewMultiLayout j2WListViewMultiLayout) {
+		J2WCheckUtils.checkNotNull(j2WView, "View层不存在");
 		J2WCheckUtils.checkNotNull(j2WListViewMultiLayout, "ListView 多布局接口不存在");
-		this.j2WActivity = j2WActivity;
+		this.j2WView = j2WView;
 		this.j2WListViewMultiLayout = j2WListViewMultiLayout;
-		this.mLayoutInflater = j2WActivity.getLayoutInflater();
+		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	public void setItems(List items) {
@@ -174,7 +176,7 @@ public class J2WListAdapter extends BaseAdapter {
 	 */
 	private J2WAdapterItem createItem() {
 		J2WAdapterItem itemClone = (J2WAdapterItem) this.j2WAdapterItem.clone();
-		itemClone.setJ2WActivity(j2WActivity);
+		itemClone.setJ2WView(j2WView);
 		return itemClone;
 	}
 
@@ -187,5 +189,12 @@ public class J2WListAdapter extends BaseAdapter {
 	private J2WAdapterItem createMultiItem(int position) {
 		int type = getItemViewType(position);
 		return j2WListViewMultiLayout.getJ2WAdapterItem(type);
+	}
+
+	public void detach() {
+		if (j2WView != null) {
+			j2WView.detach();
+			j2WView = null;
+		}
 	}
 }

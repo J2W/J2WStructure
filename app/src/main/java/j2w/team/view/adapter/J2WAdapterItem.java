@@ -3,17 +3,18 @@ package j2w.team.view.adapter;
 import android.view.View;
 
 import j2w.team.biz.J2WIBiz;
-import j2w.team.view.J2WActivity;
+import j2w.team.biz.J2WIDisplay;
+import j2w.team.view.J2WView;
 
 /**
  * Created by sky on 15/2/6. 适配器
  */
 public abstract class J2WAdapterItem<T> implements Cloneable {
 
-	private J2WActivity	j2WActivity	= null;
+	private J2WView	j2WView;
 
-	void setJ2WActivity(J2WActivity j2WActivity) {
-		this.j2WActivity = j2WActivity;
+	void setJ2WView(J2WView j2WView) {
+		this.j2WView = j2WView;
 	}
 
 	/**
@@ -51,8 +52,28 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 	 * @param <B>
 	 * @return
 	 */
-	protected  <B extends J2WIBiz> B biz(Class<B> biz) {
-		return (B) j2WActivity.biz(biz);
+	protected <B extends J2WIBiz> B biz(Class<B> biz) {
+		return j2WView.biz(biz);
+	}
+
+	/**
+	 * 获取显示调度
+	 *
+	 * @return
+	 */
+	protected <E extends J2WIDisplay> E display() {
+		return j2WView.display();
+	}
+
+	/**
+	 * 获取调度
+	 *
+	 * @param e
+	 * @param <E>
+	 * @return
+	 */
+	protected <E extends J2WIDisplay> E display(Class<E> e) {
+		return j2WView.display(e);
 	}
 
 	/**

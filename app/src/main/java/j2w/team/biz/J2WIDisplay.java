@@ -78,4 +78,9 @@ public interface J2WIDisplay {
 	 * @param requestCode
 	 */
 	void intentFromFragment(Intent intent, Fragment fragment, int requestCode);
+
+	/**
+	 * 销毁引用
+	 */
+	void detach();
 }
