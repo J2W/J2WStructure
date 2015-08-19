@@ -65,6 +65,10 @@ public class J2WView {
 		return mJ2WActivity;
 	}
 
+	public int getState() {
+		return state;
+	}
+
 	public J2WFragment fragment() {
 		return mJ2WFragment;
 	}

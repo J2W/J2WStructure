@@ -1013,7 +1013,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	private View createActionbar(View view) {
 		if (isOpenToolbar()) {
-			final LinearLayout toolbarRoot = new LinearLayout(j2WView.activity());
+			final LinearLayout toolbarRoot = new LinearLayout(j2WView.context());
 			toolbarRoot.setOrientation(LinearLayout.VERTICAL);
 
 			mInflater.inflate(getToolbarLayoutId(), toolbarRoot, true);
@@ -1023,7 +1023,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
 
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
-			j2WView.activity().setSupportActionBar(toolbar);
+
+			if(j2WView.getState() == J2WView.STATE_ACTIVITY){
+				j2WView.activity().setSupportActionBar(toolbar);
+			}
 			if (getToolbarDrawerId() > 0) {
 				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
 				J2WCheckUtils.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
