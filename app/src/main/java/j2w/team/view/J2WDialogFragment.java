@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -292,6 +293,10 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
+	}
+
+	protected RecyclerView.LayoutManager recyclerLayoutManager() {
+		return j2WBuilder.getLayoutManager();
 	}
 
 	/********************** ListView业务代码 *********************/

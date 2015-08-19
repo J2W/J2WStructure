@@ -152,6 +152,10 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return j2WView.display(e);
 	}
 
+	public boolean isHeaderAndFooter(int position) {
+		return false;
+	}
+
 	public void detach() {
 		if (j2WView != null) {
 			j2WView.detach();

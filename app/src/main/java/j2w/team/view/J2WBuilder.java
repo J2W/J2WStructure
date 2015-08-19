@@ -552,6 +552,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private J2WRefreshListener			recyclerviewJ2WRefreshListener;
 
+	private boolean						isHeaderFooter;
+
 	// 获取
 	int getRecyclerviewId() {
 		return recyclerviewId;
@@ -561,7 +563,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return headerRecyclerViewAdapterV1;
 	}
 
-	RecyclerView.LayoutManager getLayoutManager() {
+	public RecyclerView.LayoutManager getLayoutManager() {
 		return layoutManager;
 	}
 
@@ -586,8 +588,20 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.recyclerviewId = recyclerviewId;
 	}
 
+	public void recyclerviewGridOpenHeaderFooter(boolean bool) {
+		this.isHeaderFooter = bool;
+	}
+
 	public void recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem) {
 		this.j2WRVAdapterItem = j2WRVAdapterItem;
+	}
+
+	public void recyclerviewGridManager(GridLayoutManager gridLayoutManager) {
+		this.layoutManager = gridLayoutManager;
+	}
+
+	public void recyclerviewLinearManager(LinearLayoutManager linearLayoutManager) {
+		this.layoutManager = linearLayoutManager;
 	}
 
 	public void recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
@@ -1128,10 +1142,26 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			// 扩展适配器
 			headerRecyclerViewAdapterV1 = new HeaderRecyclerViewAdapterV1(j2WRVAdapterItem);
 			recyclerView.setAdapter(headerRecyclerViewAdapterV1);
+
+			if (isHeaderFooter) {
+				final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+				J2WCheckUtils.checkNotNull(gridLayoutManager, "LayoutManger，不是GridLayoutManager");
+				gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+
+					@Override public int getSpanSize(int position) {
+
+						return j2WRVAdapterItem.isHeaderAndFooter(position) ? gridLayoutManager.getSpanCount() : 1;
+					}
+				});
+			}
 			// 设置Item增加、移除动画
-			recyclerView.setItemAnimator(getItemAnimator());
+			if (getItemAnimator() != null) {
+				recyclerView.setItemAnimator(getItemAnimator());
+			}
 			// 添加分割线
-			recyclerView.addItemDecoration(getItemDecoration());
+			if (getItemDecoration() != null) {
+				recyclerView.addItemDecoration(getItemDecoration());
+			}
 			// 优化
 			recyclerView.setHasFixedSize(true);
 			// 设置上拉和下拉事件
