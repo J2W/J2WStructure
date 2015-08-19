@@ -442,7 +442,9 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	}
 
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment) {
-		this.setTargetFragment(mTargetFragment, mRequestCode);
+		if (mTargetFragment != null) {
+			this.setTargetFragment(mTargetFragment, mRequestCode);
+		}
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		ft.add(this, this.getClass().getSimpleName());
 		ft.commitAllowingStateLoss();
@@ -450,7 +452,9 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	}
 
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Fragment mTargetFragment, int mRequestCode) {
-		this.setTargetFragment(mTargetFragment, mRequestCode);
+		if (mTargetFragment != null) {
+			this.setTargetFragment(mTargetFragment, mRequestCode);
+		}
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		ft.add(this, this.getClass().getSimpleName());
 		ft.commitAllowingStateLoss();

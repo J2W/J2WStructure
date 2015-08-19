@@ -84,6 +84,11 @@ public class J2WDisplay implements J2WIDisplay {
 		return j2WView.activity();
 	}
 
+	protected J2WFragment fragment(){
+		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
+		return j2WView.fragment();
+	}
+
 	protected void intent(Class clazz) {
 		intent(clazz, null);
 	}
