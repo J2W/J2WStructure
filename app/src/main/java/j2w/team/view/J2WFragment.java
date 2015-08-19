@@ -22,7 +22,6 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -230,11 +229,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 */
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
-		if (j2WBuilder.getToolbarMenuId() > 0) {
-			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
-		}else{
-			this.getActivity().getMenuInflater().inflate(R.menu.menu,menu);
-		}
+			if (j2WBuilder.getToolbarMenuId() > 0) {
+				menu.clear();
+				this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
+			}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -289,7 +287,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
-	protected RecyclerView.LayoutManager recyclerLayoutManager(){
+	protected RecyclerView.LayoutManager recyclerLayoutManager() {
 		return j2WBuilder.getLayoutManager();
 	}
 

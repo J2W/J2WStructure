@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import j2w.team.common.log.L;
@@ -50,7 +51,7 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public FragmentManager manager() {
-		return activity().getSupportFragmentManager();
+		return j2WView.manager();
 	}
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
@@ -84,10 +85,67 @@ public class J2WDisplay implements J2WIDisplay {
 		return j2WView.activity();
 	}
 
-	protected J2WFragment fragment(){
+	protected J2WFragment fragment() {
 		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
 		return j2WView.fragment();
 	}
+
+	/** 跳转fragment **/
+	protected void commitAdd(Fragment fragment) {
+		commitAdd(android.R.id.content, fragment);
+	}
+
+	protected void commitAdd(int layoutId, Fragment fragment) {
+		J2WCheckUtils.checkArgument(layoutId > 0, "布局ID 不能为空~");
+		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commitAllowingStateLoss();
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("fragment: ");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+		stringBuilder.append(" 提交到 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		L.i(stringBuilder.toString());
+	}
+
+	protected void commitReplace(Fragment fragment) {
+		commitReplace(android.R.id.content, fragment);
+	}
+
+	protected void commitReplace(int layoutId, Fragment fragment) {
+		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
+		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		manager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getSimpleName()).commitAllowingStateLoss();
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("fragment: ");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+		stringBuilder.append(" 提交到 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		L.i(stringBuilder.toString());
+	}
+
+	protected void commitBackStack(Fragment fragment) {
+		commitBackStack(android.R.id.content, fragment);
+
+	}
+
+	protected void commitBackStack(int layoutId, Fragment fragment) {
+		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
+		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+
+		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+				.commitAllowingStateLoss();
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("fragment: ");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+		stringBuilder.append(" 提交到 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		L.i(stringBuilder.toString());
+	}
+
+	/** 跳转intent **/
 
 	protected void intent(Class clazz) {
 		intent(clazz, null);
