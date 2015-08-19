@@ -26,7 +26,7 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 		mAdaptee = adaptee;
 	}
 
-	public RecyclerView.Adapter getAdaptee() {
+	public J2WRVAdapterItem getAdapter() {
 		return mAdaptee;
 	}
 

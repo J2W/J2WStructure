@@ -126,6 +126,10 @@ public class J2WListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
+	public List getItems() {
+		return mItems;
+	}
+
 	@Override public int getCount() {
 		return mItems == null ? 0 : mItems.size();
 	}
