@@ -22,6 +22,7 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -231,6 +232,8 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		super.onCreateOptionsMenu(menu, inflater);
 		if (j2WBuilder.getToolbarMenuId() > 0) {
 			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
+		}else{
+			this.getActivity().getMenuInflater().inflate(R.menu.menu,menu);
 		}
 	}
 

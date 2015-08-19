@@ -1024,9 +1024,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 
-			if(j2WView.getState() == J2WView.STATE_ACTIVITY){
-				j2WView.activity().setSupportActionBar(toolbar);
-			}
+			j2WView.activity().setSupportActionBar(toolbar);
 			if (getToolbarDrawerId() > 0) {
 				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
 				J2WCheckUtils.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
@@ -1051,12 +1049,14 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				mDrawerToggle.syncState();
 				drawerLayout.setDrawerListener(mDrawerToggle);
 			}
+			j2WView.activity().setSupportActionBar(toolbar);
 			// 添加点击事件
 			if (getMenuListener() != null) {
 				toolbar.setOnMenuItemClickListener(getMenuListener());
 			}
 			return view;
 		} else {
+
 			return view;
 		}
 	}
