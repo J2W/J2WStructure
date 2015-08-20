@@ -104,6 +104,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.mInflater = inflater;
 	}
 
+	public J2WView getJ2WView(){
+		return j2WView;
+	}
+
 	/**
 	 * 布局ID
 	 */

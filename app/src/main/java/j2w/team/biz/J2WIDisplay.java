@@ -83,4 +83,35 @@ public interface J2WIDisplay {
 	 * 销毁引用
 	 */
 	void detach();
+
+	void commitAdd(Fragment fragment);
+
+	void commitAdd(int layoutId, Fragment fragment);
+
+	void commitReplace(Fragment fragment);
+
+	void commitReplace(int layoutId, Fragment fragment);
+
+	void commitBackStack(Fragment fragment);
+
+	void commitBackStack(int layoutId, Fragment fragment);
+
+	/** 跳转intent **/
+
+	void intent(Class clazz);
+
+	void intent(Class clazz, Bundle bundle);
+
+	void intent(Intent intent);
+
+	void intent(Intent intent, Bundle options);
+
+	void intentForResult(Class clazz, int requestCode);
+
+	void intentForResult(Class clazz, Bundle bundle, int requestCode);
+
+	void intentForResult(Intent intent, int requestCod);
+
+	void intentForResult(Intent intent, Bundle options, int requestCode);
+
 }

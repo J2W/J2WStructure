@@ -231,10 +231,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 */
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
-			if (j2WBuilder.getToolbarMenuId() > 0) {
-				menu.clear();
-				this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
-			}
+		if (j2WBuilder.getToolbarMenuId() > 0) {
+			menu.clear();
+			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -254,6 +254,12 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 */
 	@Override public boolean onTouch(View v, MotionEvent event) {
 		return true;
+	}
+
+	/********************** View业务代码 *********************/
+
+	public J2WView j2wView() {
+		return j2WBuilder.getJ2WView();
 	}
 
 	/********************** Actionbar业务代码 *********************/

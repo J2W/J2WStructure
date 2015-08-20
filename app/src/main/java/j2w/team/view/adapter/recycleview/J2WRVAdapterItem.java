@@ -51,22 +51,19 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public J2WRVAdapterItem(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
-		this.j2WView = new J2WView();
-		this.j2WView.initUI(j2WActivity);
+		this.j2WView = j2WActivity.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapterItem(J2WFragment j2WFragment) {
 		J2WCheckUtils.checkNotNull(j2WFragment, "View层不存在");
-		this.j2WView = new J2WView();
-		this.j2WView.initUI(j2WFragment);
+		this.j2WView = j2WFragment.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapterItem(J2WDialogFragment j2WDialogFragment) {
 		J2WCheckUtils.checkNotNull(j2WDialogFragment, "View层不存在");
-		this.j2WView = new J2WView();
-		this.j2WView.initUI(j2WDialogFragment);
+		this.j2WView = j2WDialogFragment.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
@@ -170,10 +167,6 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	public void detach() {
-		if (j2WView != null) {
-			j2WView.detach();
-			j2WView = null;
-		}
 		if(headerRecyclerViewAdapterV1 != null){
 			headerRecyclerViewAdapterV1 = null;
 		}

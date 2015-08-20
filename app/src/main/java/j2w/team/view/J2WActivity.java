@@ -249,6 +249,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		attachBiz();
 	}
 
+	/********************** View业务代码 *********************/
+
+	public J2WView j2wView() {
+		return j2WBuilder.getJ2WView();
+	}
+
 	/********************** Actionbar业务代码 *********************/
 
 	protected void showContent() {

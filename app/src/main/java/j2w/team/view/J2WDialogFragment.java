@@ -260,6 +260,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		if (j2WBuilder.getToolbarMenuId() > 0) {
+			menu.clear();
 			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
 		}
 	}
@@ -333,6 +334,12 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	protected ListView listView() {
 		return j2WBuilder.getListView();
+	}
+
+	/********************** View业务代码 *********************/
+
+	public J2WView j2wView() {
+		return j2WBuilder.getJ2WView();
 	}
 
 	/********************** ViewPager业务代码 *********************/

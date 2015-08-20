@@ -26,28 +26,29 @@ public class J2WDisplay implements J2WIDisplay {
 
 	private J2WView	j2WView;
 
+	private Context	context;
+
 	@Override public Context context() {
-		return j2WView.context();
+		return context;
 	}
 
 	@Override public void initDisplay(J2WActivity j2WActivity) {
-		j2WView = new J2WView();
-		j2WView.initUI(j2WActivity);
+		j2WView = j2WActivity.j2wView();
+		context = j2WView.context();
 	}
 
 	@Override public void initDisplay(J2WFragment fragment) {
-		j2WView = new J2WView();
-		j2WView.initUI(fragment);
+		j2WView = fragment.j2wView();
+		context = j2WView.context();
 	}
 
 	@Override public void initDisplay(J2WDialogFragment fragment) {
-		j2WView = new J2WView();
-		j2WView.initUI(fragment);
+		j2WView = fragment.j2wView();
+		context = j2WView.context();
 	}
 
 	@Override public void initDisplay(Context context) {
-		j2WView = new J2WView();
-		j2WView.initUI(context);
+		this.context = context;
 	}
 
 	@Override public FragmentManager manager() {
@@ -91,11 +92,11 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	/** 跳转fragment **/
-	protected void commitAdd(Fragment fragment) {
+	@Override public void commitAdd(Fragment fragment) {
 		commitAdd(android.R.id.content, fragment);
 	}
 
-	protected void commitAdd(int layoutId, Fragment fragment) {
+	@Override public void commitAdd(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commitAllowingStateLoss();
@@ -108,11 +109,11 @@ public class J2WDisplay implements J2WIDisplay {
 		L.i(stringBuilder.toString());
 	}
 
-	protected void commitReplace(Fragment fragment) {
+	@Override public void commitReplace(Fragment fragment) {
 		commitReplace(android.R.id.content, fragment);
 	}
 
-	protected void commitReplace(int layoutId, Fragment fragment) {
+	@Override public void commitReplace(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 		manager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getSimpleName()).commitAllowingStateLoss();
@@ -125,12 +126,11 @@ public class J2WDisplay implements J2WIDisplay {
 		L.i(stringBuilder.toString());
 	}
 
-	protected void commitBackStack(Fragment fragment) {
+	@Override public void commitBackStack(Fragment fragment) {
 		commitBackStack(android.R.id.content, fragment);
-
 	}
 
-	protected void commitBackStack(int layoutId, Fragment fragment) {
+	@Override public void commitBackStack(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 
@@ -146,40 +146,39 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	/** 跳转intent **/
-
-	protected void intent(Class clazz) {
+	@Override public void intent(Class clazz) {
 		intent(clazz, null);
 	}
 
-	protected void intent(Class clazz, Bundle bundle) {
+	@Override public void intent(Class clazz, Bundle bundle) {
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		intent(intent, bundle);
 	}
 
-	protected void intent(Intent intent) {
+	@Override public void intent(Intent intent) {
 		intent(intent, null);
 	}
 
-	protected void intent(Intent intent, Bundle options) {
+	@Override public void intent(Intent intent, Bundle options) {
 		intentForResult(intent, options, -1);
 	}
 
-	protected void intentForResult(Class clazz, int requestCode) {
+	@Override public void intentForResult(Class clazz, int requestCode) {
 		intentForResult(clazz, null, requestCode);
 	}
 
-	protected void intentForResult(Class clazz, Bundle bundle, int requestCode) {
+	@Override public void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		intentForResult(intent, bundle, requestCode);
 	}
 
-	protected void intentForResult(Intent intent, int requestCod) {
+	@Override public void intentForResult(Intent intent, int requestCod) {
 		intentForResult(intent, null, requestCod);
 	}
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN) protected void intentForResult(Intent intent, Bundle options, int requestCode) {
+	@Override @TargetApi(Build.VERSION_CODES.JELLY_BEAN) public void intentForResult(Intent intent, Bundle options, int requestCode) {
 		J2WCheckUtils.checkNotNull(intent, "intent不能为空～");
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
@@ -194,10 +193,5 @@ public class J2WDisplay implements J2WIDisplay {
 		activity().startActivityForResult(intent, requestCode);
 	}
 
-	@Override public void detach() {
-		if (j2WView != null) {
-			j2WView.detach();
-			j2WView = null;
-		}
-	}
+	@Override public void detach() {}
 }
