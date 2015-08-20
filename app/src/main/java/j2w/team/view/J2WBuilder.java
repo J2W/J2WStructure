@@ -1,5 +1,6 @@
 package j2w.team.view;
 
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
@@ -22,6 +25,9 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.log.L;
@@ -270,6 +276,40 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	J2WSwipeBackLayout.SwipeBackListener getListener() {
 		return listener;
+	}
+
+	/**
+	 * TintManger
+	 */
+	private int						tintColor;
+
+	private SystemBarTintManager	tintManager;
+
+	int getTintColor() {
+		return tintColor;
+	}
+
+	public void tintColor(int tintColor) {
+		this.tintColor = tintColor;
+	}
+
+	public void initTint() {
+		if (this.tintColor != 0) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				Window win = j2WView.activity().getWindow();
+				WindowManager.LayoutParams winParams = win.getAttributes();
+				final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+				winParams.flags |= bits;
+				win.setAttributes(winParams);
+			}
+			tintManager = new SystemBarTintManager(j2WView.activity());
+			tintManager.setStatusBarTintEnabled(true);
+			tintManager.setStatusBarTintResource(tintColor);
+		}
+	}
+
+	SystemBarTintManager getTintManager() {
+		return tintManager;
 	}
 
 	/**
@@ -917,6 +957,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		if (j2WView != null) {
 			j2WView.detach();
 			j2WView = null;
+		}
+		if (tintManager != null) {
+			tintManager = null;
 		}
 		// 基础清除
 		detachLayout();

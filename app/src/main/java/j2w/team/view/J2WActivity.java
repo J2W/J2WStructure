@@ -72,6 +72,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		j2WBuilder = new J2WBuilder(this, inflater);
 		setContentView(build(j2WBuilder).create());
+		/** 状态栏颜色 **/
+		j2WBuilder.initTint();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this);
 		/** 添加到堆栈 **/

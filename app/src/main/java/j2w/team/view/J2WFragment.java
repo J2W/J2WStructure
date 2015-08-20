@@ -83,6 +83,8 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		/** 状态栏颜色 **/
+		j2WBuilder.initTint();
 		initData(getArguments());
 	}
 
