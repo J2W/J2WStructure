@@ -2,7 +2,6 @@ package j2w.team.view.adapter.recycleview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -86,34 +85,48 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public void setItems(List items) {
 		mItems = items;
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {
 		mItems.add(position, object);
+		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
 		mItems.add(object);
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void addList(int position, List list) {
 		mItems.addAll(position, list);
+		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 	}
 
 	public void addList(List list) {
 		mItems.addAll(list);
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void delete(int position) {
 		mItems.remove(position);
+		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
 	}
 
 	public void delete(Object object) {
 		mItems.remove(object);
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+	}
+
+	HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
+
+	public void setHeaderRecyclerViewAdapterV1(HeaderRecyclerViewAdapterV1 headerRecyclerViewAdapterV1) {
+		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
 	}
 
 	public void clear() {
 		mItems.clear();
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public T getItem(int position) {
@@ -160,6 +173,9 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		if (j2WView != null) {
 			j2WView.detach();
 			j2WView = null;
+		}
+		if(headerRecyclerViewAdapterV1 != null){
+			headerRecyclerViewAdapterV1 = null;
 		}
 	}
 

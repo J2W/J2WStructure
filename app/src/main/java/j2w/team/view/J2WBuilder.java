@@ -1187,6 +1187,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			recyclerView.setLayoutManager(layoutManager);
 			// 扩展适配器
 			headerRecyclerViewAdapterV1 = new HeaderRecyclerViewAdapterV1(j2WRVAdapterItem);
+			j2WRVAdapterItem.setHeaderRecyclerViewAdapterV1(headerRecyclerViewAdapterV1);
 			recyclerView.setAdapter(headerRecyclerViewAdapterV1);
 
 			if (isHeaderFooter) {

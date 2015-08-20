@@ -77,7 +77,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 	public void setItems(List items) {
 		if (!J2WCheckUtils.equal(items, mAdaptee.getItems())) {
 			mAdaptee.setItems(items);
-			notifyDataSetChanged();
 		}
 	}
 
@@ -86,7 +85,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.add(position, object);
-		notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
@@ -94,7 +92,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.add(object);
-		notifyDataSetChanged();
 	}
 
 	public void addList(int position, List list) {
@@ -102,7 +99,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.addList(position, list);
-		notifyItemInserted(position);
 	}
 
 	public void addList(List list) {
@@ -110,7 +106,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.addList(list);
-		notifyDataSetChanged();
 	}
 
 	public void delete(int position) {
@@ -118,7 +113,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.delete(position);
-		notifyItemRemoved(position);
 	}
 
 	public void delete(Object object) {
@@ -126,7 +120,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.delete(object);
-		notifyDataSetChanged();
 	}
 
 	public void clear() {
@@ -134,7 +127,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 			return;
 		}
 		mAdaptee.clear();
-		notifyDataSetChanged();
 	}
 	public <T> T getItem(int position) {
 		return (T) mAdaptee.getItem(position);
