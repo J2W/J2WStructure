@@ -152,6 +152,17 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	/**
+	 * 获取fragment
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
+	}
+
+	/**
 	 * 获取调度
 	 *
 	 * @param e
@@ -167,7 +178,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	public void detach() {
-		if(headerRecyclerViewAdapterV1 != null){
+		if (headerRecyclerViewAdapterV1 != null) {
 			headerRecyclerViewAdapterV1 = null;
 		}
 	}

@@ -4,6 +4,8 @@ import android.view.View;
 
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
+import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
 
 /**
@@ -74,6 +76,17 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 	 */
 	protected <E extends J2WIDisplay> E display(Class<E> e) {
 		return j2WView.display(e);
+	}
+
+	/**
+	 * 获取fragment
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
 	}
 
 	/**

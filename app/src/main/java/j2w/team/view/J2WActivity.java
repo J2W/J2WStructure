@@ -3,6 +3,7 @@ package j2w.team.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -138,6 +139,17 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	public <E extends J2WIDisplay> E display(Class<E> e) {
 		return (E) display;
+	}
+
+	/**
+	 * 获取fragment
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getSimpleName());
 	}
 
 	/**

@@ -55,6 +55,17 @@ public class J2WDisplay implements J2WIDisplay {
 		return j2WView.manager();
 	}
 
+	/**
+	 * 获取fragment
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	protected   <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
+	}
+
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
