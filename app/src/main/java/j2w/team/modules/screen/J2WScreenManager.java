@@ -82,15 +82,4 @@ public class J2WScreenManager implements J2WIScreenManager {
 			popActivity(activity);
 		}
 	}
-
-	@Override public void popAllActivitySingle(Class clazz) {
-		boolean flg = true;
-		for (FragmentActivity item : fragmentActivities) {
-			if (item.getClass().equals(clazz) && flg) {
-				flg = false;
-				continue;
-			}
-			popActivity(item);
-		}
-	}
 }

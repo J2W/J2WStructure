@@ -36,11 +36,4 @@ public interface J2WIScreenManager {
 	 */
 	void popAllActivityExceptMain(Class clazz);
 
-	/**
-	 * 退出堆栈中所有Activity, 当前的Activity除外
-	 *
-	 * @param clazz
-	 *            当前活动窗口
-	 */
-	void popAllActivitySingle(Class clazz);
 }
