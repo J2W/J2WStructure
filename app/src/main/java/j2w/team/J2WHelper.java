@@ -160,7 +160,7 @@ public class J2WHelper {
 	/**
 	 * 判断是否是主线程
 	 * 
-	 * @return true 主线程 false 子线程
+	 * @return true 子线程 false 主线程
 	 */
 	public static final boolean isMainLooperThread() {
 		return Looper.getMainLooper().getThread() != Thread.currentThread();

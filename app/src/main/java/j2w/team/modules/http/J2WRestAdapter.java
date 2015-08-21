@@ -9,6 +9,7 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.CookieHandler;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -75,7 +76,7 @@ public class J2WRestAdapter {
 		// 验证是否继承其他接口
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
-		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service),service.getSimpleName());
+		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName());
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
@@ -336,7 +337,7 @@ public class J2WRestAdapter {
 	 *            参数
 	 * @return
 	 */
-	Request createRequest(J2WMethodInfo methodInfo,String serviceName, String requestTag, Object[] args) {
+	Request createRequest(J2WMethodInfo methodInfo, String serviceName, String requestTag, Object[] args) {
 		// 获取url
 		String serverUrl = j2WEndpoint.url(serviceName);
 		// 编辑请求
@@ -420,6 +421,11 @@ public class J2WRestAdapter {
 		private J2WErrorHandler			errorHandler;
 
 		/**
+		 * cookie管理
+		 */
+		private CookieHandler			cookieHandler;
+
+		/**
 		 * 端点地址
 		 */
 		public Builder setEndpoint(String url) {
@@ -434,6 +440,17 @@ public class J2WRestAdapter {
 				throw new NullPointerException("端点地址不能为空.");
 			}
 			this.endpoint = endpoint;
+			return this;
+		}
+
+		/**
+		 * cookie
+		 * 
+		 * @param cookieManage
+		 * @return
+		 */
+		public Builder setCookieManage(CookieHandler cookieManage) {
+			this.cookieHandler = cookieManage;
 			return this;
 		}
 
@@ -526,6 +543,9 @@ public class J2WRestAdapter {
 				okHttpClient.setConnectTimeout(timeOut, TimeUnit.SECONDS);// 连接超时
 				okHttpClient.setReadTimeout(timeOut, TimeUnit.SECONDS);// 读取超时
 				okHttpClient.setWriteTimeout(timeOut, TimeUnit.SECONDS);// 写入超时
+				if (cookieHandler != null) {
+					okHttpClient.setCookieHandler(cookieHandler);
+				}
 				client = okHttpClient;
 			}
 			// 错误处理程序-默认什么都不做
