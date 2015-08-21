@@ -58,7 +58,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 		fragmentActivities.remove(activity);
 		if (fragmentActivities.size() < 1) {
 			/** 清空内存缓存picasso **/
-            J2WHelper.threadPoolHelper().finish();//线程池
+			J2WHelper.threadPoolHelper().finish();// 线程池
 		}
 		activity = null;
 	}
@@ -80,6 +80,17 @@ public class J2WScreenManager implements J2WIScreenManager {
 			}
 
 			popActivity(activity);
+		}
+	}
+
+	@Override public void popAllActivitySingle(Class clazz) {
+		boolean flg = true;
+		for (FragmentActivity item : fragmentActivities) {
+			if (item.getClass().equals(clazz) && flg) {
+				flg = false;
+				continue;
+			}
+			popActivity(item);
 		}
 	}
 }

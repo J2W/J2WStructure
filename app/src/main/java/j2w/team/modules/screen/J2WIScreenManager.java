@@ -12,21 +12,21 @@ public interface J2WIScreenManager {
 	 *
 	 * @return
 	 */
-	public FragmentActivity currentActivity();
+	FragmentActivity currentActivity();
 
 	/**
 	 * 入栈
 	 *
 	 * @param activity
 	 */
-	public void pushActivity(FragmentActivity activity);
+	void pushActivity(FragmentActivity activity);
 
 	/**
 	 * 出栈
 	 *
 	 * @param activity
 	 */
-	public void popActivity(FragmentActivity activity);
+	void popActivity(FragmentActivity activity);
 
 	/**
 	 * 退出堆栈中所有Activity, 当前的Activity除外
@@ -34,5 +34,13 @@ public interface J2WIScreenManager {
 	 * @param clazz
 	 *            当前活动窗口
 	 */
-	public void popAllActivityExceptMain(Class clazz);
+	void popAllActivityExceptMain(Class clazz);
+
+	/**
+	 * 退出堆栈中所有Activity, 当前的Activity除外
+	 *
+	 * @param clazz
+	 *            当前活动窗口
+	 */
+	void popAllActivitySingle(Class clazz);
 }
