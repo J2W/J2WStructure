@@ -96,6 +96,8 @@ public interface J2WIDisplay {
 
 	void commitBackStack(int layoutId, Fragment fragment);
 
+	void commitBackStack(int layoutId, Fragment fragment,int animation);
+
 	/** 跳转intent **/
 
 	void intent(Class clazz);

@@ -99,7 +99,7 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitAdd(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
-		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).commitAllowingStateLoss();
+		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).commitAllowingStateLoss();
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("fragment: ");
@@ -134,8 +134,22 @@ public class J2WDisplay implements J2WIDisplay {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 
-		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-				.commitAllowingStateLoss();
+		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("fragment: ");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+		stringBuilder.append(" 提交到 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		L.i(stringBuilder.toString());
+	}
+
+	@Override public void commitBackStack(int layoutId, Fragment fragment, int animation) {
+		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
+		J2WCheckUtils.checkArgument(animation > 0, "动画 不能为空~");
+		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+
+		manager().beginTransaction().add(layoutId, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).setTransition(animation).commitAllowingStateLoss();
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("fragment: ");
