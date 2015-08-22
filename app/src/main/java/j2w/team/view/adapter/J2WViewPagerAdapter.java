@@ -84,7 +84,7 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		if (tabs != null) {
 			this.tabs.setOnPageChangeListener(this);
 		} else {
-			this.pager.setOnPageChangeListener(this);
+			this.pager.addOnPageChangeListener(this);
 		}
 		this.j2WViewPagerChangeListener = j2WViewPagerChangeListener;
 		this.j2WTabsCustomListener = j2WTabsCustomListener;
