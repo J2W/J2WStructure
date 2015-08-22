@@ -4,6 +4,7 @@ import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,6 +32,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.log.L;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WSwipeBackLayout;
 import j2w.team.common.view.J2WViewPager;
@@ -104,7 +106,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.mInflater = inflater;
 	}
 
-	public J2WView getJ2WView(){
+	public J2WView getJ2WView() {
 		return j2WView;
 	}
 
@@ -287,6 +289,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	private int						tintColor;
 
+	private int						stateHight;
+
 	private SystemBarTintManager	tintManager;
 
 	int getTintColor() {
@@ -295,6 +299,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void tintColor(int tintColor) {
 		this.tintColor = tintColor;
+		this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
 	}
 
 	public void initTint() {
@@ -1068,6 +1073,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			toolbarRoot.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
 
 			toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
+			if (stateHight > 0) {
+				LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
+				layoutParams.setMargins(0,stateHight,0,0);
+			}
 
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 

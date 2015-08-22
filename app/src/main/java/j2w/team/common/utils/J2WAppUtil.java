@@ -249,4 +249,19 @@ public final class J2WAppUtil {
 		DisplayMetrics dm = context.getResources().getDisplayMetrics();
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, px, dm);
 	}
+
+	/**
+	 * 获取状态栏高度
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static int getStatusBarHeight(Context context) {
+		int result = 0;
+		int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			result = context.getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
+	}
 }
