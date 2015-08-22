@@ -22,6 +22,7 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.view.J2WViewPager;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -348,6 +349,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();
+	}
+
+	protected J2WViewPager viewPager() {
+		return j2WBuilder.getViewPager();
 	}
 
 	/**

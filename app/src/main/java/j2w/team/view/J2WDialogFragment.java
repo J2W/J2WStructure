@@ -31,6 +31,7 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.view.J2WViewPager;
 import j2w.team.modules.dialog.iface.IDialogCancelListener;
 import j2w.team.modules.dialog.provided.J2WIDialogFragment;
 import j2w.team.structure.R;
@@ -357,6 +358,10 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();
+	}
+
+	protected J2WViewPager viewPager() {
+		return j2WBuilder.getViewPager();
 	}
 
 	/**

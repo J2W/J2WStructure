@@ -24,6 +24,7 @@ import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
+import j2w.team.common.view.J2WViewPager;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -139,17 +140,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	public <E extends J2WIDisplay> E display(Class<E> e) {
 		return (E) display;
-	}
-
-	/**
-	 * 获取fragment
-	 * 
-	 * @param clazz
-	 * @return
-	 */
-	public <T> T findFragment(Class<T> clazz) {
-		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
-		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getSimpleName());
 	}
 
 	/**
@@ -342,5 +332,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();
+	}
+
+	protected J2WViewPager viewPager() {
+		return j2WBuilder.getViewPager();
 	}
 }

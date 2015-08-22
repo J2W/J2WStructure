@@ -851,6 +851,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return j2WViewPagerAdapter;
 	}
 
+	public J2WViewPager getViewPager(){
+		return j2WViewPager;
+	}
+
 	// 设置
 	public void viewPagerId(int viewpagerId, FragmentManager fragmentManager) {
 		this.viewpagerId = viewpagerId;
