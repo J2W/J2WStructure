@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -1098,8 +1099,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		} else if (isOpenCustomToolbar()) {
 			toolbar = ButterKnife.findById(view, getToolbarId());
 			if (stateHight > 0) {
-				LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
-				layoutParams.setMargins(0,stateHight,0,0);
+				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
+				layoutParams.setMargins(0, stateHight, 0, 0);
 			}
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 			if (getToolbarDrawerId() > 0) {
