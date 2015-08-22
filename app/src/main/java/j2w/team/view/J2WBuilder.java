@@ -1097,6 +1097,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			return toolbarRoot;
 		} else if (isOpenCustomToolbar()) {
 			toolbar = ButterKnife.findById(view, getToolbarId());
+			if (stateHight > 0) {
+				LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
+				layoutParams.setMargins(0,stateHight,0,0);
+			}
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 			if (getToolbarDrawerId() > 0) {
 				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
