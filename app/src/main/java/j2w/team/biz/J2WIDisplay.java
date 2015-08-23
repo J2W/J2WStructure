@@ -25,6 +25,10 @@ public interface J2WIDisplay {
 	 */
 	Context context();
 
+	J2WActivity activity();
+
+	J2WFragment fragment();
+
 	/**
 	 * 设置 activity
 	 *

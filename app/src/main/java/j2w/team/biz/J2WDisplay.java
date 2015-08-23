@@ -55,6 +55,8 @@ public class J2WDisplay implements J2WIDisplay {
 		return j2WView.manager();
 	}
 
+
+
 	/**
 	 * 获取fragment
 	 *
@@ -92,12 +94,12 @@ public class J2WDisplay implements J2WIDisplay {
 		return toolbar;
 	}
 
-	protected J2WActivity activity() {
+	public J2WActivity activity() {
 		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
 		return j2WView.activity();
 	}
 
-	protected J2WFragment fragment() {
+	public J2WFragment fragment() {
 		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
 		return j2WView.fragment();
 	}
