@@ -182,6 +182,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		return super.onOptionsItemSelected(item);
 	}
 
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getSimpleName());
+	}
+
 	/**
 	 * 业务分离
 	 */
