@@ -75,5 +75,10 @@ public interface J2WIContact {
 	 */
 	List<ContactDetailModel> getAllPhoneDetailContacts(int version);
 
+	/**
+	 * 获取版本
+	 *
+	 * @return
+	 */
 	int getVersion();
 }
