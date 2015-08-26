@@ -143,6 +143,11 @@ MVP使用说明帮助
 
 ## J2WBuilder 使用API说明
 
+### 状态栏颜色
+
+	j2WBuilder.tintColor(R.color.theme_color);
+
+
 ### Toobar
 
 
