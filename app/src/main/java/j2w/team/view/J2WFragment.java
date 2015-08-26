@@ -23,6 +23,7 @@ import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -222,20 +223,6 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 */
 	public void setTargetActivity(boolean targetActivity) {
 		this.targetActivity = targetActivity;
-	}
-
-	/**
-	 * 创建menu
-	 *
-	 * @param menu
-	 * @return
-	 */
-	@Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu, inflater);
-		if (j2WBuilder.getToolbarMenuId() > 0) {
-			menu.clear();
-			this.getActivity().getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
-		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -14,7 +14,7 @@
         <item name="android:windowCloseOnTouchOutside" tools:ignore="NewApi">true</item>
         <item name="android:backgroundDimAmount">0.6</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowBackground">@drawable/j2w_dialog_background</item>
+        <item name="android:windowBackground">@mipmap/j2w_dialog_background</item>
     </style>
 
     <style name="J2W.Layout.Content">

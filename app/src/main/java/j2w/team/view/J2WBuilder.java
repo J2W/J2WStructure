@@ -56,7 +56,7 @@ import j2w.team.view.common.J2WViewPagerChangeListener;
  * @创建时间 15/7/16 下午8:12
  * @类描述 一句话说明这个类是干什么的
  */
-public class J2WBuilder implements AbsListView.OnScrollListener {
+public class J2WBuilder implements AbsListView.OnScrollListener{
 
 	/**
 	 * UI
@@ -342,6 +342,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private boolean							isOpenCustomToolbar;
 
+	private boolean							isOpenToolbarBack;
+
 	// 获取
 	int getToolbarLayoutId() {
 		return toolbarLayoutId;
@@ -353,6 +355,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	boolean isOpenToolbar() {
 		return isOpenToolbar;
+	}
+
+	boolean isOpenToolbarBack() {
+		return isOpenToolbarBack;
 	}
 
 	int getToolbarId() {
@@ -390,6 +396,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.menuListener = menuListener;
 	}
 
+	public void toolbarIsBack(boolean isOpenToolbarBack){
+		this.isOpenToolbarBack = isOpenToolbarBack;
+	}
 	public void toolbarIsOpen(boolean isOpenToolbar) {
 		this.isOpenToolbar = isOpenToolbar;
 	}
@@ -851,7 +860,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return j2WViewPagerAdapter;
 	}
 
-	public J2WViewPager getViewPager(){
+	public J2WViewPager getViewPager() {
 		return j2WViewPager;
 	}
 
@@ -1080,12 +1089,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
 			if (stateHight > 0) {
 				LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
-				layoutParams.setMargins(0,stateHight,0,0);
+				layoutParams.setMargins(0, stateHight, 0, 0);
 			}
 
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 
-			j2WView.activity().setSupportActionBar(toolbar);
 			if (getToolbarDrawerId() > 0) {
 				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
 				J2WCheckUtils.checkNotNull(drawerLayout, "无法根据布局文件ID,获取DrawerLayout");
@@ -1097,6 +1105,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			if (getMenuListener() != null) {
 				toolbar.setOnMenuItemClickListener(getMenuListener());
 			}
+			if (getToolbarMenuId() > 0) {
+				toolbar.inflateMenu(getToolbarMenuId());
+			}
+			if(isOpenToolbarBack()){
+				toolbar.setNavigationIcon(R.mipmap.j2w_toolbar_back);
+				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						j2WView.activity().onBackPressed();
+					}
+				});
+			}
+
 			toolbarRoot.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 			return toolbarRoot;
@@ -1114,10 +1135,12 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				mDrawerToggle.syncState();
 				drawerLayout.setDrawerListener(mDrawerToggle);
 			}
-			j2WView.activity().setSupportActionBar(toolbar);
 			// 添加点击事件
 			if (getMenuListener() != null) {
 				toolbar.setOnMenuItemClickListener(getMenuListener());
+			}
+			if (getToolbarMenuId() > 0) {
+				toolbar.inflateMenu(getToolbarMenuId());
 			}
 			return view;
 		} else {
