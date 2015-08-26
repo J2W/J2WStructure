@@ -27,6 +27,11 @@ public class ContactModel implements Cloneable {
 	public String				displayName;
 
 	/**
+	 * 最后更新时间
+	 */
+	public long					lastUpdate;
+
+	/**
 	 * 电子邮件, Key = type of email, Value = Email address
 	 */
 	public List<ContactEmail>	emailAddresses;

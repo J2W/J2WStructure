@@ -36,11 +36,11 @@ public class ContactManage implements J2WIContact {
 		this.context = context;
 	}
 
-	private static final String[]	CONTACTS_ID			= new String[] { Contacts._ID };
+	private static final String[]	CONTACTS_ID			= new String[] { Contacts._ID , Contacts.CONTACT_LAST_UPDATED_TIMESTAMP};
 
 	private static final String[]	CONTACTS			= new String[] { Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY };
 
-	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID };
+	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
 	/**
 	 * 获取联系人头像
@@ -132,6 +132,7 @@ public class ContactManage implements J2WIContact {
 		List<ContactModel> contacts = new ArrayList<>();
 		ContentResolver contentResolver = context.getContentResolver();
 		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts._ID + " = ?", new String[] { String.valueOf(id) }, null);
+
 		ContactModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -286,12 +287,14 @@ public class ContactManage implements J2WIContact {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts._ID + " > ?", new String[] { String.valueOf(version) }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts._ID + " > ?", new String[] { String.valueOf(version) }, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " desc");
 		ContactDetailModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				long lastUpdate = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contact = getContactDataByContactId(contactId);
+				contact.lastUpdate = lastUpdate;
 				contacts.add(contact);
 			} while (idCursor.moveToNext());
 		}
@@ -308,10 +311,10 @@ public class ContactManage implements J2WIContact {
 		ContentResolver contentResolver = context.getContentResolver();
 		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, null, null, Contacts._ID + " desc limit 0,1 ");
 
-		if(idCursor.moveToFirst()){
+		if (idCursor.moveToFirst()) {
 			int contactId = idCursor.getInt(idCursor.getColumnIndex(Contacts._ID));
 			return contactId;
-		}else{
+		} else {
 			return 0;
 		}
 	}

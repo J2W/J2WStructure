@@ -87,6 +87,11 @@ public class ContactDetailModel implements Cloneable {
 	public List<ContactWebsite>	contactWebsites;
 
 	/**
+	 * 最后更新时间
+	 */
+	public long					lastUpdate;
+
+	/**
 	 * 克隆
 	 *
 	 * @return
