@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -264,4 +265,18 @@ public final class J2WAppUtil {
 		}
 		return result;
 	}
+
+    /**
+     * 意图响应检查
+     * @param context
+     * @param intent
+     * @return
+     */
+    public static boolean checkResponseIntent(Context context, Intent intent) {
+        if (context == null || intent == null) return false;
+        List<ResolveInfo> activitys = context.getPackageManager().queryIntentActivities(intent, 10);
+        return activitys.size() > 0;
+    }
+
+
 }

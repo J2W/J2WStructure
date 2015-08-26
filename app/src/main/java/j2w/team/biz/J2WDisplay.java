@@ -1,6 +1,7 @@
 package j2w.team.biz;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -212,7 +213,8 @@ public class J2WDisplay implements J2WIDisplay {
 		stringBuilder.append("从 ");
 		stringBuilder.append(activity().getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
-		stringBuilder.append(intent.getComponent().getClassName());
+        ComponentName component =intent.getComponent();
+		stringBuilder.append(component == null ? "" : component.getClassName());
 		L.i(stringBuilder.toString());
 		if (options != null) {
 			intent.putExtras(options);
