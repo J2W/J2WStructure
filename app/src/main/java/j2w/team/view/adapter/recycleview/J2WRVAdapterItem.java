@@ -13,6 +13,7 @@ import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
+import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -82,37 +83,51 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public void setItems(List items) {
 		mItems = items;
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
+		headerRecyclerViewAdapterV1.notifyItemRangeInserted(0, mItems.size());
 	}
 
 	public void add(int position, Object object) {
 		mItems.add(position, object);
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
 		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
 		mItems.add(object);
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
+		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
 	}
 
 	public void addList(int position, List list) {
 		mItems.addAll(position, list);
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void addList(List list) {
 		mItems.addAll(list);
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+
 	}
 
 	public void delete(int position) {
 		mItems.remove(position);
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
 		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
-	}
-
-	public void delete(Object object) {
-		mItems.remove(object);
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
@@ -121,8 +136,17 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
 	}
 
+	J2WStickyAdapterItem	j2WStickyAdapterItem;
+
+	public void setJ2WStickyAdapterItem(J2WStickyAdapterItem j2WStickyAdapterItem) {
+		this.j2WStickyAdapterItem = j2WStickyAdapterItem;
+	}
+
 	public void clear() {
 		mItems.clear();
+		if (j2WStickyAdapterItem != null) {
+			j2WStickyAdapterItem.setItems(mItems);
+		}
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 

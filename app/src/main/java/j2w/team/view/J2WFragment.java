@@ -27,6 +27,7 @@ import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
+import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -298,6 +299,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return j2WBuilder.getLayoutManager();
 	}
 
+	protected RecyclerView recyclerView() {
+		return j2WBuilder.getRecyclerView();
+	}
+
 	/********************** ListView业务代码 *********************/
 
 	protected void addListHeader() {
@@ -330,10 +335,6 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	protected ListView listView() {
 		return j2WBuilder.getListView();
-	}
-
-	protected RecyclerView recyclerView(){
-		return j2WBuilder.getRecyclerView();
 	}
 
 	/********************** ViewPager业务代码 *********************/

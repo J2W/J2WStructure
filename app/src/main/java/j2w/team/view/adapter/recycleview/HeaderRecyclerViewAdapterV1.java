@@ -114,14 +114,6 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 		}
 		mAdaptee.delete(position);
 	}
-
-	public void delete(Object object) {
-		if (mAdaptee.getItems() == null || mAdaptee.getItems().size() < 1) {
-			return;
-		}
-		mAdaptee.delete(object);
-	}
-
 	public void clear() {
 		if (mAdaptee.getItems() == null) {
 			return;
@@ -144,6 +136,7 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 		}
 		return mAdaptee.getItemViewType(position) + TYPE_ADAPTEE_OFFSET;
 	}
+
 
 
 }

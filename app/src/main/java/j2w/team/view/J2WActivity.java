@@ -28,6 +28,7 @@ import j2w.team.common.view.J2WViewPager;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
+import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -299,7 +300,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		return j2WBuilder.getLayoutManager();
 	}
 
-	protected RecyclerView recyclerView(){
+	protected RecyclerView recyclerView() {
 		return j2WBuilder.getRecyclerView();
 	}
 
