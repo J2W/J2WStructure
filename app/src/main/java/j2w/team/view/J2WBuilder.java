@@ -618,6 +618,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener{
 		return recyclerviewId;
 	}
 
+	RecyclerView getRecyclerView(){
+		return recyclerView;
+	}
+
 	HeaderRecyclerViewAdapterV1 getJ2WRVAdapterItem() {
 		return headerRecyclerViewAdapterV1;
 	}

@@ -314,6 +314,10 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		return j2WBuilder.getLayoutManager();
 	}
 
+	protected RecyclerView recyclerView(){
+		return j2WBuilder.getRecyclerView();
+	}
+
 	/********************** ListView业务代码 *********************/
 
 	protected void addListHeader() {

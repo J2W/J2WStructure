@@ -332,6 +332,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return j2WBuilder.getListView();
 	}
 
+	protected RecyclerView recyclerView(){
+		return j2WBuilder.getRecyclerView();
+	}
+
 	/********************** ViewPager业务代码 *********************/
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
