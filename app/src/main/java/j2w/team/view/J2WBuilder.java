@@ -57,7 +57,7 @@ import j2w.team.view.common.J2WViewPagerChangeListener;
 /**
  * @创建人 sky
  * @创建时间 15/7/16 下午8:12
- * @类描述 一句话说明这个类是干什么的
+ * @类描述 编辑
  */
 public class J2WBuilder implements AbsListView.OnScrollListener {
 
@@ -298,13 +298,16 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
         return tintColor;
     }
 
+    boolean isTintColor(){
+        return tintColor > 0;
+    }
+
     public void tintColor(int tintColor) {
         this.tintColor = tintColor;
-        this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
     }
 
     public void initTint() {
-        if (this.tintColor != 0) {
+        if (isTintColor()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Window win = j2WView.activity().getWindow();
                 WindowManager.LayoutParams winParams = win.getAttributes();
@@ -1099,7 +1102,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
             toolbarRoot.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
 
             toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
-            if (stateHight > 0) {
+            if (isTintColor() || j2WView.activity().isOpenTint()) {
+                if(stateHight <= 0){
+                    this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
+                }
+
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
                 layoutParams.setMargins(0, stateHight, 0, 0);
             }
@@ -1136,7 +1143,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
             return toolbarRoot;
         } else if (isOpenCustomToolbar()) {
             toolbar = ButterKnife.findById(view, getToolbarId());
-            if (stateHight > 0) {
+            if (isTintColor() || j2WView.activity().isOpenTint()) {
+                if(stateHight <= 0){
+                    this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
+                }
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
                 layoutParams.setMargins(0, stateHight, 0, 0);
             }

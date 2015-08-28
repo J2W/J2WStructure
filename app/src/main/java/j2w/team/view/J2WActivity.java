@@ -263,6 +263,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		return j2WBuilder.getJ2WView();
 	}
 
+	public boolean isOpenTint() {
+		return j2WBuilder.isTintColor();
+	}
+
 	/********************** Actionbar业务代码 *********************/
 
 	protected void showContent() {
