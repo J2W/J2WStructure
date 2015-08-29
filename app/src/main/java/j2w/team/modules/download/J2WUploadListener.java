@@ -7,17 +7,17 @@ import com.squareup.okhttp.Response;
  * @创建时间 15/4/7 上午9:59
  * @类描述 上传事件回调
  */
-public interface J2WUploadListener {
+public interface J2WUploadListener<T> {
 
 	/**
 	 * 成功
 	 *
 	 * @param id
 	 *            请求ID
-	 * @param response
+	 * @param t
 	 *            响应结果
 	 */
-	void onUploadComplete(int id, Response response);
+	void onUploadComplete(int id, T t);
 
 	/**
 	 * 失败

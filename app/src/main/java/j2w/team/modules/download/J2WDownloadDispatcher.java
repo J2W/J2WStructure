@@ -19,6 +19,8 @@ import java.util.concurrent.BlockingQueue;
 
 import j2w.team.common.log.L;
 import j2w.team.J2WHelper;
+import j2w.team.common.utils.J2WAppUtil;
+import j2w.team.modules.http.converter.GsonConverter;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
@@ -63,6 +65,8 @@ public class J2WDownloadDispatcher extends Thread {
 
 	boolean										shouldAllowRedirects					= true;	// 是否开启重定向
 
+	GsonConverter								converter;
+
 	/**
 	 * 初始化调度器
 	 * 
@@ -74,6 +78,7 @@ public class J2WDownloadDispatcher extends Thread {
 	public J2WDownloadDispatcher(BlockingQueue<J2WBaseRequest> queue, OkHttpClient okHttpClient) {
 		mQueue = queue;
 		this.okHttpClient = okHttpClient;
+		converter = new GsonConverter();
 	}
 
 	/**
@@ -134,7 +139,7 @@ public class J2WDownloadDispatcher extends Thread {
 	 *            下载请求
 	 * @param uploadUrl
 	 *            请求url
-     */
+	 */
 	private void executeUpload(J2WUploadRequest j2WUploadRequest, String uploadUrl) {
 		URL url = null;
 		try {
@@ -259,7 +264,16 @@ public class J2WDownloadDispatcher extends Thread {
 		J2WHelper.mainLooper().execute(new Runnable() {
 
 			@Override public void run() {
-				request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), response);
+				try {
+					Class clazz = J2WAppUtil.getSuperClassGenricType(request.getJ2WUploadListener().getClass(), 0);
+					if (clazz == null) {
+						request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), response);
+					} else {
+						request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), converter.fromBody(response.body(), clazz));
+					}
+				} catch (IOException e) {
+					L.i("上传成功-数据转换失败");
+				}
 			}
 		});
 	}
