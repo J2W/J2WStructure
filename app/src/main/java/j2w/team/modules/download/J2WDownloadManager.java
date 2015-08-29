@@ -15,9 +15,9 @@ import j2w.team.J2WHelper;
  */
 public class J2WDownloadManager implements J2WIDownloadMagnager {
 
-	private J2WDownloadRequest			j2WDownloadRequest;
+	private J2WDownloadRequest		j2WDownloadRequest;
 
-	private J2WUploadRequest			j2WUploadRequest;
+	private J2WUploadRequest		j2WUploadRequest;
 
 	private J2WDownloadRequestQueue	mRequestQueue;
 
@@ -243,12 +243,29 @@ public class J2WDownloadManager implements J2WIDownloadMagnager {
 	 * @return
 	 */
 	@Override public int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, File file, J2WUploadListener j2WUploadListener) {
+		return upload(uploadUri,j2WUploadHeaders,file,J2WContentType.DEFAULT_FILE,j2WUploadListener);
+	}
+
+	/**
+	 * 上传
+	 *
+	 * @param uploadUri
+	 *            上传地址
+	 * @param j2WUploadHeaders
+	 *            请求头信息 数组
+	 * @param file
+	 *            文件
+	 * @param j2WUploadListener
+	 *            事件
+	 * @return
+	 */
+	@Override public int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, File file,J2WContentType j2WContentType, J2WUploadListener j2WUploadListener) {
 		Uri uri = Uri.parse(uploadUri);
 		J2WUploadBody j2WUploadBody = new J2WUploadBody();
 		j2WUploadBody.headerName = J2WUploadBody.CONTENT_DISPOSITION;
 		j2WUploadBody.headerValue = "file";
 		j2WUploadBody.file = file;
 
-		return upload(uri, j2WUploadHeaders, j2WUploadBody, J2WContentType.DEFAULT_FILE, j2WUploadListener);
+		return upload(uri, j2WUploadHeaders, j2WUploadBody, j2WContentType, j2WUploadListener);
 	}
 }
