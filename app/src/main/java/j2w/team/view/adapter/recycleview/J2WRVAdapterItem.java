@@ -86,7 +86,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		if (j2WStickyAdapterItem != null) {
 			j2WStickyAdapterItem.setItems(mItems);
 		}
-		headerRecyclerViewAdapterV1.notifyItemRangeInserted(0, mItems.size());
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {
