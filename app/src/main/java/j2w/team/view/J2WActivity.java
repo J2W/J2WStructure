@@ -106,6 +106,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		J2WHelper.getInstance().onResume(this);
 	}
 
+	@Override protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		attachBiz();
+	}
+
 	@Override protected void onPause() {
 		super.onPause();
 		detachBiz();
@@ -127,8 +132,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 	@Override protected void onDestroy() {
 		super.onDestroy();
 		/** 关闭event **/
-		if(j2WBuilder.isNotCloseEventBus()){
-			if(J2WHelper.eventBus().isRegistered(this)){
+		if (j2WBuilder.isNotCloseEventBus()) {
+			if (J2WHelper.eventBus().isRegistered(this)) {
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
@@ -218,8 +223,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			if(!j2WBuilder.isNotCloseEventBus()){
-				if(J2WHelper.eventBus().isRegistered(this)){
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
 					J2WHelper.eventBus().unregister(this);
 				}
 			}
