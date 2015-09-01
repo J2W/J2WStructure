@@ -130,10 +130,10 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * 销毁UI
 	 */
 	@Override public void detachUI() {
-		for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
-			J2WHelper.httpAdapter().cancel(entry.getValue());
-		}
 		if (stackHttp != null) {
+			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
+				J2WHelper.httpAdapter().cancel(entry.getValue());
+			}
 			stackHttp.clear();
 			stackHttp = null;
 		}
