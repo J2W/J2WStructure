@@ -3,6 +3,7 @@ package j2w.team.view.common;
 import android.os.Bundle;
 
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WFragment;
 
 /**
  * @创建人 sky
@@ -32,6 +33,20 @@ public interface J2WIViewCommon {
 	void onDestroy(J2WActivity j2WIView);
 
 	void onRestart(J2WActivity j2WIView);
+
+	/**
+	 * fragment
+	 */
+
+	void onFragmentCreated(J2WFragment j2WFragment, Bundle savedInstanceState);
+
+	void onFragmentStart(J2WFragment j2WFragment);
+
+	void onFragmentResume(J2WFragment j2WFragment);
+
+	void onFragmentPause(J2WFragment j2WFragment);
+
+	void onFragmentStop(J2WFragment j2WFragment);
 
 	/**
 	 * 进度布局

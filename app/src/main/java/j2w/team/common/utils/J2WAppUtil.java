@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Debug;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
@@ -178,7 +179,7 @@ public final class J2WAppUtil {
 	 * 
 	 * @return 显示器信息实体类
 	 */
-	public static final DisplayMetrics getWindowsSize(ActionBarActivity activity) {
+	public static final DisplayMetrics getWindowsSize(FragmentActivity activity) {
 		DisplayMetrics dm = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
 		return dm;

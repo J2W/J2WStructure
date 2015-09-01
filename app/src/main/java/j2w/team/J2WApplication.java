@@ -13,6 +13,7 @@ import j2w.team.common.log.L;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WFragment;
 import j2w.team.view.common.J2WIViewCommon;
 import j2w.team.view.model.J2WConstants;
 
@@ -90,6 +91,26 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 	}
 
 	@Override public void onRestart(J2WActivity j2WIView) {
+
+	}
+
+	@Override public void onFragmentCreated(J2WFragment j2WFragment, Bundle savedInstanceState) {
+
+	}
+
+	@Override public void onFragmentStart(J2WFragment j2WFragment) {
+
+	}
+
+	@Override public void onFragmentResume(J2WFragment j2WFragment) {
+
+	}
+
+	@Override public void onFragmentPause(J2WFragment j2WFragment) {
+
+	}
+
+	@Override public void onFragmentStop(J2WFragment j2WFragment) {
 
 	}
 
