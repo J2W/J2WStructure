@@ -96,7 +96,9 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		attachBiz();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().register(this);
+			if (!J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().register(this);
+			}
 		}
 	}
 
@@ -115,6 +117,12 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
+		/** 关闭event **/
+		if(j2WBuilder.isNotCloseEventBus()){
+			if(J2WHelper.eventBus().isRegistered(this)){
+				J2WHelper.eventBus().unregister(this);
+			}
+		}
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
@@ -202,7 +210,11 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		}
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().unregister(this);
+			if(!j2WBuilder.isNotCloseEventBus()){
+				if(J2WHelper.eventBus().isRegistered(this)){
+					J2WHelper.eventBus().unregister(this);
+				}
+			}
 		}
 		// 恢复初始化
 		listRefreshing(false);

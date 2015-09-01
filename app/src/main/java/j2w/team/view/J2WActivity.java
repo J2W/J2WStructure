@@ -99,7 +99,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		attachBiz();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().register(this);
+			if (!J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().register(this);
+			}
 		}
 		J2WHelper.getInstance().onResume(this);
 	}
@@ -126,7 +128,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		super.onDestroy();
 		/** 关闭event **/
 		if(j2WBuilder.isNotCloseEventBus()){
-			J2WHelper.eventBus().unregister(this);
+			if(J2WHelper.eventBus().isRegistered(this)){
+				J2WHelper.eventBus().unregister(this);
+			}
 		}
 		/** 移除builder **/
 		j2WBuilder.detach();
@@ -138,7 +142,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/**
 	 * 获取显示调度
-	 * 
+	 *
 	 * @return
 	 */
 	public D display() {
@@ -151,7 +155,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	/**
 	 * 获取业务
-	 * 
+	 *
 	 * @param biz
 	 *            泛型
 	 * @param <B>
@@ -215,7 +219,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if(!j2WBuilder.isNotCloseEventBus()){
-				J2WHelper.eventBus().unregister(this);
+				if(J2WHelper.eventBus().isRegistered(this)){
+					J2WHelper.eventBus().unregister(this);
+				}
 			}
 		}
 		// 恢复初始化
