@@ -1,6 +1,8 @@
 package j2w.team.modules;
 
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.squareup.picasso.PicassoTools;
+
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -43,6 +45,8 @@ public class J2WModulesManage {
 	private J2WToast				j2WToast;				// 提示信息
 
 	private ContactManage			contactManage;			// 通讯录
+
+	private PicassoTools			picassoTools;			// 图片加载器
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
@@ -132,5 +136,12 @@ public class J2WModulesManage {
 			contactManage = new ContactManage(mJ2WApplication);
 		}
 		return contactManage;
+	}
+
+	public PicassoTools getPicassoTools(){
+		if (picassoTools == null) {
+			picassoTools = new PicassoTools();
+		}
+		return picassoTools;
 	}
 }
