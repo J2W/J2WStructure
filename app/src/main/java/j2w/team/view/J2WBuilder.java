@@ -416,9 +416,17 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	private boolean	isOpenEventBus;
 
+	private boolean isNotCloseEvent; //是否关闭
+
+
+
 	// 获取
 	boolean isOpenEventBus() {
 		return isOpenEventBus;
+	}
+
+	boolean isNotCloseEventBus(){
+		return isNotCloseEvent;
 	}
 
 	// 设置
@@ -426,6 +434,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isOpenEventBus = isOpenEventBus;
 	}
 
+	public void isNoCloseEventBus(boolean isNotCloseEvent){
+		this.isNotCloseEvent = isNotCloseEvent;
+	}
 	/**
 	 * ListView
 	 */

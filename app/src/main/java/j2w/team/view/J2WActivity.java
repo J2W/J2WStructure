@@ -112,6 +112,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	@Override protected void onRestart() {
 		super.onRestart();
+		/** 初始化业务 **/
+		attachBiz();
 		J2WHelper.getInstance().onRestart(this);
 	}
 
@@ -122,6 +124,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 
 	@Override protected void onDestroy() {
 		super.onDestroy();
+		/** 关闭event **/
+		if(j2WBuilder.isNotCloseEventBus()){
+			J2WHelper.eventBus().unregister(this);
+		}
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
@@ -208,7 +214,9 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivi
 		}
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().unregister(this);
+			if(!j2WBuilder.isNotCloseEventBus()){
+				J2WHelper.eventBus().unregister(this);
+			}
 		}
 		// 恢复初始化
 		listRefreshing(false);
