@@ -66,6 +66,8 @@ public interface J2WIContact {
 
 	List<ContactDetailModel> getAllPhoneDetailContacts();
 
+	List<String> getAllPhoneDetailIDs();
+
 	/**
 	 * 获取联系人 - 找出大于 ID 的数据
 	 * 
@@ -81,4 +83,12 @@ public interface J2WIContact {
 	 * @return
 	 */
 	int getVersion();
+
+	/**
+	 * 根据ID 获取实力
+	 * 
+	 * @param id
+	 * @return
+	 */
+	ContactDetailModel getContactDataByContactId(String id);
 }

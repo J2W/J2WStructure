@@ -36,7 +36,7 @@ public class ContactManage implements J2WIContact {
 		this.context = context;
 	}
 
-	private static final String[]	CONTACTS_ID			= new String[] { Contacts._ID , Contacts.CONTACT_LAST_UPDATED_TIMESTAMP};
+	private static final String[]	CONTACTS_ID			= new String[] { Contacts._ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
 	private static final String[]	CONTACTS			= new String[] { Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY };
 
@@ -272,6 +272,30 @@ public class ContactManage implements J2WIContact {
 	 *
 	 * @return
 	 */
+	@Override public List<String> getAllPhoneDetailIDs() {
+		List<String> contacts = new ArrayList<>();
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("%");
+		stringBuilder.append("");
+		stringBuilder.append("%");
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
+		if (idCursor.moveToFirst()) {
+			do {
+				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				contacts.add(contactId);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
+	/**
+	 * 获取所有联系人 - 详情
+	 *
+	 * @return
+	 */
 	@Override public List<ContactDetailModel> getAllPhoneDetailContacts() {
 		return getAllPhoneDetailContacts("");
 	}
@@ -318,8 +342,8 @@ public class ContactManage implements J2WIContact {
 			return 0;
 		}
 	}
-
-	private ContactDetailModel getContactDataByContactId(String id) {
+	@Override
+	public ContactDetailModel getContactDataByContactId(String id) {
 		ContactDetailModel contactModel = new ContactDetailModel();
 		contactModel.contactId = id;
 		contactModel.photo = getContactPhotoByContactId(id);
