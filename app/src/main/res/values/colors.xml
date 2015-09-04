@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="j2w_click_pressed">#bb7555B0</color>
+    <color name="j2w_click_longpressed">#ff6545a0</color>
+    <color name="j2w_click_focused">#426545a0</color>
+</resources>

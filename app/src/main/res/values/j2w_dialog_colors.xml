@@ -6,9 +6,4 @@
     <color name="j2w_divider">#1F000000</color>
     <color name="j2w_pressed">#D5D5D5</color>
     <color name="j2w_textColor_primary_dark">#FFFFFFFF</color>
-
-    <!-- theme -->
-    <color name="primary">#3C4655</color>
-    <color name="primary_dark">#0E0E0E</color>
-    <color name="accent">#F4982E</color>
 </resources>
