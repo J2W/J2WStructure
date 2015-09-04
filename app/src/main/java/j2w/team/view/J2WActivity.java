@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -35,7 +37,7 @@ import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
  * @创建时间 15/7/8 上午12:15
  * @类描述 activity
  */
-public abstract class J2WActivity<D extends J2WIDisplay> extends ActionBarActivity {
+public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivity {
 
 	/**
 	 * 定制
