@@ -14,8 +14,8 @@
         <item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>
 
         <!-- 按下效果 -->
-        <item name="selectableItemBackground">@drawable/j2w_click_selector</item>
-        <item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>
+        <!--<item name="selectableItemBackground">@drawable/j2w_click_selector</item>-->
+        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>-->
     </style>
 
     <!-- Special themes -->
@@ -29,8 +29,8 @@
         <item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>
 
         <!-- 按下效果 -->
-        <item name="selectableItemBackground">@drawable/j2w_click_selector</item>
-        <item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>
+        <!--<item name="selectableItemBackground">@drawable/j2w_click_selector</item>-->
+        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>-->
     </style>
 
     <style name="J2WToolbar" parent="Widget.AppCompat.Toolbar" />
