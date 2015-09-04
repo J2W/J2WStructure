@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
@@ -120,4 +121,5 @@ public interface J2WIDisplay {
 
 	void intentForResult(Intent intent, Bundle options, int requestCode);
 
+	void intentAnimation(Class clazz, View view, Bundle bundle);
 }

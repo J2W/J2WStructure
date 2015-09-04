@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -204,6 +207,23 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentForResult(Intent intent, int requestCod) {
 		intentForResult(intent, null, requestCod);
+	}
+
+	/** 根据某个View 位置 启动跳转动画 **/
+
+	@Override public void intentAnimation(Class clazz, View view, Bundle bundle) {
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("从 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		stringBuilder.append(" 跳转到 ");
+		stringBuilder.append(clazz.getName());
+		Intent intent = new Intent();
+		intent.setClass(activity(), clazz);
+		if (bundle != null) {
+			intent.putExtras(bundle);
+		}
+		ActivityCompat.startActivity(activity(), intent, ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
 	}
 
 	@Override @TargetApi(Build.VERSION_CODES.JELLY_BEAN) public void intentForResult(Intent intent, Bundle options, int requestCode) {
