@@ -1,5 +1,8 @@
 package j2w.team.modules;
 
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.picasso.PicassoTools;
 
@@ -12,6 +15,7 @@ import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.fresco.FrescoTools;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.screen.J2WScreenManager;
+import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
 import j2w.team.modules.toast.J2WToast;
 
@@ -47,6 +51,8 @@ public class J2WModulesManage {
 	private ContactManage			contactManage;			// 通讯录
 
 	private PicassoTools			picassoTools;			// 图片加载器
+
+	private J2WSystemUiHider		j2WSystemUiHider;		// 标题栏和状态栏控制
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
@@ -138,10 +144,17 @@ public class J2WModulesManage {
 		return contactManage;
 	}
 
-	public PicassoTools getPicassoTools(){
+	public PicassoTools getPicassoTools() {
 		if (picassoTools == null) {
 			picassoTools = new PicassoTools();
 		}
 		return picassoTools;
+	}
+
+	public J2WSystemUiHider getJ2WSystemUiHider(AppCompatActivity activity, View anchorView, int flags) {
+		if (j2WSystemUiHider == null) {
+			j2WSystemUiHider = J2WSystemUiHider.getInstance(activity,anchorView,flags);
+		}
+		return j2WSystemUiHider;
 	}
 }
