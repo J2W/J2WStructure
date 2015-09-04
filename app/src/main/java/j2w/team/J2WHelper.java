@@ -1,6 +1,8 @@
 package j2w.team;
 
 import android.os.Looper;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.squareup.picasso.PicassoTools;
 
@@ -12,6 +14,7 @@ import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.fresco.IFresco;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.screen.J2WIScreenManager;
+import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
 import j2w.team.modules.toast.J2WToast;
 
@@ -110,6 +113,18 @@ public class J2WHelper {
 	 */
 	public static final J2WDownloadManager downloader(int threadPoolSize) {
 		return mJ2WModulesManage.getJ2WDownloadManager(threadPoolSize);
+	}
+
+	/**
+	 * 控制状态栏和标题栏
+	 * 
+	 * @param activity
+	 * @param anchorView
+	 * @param flags
+	 * @return
+	 */
+	public static final J2WSystemUiHider systemHider(AppCompatActivity activity, View anchorView, int flags) {
+		return mJ2WModulesManage.getJ2WSystemUiHider(activity, anchorView, flags);
 	}
 
 	/**
