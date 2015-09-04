@@ -128,7 +128,7 @@
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/accent</item>
+        <item name="android:textColor">@color/j2w_click_pressed</item>
     </style>
 
     <style name="J2W.Button.Stacked">
