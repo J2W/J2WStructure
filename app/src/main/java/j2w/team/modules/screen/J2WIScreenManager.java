@@ -36,4 +36,9 @@ public interface J2WIScreenManager {
 	 */
 	void popAllActivityExceptMain(Class clazz);
 
+    /**
+     * 退出堆栈中所有activity,登陆activity 除掉
+      */
+    void popAllActivityExceptionLoginActivity(Class logoin);
+
 }

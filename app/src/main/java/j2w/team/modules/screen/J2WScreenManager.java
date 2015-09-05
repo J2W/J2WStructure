@@ -2,6 +2,7 @@ package j2w.team.modules.screen;
 
 import android.support.v4.app.FragmentActivity;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import j2w.team.common.log.L;
@@ -15,7 +16,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 	/**
 	 * FragmentActivity堆栈 单例模式
 	 */
-	private static final Stack<FragmentActivity>	fragmentActivities	= new Stack<FragmentActivity>();
+	private static final Stack<FragmentActivity>  fragmentActivities	= new Stack<FragmentActivity>();
 
 	/**
 	 * 获取当前活动的activity
@@ -84,4 +85,21 @@ public class J2WScreenManager implements J2WIScreenManager {
 			popActivity(activity);
 		}
 	}
+
+    /**
+     * 退出堆栈中所有activity ,栈顶activity除外
+     */
+    @Override
+    public void popAllActivityExceptionLoginActivity(Class login) {
+        while (true) {
+            int size = fragmentActivities.size();
+            if (size == 0) {
+                return;
+            }
+            FragmentActivity pop = fragmentActivities.pop();
+            if (!pop.getClass().equals(login)) {
+                pop.finish();
+            }
+        }
+    }
 }
