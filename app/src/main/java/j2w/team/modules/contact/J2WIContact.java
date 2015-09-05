@@ -67,6 +67,7 @@ public interface J2WIContact {
 	List<ContactDetailModel> getAllPhoneDetailContacts();
 
 	List<String> getAllPhoneDetailIDs();
+
 	List<String> getAllPhoneDetailIDs(int version);
 
 	/**

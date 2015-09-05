@@ -3,6 +3,7 @@ package j2w.team.modules.contact.bean;
 import java.util.List;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
  * @创建人 sky
@@ -55,6 +56,11 @@ public class ContactDetailModel implements Cloneable {
 	 * 联系人头像
 	 */
 	public Bitmap				photo;
+
+	/**
+	 * 联系人头像地址
+	 */
+	public Uri					photoUri;
 
 	/**
 	 * 电子邮件, Key = type of email, Value = Email address
