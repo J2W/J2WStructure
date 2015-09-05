@@ -112,6 +112,10 @@ MVP使用说明帮助
         3. 方法执行完毕后,需要回调View层进行更新UI
                提供方法: super.ui(HomeUI.class) //参数:显示层接口Class
 
+    提供 ：所有方法拦截
+    createImpl(Interface.class);
+    注解 ：@Interceptor　Interface接口 方法
+    J2WBiz 统一回调  interceptorImpl(Class clazz) 方法
 #### UI 显示层处理
 
     接口 : 注解 @Impl(实现类)   //必须要写
