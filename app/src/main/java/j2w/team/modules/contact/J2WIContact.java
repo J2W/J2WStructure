@@ -67,6 +67,7 @@ public interface J2WIContact {
 	List<ContactDetailModel> getAllPhoneDetailContacts();
 
 	List<String> getAllPhoneDetailIDs();
+	List<String> getAllPhoneDetailIDs(int version);
 
 	/**
 	 * 获取联系人 - 找出大于 ID 的数据
