@@ -296,6 +296,30 @@ public class ContactManage implements J2WIContact {
 	 *
 	 * @return
 	 */
+	@Override public List<String> getAllPhoneDetailIDs(int version) {
+		List<String> contacts = new ArrayList<>();
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("%");
+		stringBuilder.append("");
+		stringBuilder.append("%");
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts._ID + " > ?", new String[] { stringBuilder.toString(),String.valueOf(version) }, null);
+		if (idCursor.moveToFirst()) {
+			do {
+				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				contacts.add(contactId);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
+	/**
+	 * 获取所有联系人 - 详情
+	 *
+	 * @return
+	 */
 	@Override public List<ContactDetailModel> getAllPhoneDetailContacts() {
 		return getAllPhoneDetailContacts("");
 	}
@@ -342,8 +366,8 @@ public class ContactManage implements J2WIContact {
 			return 0;
 		}
 	}
-	@Override
-	public ContactDetailModel getContactDataByContactId(String id) {
+
+	@Override public ContactDetailModel getContactDataByContactId(String id) {
 		ContactDetailModel contactModel = new ContactDetailModel();
 		contactModel.contactId = id;
 		contactModel.photo = getContactPhotoByContactId(id);
