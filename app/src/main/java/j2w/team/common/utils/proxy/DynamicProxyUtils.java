@@ -12,7 +12,7 @@ public final class DynamicProxyUtils {
 
 	/**
 	 * 生产代理类
-	 * 
+	 *
 	 * @param loader
 	 *            类加载器
 	 * @param interfaces
@@ -29,7 +29,7 @@ public final class DynamicProxyUtils {
 
 	/**
 	 * 代理类 - 日志系统
-	 * 
+	 *
 	 * @param d
 	 * @param <D>
 	 * @return
@@ -52,7 +52,7 @@ public final class DynamicProxyUtils {
 
 	/**
 	 * 代理类 - 线程系统
-	 * 
+	 *
 	 * @param d
 	 * @param <D>
 	 * @return
@@ -121,7 +121,7 @@ public final class DynamicProxyUtils {
 
 	/**
 	 * 验证类 - 判断是否是一个接口
-	 * 
+	 *
 	 * @param service
 	 * @param <T>
 	 */
@@ -136,7 +136,7 @@ public final class DynamicProxyUtils {
 
 	/**
 	 * 验证类 - 判断是否继承其他接口
-	 * 
+	 *
 	 * @param service
 	 * @param <T>
 	 */
@@ -145,5 +145,28 @@ public final class DynamicProxyUtils {
 			throw new IllegalArgumentException("接口不能继承其它接口");
 		}
 
+	}
+
+	/**
+	 * 代理类 - 触发间接方法
+	 *
+	 * @param v
+	 * @param <V>
+	 * @return
+	 */
+	public static <V> V newProxyImpl(V v,J2WBiz j2WBiz) {
+		// 获取Classloader
+		ClassLoader loader = v.getClass().getClassLoader();
+		// 获得接口数组
+		Class<?>[] interfaces = v.getClass().getInterfaces();
+		// 如果没有实现接口，获取父类接口
+		if (interfaces.length == 0) {
+			interfaces = v.getClass().getSuperclass().getInterfaces();
+		}
+		// 获得Handler - 这里可以替换成其他代理方法
+		InvocationHandler invocationHandler = new J2WInterceptorHandler<>(v, j2WBiz);
+		// 获取代理接口
+		V vi = newProxyInstance(loader, interfaces, invocationHandler);
+		return vi;
 	}
 }

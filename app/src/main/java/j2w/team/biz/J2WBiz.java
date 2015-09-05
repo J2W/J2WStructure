@@ -7,6 +7,7 @@ import j2w.team.J2WHelper;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WHTTPException;
 import j2w.team.biz.exception.J2WUINullPointerException;
+import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WError;
 
@@ -78,11 +79,18 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		checkNotNull(inter, "请指定View接口～");
 		Object obj = stack.get(inter.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createImpl(inter);
+			obj = J2WBizUtils.createImpl(inter, this);
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(inter.getSimpleName(), obj);
 		}
 		return (S) obj;
+	}
+
+	/**
+	 * 拦截器
+	 */
+	public void interceptorImpl(Class clazz) {
+		L.i("拦截器:" + clazz);
 	}
 
 	/**
@@ -137,11 +145,11 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 			stackHttp.clear();
 			stackHttp = null;
 		}
-		if(stack != null){
+		if (stack != null) {
 			stack.clear();
 			stack = null;
 		}
-		if(display != null){
+		if (display != null) {
 			display.detach();
 			display = null;
 		}

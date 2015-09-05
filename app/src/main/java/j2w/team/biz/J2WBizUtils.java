@@ -160,7 +160,7 @@ public final class J2WBizUtils {
 	 * @param <V>
 	 * @return
 	 */
-	public static final <V> V createImpl(Class<V> vClass) {
+	public static final <V> V createImpl(Class<V> vClass,J2WBiz j2WBiz) {
 		V v;
 		Class clazz = null;
 		J2WCheckUtils.checkNotNull(vClass, "接口不能为空～");
@@ -171,6 +171,8 @@ public final class J2WBizUtils {
 			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
 			clazz = Class.forName(impl.value().getName());
 			v = (V) clazz.newInstance();
+			/** 动态代理 - 线程系统 **/
+			v = DynamicProxyUtils.newProxyImpl(v,j2WBiz);
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException(String.valueOf(clazz) + "，没有找到业务类！");
 		} catch (java.lang.InstantiationException e) {

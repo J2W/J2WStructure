@@ -10,6 +10,13 @@ import j2w.team.modules.http.J2WRestAdapter;
 public interface J2WIBiz {
 
 	/**
+	 * 拦截器
+	 * 
+	 * @param clazz
+	 */
+	void interceptorImpl(Class clazz);
+
+	/**
 	 * View层 回调引用
 	 *
 	 * @param ui
