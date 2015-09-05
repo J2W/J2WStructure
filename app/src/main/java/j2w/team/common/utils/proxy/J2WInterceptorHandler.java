@@ -14,8 +14,9 @@ import j2w.team.biz.J2WBiz;
  */
 public class J2WInterceptorHandler<T> extends BaseHandler<T> {
 
-	J2WBiz	j2WBiz;
-	CountDownLatch countDownLatch;
+	J2WBiz			j2WBiz;
+
+	CountDownLatch	countDownLatch;
 
 	public J2WInterceptorHandler(T t, J2WBiz j2WBiz) {
 		super(t);
@@ -28,21 +29,7 @@ public class J2WInterceptorHandler<T> extends BaseHandler<T> {
 		Interceptor interceptor = method.getAnnotation(Interceptor.class);
 		returnObject = method.invoke(t, args);// 执行
 		if (interceptor != null && j2WBiz != null) {
-			// 判断是否在主线程
-			boolean isMainLooper = Looper.getMainLooper().getThread() != Thread.currentThread();
-			if (isMainLooper) {
-				this.countDownLatch = new CountDownLatch(1);
-
-				J2WHelper.mainLooper().execute(new Runnable() {
-					@Override
-					public void run() {
-						j2WBiz.interceptorImpl(t.getClass());
-					}
-				});
-				countDownLatch.await();
-			}else{
-				j2WBiz.interceptorImpl(t.getClass());
-			}
+			j2WBiz.interceptorImpl(t.getClass());
 		}
 		return returnObject;
 	}
