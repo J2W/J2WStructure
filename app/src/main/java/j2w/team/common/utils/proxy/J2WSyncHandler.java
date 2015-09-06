@@ -42,8 +42,15 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 		Method oldMethod = aClass.getMethod(method.getName(), method.getParameterTypes());
 
 		// 获得注解数组
-		J2WRepeat j2WRepeat = oldMethod.getAnnotation(J2WRepeat.class);
-		Background background = oldMethod.getAnnotation(Background.class);
+		J2WRepeat j2WRepeat = method.getAnnotation(J2WRepeat.class);
+		if (j2WRepeat == null) {
+			j2WRepeat = oldMethod.getAnnotation(J2WRepeat.class);
+		}
+		Background background = method.getAnnotation(Background.class);
+		if (background == null) {
+			background = oldMethod.getAnnotation(Background.class);
+		}
+
 		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
 		// 搜索
 		if (j2WRepeat == null || !j2WRepeat.value()) { // 拦截

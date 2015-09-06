@@ -117,6 +117,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		super.onPause();
 		detachBiz();
 		J2WHelper.getInstance().onPause(this);
+
 	}
 
 	@Override protected void onRestart() {
