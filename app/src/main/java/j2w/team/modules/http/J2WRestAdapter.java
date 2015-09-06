@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import j2w.team.biz.J2WBiz;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.http.converter.GsonConverter;
@@ -71,12 +72,23 @@ public class J2WRestAdapter {
 	 * @return
 	 */
 	public <T> T create(Class<T> service) {
+		return create(service, null);
+	}
+
+	/**
+	 * 创建代理
+	 *
+	 * @param service
+	 * @param <T>
+	 * @return
+	 */
+	public <T> T create(Class<T> service, J2WBiz j2WBiz) {
 		// 验证是否是接口
 		DynamicProxyUtils.validateServiceClass(service);
 		// 验证是否继承其他接口
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
-		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName());
+		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName(), j2WBiz);
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
