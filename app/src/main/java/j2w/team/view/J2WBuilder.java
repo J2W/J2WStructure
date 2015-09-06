@@ -180,7 +180,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutLoading() {
-		if (layoutLoading == null) {
+		if(layoutLoadingId < 1){
 			return;
 		}
 		changeShowAnimation(layoutEmpty, false);
