@@ -82,7 +82,8 @@ public class J2WDisplay implements J2WIDisplay {
 		stringBuilder.append("从 ");
 		stringBuilder.append(activity().getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
-		stringBuilder.append(intent.getComponent().getClassName());
+        ComponentName component = intent.getComponent();
+        stringBuilder.append(component == null ? "" : component.getClassName());
 		stringBuilder.append(" Tag :");
 		stringBuilder.append(fragment.getClass().getSimpleName());
 
