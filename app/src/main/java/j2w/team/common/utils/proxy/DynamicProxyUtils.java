@@ -97,6 +97,29 @@ public final class DynamicProxyUtils {
 	}
 
 	/**
+	 * 代理类 - 视图
+	 *
+	 * @param d
+	 * @param <D>
+	 * @return
+	 */
+	public static <D> D newProxyDisplay(D d, J2WBiz j2WBiz) {
+		// 获取Classloader
+		ClassLoader loader = d.getClass().getClassLoader();
+		// 获得接口数组
+		Class<?>[] interfaces = d.getClass().getInterfaces();
+		// 如果没有实现接口，获取父类接口
+		if (interfaces.length == 0) {
+			interfaces = d.getClass().getSuperclass().getInterfaces();
+		}
+		// 获得Handler - 这里可以替换成其他代理方法
+		InvocationHandler invocationHandler = new J2WDisplayHandler<>(d, j2WBiz);
+		// 获取代理接口
+		D b = newProxyInstance(loader, interfaces, invocationHandler);
+		return b;
+	}
+
+	/**
 	 * 代理类 - Service视图
 	 *
 	 * @param d
@@ -154,7 +177,7 @@ public final class DynamicProxyUtils {
 	 * @param <V>
 	 * @return
 	 */
-	public static <V> V newProxyImpl(V v,J2WBiz j2WBiz) {
+	public static <V> V newProxyImpl(V v, J2WBiz j2WBiz) {
 		// 获取Classloader
 		ClassLoader loader = v.getClass().getClassLoader();
 		// 获得接口数组

@@ -208,7 +208,7 @@ public final class J2WBizUtils {
 			((T) display).initDisplay((J2WActivity) obj);
 		}
 		/** 动态代理 - UI **/
-		iDisplay = DynamicProxyUtils.newProxyUI(((T) display), j2WBiz);
+		iDisplay = DynamicProxyUtils.newProxyDisplay(((T) display), j2WBiz);
 		return iDisplay;
 	}
 }

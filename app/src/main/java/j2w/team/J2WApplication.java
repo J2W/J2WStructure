@@ -135,4 +135,5 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		okHttpClient.setWriteTimeout(J2WConstants.DEFAULT_TIME_OUT, TimeUnit.SECONDS);// 写入超时
 		return okHttpClient;
 	}
+
 }
