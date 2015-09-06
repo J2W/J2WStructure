@@ -6,6 +6,7 @@ import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
+import j2w.team.receiver.J2WReceiver;
 import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
@@ -140,6 +141,9 @@ public final class J2WBizUtils {
 			} else if (iView instanceof J2WService) {
 				iDisplay.initDisplay(J2WHelper.getInstance());
 				iDisplay = DynamicProxyUtils.newProxyServiceUI(iDisplay);
+			}else if (iView instanceof J2WReceiver) {
+				iDisplay.initDisplay(J2WHelper.getInstance());
+				iDisplay = DynamicProxyUtils.newProxyServiceUI(iDisplay);
 			} else {
 				iDisplay.initDisplay((J2WActivity) iView);
 			}
@@ -204,7 +208,11 @@ public final class J2WBizUtils {
 			((T) display).initDisplay(J2WHelper.getInstance());
 			iDisplay = DynamicProxyUtils.newProxyServiceUI(((T) display));
 			return iDisplay;
-		} else {
+		}else if (obj instanceof J2WReceiver) {
+			((T) display).initDisplay(J2WHelper.getInstance());
+			iDisplay = DynamicProxyUtils.newProxyServiceUI(((T) display));
+			return iDisplay;
+		}  else {
 			((T) display).initDisplay((J2WActivity) obj);
 		}
 		/** 动态代理 - UI **/
