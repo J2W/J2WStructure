@@ -15,7 +15,11 @@ public class J2WScreenManager implements J2WIScreenManager {
 	/**
 	 * FragmentActivity堆栈 单例模式
 	 */
-	private Stack<FragmentActivity>	fragmentActivities	= new Stack<>();
+	private final Stack<FragmentActivity>	fragmentActivities;
+
+	public J2WScreenManager() {
+		fragmentActivities = new Stack<>();
+	}
 
 	/**
 	 * 获取当前活动的activity
@@ -41,7 +45,9 @@ public class J2WScreenManager implements J2WIScreenManager {
 			L.e("传入的参数为空!");
 			return;
 		}
-		fragmentActivities.add(activity);
+		if (fragmentActivities != null) {
+			fragmentActivities.add(activity);
+		}
 	}
 
 	/**
@@ -56,7 +62,6 @@ public class J2WScreenManager implements J2WIScreenManager {
 		}
 		activity.finish();
 		fragmentActivities.remove(activity);
-
 		activity = null;
 	}
 
@@ -107,7 +112,6 @@ public class J2WScreenManager implements J2WIScreenManager {
 			J2WHelper.picassoHelper().clearCache();// 缓存
 			J2WHelper.threadPoolHelper().finish();// 线程池
 			fragmentActivities.clear();
-			fragmentActivities = null;
 		}
 	}
 }
