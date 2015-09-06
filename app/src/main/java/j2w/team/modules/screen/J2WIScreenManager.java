@@ -41,4 +41,8 @@ public interface J2WIScreenManager {
       */
     void popAllActivityExceptionLoginActivity(Class logoin);
 
+	/**
+	 * 退出程序
+	 */
+	void logout();
 }

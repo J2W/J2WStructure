@@ -1,9 +1,7 @@
 package j2w.team.modules.screen;
 
-import android.os.*;
 import android.support.v4.app.FragmentActivity;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import j2w.team.common.log.L;
@@ -17,7 +15,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 	/**
 	 * FragmentActivity堆栈 单例模式
 	 */
-	private static final Stack<FragmentActivity>	fragmentActivities	= new Stack<>();
+	private Stack<FragmentActivity>	fragmentActivities	= new Stack<>();
 
 	/**
 	 * 获取当前活动的activity
@@ -58,6 +56,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 		}
 		activity.finish();
 		fragmentActivities.remove(activity);
+
 		activity = null;
 	}
 
@@ -94,6 +93,21 @@ public class J2WScreenManager implements J2WIScreenManager {
 			if (!pop.getClass().equals(login)) {
 				pop.finish();
 			}
+		}
+	}
+
+	/**
+	 * 退出程序
+	 */
+	@Override public void logout() {
+		popAllActivityExceptMain(null);
+		if (fragmentActivities.size() < 1) {
+			/** 清空内存缓存picasso **/
+			L.i("清空内存缓存-J2WHelper.getPicassoHelper().clearCache()");
+			J2WHelper.picassoHelper().clearCache();// 缓存
+			J2WHelper.threadPoolHelper().finish();// 线程池
+			fragmentActivities.clear();
+			fragmentActivities = null;
 		}
 	}
 }
