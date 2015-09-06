@@ -159,7 +159,6 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 		boolean bool = (boolean) checkUI.invoke(t);
 		if (!bool) {
 			aClass = null;
-			stack = null;
 			t = null;
 		}
 		return bool;
