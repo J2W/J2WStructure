@@ -1,6 +1,6 @@
 package j2w.team.modules.threadpool;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -9,9 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class J2WWorkExecutorService extends ThreadPoolExecutor {
 
-	private static final int	DEFAULT_THREAD_COUNT	= 3;
-
 	J2WWorkExecutorService() {
-		super(DEFAULT_THREAD_COUNT, DEFAULT_THREAD_COUNT, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), J2WThreadPoolUtils.threadFactory("J2WWork Dispatcher", true));
+		super(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 }

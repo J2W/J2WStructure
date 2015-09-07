@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
  */
 class J2WHttpExecutorService extends ThreadPoolExecutor {
 
-	private static final int	DEFAULT_THREAD_COUNT	= 3;
+	private static final int	DEFAULT_THREAD_COUNT	= 5;
 
 	J2WHttpExecutorService() {
-		super(DEFAULT_THREAD_COUNT, DEFAULT_THREAD_COUNT, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), J2WThreadPoolUtils.threadFactory("J2WHttp Dispatcher", true));
+		super(DEFAULT_THREAD_COUNT, DEFAULT_THREAD_COUNT, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 }

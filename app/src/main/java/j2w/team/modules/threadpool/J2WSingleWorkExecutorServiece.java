@@ -10,6 +10,6 @@ import java.util.concurrent.TimeUnit;
 class J2WSingleWorkExecutorServiece extends ThreadPoolExecutor {
 
 	J2WSingleWorkExecutorServiece() {
-		super(0, 1, 60, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), J2WThreadPoolUtils.threadFactory("J2WSingleWork Dispatcher", true));
+		super(1, 1, 0, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 }
