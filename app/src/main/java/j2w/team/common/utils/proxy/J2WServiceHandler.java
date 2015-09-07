@@ -19,7 +19,7 @@ public final class J2WServiceHandler<T> extends BaseHandler<T> {
 	}
 
 	@Override public synchronized Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-		if (method.getName().equals("context")) {
+		if (method.getName().equals("context") || method.getName().equals("intent")) {
 			return method.invoke(t, args);
 		} else {
 			L.i("J2WService");
