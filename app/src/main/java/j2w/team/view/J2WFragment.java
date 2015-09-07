@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +14,7 @@ import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBizUtils;
@@ -23,11 +22,9 @@ import j2w.team.biz.J2WIBiz;
 import j2w.team.biz.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
-import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky

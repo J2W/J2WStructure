@@ -154,7 +154,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		super.onActivityCreated(savedInstanceState);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		initData(savedInstanceState);
+		initData(getArguments());
 	}
 
 	@Override public void onResume() {
