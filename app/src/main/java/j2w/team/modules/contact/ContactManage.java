@@ -259,7 +259,9 @@ public class ContactManage implements J2WIContact {
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
+				long lastUpdate = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contact = getContactDataByContactId(contactId);
+				contact.lastUpdate = lastUpdate;
 				contacts.add(contact);
 			} while (idCursor.moveToNext());
 		}
@@ -372,7 +374,6 @@ public class ContactManage implements J2WIContact {
 		contactModel.contactId = id;
 		contactModel.photo = getContactPhotoByContactId(id);
 		contactModel.photoUri = Uri.withAppendedPath(Contacts.CONTENT_URI, id);
-
 		// 邮件
 		List<ContactEmail> emailAddresses = null;
 		ContactEmail contactEmail = null;
@@ -388,13 +389,16 @@ public class ContactManage implements J2WIContact {
 		// 地址
 		List<ContactAddress> contactAddresses = null;
 		ContactAddress contactAddress = null;
-		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] { Data.MIMETYPE, Data.DATA1, Data.DATA2 }, Data.CONTACT_ID + " = ?", new String[] { id }, null);
+		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] { Data.MIMETYPE, Data.DATA1, Data.DATA2, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP }, Data.CONTACT_ID + " = ?", new String[] { id }, null);
 
 		if (contactInfoCursor.moveToFirst()) {
+			contactModel.lastUpdate  = contactInfoCursor.getLong(contactInfoCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
+
 			do {
 				String mimeType = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.MIMETYPE));
 				String value = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.DATA1));
 				int type = contactInfoCursor.getInt(contactInfoCursor.getColumnIndex(Data.DATA2));
+
 
 				if (mimeType.contains("/name")) {// 名称
 					contactModel.name = value;
@@ -467,4 +471,5 @@ public class ContactManage implements J2WIContact {
 		contactInfoCursor.close();
 		return contactModel;
 	}
+
 }
