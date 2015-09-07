@@ -30,6 +30,8 @@ public interface J2WIDisplay {
 
 	J2WFragment fragment();
 
+	boolean isActivity();
+
 	/**
 	 * 设置 activity
 	 *

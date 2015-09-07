@@ -82,8 +82,8 @@ public class J2WDisplay implements J2WIDisplay {
 		stringBuilder.append("从 ");
 		stringBuilder.append(activity().getClass().getSimpleName());
 		stringBuilder.append(" 跳转到 ");
-        ComponentName component = intent.getComponent();
-        stringBuilder.append(component == null ? "" : component.getClassName());
+		ComponentName component = intent.getComponent();
+		stringBuilder.append(component == null ? "" : component.getClassName());
 		stringBuilder.append(" Tag :");
 		stringBuilder.append(fragment.getClass().getSimpleName());
 
@@ -97,14 +97,24 @@ public class J2WDisplay implements J2WIDisplay {
 		return toolbar;
 	}
 
-	public J2WActivity activity() {
+	@Override public J2WActivity activity() {
 		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
 		return j2WView.activity();
 	}
 
-	public J2WFragment fragment() {
+	@Override public J2WFragment fragment() {
 		J2WCheckUtils.checkNotNull(j2WView, "Activity没有初始化");
 		return j2WView.fragment();
+	}
+
+	@Override public boolean isActivity() {
+		if(j2WView == null){
+			return false;
+		}
+		if(j2WView.activity() == null){
+			return false;
+		}
+		return true;
 	}
 
 	/** 跳转fragment **/
