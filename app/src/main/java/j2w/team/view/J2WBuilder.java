@@ -180,7 +180,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	void layoutLoading() {
-		if(layoutLoadingId < 1){
+		if (layoutLoadingId < 1) {
 			return;
 		}
 		changeShowAnimation(layoutEmpty, false);
@@ -248,6 +248,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 		anim.setDuration(j2WView.activity().getResources().getInteger(android.R.integer.config_shortAnimTime));
 		view.startAnimation(anim);
+	}
+
+	/**
+	 * 键盘
+	 */
+	private boolean	autoShouldHideInput	= true;
+
+	public void autoKeyBoard(boolean auto) {
+		this.autoShouldHideInput = auto;
+	}
+
+	boolean isAutoKeyBoard() {
+		return this.autoShouldHideInput;
 	}
 
 	/**
@@ -416,16 +429,14 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	private boolean	isOpenEventBus;
 
-	private boolean isNotCloseEvent; //是否关闭
-
-
+	private boolean	isNotCloseEvent;	// 是否关闭
 
 	// 获取
 	boolean isOpenEventBus() {
 		return isOpenEventBus;
 	}
 
-	boolean isNotCloseEventBus(){
+	boolean isNotCloseEventBus() {
 		return isNotCloseEvent;
 	}
 
@@ -434,9 +445,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isOpenEventBus = isOpenEventBus;
 	}
 
-	public void isNoCloseEventBus(boolean isNotCloseEvent){
+	public void isNoCloseEventBus(boolean isNotCloseEvent) {
 		this.isNotCloseEvent = isNotCloseEvent;
 	}
+
 	/**
 	 * ListView
 	 */
@@ -1050,7 +1062,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 		contentRoot.addView(layoutContent, layoutParams);
-
 		// 进度条
 
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
