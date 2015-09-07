@@ -58,11 +58,6 @@ public class ContactDetailModel implements Cloneable {
 	public Bitmap				photo;
 
 	/**
-	 * 联系人头像地址
-	 */
-	public Uri					photoUri;
-
-	/**
 	 * 电子邮件, Key = type of email, Value = Email address
 	 */
 	public List<ContactEmail>	emailAddresses;
