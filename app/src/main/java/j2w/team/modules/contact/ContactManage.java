@@ -372,7 +372,6 @@ public class ContactManage implements J2WIContact {
 	@Override public ContactDetailModel getContactDataByContactId(String id) {
 		ContactDetailModel contactModel = new ContactDetailModel();
 		contactModel.contactId = id;
-		contactModel.photo = getContactPhotoByContactId(id);
 		contactModel.photoUri = Uri.withAppendedPath(Contacts.CONTENT_URI, id);
 		// 邮件
 		List<ContactEmail> emailAddresses = null;
