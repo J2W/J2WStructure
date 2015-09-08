@@ -277,7 +277,7 @@ public class J2WDownloadDispatcher extends Thread {
 
 				}
 			});
-		} catch (IOException e) {
+		} catch (Exception e) {
 			L.i("上传成功-数据转换失败");
 		}
 	}
