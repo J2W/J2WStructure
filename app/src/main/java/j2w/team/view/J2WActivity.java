@@ -237,23 +237,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	}
 
 	/**
-	 * 屏幕点击事件 - 关闭键盘
-	 *
-	 * @param ev
-	 * @return
-	 */
-	@Override public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
-			View v = getCurrentFocus();
-			if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
-				J2WKeyboardUtils.hideSoftInput(this);
-			}
-		}
-		return super.dispatchTouchEvent(ev);
-	}
-
-	/**
 	 * 创建menu
 	 * 
 	 * @param menu

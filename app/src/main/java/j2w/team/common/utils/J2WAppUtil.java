@@ -18,6 +18,8 @@ import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.util.List;
 import java.lang.reflect.ParameterizedType;
@@ -279,5 +281,21 @@ public final class J2WAppUtil {
         return activitys.size() > 0;
     }
 
+
+    /**
+     * 键盘自动关闭
+     *
+     * @param ev
+     * @return
+     */
+    public static void keyBoardAutoHidden(MotionEvent ev, Activity activiy) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
+            View v = activiy.getCurrentFocus();
+            if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
+                J2WKeyboardUtils.hideSoftInput(activiy);
+            }
+        }
+    }
 
 }
