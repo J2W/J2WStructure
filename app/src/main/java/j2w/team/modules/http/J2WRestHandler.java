@@ -54,7 +54,7 @@ public class J2WRestHandler extends BaseHandler {
                 returnObject = j2WRestAdapter.invokeSync(methodInfo, request);// 执行
                 Interceptor interceptor = method.getAnnotation(Interceptor.class);
                 if (interceptor != null && j2wBiz != null) {
-                    j2wBiz.interceptorHttp(returnObject);
+                    j2wBiz.interceptorHttp(method.getName(),returnObject);
                 }
                 return returnObject;
             case ASYNC:

@@ -51,7 +51,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		checkNotNull(hClass, "请指定View接口～");
 		Object obj = stack.get(hClass.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.httpAdapter().create(hClass,this);
+			obj = J2WHelper.httpAdapter().create(hClass, this);
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(hClass.getSimpleName(), obj);
 			stackHttp.put(hClass.getSimpleName(), hClass);
@@ -96,8 +96,8 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	/**
 	 * 拦截器
 	 */
-	public void interceptorHttp(Object object) {
-		L.i("拦截器HTTP:" + object);
+	public void interceptorHttp(String name, Object object) {
+		L.i("名称:" + name + " 拦截器HTTP:" + object);
 	}
 
 	/**
