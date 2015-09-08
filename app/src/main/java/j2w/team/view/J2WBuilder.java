@@ -34,6 +34,7 @@ import j2w.team.J2WHelper;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WSwipeBackLayout;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.common.view.PagerSlidingTabStrip;
@@ -1156,6 +1157,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
 					@Override public void onClick(View v) {
+                        J2WKeyboardUtils.hideSoftInput(j2WView.activity());
 						j2WView.activity().onBackPressed();
 					}
 				});
