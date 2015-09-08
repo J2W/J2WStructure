@@ -261,21 +261,25 @@ public class J2WDownloadDispatcher extends Thread {
 	 *            请求
 	 */
 	public void postUploadComplete(final J2WUploadRequest request, final Response response) {
-		J2WHelper.mainLooper().execute(new Runnable() {
+		try {
 
-			@Override public void run() {
-				try {
-					Class clazz = J2WAppUtil.getSuperClassGenricType(request.getJ2WUploadListener().getClass(), 0);
+			final Class clazz = J2WAppUtil.getSuperClassGenricType(request.getJ2WUploadListener().getClass(), 0);
+
+			final Object value = converter.fromBody(response.body(), clazz);
+			J2WHelper.mainLooper().execute(new Runnable() {
+
+				@Override public void run() {
 					if (clazz == null) {
 						request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), response);
 					} else {
-						request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), converter.fromBody(response.body(), clazz));
+						request.getJ2WUploadListener().onUploadComplete(request.getRequestId(), value);
 					}
-				} catch (IOException e) {
-					L.i("上传成功-数据转换失败");
+
 				}
-			}
-		});
+			});
+		} catch (IOException e) {
+			L.i("上传成功-数据转换失败");
+		}
 	}
 
 	/**
