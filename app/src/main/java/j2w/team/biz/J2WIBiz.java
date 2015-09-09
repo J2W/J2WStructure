@@ -3,6 +3,7 @@ package j2w.team.biz;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.http.J2WRestAdapter;
+import j2w.team.view.J2WView;
 
 /**
  * Created by sky on 15/2/7. 业务
@@ -10,11 +11,32 @@ import j2w.team.modules.http.J2WRestAdapter;
 public interface J2WIBiz {
 
 	/**
+	 * 初始化
+	 * 
+	 * @param iView
+	 */
+	void initBiz(J2WView iView);
+
+	void initBiz(Object callback);
+
+	/**
+	 * 清空
+	 */
+	void detach();
+	/**
 	 * 拦截器
 	 * 
 	 * @param clazz
 	 */
 	void interceptorImpl(Class clazz);
+
+	/**
+	 * 网络拦截器
+	 * 
+	 * @param name
+	 * @param object
+	 */
+	void interceptorHttp(String name, Object object);
 
 	/**
 	 * View层 回调引用
@@ -25,21 +47,11 @@ public interface J2WIBiz {
 	<U> U ui(Class<U> ui);
 
 	/**
-	 * 消除View层引用
-	 */
-	void detach();
-
-	/**
 	 * 检查UI
-	 * 
+	 *
 	 * @return
 	 */
 	boolean checkUI();
-
-	/**
-	 * 销毁UI
-	 */
-	void detachUI();
 
 	/**
 	 * 异常捕捉

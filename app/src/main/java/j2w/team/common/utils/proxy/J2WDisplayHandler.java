@@ -13,21 +13,17 @@ import j2w.team.biz.J2WBiz;
  */
 public final class J2WDisplayHandler<T> extends BaseHandler<T> {
 
-	J2WBiz			j2WBiz;
-
 	Object			methodReturn;
 
 	CountDownLatch	countDownLatch;
 
-	public J2WDisplayHandler(T t, J2WBiz j2WBiz) {
+	public J2WDisplayHandler(T t) {
 		super(t);
-		this.j2WBiz = j2WBiz;
 	}
 
 	@Override public synchronized Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 		// 判断是否在主线程
-		boolean isMainLooper = Looper.getMainLooper().getThread() != Thread.currentThread();
-		if (isMainLooper) {
+		if (J2WHelper.isMainLooperThread()) {
 			this.countDownLatch = new CountDownLatch(1);
 			J2WHelper.mainLooper().execute(new Runnable() {
 

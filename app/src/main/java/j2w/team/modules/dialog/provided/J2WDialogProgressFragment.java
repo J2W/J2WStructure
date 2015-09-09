@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.structure.R;
 import j2w.team.view.J2WBuilder;

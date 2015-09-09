@@ -10,8 +10,8 @@
         <item name="colorAccent">@color/j2w_click_pressed</item>
         <item name="android:progressBarStyle">@style/J2W.Layout.Wrap.ProgressBar</item>
         <!-- 列表分割线-->
-        <item name="RecyclerViewDivider">@drawable/j2w_default_divider</item>
-        <item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>
+        <!--<item name="RecyclerViewDivider">@drawable/j2w_default_divider</item>-->
+        <!--<item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>-->
 
         <!-- 按下效果 -->
         <!--<item name="selectableItemBackground">@drawable/j2w_click_selector</item>-->

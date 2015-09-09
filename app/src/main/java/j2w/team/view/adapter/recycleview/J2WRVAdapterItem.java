@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;

@@ -196,9 +196,6 @@ public class J2WListAdapter extends BaseAdapter {
 	}
 
 	public void detach() {
-		if (j2WView != null) {
-			j2WView.detach();
-			j2WView = null;
-		}
+		j2WView = null;
 	}
 }

@@ -153,7 +153,7 @@ public class J2WModulesManage {
 
 	public J2WSystemUiHider getJ2WSystemUiHider(AppCompatActivity activity, View anchorView, int flags) {
 		if (j2WSystemUiHider == null) {
-			j2WSystemUiHider = J2WSystemUiHider.getInstance(activity,anchorView,flags);
+			j2WSystemUiHider = J2WSystemUiHider.getInstance(activity, anchorView, flags);
 		}
 		return j2WSystemUiHider;
 	}

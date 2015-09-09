@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 
 /**
@@ -24,6 +24,8 @@ public class J2WView {
 
 	public static final int		STATE_DIALOGFRAGMENT	= 77777;
 
+	public static final int		STATE_NOTVIEW			= 66666;
+
 	/** 类型 **/
 	private int					state;
 
@@ -35,7 +37,7 @@ public class J2WView {
 
 	private J2WDialogFragment	mJ2WDialogFragment;
 
-	private FragmentManager fragmentManager;
+	private FragmentManager		fragmentManager;
 
 	/** 初始化 **/
 	public void initUI(J2WActivity mJ2WActivity) {
@@ -58,6 +60,7 @@ public class J2WView {
 
 	public void initUI(Context context) {
 		this.context = context;
+		this.state = STATE_NOTVIEW;
 	}
 
 	public Context context() {
@@ -81,6 +84,22 @@ public class J2WView {
 				break;
 		}
 		return fragmentManager;
+	}
+
+	public Object getView() {
+		Object obj = null;
+		switch (state) {
+			case STATE_ACTIVITY:
+				obj = mJ2WActivity;
+				break;
+			case STATE_FRAGMENT:
+				obj = mJ2WFragment;
+				break;
+			case STATE_DIALOGFRAGMENT:
+				obj = mJ2WDialogFragment;
+				break;
+		}
+		return obj;
 	}
 
 	public int getState() {

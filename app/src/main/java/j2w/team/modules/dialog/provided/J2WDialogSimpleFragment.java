@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.dialog.iface.INegativeButtonDialogListener;
 import j2w.team.modules.dialog.iface.INeutralButtonDialogListener;

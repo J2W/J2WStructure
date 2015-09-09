@@ -6,10 +6,12 @@ import android.content.Intent;
 import java.util.HashMap;
 import java.util.Map;
 
+import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.display.J2WIDisplay;
 
 /**
  * @创建人 sky
@@ -19,7 +21,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiver {
 
 	/** 显示调度对象 **/
-	private D					display		= null;
+	private D					display;
 
 	/** 业务逻辑对象 **/
 	private Map<String, Object>	stackBiz	= null;
@@ -40,7 +42,7 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this, display);
+			obj = J2WBizUtils.createBiz(biz, this);
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;
@@ -55,7 +57,8 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 		}
 		/** 创建业务类 **/
 		if (display == null) {
-			display = J2WBizUtils.createDisplay(this);
+			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+			display = (D) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
 		}
 	}
 
@@ -73,7 +76,10 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 			stackBiz.clear();
 			stackBiz = null;
 		}
-		display = null;
+		if (display == null) {
+			display.detach();
+			display = null;
+		}
 	}
 
 	/**
@@ -83,10 +89,6 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 	 */
 	public D display() {
 		return display;
-	}
-
-	public <E extends J2WIDisplay> E display(Class<E> e) {
-		return (E) display;
 	}
 
 }

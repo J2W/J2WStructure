@@ -3,7 +3,7 @@ package j2w.team.modules.dialog.provided;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.dialog.blur.BlurDialogEngine;
 import j2w.team.view.J2WDialogFragment;
 

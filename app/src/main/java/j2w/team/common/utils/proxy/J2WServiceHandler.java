@@ -19,11 +19,11 @@ public final class J2WServiceHandler<T> extends BaseHandler<T> {
 	}
 
 	@Override public synchronized Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-		if (method.getName().equals("context") || method.getName().startsWith("intent")) {
+		if (method.getName().equals("context") || method.getName().startsWith("intent") || method.getName().equals("initDisplay") || method.getName().equals("detach")) {
 			return method.invoke(t, args);
 		} else {
-			L.i("J2WService");
-			L.i("Service无法获取Activity,所以导致Display无效,除了context()方法以外");
+			L.tag("Display");
+			L.i("提示: 无界面调用Display()." + method.getName() + "方法，该方法不会被执行!,只有content()和intent前缀方法会被执行");
 			return null;
 		}
 	}

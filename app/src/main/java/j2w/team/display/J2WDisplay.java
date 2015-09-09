@@ -1,4 +1,4 @@
-package j2w.team.biz;
+package j2w.team.display;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -17,7 +17,6 @@ import android.view.View;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
 
@@ -36,19 +35,9 @@ public class J2WDisplay implements J2WIDisplay {
 		return context;
 	}
 
-	@Override public void initDisplay(J2WActivity j2WActivity) {
-		j2WView = j2WActivity.j2wView();
-		context = j2WView.context();
-	}
-
-	@Override public void initDisplay(J2WFragment fragment) {
-		j2WView = fragment.j2wView();
-		context = j2WView.context();
-	}
-
-	@Override public void initDisplay(J2WDialogFragment fragment) {
-		j2WView = fragment.j2wView();
-		context = j2WView.context();
+	@Override public void initDisplay(J2WView j2WView) {
+		this.j2WView = j2WView;
+		this.context = j2WView.context();
 	}
 
 	@Override public void initDisplay(Context context) {
@@ -108,10 +97,10 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public boolean isActivity() {
-		if(j2WView == null){
+		if (j2WView == null) {
 			return false;
 		}
-		if(j2WView.activity() == null){
+		if (j2WView.activity() == null) {
 			return false;
 		}
 		return true;
@@ -253,5 +242,7 @@ public class J2WDisplay implements J2WIDisplay {
 		activity().startActivityForResult(intent, requestCode);
 	}
 
-	@Override public void detach() {}
+	@Override public void detach() {
+		context = null;
+	}
 }

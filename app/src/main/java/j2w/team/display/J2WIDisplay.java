@@ -1,4 +1,4 @@
-package j2w.team.biz;
+package j2w.team.display;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
+import j2w.team.biz.Impl;
 import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
+import j2w.team.view.J2WView;
 
 /**
  * @创建人 sky
@@ -33,32 +34,12 @@ public interface J2WIDisplay {
 	boolean isActivity();
 
 	/**
-	 * 设置 activity
-	 *
-	 * @param activity
-	 *            activity
-	 */
-	void initDisplay(J2WActivity activity);
-
-	/**
-	 * 设置 fragment
-	 * 
-	 * @param fragment
-	 */
-	void initDisplay(J2WFragment fragment);
-
-	/**
-	 * 设置 dialogfragment
-	 * 
-	 * @param fragment
-	 */
-	void initDisplay(J2WDialogFragment fragment);
-
-	/**
 	 * 设置 上下文
 	 * 
-	 * @param context
+	 * @param j2WView
 	 */
+	void initDisplay(J2WView j2WView);
+
 	void initDisplay(Context context);
 
 	/**
@@ -103,7 +84,7 @@ public interface J2WIDisplay {
 
 	void commitBackStack(int layoutId, Fragment fragment);
 
-	void commitBackStack(int layoutId, Fragment fragment,int animation);
+	void commitBackStack(int layoutId, Fragment fragment, int animation);
 
 	/** 跳转intent **/
 

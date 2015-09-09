@@ -62,14 +62,6 @@ public final class J2WBizHandler<T> extends BaseHandler<T> {
 		if (j2WBiz == null || t == null) {
 			return false;
 		}
-
-		boolean isUI = j2WBiz.checkUI();
-
-		if (!isUI) {
-			j2WBiz.detachUI();
-			j2WBiz = null;
-			t = null;
-		}
-		return isUI;
+		return j2WBiz.checkUI();
 	}
 }

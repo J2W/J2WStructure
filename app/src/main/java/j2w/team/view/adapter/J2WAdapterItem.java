@@ -3,9 +3,8 @@ package j2w.team.view.adapter;
 import android.view.View;
 
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
 
 /**

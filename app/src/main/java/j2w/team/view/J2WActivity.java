@@ -3,17 +3,12 @@ package j2w.team.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ListView;
 
 import java.util.HashMap;
@@ -23,14 +18,13 @@ import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -38,6 +32,12 @@ import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
  * @类描述 activity
  */
 public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivity {
+
+	private Map<String, Object>	stackBiz;
+
+	private Map<String, Object>	stackDisplay;
+
+	D							display;
 
 	/**
 	 * 定制
@@ -56,13 +56,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder			j2WBuilder;
-
-	/** 业务逻辑对象 **/
-	private Map<String, Object>	stackBiz	= null;
-
-	/** 显示调度对象 **/
-	private D					display		= null;
+	private J2WBuilder	j2WBuilder;
 
 	/**
 	 * 初始化
@@ -86,9 +80,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		/** 初始化视图 **/
 		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
 		/** 初始化业务 **/
-		attachBiz();
+		attach();
 		/** 初始化视图组建 **/
 		initData(getIntent().getExtras());
+
+		getWindowManager().getDefaultDisplay();
 	}
 
 	@Override protected void onStart() {
@@ -98,7 +94,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onResume() {
 		super.onResume();
-		attachBiz();
+		attach();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!J2WHelper.eventBus().isRegistered(this)) {
@@ -110,7 +106,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		attachBiz();
+		attach();
 	}
 
 	@Override protected void onPause() {
@@ -123,7 +119,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	@Override protected void onRestart() {
 		super.onRestart();
 		/** 初始化业务 **/
-		attachBiz();
+		attach();
 		J2WHelper.getInstance().onRestart(this);
 	}
 
@@ -140,9 +136,11 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
+
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
+
 		/** 从堆栈里移除 **/
 		J2WHelper.screenHelper().popActivity(this);
 		J2WHelper.getInstance().onDestroy(this);
@@ -154,11 +152,20 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public D display() {
+		display.initDisplay(j2wView());
 		return display;
 	}
 
-	public <E extends J2WIDisplay> E display(Class<E> e) {
-		return (E) display;
+	public <E extends J2WIDisplay> E display(Class<E> eClass) {
+		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
+		E obj = (E) stackDisplay.get(eClass.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createDisplay(eClass);
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
+			stackDisplay.put(eClass.getSimpleName(), obj);
+		}
+		obj.initDisplay(j2wView());
+		return obj;
 	}
 
 	/**
@@ -173,24 +180,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this, display);
+			obj = J2WBizUtils.createBiz(biz, j2wView());
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;
-	}
-
-	/**
-	 * 业务初始化
-	 */
-	synchronized final void attachBiz() {
-		if (stackBiz == null) {
-			stackBiz = new HashMap<>();
-		}
-		/** 创建业务类 **/
-		if (display == null) {
-			display = J2WBizUtils.createDisplay(this);
-		}
-		listLoadMoreOpen();
 	}
 
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -207,6 +200,25 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	}
 
 	/**
+	 * 业务初始化
+	 */
+	synchronized final void attach() {
+		if (stackBiz == null) {
+			stackBiz = new HashMap<>();
+		}
+
+		if (stackDisplay == null) {
+			stackDisplay = new HashMap<>();
+		}
+		if (display == null) {
+			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+			display = (D) J2WBizUtils.createDisplay(displayClass);
+			stackDisplay.put(displayClass.getSimpleName(), display);
+		}
+		listLoadMoreOpen();
+	}
+
+	/**
 	 * 业务分离
 	 */
 	synchronized final void detachBiz() {
@@ -219,6 +231,16 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		if (stackBiz != null) {
 			stackBiz.clear();
 			stackBiz = null;
+		}
+		for (Object b : stackDisplay.values()) {
+			J2WIDisplay j2WIDisplay = (J2WIDisplay) b;
+			if (j2WIDisplay != null) {
+				j2WIDisplay.detach();
+			}
+		}
+		if (stackDisplay != null) {
+			stackDisplay.clear();
+			stackDisplay = null;
 		}
 		if (display != null) {
 			display.detach();
@@ -259,7 +281,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		/** 初始化业务 **/
-		attachBiz();
+		attach();
 	}
 
 	/********************** View业务代码 *********************/

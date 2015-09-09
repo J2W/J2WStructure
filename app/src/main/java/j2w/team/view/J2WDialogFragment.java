@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -29,16 +28,16 @@ import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.biz.J2WIDisplay;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.dialog.iface.IDialogCancelListener;
 import j2w.team.modules.dialog.provided.J2WIDialogFragment;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -56,13 +55,13 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	/** View层编辑器 **/
 	private J2WBuilder			j2WBuilder;
 
-	/** 业务逻辑对象 **/
-	private Map<String, Object>	stackBiz			= null;
-
-	/** 显示调度对象 **/
-	private D					display				= null;
-
 	private boolean				targetActivity;
+
+	private Map<String, Object> stackBiz;
+
+	private Map<String, Object>	stackDisplay;
+
+	D							display;
 
 	/**
 	 * 定制
@@ -190,12 +189,21 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 *
 	 * @return
 	 */
-	protected D display() {
+	public D display() {
+		display.initDisplay(j2wView());
 		return display;
 	}
 
-	protected <E extends J2WIDisplay> E display(Class<E> e) {
-		return (E) display;
+	public <E extends J2WIDisplay> E display(Class<E> eClass) {
+		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
+		E obj = (E) stackDisplay.get(eClass.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createDisplay(eClass);
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
+			stackDisplay.put(eClass.getSimpleName(), obj);
+		}
+		obj.initDisplay(j2wView());
+		return obj;
 	}
 
 	/**
@@ -210,7 +218,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this, display);
+			obj = J2WBizUtils.createBiz(biz, this);
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;
@@ -223,9 +231,14 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		if (stackBiz == null) {
 			stackBiz = new HashMap<>();
 		}
-		/** 创建业务类 **/
+
+		if (stackDisplay == null) {
+			stackDisplay = new HashMap<>();
+		}
 		if (display == null) {
-			display = J2WBizUtils.createDisplay(this);
+			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+			display = (D) J2WBizUtils.createDisplay(displayClass);
+			stackDisplay.put(displayClass.getSimpleName(), display);
 		}
 		listLoadMoreOpen();
 	}
@@ -235,11 +248,24 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 */
 	synchronized final void detachBiz() {
 		for (Object b : stackBiz.values()) {
-			((J2WIBiz) b).detach();
+			J2WIBiz j2WIBiz = (J2WIBiz) b;
+			if (j2WIBiz != null) {
+				j2WIBiz.detach();
+			}
 		}
 		if (stackBiz != null) {
 			stackBiz.clear();
 			stackBiz = null;
+		}
+		for (Object b : stackDisplay.values()) {
+			J2WIDisplay j2WIDisplay = (J2WIDisplay) b;
+			if (j2WIDisplay != null) {
+				j2WIDisplay.detach();
+			}
+		}
+		if (stackDisplay != null) {
+			stackDisplay.clear();
+			stackDisplay = null;
 		}
 		if (display != null) {
 			display.detach();

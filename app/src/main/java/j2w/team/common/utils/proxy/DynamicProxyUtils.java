@@ -103,7 +103,7 @@ public final class DynamicProxyUtils {
 	 * @param <D>
 	 * @return
 	 */
-	public static <D> D newProxyDisplay(D d, J2WBiz j2WBiz) {
+	public static <D> D newProxyDisplay(D d) {
 		// 获取Classloader
 		ClassLoader loader = d.getClass().getClassLoader();
 		// 获得接口数组
@@ -113,7 +113,7 @@ public final class DynamicProxyUtils {
 			interfaces = d.getClass().getSuperclass().getInterfaces();
 		}
 		// 获得Handler - 这里可以替换成其他代理方法
-		InvocationHandler invocationHandler = new J2WDisplayHandler<>(d, j2WBiz);
+		InvocationHandler invocationHandler = new J2WDisplayHandler<>(d);
 		// 获取代理接口
 		D b = newProxyInstance(loader, interfaces, invocationHandler);
 		return b;

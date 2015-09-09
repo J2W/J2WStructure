@@ -704,19 +704,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
 		this.layoutManager = new LinearLayoutManager(j2WView.activity(), direction, reverseLayout == null ? true : false);
-		this.itemDecoration = itemDecoration == null ? new DividerItemDecoration(j2WView.activity(), direction) : itemDecoration;
+		this.itemDecoration = itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}
 
 	public void recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
 		this.layoutManager = new GridLayoutManager(j2WView.activity(), spanCount, direction, reverseLayout == null ? true : false);
-		this.itemDecoration = itemDecoration == null ? new DividerGridItemDecoration(j2WView.activity()) : itemDecoration;
+		this.itemDecoration = itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}
 
 	public void recyclerviewStaggeredGridyoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
 		this.layoutManager = new StaggeredGridLayoutManager(spanCount, direction);
-		this.itemDecoration = itemDecoration == null ? new DividerGridItemDecoration(j2WView.activity()) : itemDecoration;
+		this.itemDecoration = itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}
 

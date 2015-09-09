@@ -8,28 +8,30 @@ import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WHTTPException;
 import j2w.team.biz.exception.J2WUINullPointerException;
 import j2w.team.common.log.L;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.http.J2WError;
+import j2w.team.view.J2WView;
 
 /**
  * Created by sky on 15/2/1. 中央处理器
  */
 public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
-	private boolean				checkUI			= true;
-
 	public static final String	METHOD_ERROR	= "methodError";	// 错误方法
 
 	public static final String	METHOD_CHECKUI	= "checkUI";		// UI检查方法
 
-	private Object				view;
+	private J2WView				j2WView;
 
-	private T					display;
+	private Object				callback;
 
-	/** View层 **/
 	private Map<String, Object>	stack			= null;
 
-	private Map<String, Class>	stackHttp		= null;
+	private boolean				isUI;
+
+	private T					display;
 
 	/**
 	 * 初始化 - 业务
@@ -37,11 +39,40 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @param iView
 	 *            view层引用
 	 */
-	void initPresenter(Object iView, Object object) {
-		this.view = iView;
-		this.stack = new HashMap<>();
-		this.stackHttp = new HashMap<>();
-		this.display = J2WBizUtils.createDisplay(object, iView, this);// 设置显示调度
+	@Override public void initBiz(J2WView iView) {
+		this.j2WView = iView;
+		initMap();
+	}
+
+	@Override public void initBiz(Object callback) {
+		this.callback = callback;
+		initMap();
+	}
+
+	private void initMap() {
+		isUI = true;
+		stack = new HashMap<>();
+		Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+		checkNotNull(displayClass, "请指定display～");
+		if (callback != null) {
+			display = (T) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
+		} else {
+			display = (T) J2WBizUtils.createDisplayBiz(displayClass, j2WView);
+		}
+	}
+
+	@Override public void detach() {
+		isUI = false;
+		if (stack != null) {
+			stack.clear();
+			stack = null;
+		}
+		if (display != null) {
+			display.detach();
+			display = null;
+		}
+		j2WView = null;
+		callback = null;
 	}
 
 	/**
@@ -54,7 +85,6 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 			obj = J2WHelper.httpAdapter().create(hClass, this);
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(hClass.getSimpleName(), obj);
-			stackHttp.put(hClass.getSimpleName(), hClass);
 		}
 		return (H) obj;
 	}
@@ -72,10 +102,10 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * 根据接口获取实现类
 	 * 
 	 * @param inter
-	 * @param <S>
+	 * @param <I>
 	 * @return
 	 */
-	protected <S> S createImpl(Class<S> inter) {
+	protected <I> I createImpl(Class<I> inter) {
 		checkNotNull(inter, "请指定View接口～");
 		Object obj = stack.get(inter.getSimpleName());
 		if (obj == null) {// 如果没有索索到
@@ -83,21 +113,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(inter.getSimpleName(), obj);
 		}
-		return (S) obj;
-	}
-
-	/**
-	 * 拦截器
-	 */
-	public void interceptorImpl(Class clazz) {
-		L.i("拦截器IMPL:" + clazz);
-	}
-
-	/**
-	 * 拦截器
-	 */
-	public void interceptorHttp(String name, Object object) {
-		L.i("名称:" + name + " 拦截器HTTP:" + object);
+		return (I) obj;
 	}
 
 	/**
@@ -112,24 +128,11 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 		Object obj = stack.get(ui.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createUI(ui, view, this);
+			obj = J2WBizUtils.createUI(ui, callback == null ? j2WView.getView() : callback, this);
 			checkUINotNull(obj, "View层没有实现该接口～");
 			stack.put(ui.getSimpleName(), obj);
 		}
 		return (U) obj;
-	}
-
-	/**
-	 * 消除引用
-	 */
-	public void detach() {
-		checkUI = false;
-		if (stackHttp != null) {
-			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
-				J2WHelper.httpAdapter().cancel(entry.getValue());
-			}
-			stackHttp.clear();
-		}
 	}
 
 	/**
@@ -138,29 +141,21 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	@Override public boolean checkUI() {
-		return checkUI;
+		return isUI;
 	}
 
 	/**
-	 * 销毁UI
+	 * 拦截器
 	 */
-	@Override public void detachUI() {
-		if (stackHttp != null) {
-			for (Map.Entry<String, Class> entry : stackHttp.entrySet()) {
-				J2WHelper.httpAdapter().cancel(entry.getValue());
-			}
-			stackHttp.clear();
-			stackHttp = null;
-		}
-		if (stack != null) {
-			stack.clear();
-			stack = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
-		view = null;
+	@Override public void interceptorImpl(Class clazz) {
+		L.i("拦截器IMPL:" + clazz);
+	}
+
+	/**
+	 * 拦截器
+	 */
+	@Override public void interceptorHttp(String name, Object object) {
+		L.i("名称:" + name + " 拦截器HTTP:" + object);
 	}
 
 	/**
