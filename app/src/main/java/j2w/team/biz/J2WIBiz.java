@@ -23,6 +23,9 @@ public interface J2WIBiz {
 	 * 清空
 	 */
 	void detach();
+
+	void detachUI();
+
 	/**
 	 * 拦截器
 	 * 

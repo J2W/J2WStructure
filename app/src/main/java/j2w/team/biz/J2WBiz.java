@@ -61,8 +61,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		}
 	}
 
-	@Override public void detach() {
-		isUI = false;
+	@Override public void detachUI() {
 		if (stack != null) {
 			stack.clear();
 			stack = null;
@@ -73,6 +72,10 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		}
 		j2WView = null;
 		callback = null;
+	}
+	@Override public void detach() {
+		isUI = false;
+
 	}
 
 	/**

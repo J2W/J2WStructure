@@ -158,6 +158,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 		Method checkUI = aClass.getMethod(J2WBiz.METHOD_CHECKUI);
 		boolean bool = (boolean) checkUI.invoke(t);
 		if (!bool) {
+
 			aClass = null;
 			t = null;
 		}
