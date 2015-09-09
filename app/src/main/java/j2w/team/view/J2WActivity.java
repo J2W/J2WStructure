@@ -140,6 +140,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
+        /**关闭键盘 **/
+        J2WKeyboardUtils.hideSoftInput(this);
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
