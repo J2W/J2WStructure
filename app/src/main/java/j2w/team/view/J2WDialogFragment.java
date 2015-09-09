@@ -81,7 +81,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	/**
 	 * 自定义样式
-	 * 
+	 *
 	 * @return
 	 */
 	protected int getJ2WStyle() {
@@ -90,7 +90,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	/**
 	 * 是否可取消
-	 * 
+	 *
 	 * @return
 	 */
 	protected boolean isCancel() {
@@ -99,7 +99,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	/**
 	 * 是否设置目标活动
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isTargetActivity() {
@@ -108,7 +108,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	/**
 	 * 创建Dialog
-	 * 
+	 *
 	 * @param savedInstanceState
 	 * @return
 	 */
@@ -218,7 +218,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this);
+			obj = J2WBizUtils.createBiz(biz, j2wView());
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;

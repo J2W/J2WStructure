@@ -192,7 +192,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this);
+			obj = J2WBizUtils.createBiz(biz, j2wView());
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;
