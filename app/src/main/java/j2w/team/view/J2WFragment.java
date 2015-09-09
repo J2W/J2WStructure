@@ -21,6 +21,7 @@ import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
@@ -138,6 +139,8 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
+        /**关闭键盘 **/
+        J2WKeyboardUtils.hideSoftInput(getActivity());
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
