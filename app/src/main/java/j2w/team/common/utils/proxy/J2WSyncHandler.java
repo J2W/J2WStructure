@@ -70,6 +70,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 				returnObject = method.invoke(t, args);// 执行
 				return returnObject;
 			} catch (Throwable throwable) {
+				throwable.printStackTrace();
 				try {
 					return methodError.invoke(t, new Object[] { method.getName(), throwable });
 				} catch (IllegalAccessException e1) {
@@ -120,6 +121,7 @@ public class J2WSyncHandler<T> extends BaseHandler<T> {
 				J2WCheckUtils.checkNotNull(t, "UI和BIZ已经被销毁~");
 				super.method.invoke(t, args);// 执行
 			} catch (Throwable e) {
+				e.printStackTrace();
 				try {
 					// 获取UI检查方法
 					if (!checkUI()) {
