@@ -95,7 +95,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	@Override public <U> U ui(Class<U> ui) {
-		return j2WStructureIManage.ui(ui,this,callback == null ? j2WView.getView() : callback);
+		return j2WStructureIManage.ui(ui, this, callback == null ? j2WView.getView() : callback);
 	}
 
 	/**
@@ -184,7 +184,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	public final void methodError(String methodName, Throwable throwable) {
 		if (throwable.getCause() instanceof J2WError) {
 			if ("Canceled".equals(throwable.getCause().getMessage())) {
-				errorCancel();
+				errorCancel(methodName);
 			} else {
 				methodHttpError(methodName, (J2WError) throwable.getCause());
 			}
@@ -206,25 +206,25 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	/** 网络异常 **/
 	@Override public final void methodHttpError(String methodName, J2WError j2WError) {
 		if (j2WError.getKind() == J2WError.Kind.NETWORK) { // 请求发送前，网络问题
-			errorNetWork();
+			errorNetWork(methodName);
 		} else if (j2WError.getKind() == J2WError.Kind.HTTP) {// 请求响应后，网络错误
-			errorHttp();
+			errorHttp(methodName);
 		} else if (j2WError.getKind() == J2WError.Kind.UNEXPECTED) {// 意外错误
-			errorUnexpected();
+			errorUnexpected(methodName);
 		}
 	}
 
 	/** 发送请求前取消 **/
-	@Override public void errorCancel() {}
+	@Override public void errorCancel(String methodName) {}
 
 	/** 发送请求前错误 **/
-	@Override public void errorNetWork() {}
+	@Override public void errorNetWork(String methodName) {}
 
 	/** 请求得到响应后错误 **/
-	@Override public void errorHttp() {}
+	@Override public void errorHttp(String methodName) {}
 
 	/** 请求或者响应 意外错误 **/
-	@Override public void errorUnexpected() {}
+	@Override public void errorUnexpected(String methodName) {}
 
 	/** 编码异常 **/
 	@Override public void methodCodingError(String methodName, Throwable throwable) {}

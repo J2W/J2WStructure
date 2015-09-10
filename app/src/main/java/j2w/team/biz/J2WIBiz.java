@@ -84,13 +84,13 @@ public interface J2WIBiz {
 	 */
 	void methodHttpError(String methodName, J2WError j2WError);
 
-	void errorNetWork(); // 发送请求前错误
+	void errorNetWork(String methodName); // 发送请求前错误
 
-	void errorHttp(); // 请求得到响应后错误
+	void errorHttp(String methodName); // 请求得到响应后错误
 
-	void errorUnexpected();// 请求或者响应 意外错误
+	void errorUnexpected(String methodName);// 请求或者响应 意外错误
 
-	void errorCancel();// 取消请求
+	void errorCancel(String methodName);// 取消请求
 
 	/** 编码异常 **/
 	/**
