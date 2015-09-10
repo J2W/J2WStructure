@@ -53,7 +53,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder	j2WBuilder;
+	private J2WBuilder				j2WBuilder;
+
+	/** 结构 **/
+	private J2WStructureIManage<D>	j2WStructureIManage;
 
 	/**
 	 * 初始化
@@ -70,7 +73,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		setContentView(build(j2WBuilder).create());
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
+		/** 初始化结构 **/
+		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
+		j2WStructureIManage.attachActivity(this);
+		/** 初始化 **/
+		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
 		initData(getIntent().getExtras());
 	}
 
@@ -87,12 +95,23 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 				J2WHelper.eventBus().register(this);
 			}
 		}
+		listLoadMoreOpen();
 		J2WHelper.getInstance().onResume(this);
 	}
 
 	@Override protected void onPause() {
 		super.onPause();
 		J2WHelper.getInstance().onPause(this);
+		/** 判断EventBus 是否销毁 **/
+		if (j2WBuilder.isOpenEventBus()) {
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
+					J2WHelper.eventBus().unregister(this);
+				}
+			}
+		}
+		// 恢复初始化
+		listRefreshing(false);
 	}
 
 	@Override protected void onRestart() {
@@ -116,8 +135,32 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
+		/** 清楚结构**/
+		j2WStructureIManage.detachActivity(this);
+		j2WStructureIManage = null;
 
 		J2WHelper.getInstance().onDestroy(this);
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * 创建menu
+	 *
+	 * @param menu
+	 * @return
+	 */
+	@Override public boolean onCreateOptionsMenu(Menu menu) {
+		if (j2WBuilder.getToolbarMenuId() > 0) {
+			getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
+		}
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
@@ -126,8 +169,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public D display() {
+		j2WStructureIManage.getDisplay().initDisplay(j2wView());
+		return j2WStructureIManage.getDisplay();
 	}
 
+	public <N extends J2WIDisplay> N display(Class<N> eClass) {
+		return j2WStructureIManage.display(eClass, j2wView());
 	}
 
 	/**
@@ -139,8 +186,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
+		return j2WStructureIManage.biz(biz,j2wView());
 	}
 
+	/********************** View业务代码 *********************/
 
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
