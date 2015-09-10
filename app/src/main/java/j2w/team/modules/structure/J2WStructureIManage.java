@@ -2,8 +2,11 @@ package j2w.team.modules.structure;
 
 import android.view.View;
 
+import j2w.team.biz.J2WBiz;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.receiver.J2WReceiver;
+import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -27,6 +30,16 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	void detach();
 
 	/**
+	 * biz
+	 */
+
+	void attachBiz(J2WBiz j2WBiz, J2WView j2WView);
+
+	void attachBiz(J2WBiz j2WBiz, Object callback);
+
+	void detachBiz(J2WBiz j2WBiz);
+
+	/**
 	 * activity
 	 */
 	void attachActivity(J2WActivity activity);
@@ -48,6 +61,24 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	void detachDialogFragment(J2WDialogFragment dialogFragment);
 
 	/**
+	 * receiver
+	 * 
+	 * @param j2WReceiver
+	 */
+	void attachReceiver(J2WReceiver j2WReceiver);
+
+	void detachReceiver(J2WReceiver j2WReceiver);
+
+	/**
+	 * service
+	 * 
+	 * @param j2WService
+	 */
+	void attachService(J2WService j2WService);
+
+	void detachService(J2WService j2WService);
+
+	/**
 	 * 显示
 	 * 
 	 * @param eClass
@@ -55,6 +86,9 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	 * @return
 	 */
 	<N extends J2WIDisplay> N display(Class<N> eClass, J2WView j2WView);
+
+	<N extends J2WIDisplay> N display(Class<N> eClass, Object object);
+
 	/**
 	 * 业务
 	 * 
@@ -64,4 +98,38 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	 * @return
 	 */
 	<B extends J2WIBiz> B biz(Class<B> biz, J2WView j2WView);
+
+	<B extends J2WIBiz> B biz(Class<B> biz, Object object);
+
+	/**
+	 * 网络
+	 * 
+	 * @param hClass
+	 * @param j2WBiz
+	 * @param <H>
+	 * @return
+	 */
+	<H> H http(Class<H> hClass, J2WBiz j2WBiz);
+
+	/**
+	 * 实现
+	 * 
+	 * @param inter
+	 * @param j2WBiz
+	 * @param <I>
+	 * @return
+	 */
+	<I> I createImpl(Class<I> inter, J2WBiz j2WBiz);
+
+	/**
+	 * UI
+	 * 
+	 * @param ui
+	 * @param j2WBiz
+	 * @param object
+	 * @param <U>
+	 * @return
+	 */
+	<U> U ui(Class<U> ui, J2WBiz j2WBiz, Object object);
+
 }

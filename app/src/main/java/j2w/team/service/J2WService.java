@@ -14,6 +14,8 @@ import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.modules.structure.J2WStructureManage;
 
 /**
  * @创建人 sky
@@ -22,11 +24,7 @@ import j2w.team.display.J2WIDisplay;
  */
 public abstract class J2WService<D extends J2WIDisplay> extends Service {
 
-	/** 显示调度对象 **/
-	private D					display		= null;
-
-	/** 业务逻辑对象 **/
-	private Map<String, Object>	stackBiz	= null;
+	private J2WStructureIManage<D>	j2WStructureIManage;
 
 	@Nullable @Override public IBinder onBind(Intent intent) {
 		return null;
@@ -47,7 +45,8 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	@Override public void onCreate() {
 		super.onCreate();
 		/** 初始化业务 **/
-		attachBiz();
+		j2WStructureIManage = new J2WStructureManage<>();
+		j2WStructureIManage.attachService(this);
 		/** 初始化 **/
 		initData();
 	}
@@ -62,7 +61,10 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	 */
 	@Override public void onDestroy() {
 		super.onDestroy();
-		detachBiz();
+		if (j2WStructureIManage != null) {
+			j2WStructureIManage.detachService(this);
+			j2WStructureIManage = null;
+		}
 	}
 
 	/**
@@ -74,47 +76,7 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stackBiz.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, this);
-			stackBiz.put(biz.getSimpleName(), obj);
-		}
-		return (B) obj;
-	}
-
-	/**
-	 * 业务初始化
-	 */
-	synchronized final void attachBiz() {
-		if (stackBiz == null) {
-			stackBiz = new HashMap<>();
-		}
-		/** 创建业务类 **/
-		if (display == null) {
-			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-			display = (D) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
-		}
-	}
-
-	/**
-	 * 业务分离
-	 */
-	synchronized final void detachBiz() {
-		for (Object b : stackBiz.values()) {
-			J2WIBiz j2WIBiz = (J2WIBiz) b;
-			if (j2WIBiz != null) {
-				j2WIBiz.detach();
-			}
-		}
-		if (stackBiz != null) {
-			stackBiz.clear();
-			stackBiz = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
+		return j2WStructureIManage.biz(biz, this);
 	}
 
 	/**
@@ -123,6 +85,11 @@ public abstract class J2WService<D extends J2WIDisplay> extends Service {
 	 * @return
 	 */
 	public D display() {
-		return display;
+		j2WStructureIManage.getDisplay().initDisplay(J2WHelper.getInstance());
+		return j2WStructureIManage.getDisplay();
+	}
+
+	public <N extends J2WIDisplay> N display(Class<N> eClass) {
+		return j2WStructureIManage.display(eClass, J2WHelper.getInstance());
 	}
 }

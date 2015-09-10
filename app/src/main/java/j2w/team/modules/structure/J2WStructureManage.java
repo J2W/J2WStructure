@@ -7,12 +7,15 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
+import j2w.team.biz.J2WBiz;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.receiver.J2WReceiver;
+import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -121,6 +124,57 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 		J2WKeyboardUtils.hideSoftInput(dialogFragment.getActivity());
 	}
 
+	@Override public void attachReceiver(J2WReceiver j2WReceiver) {
+		/** 默认初始化 **/
+		attach();
+		/** 初始化显示 **/
+		Class displayClass = J2WAppUtil.getSuperClassGenricType(j2WReceiver.getClass(), 0);
+		display = (D) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
+		stackDisplay.put(displayClass.getSimpleName(), display);
+	}
+
+	@Override public void detachReceiver(J2WReceiver j2WReceiver) {
+		/** 默认初始化 **/
+		detach();
+	}
+
+	@Override public void attachService(J2WService j2WService) {
+		/** 默认初始化 **/
+		attach();
+		/** 初始化显示 **/
+		Class displayClass = J2WAppUtil.getSuperClassGenricType(j2WService.getClass(), 0);
+		display = (D) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
+		stackDisplay.put(displayClass.getSimpleName(), display);
+	}
+
+	@Override public void detachService(J2WService j2WService) {
+		/** 默认初始化 **/
+		detach();
+	}
+
+	@Override public void attachBiz(J2WBiz j2WBiz, J2WView j2WView) {
+		/** 默认初始化 **/
+		attach();
+		/** 初始化显示 **/
+		Class displayClass = J2WAppUtil.getSuperClassGenricType(j2WBiz.getClass(), 0);
+		display = (D) J2WBizUtils.createDisplayBiz(displayClass, j2WView);
+		stackDisplay.put(displayClass.getSimpleName(), display);
+	}
+
+	@Override public void attachBiz(J2WBiz j2WBiz, Object callback) {
+		/** 默认初始化 **/
+		attach();
+		/** 初始化显示 **/
+		Class displayClass = J2WAppUtil.getSuperClassGenricType(j2WBiz.getClass(), 0);
+		display = (D) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
+		stackDisplay.put(displayClass.getSimpleName(), display);
+	}
+
+	@Override public void detachBiz(J2WBiz j2WBiz) {
+		/** 默认销毁化 **/
+		detach();
+	}
+
 	@Override public <N extends J2WIDisplay> N display(Class<N> eClass, J2WView j2WView) {
 		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
 		N obj = (N) stackDisplay.get(eClass.getSimpleName());
@@ -133,13 +187,70 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 		return obj;
 	}
 
+	@Override public <N extends J2WIDisplay> N display(Class<N> eClass, Object object) {
+		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
+		N obj = (N) stackDisplay.get(eClass.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createDisplayNotView(eClass, J2WHelper.getInstance());
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
+			stackDisplay.put(eClass.getSimpleName(), obj);
+		}
+		obj.initDisplay(J2WHelper.getInstance());
+		return obj;
+	}
+
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz, J2WView j2WView) {
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stackBiz.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
 			obj = J2WBizUtils.createBiz(biz, j2WView);
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
 			stackBiz.put(biz.getSimpleName(), obj);
 		}
 		return (B) obj;
+	}
+
+	@Override public <B extends J2WIBiz> B biz(Class<B> biz, Object object) {
+		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
+		Object obj = stackBiz.get(biz.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createBiz(biz, this);
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
+			stackBiz.put(biz.getSimpleName(), obj);
+		}
+		return (B) obj;
+	}
+
+	@Override public <H> H http(Class<H> hClass, J2WBiz j2WBiz) {
+		J2WCheckUtils.checkNotNull(hClass, "请指定View接口～");
+		Object obj = stackBiz.get(hClass.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WHelper.httpAdapter().create(hClass, j2WBiz);
+			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
+			stackBiz.put(hClass.getSimpleName(), obj);
+		}
+		return (H) obj;
+	}
+
+	@Override public <I> I createImpl(Class<I> inter, J2WBiz j2WBiz) {
+		J2WCheckUtils.checkNotNull(inter, "请指定View接口～");
+		Object obj = stackBiz.get(inter.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createImpl(inter, j2WBiz);
+			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
+			stackBiz.put(inter.getSimpleName(), obj);
+		}
+		return (I) obj;
+	}
+
+	@Override public <U> U ui(Class<U> ui, J2WBiz j2WBiz, Object object) {
+		J2WCheckUtils.checkNotNull(ui, "请指定View接口～");
+		Object obj = stackBiz.get(ui.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WBizUtils.createUI(ui, object, j2WBiz);
+			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
+			stackBiz.put(ui.getSimpleName(), obj);
+		}
+		return (U) obj;
 	}
 }

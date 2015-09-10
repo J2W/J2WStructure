@@ -1,17 +1,14 @@
 package j2w.team.biz;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import j2w.team.J2WHelper;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WHTTPException;
 import j2w.team.biz.exception.J2WUINullPointerException;
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.http.J2WError;
+import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.view.J2WView;
 
 /**
@@ -19,19 +16,18 @@ import j2w.team.view.J2WView;
  */
 public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
-	public static final String	METHOD_ERROR	= "methodError";	// 错误方法
+	public static final String		METHOD_ERROR	= "methodError";	// 错误方法
 
-	public static final String	METHOD_CHECKUI	= "checkUI";		// UI检查方法
+	public static final String		METHOD_CHECKUI	= "checkUI";		// UI检查方法
 
-	private J2WView				j2WView;
+	private boolean					isUI;
 
-	private Object				callback;
+	/** 结构 **/
+	private J2WStructureIManage<T>	j2WStructureIManage;
 
-	private Map<String, Object>	stack			= null;
+	private Object					callback;
 
-	private boolean				isUI;
-
-	private T					display;
+	private J2WView					j2WView;
 
 	/**
 	 * 初始化 - 业务
@@ -40,56 +36,35 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 *            view层引用
 	 */
 	@Override public void initBiz(J2WView iView) {
+		j2WStructureIManage = new J2WStructureManage<>();
+		j2WStructureIManage.attachBiz(this, iView);
 		this.j2WView = iView;
-		initMap();
+		this.isUI = true;
 	}
 
 	@Override public void initBiz(Object callback) {
+		j2WStructureIManage = new J2WStructureManage<>();
+		j2WStructureIManage.attachBiz(this, callback);
 		this.callback = callback;
-		initMap();
-	}
-
-	private void initMap() {
-		isUI = true;
-		stack = new HashMap<>();
-		Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-		checkNotNull(displayClass, "请指定display～");
-		if (callback != null) {
-			display = (T) J2WBizUtils.createDisplayNotView(displayClass, J2WHelper.getInstance());
-		} else {
-			display = (T) J2WBizUtils.createDisplayBiz(displayClass, j2WView);
-		}
+		this.isUI = true;
 	}
 
 	@Override public void detachUI() {
-		if (stack != null) {
-			stack.clear();
-			stack = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
-		j2WView = null;
+		j2WStructureIManage.detachBiz(this);
+		j2WStructureIManage = null;
 		callback = null;
+		j2WView = null;
 	}
+
 	@Override public void detach() {
 		isUI = false;
-
 	}
 
 	/**
 	 * 获取网络
 	 */
 	protected <H> H http(Class<H> hClass) {
-		checkNotNull(hClass, "请指定View接口～");
-		Object obj = stack.get(hClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.httpAdapter().create(hClass, this);
-			checkUINotNull(obj, "View层没有实现该接口～");
-			stack.put(hClass.getSimpleName(), obj);
-		}
-		return (H) obj;
+		return j2WStructureIManage.http(hClass, this);
 	}
 
 	/**
@@ -98,7 +73,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	protected T display() {
-		return display;
+		return j2WStructureIManage.getDisplay();
 	}
 
 	/**
@@ -109,14 +84,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	protected <I> I createImpl(Class<I> inter) {
-		checkNotNull(inter, "请指定View接口～");
-		Object obj = stack.get(inter.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createImpl(inter, this);
-			checkUINotNull(obj, "View层没有实现该接口～");
-			stack.put(inter.getSimpleName(), obj);
-		}
-		return (I) obj;
+		return j2WStructureIManage.createImpl(inter, this);
 	}
 
 	/**
@@ -127,15 +95,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * @return
 	 */
 	@Override public <U> U ui(Class<U> ui) {
-		checkNotNull(ui, "请指定View接口～");
-
-		Object obj = stack.get(ui.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createUI(ui, callback == null ? j2WView.getView() : callback, this);
-			checkUINotNull(obj, "View层没有实现该接口～");
-			stack.put(ui.getSimpleName(), obj);
-		}
-		return (U) obj;
+		return j2WStructureIManage.ui(ui,this,callback == null ? j2WView.getView() : callback);
 	}
 
 	/**
