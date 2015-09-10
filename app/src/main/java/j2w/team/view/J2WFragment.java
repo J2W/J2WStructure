@@ -1,6 +1,5 @@
 package j2w.team.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,18 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -35,13 +30,7 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  */
 public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implements View.OnTouchListener {
 
-	private boolean				targetActivity;
-
-	private Map<String, Object>	stackBiz;
-
-	private Map<String, Object>	stackDisplay;
-
-	D							display;
+	private boolean	targetActivity;
 
 	/**
 	 * 定制
@@ -60,9 +49,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder	j2WBuilder;
+	private J2WBuilder				j2WBuilder;
 
-	private Object		biz;
+	/** 结构 **/
+	private J2WStructureIManage<D>	j2WStructureIManage;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,10 +66,12 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
-		/** 初始化所有组建 **/
-		ButterKnife.bind(this, view);
+		/** 状态栏颜色 **/
+		j2WBuilder.initTint();
+		/** 初始化结构 **/
+		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
-		attachBiz();
+		j2WStructureIManage.attachFragment(this,view);
 		/** 初始化点击事件 **/
 		view.setOnTouchListener(this);// 设置点击事件
 		return view;
@@ -88,9 +80,6 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		J2WHelper.getInstance().onFragmentCreated(this, savedInstanceState);
-
-		/** 状态栏颜色 **/
-		j2WBuilder.initTint();
 		initData(getArguments());
 	}
 
@@ -101,21 +90,29 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onResume() {
 		super.onResume();
-		J2WHelper.getInstance().onFragmentResume(this);
-		attachBiz();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!J2WHelper.eventBus().isRegistered(this)) {
 				J2WHelper.eventBus().register(this);
 			}
 		}
+		J2WHelper.getInstance().onFragmentResume(this);
+		listLoadMoreOpen();
 	}
 
 	@Override public void onPause() {
 		super.onPause();
 		J2WHelper.getInstance().onFragmentPause(this);
-
-		detachBiz();
+		/** 判断EventBus 是否销毁 **/
+		if (j2WBuilder.isOpenEventBus()) {
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
+					J2WHelper.eventBus().unregister(this);
+				}
+			}
+		}
+		// 恢复初始化
+		listRefreshing(false);
 	}
 
 	@Override public void onStop() {
@@ -139,14 +136,14 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
-        /**关闭键盘 **/
-        J2WKeyboardUtils.hideSoftInput(getActivity());
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-
-		/** 清空注解view **/
-		ButterKnife.unbind(this);
+		/** 清楚结构 **/
+		j2WStructureIManage.detachFragment(this);
+		j2WStructureIManage = null;
 	}
 
 	/**
@@ -155,31 +152,13 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 * @return
 	 */
 	public D display() {
-		display.initDisplay(j2wView());
-		return display;
+		j2WStructureIManage.getDisplay().initDisplay(j2wView());
+		return j2WStructureIManage.getDisplay();
 	}
 
-	public <E extends J2WIDisplay> E display(Class<E> eClass) {
-		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
-		E obj = (E) stackDisplay.get(eClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createDisplay(eClass);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stackDisplay.put(eClass.getSimpleName(), obj);
-		}
-		obj.initDisplay(j2wView());
-		return obj;
+	public <N extends J2WIDisplay> N display(Class<N> eClass) {
+		return j2WStructureIManage.display(eClass, j2wView());
 	}
-	/**
-	 * 获取activity
-	 * 
-	 * @param <A>
-	 * @return
-	 */
-	protected <A extends J2WActivity> A activity() {
-		return (A) getActivity();
-	}
-
 	/**
 	 * 获取业务
 	 *
@@ -189,71 +168,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stackBiz.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, j2wView());
-			stackBiz.put(biz.getSimpleName(), obj);
-		}
-		return (B) obj;
-	}
-	/**
-	 * 业务初始化
-	 */
-	synchronized final void attachBiz() {
-		if (stackBiz == null) {
-			stackBiz = new HashMap<>();
-		}
-
-		if (stackDisplay == null) {
-			stackDisplay = new HashMap<>();
-		}
-		if (display == null) {
-			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-			display = (D) J2WBizUtils.createDisplay(displayClass);
-			stackDisplay.put(displayClass.getSimpleName(), display);
-		}
-		listLoadMoreOpen();
-	}
-
-	/**
-	 * 业务分离
-	 */
-	synchronized final void detachBiz() {
-		for (Object b : stackBiz.values()) {
-			J2WIBiz j2WIBiz = (J2WIBiz) b;
-			if (j2WIBiz != null) {
-				j2WIBiz.detach();
-			}
-		}
-		if (stackBiz != null) {
-			stackBiz.clear();
-			stackBiz = null;
-		}
-		for (Object b : stackDisplay.values()) {
-			J2WIDisplay j2WIDisplay = (J2WIDisplay) b;
-			if (j2WIDisplay != null) {
-				j2WIDisplay.detach();
-			}
-		}
-		if (stackDisplay != null) {
-			stackDisplay.clear();
-			stackDisplay = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
-		/** 判断EventBus 是否销毁 **/
-		if (j2WBuilder.isOpenEventBus()) {
-			if (!j2WBuilder.isNotCloseEventBus()) {
-				if (J2WHelper.eventBus().isRegistered(this)) {
-					J2WHelper.eventBus().unregister(this);
-				}
-			}
-		}
-		// 恢复初始化
-		listRefreshing(false);
+		return j2WStructureIManage.biz(biz, j2wView());
 	}
 
 	/**
@@ -274,23 +189,6 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		this.targetActivity = targetActivity;
 	}
 
-	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		/** 初始化业务 **/
-		attachBiz();
-	}
-
-	/**
-	 * 获取fragment
-	 *
-	 * @param clazz
-	 * @return
-	 */
-	public <T> T findFragment(Class<T> clazz) {
-		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
-		return (T) getFragmentManager().findFragmentByTag(clazz.getSimpleName());
-	}
-
 	/**
 	 * 防止事件穿透
 	 *
@@ -305,6 +203,26 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	}
 
 	/********************** View业务代码 *********************/
+	/**
+	 * 获取fragment
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) getFragmentManager().findFragmentByTag(clazz.getSimpleName());
+	}
+
+	/**
+	 * 获取activity
+	 *
+	 * @param <A>
+	 * @return
+	 */
+	protected <A extends J2WActivity> A activity() {
+		return (A) getActivity();
+	}
 
 	public J2WView j2wView() {
 		return j2WBuilder.getJ2WView();

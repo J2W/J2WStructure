@@ -20,20 +20,18 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.dialog.iface.IDialogCancelListener;
 import j2w.team.modules.dialog.provided.J2WIDialogFragment;
+import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
@@ -46,22 +44,19 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  */
 public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFragment implements J2WIDialogFragment {
 
+	private boolean					targetActivity;
+
 	/** 请求编码 **/
-	protected int				mRequestCode		= 2013 << 5;
+	protected int					mRequestCode		= 2013 << 5;
 
 	/** 请求默认值 **/
-	public final static String	ARG_REQUEST_CODE	= "j2w_request_code";
+	public final static String		ARG_REQUEST_CODE	= "j2w_request_code";
 
 	/** View层编辑器 **/
-	private J2WBuilder			j2WBuilder;
+	private J2WBuilder				j2WBuilder;
 
-	private boolean				targetActivity;
-
-	private Map<String, Object> stackBiz;
-
-	private Map<String, Object>	stackDisplay;
-
-	D							display;
+	/** 结构 **/
+	private J2WStructureIManage<D>	j2WStructureIManage;
 
 	/**
 	 * 定制
@@ -142,23 +137,22 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
-		/** 初始化所有组建 **/
-		ButterKnife.bind(this, view);
+		/** 状态栏颜色 **/
+		j2WBuilder.initTint();
+		/** 初始化结构 **/
+		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
-		attachBiz();
+		j2WStructureIManage.attachDialogFragment(this, view);
 		return view;
 	}
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		/** 状态栏颜色 **/
-		j2WBuilder.initTint();
 		initData(getArguments());
 	}
 
 	@Override public void onResume() {
 		super.onResume();
-		attachBiz();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().register(this);
@@ -167,17 +161,34 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public void onPause() {
 		super.onPause();
-		detachBiz();
+		/** 判断EventBus 是否销毁 **/
+		if (j2WBuilder.isOpenEventBus()) {
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
+					J2WHelper.eventBus().unregister(this);
+				}
+			}
+		}
+		// 恢复初始化
+		listRefreshing(false);
 	}
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
+		/** 关闭event **/
+		if (j2WBuilder.isNotCloseEventBus()) {
+			if (J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().unregister(this);
+			}
+		}
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-
-		/** 清空注解view **/
-		ButterKnife.unbind(this);
+		/** 清楚结构 **/
+		j2WStructureIManage.detachDialogFragment(this);
+		j2WStructureIManage = null;
 		// 销毁
 		if (getDialog() != null && getRetainInstance()) {
 			getDialog().setDismissMessage(null);
@@ -190,22 +201,13 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 * @return
 	 */
 	public D display() {
-		display.initDisplay(j2wView());
-		return display;
+		j2WStructureIManage.getDisplay().initDisplay(j2wView());
+		return j2WStructureIManage.getDisplay();
 	}
 
-	public <E extends J2WIDisplay> E display(Class<E> eClass) {
-		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
-		E obj = (E) stackDisplay.get(eClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createDisplay(eClass);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stackDisplay.put(eClass.getSimpleName(), obj);
-		}
-		obj.initDisplay(j2wView());
-		return obj;
+	public <N extends J2WIDisplay> N display(Class<N> eClass) {
+		return j2WStructureIManage.display(eClass, j2wView());
 	}
-
 	/**
 	 * 获取业务
 	 *
@@ -214,69 +216,8 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 * @param <B>
 	 * @return
 	 */
-	protected <B extends J2WIBiz> B biz(Class<B> biz) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stackBiz.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, j2wView());
-			stackBiz.put(biz.getSimpleName(), obj);
-		}
-		return (B) obj;
-	}
-
-	/**
-	 * 业务初始化
-	 */
-	synchronized final void attachBiz() {
-		if (stackBiz == null) {
-			stackBiz = new HashMap<>();
-		}
-
-		if (stackDisplay == null) {
-			stackDisplay = new HashMap<>();
-		}
-		if (display == null) {
-			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-			display = (D) J2WBizUtils.createDisplay(displayClass);
-			stackDisplay.put(displayClass.getSimpleName(), display);
-		}
-		listLoadMoreOpen();
-	}
-
-	/**
-	 * 业务分离
-	 */
-	synchronized final void detachBiz() {
-		for (Object b : stackBiz.values()) {
-			J2WIBiz j2WIBiz = (J2WIBiz) b;
-			if (j2WIBiz != null) {
-				j2WIBiz.detach();
-			}
-		}
-		if (stackBiz != null) {
-			stackBiz.clear();
-			stackBiz = null;
-		}
-		for (Object b : stackDisplay.values()) {
-			J2WIDisplay j2WIDisplay = (J2WIDisplay) b;
-			if (j2WIDisplay != null) {
-				j2WIDisplay.detach();
-			}
-		}
-		if (stackDisplay != null) {
-			stackDisplay.clear();
-			stackDisplay = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
-		/** 判断EventBus 是否销毁 **/
-		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().unregister(this);
-		}
-		// 恢复初始化
-		listRefreshing(false);
+	public <B extends J2WIBiz> B biz(Class<B> biz) {
+		return j2WStructureIManage.biz(biz, j2wView());
 	}
 
 	/**

@@ -23,6 +23,8 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -33,12 +35,6 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  * @类描述 activity
  */
 public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivity {
-
-	private Map<String, Object>	stackBiz;
-
-	private Map<String, Object>	stackDisplay;
-
-	D							display;
 
 	/**
 	 * 定制
@@ -74,18 +70,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		setContentView(build(j2WBuilder).create());
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化所有组建 **/
-		ButterKnife.bind(this);
-		/** 添加到堆栈 **/
-		J2WHelper.screenHelper().pushActivity(this);
-		/** 初始化视图 **/
-		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
 		/** 初始化业务 **/
-		attach();
-		/** 初始化视图组建 **/
 		initData(getIntent().getExtras());
-
-		getWindowManager().getDefaultDisplay();
 	}
 
 	@Override protected void onStart() {
@@ -95,7 +81,6 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onResume() {
 		super.onResume();
-		attach();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!J2WHelper.eventBus().isRegistered(this)) {
@@ -105,22 +90,13 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		J2WHelper.getInstance().onResume(this);
 	}
 
-	@Override protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		attach();
-	}
-
 	@Override protected void onPause() {
 		super.onPause();
-		detachBiz();
 		J2WHelper.getInstance().onPause(this);
-
 	}
 
 	@Override protected void onRestart() {
 		super.onRestart();
-		/** 初始化业务 **/
-		attach();
 		J2WHelper.getInstance().onRestart(this);
 	}
 
@@ -137,14 +113,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
-        /**关闭键盘 **/
-        J2WKeyboardUtils.hideSoftInput(this);
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
 
-		/** 从堆栈里移除 **/
-		J2WHelper.screenHelper().popActivity(this);
 		J2WHelper.getInstance().onDestroy(this);
 	}
 
@@ -154,20 +126,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public D display() {
-		display.initDisplay(j2wView());
-		return display;
 	}
 
-	public <E extends J2WIDisplay> E display(Class<E> eClass) {
-		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
-		E obj = (E) stackDisplay.get(eClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createDisplay(eClass);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stackDisplay.put(eClass.getSimpleName(), obj);
-		}
-		obj.initDisplay(j2wView());
-		return obj;
 	}
 
 	/**
@@ -179,114 +139,13 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stackBiz.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WBizUtils.createBiz(biz, j2wView());
-			stackBiz.put(biz.getSimpleName(), obj);
-		}
-		return (B) obj;
 	}
 
-	@Override public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			onBackPressed();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
 		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getSimpleName());
 	}
-
-	/**
-	 * 业务初始化
-	 */
-	synchronized final void attach() {
-		if (stackBiz == null) {
-			stackBiz = new HashMap<>();
-		}
-
-		if (stackDisplay == null) {
-			stackDisplay = new HashMap<>();
-		}
-		if (display == null) {
-			Class displayClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-			display = (D) J2WBizUtils.createDisplay(displayClass);
-			stackDisplay.put(displayClass.getSimpleName(), display);
-		}
-		listLoadMoreOpen();
-	}
-
-	/**
-	 * 业务分离
-	 */
-	synchronized final void detachBiz() {
-		for (Object b : stackBiz.values()) {
-			J2WIBiz j2WIBiz = (J2WIBiz) b;
-			if (j2WIBiz != null) {
-				j2WIBiz.detach();
-			}
-		}
-		if (stackBiz != null) {
-			stackBiz.clear();
-			stackBiz = null;
-		}
-		for (Object b : stackDisplay.values()) {
-			J2WIDisplay j2WIDisplay = (J2WIDisplay) b;
-			if (j2WIDisplay != null) {
-				j2WIDisplay.detach();
-			}
-		}
-		if (stackDisplay != null) {
-			stackDisplay.clear();
-			stackDisplay = null;
-		}
-		if (display != null) {
-			display.detach();
-			display = null;
-		}
-		/** 判断EventBus 是否销毁 **/
-		if (j2WBuilder.isOpenEventBus()) {
-			if (!j2WBuilder.isNotCloseEventBus()) {
-				if (J2WHelper.eventBus().isRegistered(this)) {
-					J2WHelper.eventBus().unregister(this);
-				}
-			}
-		}
-		// 恢复初始化
-		listRefreshing(false);
-	}
-
-	/**
-	 * 创建menu
-	 * 
-	 * @param menu
-	 * @return
-	 */
-	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		if (j2WBuilder.getToolbarMenuId() > 0) {
-			getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
-		}
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	/**
-	 * 回调
-	 * 
-	 * @param requestCode
-	 * @param resultCode
-	 * @param data
-	 */
-	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		/** 初始化业务 **/
-		attach();
-	}
-
-	/********************** View业务代码 *********************/
 
 	public J2WView j2wView() {
 		return j2WBuilder.getJ2WView();
