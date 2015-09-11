@@ -1,5 +1,6 @@
 package j2w.team.view;
 
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -322,16 +323,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void initTint() {
 		if (isTintColor()) {
+			// TODO 临时修改
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 				Window win = j2WView.activity().getWindow();
-				WindowManager.LayoutParams winParams = win.getAttributes();
-				final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-				winParams.flags |= bits;
-				win.setAttributes(winParams);
+				win.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+				win.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 			}
 			tintManager = new SystemBarTintManager(j2WView.activity());
 			tintManager.setStatusBarTintEnabled(true);
 			tintManager.setStatusBarTintResource(tintColor);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				Window win = j2WView.activity().getWindow();
+				win.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
+			}
 		}
 	}
 
@@ -1040,8 +1044,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 *
 	 * @return
 	 */
-	private void createLayout() {
-		contentRoot = new FrameLayout(j2WView.activity());
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) private void createLayout() {
+		contentRoot = new FrameLayout(j2WView.context());
 		// 内容布局
 		J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
 		layoutContent = mInflater.inflate(getLayoutId(), null, false);
@@ -1115,27 +1119,15 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 *
 	 * @param view
 	 */
-	private View createActionbar(View view) {
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) private View createActionbar(View view) {
 		if (isOpenToolbar()) {
 			final LinearLayout toolbarRoot = new LinearLayout(j2WView.context());
+			toolbarRoot.setId(R.id.j2w_home);
+			toolbarRoot.setFitsSystemWindows(true);
 			toolbarRoot.setOrientation(LinearLayout.VERTICAL);
-
 			mInflater.inflate(getToolbarLayoutId(), toolbarRoot, true);
-
 			toolbarRoot.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
-
 			toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
-			if (isTintColor() || j2WView.activity().isOpenTint()) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-					if (stateHight <= 0) {
-						this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
-					}
-				}
-
-				LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
-				layoutParams.setMargins(0, stateHight, 0, 0);
-			}
-
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 
 			if (getToolbarDrawerId() > 0) {
@@ -1157,7 +1149,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
 					@Override public void onClick(View v) {
-                        J2WKeyboardUtils.hideSoftInput(j2WView.activity());
+						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
 						j2WView.activity().onBackPressed();
 					}
 				});
@@ -1167,17 +1159,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 			return toolbarRoot;
 		} else if (isOpenCustomToolbar()) {
+			view.setId(R.id.j2w_home);
+			view.setFitsSystemWindows(true);
 			toolbar = ButterKnife.findById(view, getToolbarId());
 
-			if (isTintColor() || j2WView.activity().isOpenTint()) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-					if (stateHight <= 0) {
-						this.stateHight = J2WAppUtil.getStatusBarHeight(j2WView.context());
-					}
-				}
-				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
-				layoutParams.setMargins(0, stateHight, 0, 0);
-			}
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 			if (getToolbarDrawerId() > 0) {
 				DrawerLayout drawerLayout = ButterKnife.findById(view, getToolbarDrawerId());
@@ -1195,7 +1180,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			}
 			return view;
 		} else {
-
+			view.setId(R.id.j2w_home);
+			view.setFitsSystemWindows(true);
 			return view;
 		}
 	}

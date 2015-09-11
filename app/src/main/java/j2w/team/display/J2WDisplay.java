@@ -16,6 +16,7 @@ import android.view.View;
 
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
@@ -108,7 +109,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	/** 跳转fragment **/
 	@Override public void commitAdd(Fragment fragment) {
-		commitAdd(android.R.id.content, fragment);
+		commitAdd(R.id.j2w_home, fragment);
 	}
 
 	@Override public void commitAdd(int layoutId, Fragment fragment) {
@@ -125,7 +126,7 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void commitReplace(Fragment fragment) {
-		commitReplace(android.R.id.content, fragment);
+		commitReplace(R.id.j2w_home, fragment);
 	}
 
 	@Override public void commitReplace(int layoutId, Fragment fragment) {
@@ -142,7 +143,7 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void commitBackStack(Fragment fragment) {
-		commitBackStack(android.R.id.content, fragment);
+		commitBackStack(R.id.j2w_home, fragment);
 	}
 
 	@Override public void commitBackStack(int layoutId, Fragment fragment) {

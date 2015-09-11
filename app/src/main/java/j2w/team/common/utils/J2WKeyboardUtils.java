@@ -52,6 +52,16 @@ public class J2WKeyboardUtils {
 	}
 
 	/**
+	 * 判断是否显示
+	 * @param activity
+	 * @return
+	 */
+	public static boolean isSoftInput(Activity activity) {
+		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		return imm.isActive();
+	}
+
+	/**
 	 * 判断键盘是否显示 如果是显示就隐藏
 	 * 
 	 * @param v
