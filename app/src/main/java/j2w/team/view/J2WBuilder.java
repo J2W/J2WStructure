@@ -1121,13 +1121,17 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) private View createActionbar(View view) {
 		if (isOpenToolbar()) {
-			final LinearLayout toolbarRoot = new LinearLayout(j2WView.context());
+			final RelativeLayout toolbarRoot = new RelativeLayout(j2WView.context());
 			toolbarRoot.setId(R.id.j2w_home);
 			toolbarRoot.setFitsSystemWindows(true);
-			toolbarRoot.setOrientation(LinearLayout.VERTICAL);
+			// 添加toolbar布局
 			mInflater.inflate(getToolbarLayoutId(), toolbarRoot, true);
-			toolbarRoot.addView(view, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+			// 添加内容布局
+			RelativeLayout.LayoutParams contentLayoutParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+			contentLayoutParams.addRule(RelativeLayout.BELOW, R.id.toolbar);
+			toolbarRoot.addView(view, contentLayoutParams);
 			toolbar = ButterKnife.findById(toolbarRoot, getToolbarId());
+
 			J2WCheckUtils.checkNotNull(toolbar, "无法根据布局文件ID,获取Toolbar");
 
 			if (getToolbarDrawerId() > 0) {
