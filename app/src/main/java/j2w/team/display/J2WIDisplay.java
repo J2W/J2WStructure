@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import j2w.team.biz.Impl;
@@ -71,6 +72,8 @@ public interface J2WIDisplay {
 	 * 销毁引用
 	 */
 	void detach();
+
+	FragmentTransaction beginTransaction();
 
 	void commitAdd(Fragment fragment);
 

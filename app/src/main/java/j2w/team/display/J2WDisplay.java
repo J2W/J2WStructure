@@ -246,4 +246,8 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void detach() {
 		context = null;
 	}
+
+	@Override public FragmentTransaction beginTransaction() {
+		return j2WView.activity().getSupportFragmentManager().beginTransaction();
+	}
 }
