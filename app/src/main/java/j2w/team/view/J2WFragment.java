@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -71,7 +72,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		/** 初始化结构 **/
 		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
-		j2WStructureIManage.attachFragment(this,view);
+		j2WStructureIManage.attachFragment(this, view);
 		/** 初始化点击事件 **/
 		view.setOnTouchListener(this);// 设置点击事件
 		return view;
@@ -96,6 +97,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 				J2WHelper.eventBus().register(this);
 			}
 		}
+		j2WStructureIManage.printBackStackEntry(getFragmentManager());
 		J2WHelper.getInstance().onFragmentResume(this);
 		listLoadMoreOpen();
 	}
@@ -159,6 +161,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	public <N extends J2WIDisplay> N display(Class<N> eClass) {
 		return j2WStructureIManage.display(eClass, j2wView());
 	}
+
 	/**
 	 * 获取业务
 	 *
@@ -199,6 +202,14 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 * @return true 拦截 false 不拦截
 	 */
 	@Override public boolean onTouch(View v, MotionEvent event) {
+		return true;
+	}
+
+	/**
+	 * 返回键
+	 */
+	public boolean onKeyBack() {
+		getActivity().onBackPressed();
 		return true;
 	}
 

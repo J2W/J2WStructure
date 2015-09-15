@@ -1046,10 +1046,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) private void createLayout() {
 		contentRoot = new FrameLayout(j2WView.context());
-		// 内容布局
-		J2WCheckUtils.checkArgument(getLayoutId() > 0, "请给出布局文件ID");
-		layoutContent = mInflater.inflate(getLayoutId(), null, false);
-
+		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 		// 如果swiplayout打开
 		if (isOpenSwipBackLayout()) {
 			J2WSwipeBackLayout j2WSwipeBackLayout = new J2WSwipeBackLayout(j2WView.activity());
@@ -1060,15 +1057,18 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			if (getListener() != null) {
 				j2WSwipeBackLayout.setOnSwipeBackListener(getListener());
 			}
-			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-			j2WSwipeBackLayout.addView(layoutContent, params);
+			j2WSwipeBackLayout.addView(layoutContent, layoutParams);
 			layoutContent = j2WSwipeBackLayout;
 		}
-		J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
-		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-		contentRoot.addView(layoutContent, layoutParams);
-		// 进度条
 
+		// 内容
+		if (getLayoutId() > 0) {
+			layoutContent = mInflater.inflate(getLayoutId(), null, false);
+			J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
+			contentRoot.addView(layoutContent, layoutParams);
+		}
+
+		// 进度条
 		layoutLoadingId = layoutLoadingId > 0 ? layoutLoadingId : J2WHelper.getInstance().layoutLoading();
 		if (layoutLoadingId > 0) {
 			vsLoading = new ViewStub(j2WView.activity());
@@ -1154,7 +1154,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 					@Override public void onClick(View v) {
 						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
-						j2WView.activity().onBackPressed();
+						if(j2WView.getState() == J2WView.STATE_ACTIVITY){
+							j2WView.activity().onBackPressed();
+						}else{
+							j2WView.fragment().onKeyBack();
+						}
 					}
 				});
 			}

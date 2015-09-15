@@ -3,9 +3,12 @@ package j2w.team.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +28,7 @@ import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.structure.J2WStructureManage;
+import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -79,7 +83,19 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		j2WStructureIManage.attachActivity(this);
 		/** 初始化 **/
 		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
+		/** 提交fragment **/
+		if (savedInstanceState == null) {
+			Fragment fragment = createFragment();
+			if (fragment != null) {
+				FragmentManager fm = getSupportFragmentManager();
+				fm.beginTransaction().add(R.id.j2w_home, fragment).commit();
+			}
+		}
 		initData(getIntent().getExtras());
+	}
+
+	protected Fragment createFragment() {
+		return null;
 	}
 
 	@Override protected void onStart() {
@@ -135,7 +151,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 清楚结构**/
+		/** 清楚结构 **/
 		j2WStructureIManage.detachActivity(this);
 		j2WStructureIManage = null;
 
@@ -186,7 +202,14 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WStructureIManage.biz(biz,j2wView());
+		return j2WStructureIManage.biz(biz, j2wView());
+	}
+
+	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager())) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	/********************** View业务代码 *********************/

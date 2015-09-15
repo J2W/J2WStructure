@@ -75,6 +75,17 @@ public interface J2WIDisplay {
 
 	FragmentTransaction beginTransaction();
 
+	/**
+	 * home键
+	 */
+	void onKeyHome();
+
+	void popBackStack();
+
+	void popBackStack(Class clazz);
+
+	void popBackStackAll();
+
 	void commitAdd(Fragment fragment);
 
 	void commitAdd(int layoutId, Fragment fragment);
@@ -84,6 +95,10 @@ public interface J2WIDisplay {
 	void commitReplace(int layoutId, Fragment fragment);
 
 	void commitBackStack(Fragment fragment);
+
+	void commitHideAndBackStack(Fragment fragment);
+
+	void commitDetachAndBackStack(Fragment fragment);
 
 	void commitBackStack(int layoutId, Fragment fragment);
 

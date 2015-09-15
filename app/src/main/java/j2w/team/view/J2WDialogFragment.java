@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -157,6 +158,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().register(this);
 		}
+		j2WStructureIManage.printBackStackEntry(getFragmentManager());
 	}
 
 	@Override public void onPause() {
@@ -208,6 +210,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	public <N extends J2WIDisplay> N display(Class<N> eClass) {
 		return j2WStructureIManage.display(eClass, j2wView());
 	}
+
 	/**
 	 * 获取业务
 	 *
@@ -345,6 +348,14 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 * 不可见
 	 */
 	protected void onInvisible() {}
+
+	/**
+	 * 返回键
+	 */
+	public boolean onKeyBack() {
+		getActivity().onBackPressed();
+		return true;
+	}
 
 	/********************** Dialog业务代码 *********************/
 	/**

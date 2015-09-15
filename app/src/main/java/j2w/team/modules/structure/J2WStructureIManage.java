@@ -1,5 +1,6 @@
 package j2w.team.modules.structure;
 
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import j2w.team.biz.J2WBiz;
@@ -132,4 +133,19 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	 */
 	<U> U ui(Class<U> ui, J2WBiz j2WBiz, Object object);
 
+	/**
+	 * 拦截back 交给 fragment onKeyBack
+	 * 
+	 * @param keyCode
+	 * @param fragmentManager
+	 * @return
+	 */
+	boolean onKeyBack(int keyCode, FragmentManager fragmentManager);
+
+	/**
+	 * 打印堆栈内容
+	 * 
+	 * @param fragmentManager
+	 */
+	void printBackStackEntry(FragmentManager fragmentManager);
 }

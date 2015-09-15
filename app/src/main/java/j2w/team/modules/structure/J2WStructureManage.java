@@ -1,21 +1,28 @@
 package j2w.team.modules.structure;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.view.KeyEvent;
 import android.view.View;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import j2w.team.J2WApplication;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBiz;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
+import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.receiver.J2WReceiver;
 import j2w.team.service.J2WService;
+import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -252,5 +259,42 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 			stackBiz.put(ui.getSimpleName(), obj);
 		}
 		return (U) obj;
+	}
+
+	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			int idx = fragmentManager.getBackStackEntryCount();
+			if (idx > 1) {
+				FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(idx - 1);
+				J2WFragment j2WFragment = (J2WFragment) fragmentManager.findFragmentByTag(entry.getName());
+				if (j2WFragment != null) {
+					return j2WFragment.onKeyBack();
+				}
+			} else {
+				J2WFragment j2WFragment = (J2WFragment) fragmentManager.findFragmentById(R.id.j2w_home);
+				if (j2WFragment != null) {
+					return j2WFragment.onKeyBack();
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override public void printBackStackEntry(FragmentManager fragmentManager) {
+		if (J2WHelper.getInstance().isLogOpen()) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("(");
+			for (Fragment fragment : fragmentManager.getFragments()) {
+				if(fragment != null){
+					stringBuilder.append(fragment.getClass().getSimpleName());
+					stringBuilder.append(",");
+				}
+			}
+			stringBuilder.append(")");
+			L.tag("display");
+			L.i(stringBuilder.toString());
+		}
+
 	}
 }
