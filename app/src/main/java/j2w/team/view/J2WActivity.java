@@ -216,7 +216,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
-		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getSimpleName());
+		return (T) getSupportFragmentManager().findFragmentByTag(clazz.getName());
 	}
 
 	public J2WView j2wView() {

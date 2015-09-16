@@ -222,7 +222,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 */
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
-		return (T) getFragmentManager().findFragmentByTag(clazz.getSimpleName());
+		return (T) getFragmentManager().findFragmentByTag(clazz.getName());
 	}
 
 	/**

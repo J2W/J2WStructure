@@ -245,7 +245,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 */
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
-		return (T) getFragmentManager().findFragmentByTag(clazz.getSimpleName());
+		return (T) getFragmentManager().findFragmentByTag(clazz.getName());
 	}
 
 	/********************** Actionbar业务代码 *********************/
