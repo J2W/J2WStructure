@@ -326,8 +326,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			// TODO 临时修改
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 				Window win = j2WView.activity().getWindow();
-				win.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-				win.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+				WindowManager.LayoutParams winParams = win.getAttributes();
+				final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+				winParams.flags |= bits;
+				win.setAttributes(winParams);
 			}
 			tintManager = new SystemBarTintManager(j2WView.activity());
 			tintManager.setStatusBarTintEnabled(true);
@@ -1154,9 +1156,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 					@Override public void onClick(View v) {
 						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
-						if(j2WView.getState() == J2WView.STATE_ACTIVITY){
+						if (j2WView.getState() == J2WView.STATE_ACTIVITY) {
 							j2WView.activity().onBackPressed();
-						}else{
+						} else {
 							j2WView.fragment().onKeyBack();
 						}
 					}
@@ -1185,9 +1187,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 					@Override public void onClick(View v) {
 						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
-						if(j2WView.getState() == J2WView.STATE_ACTIVITY){
+						if (j2WView.getState() == J2WView.STATE_ACTIVITY) {
 							j2WView.activity().onBackPressed();
-						}else{
+						} else {
 							j2WView.fragment().onKeyBack();
 						}
 					}

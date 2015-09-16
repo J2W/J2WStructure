@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
@@ -264,6 +266,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
+	}
+
+	public SystemBarTintManager tintManager(){
+		return j2WBuilder.getTintManager();
 	}
 
 	/********************** RecyclerView业务代码 *********************/

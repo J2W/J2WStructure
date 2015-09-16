@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -252,6 +254,10 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
+	}
+
+	public SystemBarTintManager tintManager() {
+		return j2WBuilder.getTintManager();
 	}
 
 	/********************** RecyclerView业务代码 *********************/
