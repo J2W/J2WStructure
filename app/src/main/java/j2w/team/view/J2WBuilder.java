@@ -1179,6 +1179,20 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				mDrawerToggle.syncState();
 				drawerLayout.setDrawerListener(mDrawerToggle);
 			}
+			if (isOpenToolbarBack()) {
+				toolbar.setNavigationIcon(R.mipmap.j2w_toolbar_back);
+				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+					@Override public void onClick(View v) {
+						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
+						if(j2WView.getState() == J2WView.STATE_ACTIVITY){
+							j2WView.activity().onBackPressed();
+						}else{
+							j2WView.fragment().onKeyBack();
+						}
+					}
+				});
+			}
 			// 添加点击事件
 			if (getMenuListener() != null) {
 				toolbar.setOnMenuItemClickListener(getMenuListener());
