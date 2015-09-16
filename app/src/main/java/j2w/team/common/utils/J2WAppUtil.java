@@ -20,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.util.List;
 import java.lang.reflect.ParameterizedType;
@@ -269,33 +270,62 @@ public final class J2WAppUtil {
 		return result;
 	}
 
-    /**
-     * 意图响应检查
-     * @param context
-     * @param intent
-     * @return
-     */
-    public static boolean checkResponseIntent(Context context, Intent intent) {
-        if (context == null || intent == null) return false;
-        List<ResolveInfo> activitys = context.getPackageManager().queryIntentActivities(intent, 10);
-        return activitys.size() > 0;
-    }
+	/**
+	 * 意图响应检查
+	 * 
+	 * @param context
+	 * @param intent
+	 * @return
+	 */
+	public static boolean checkResponseIntent(Context context, Intent intent) {
+		if (context == null || intent == null) return false;
+		List<ResolveInfo> activitys = context.getPackageManager().queryIntentActivities(intent, 10);
+		return activitys.size() > 0;
+	}
 
+	/**
+	 * 键盘自动关闭
+	 *
+	 * @param ev
+	 * @return
+	 */
+	public static void keyBoardAutoHidden(MotionEvent ev, Activity activiy) {
+		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+			// 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
+			View v = activiy.getCurrentFocus();
+			if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
+				J2WKeyboardUtils.hideSoftInput(activiy);
+			}
+		}
+	}
 
-    /**
-     * 键盘自动关闭
-     *
-     * @param ev
-     * @return
-     */
-    public static void keyBoardAutoHidden(MotionEvent ev, Activity activiy) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
-            View v = activiy.getCurrentFocus();
-            if (J2WKeyboardUtils.isShouldHideInput(v, ev)) {
-                J2WKeyboardUtils.hideSoftInput(activiy);
-            }
-        }
-    }
+	/**
+	 * 设置全屏
+	 */
+	public static void openFullScreen(Activity activity) {
 
+		WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+
+		lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+
+		activity.getWindow().setAttributes(lp);
+
+		activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+	}
+
+	/**
+	 * 关闭全屏
+	 * 
+	 * @param activity
+	 */
+	public static void closeFullScreen(Activity activity) {
+		WindowManager.LayoutParams attr = activity.getWindow().getAttributes();
+
+		attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		activity.getWindow().setAttributes(attr);
+
+		activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+	}
 }
