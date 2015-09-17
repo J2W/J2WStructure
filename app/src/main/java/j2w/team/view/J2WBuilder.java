@@ -33,26 +33,20 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.log.L;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WSwipeBackLayout;
 import j2w.team.common.view.J2WViewPager;
-import j2w.team.common.view.PagerSlidingTabStrip;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WAdapterItem;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.J2WListViewMultiLayout;
 import j2w.team.view.adapter.J2WTabsCustomListener;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
-import j2w.team.view.adapter.recycleview.DividerGridItemDecoration;
-import j2w.team.view.adapter.recycleview.DividerItemDecoration;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
 import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeaders;
 import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeadersBuilder;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeadersItemDecoration;
 import j2w.team.view.common.J2WRefreshListener;
 import j2w.team.view.common.J2WViewPagerChangeListener;
 
@@ -749,8 +743,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private J2WViewPager				j2WViewPager;
 
-	private PagerSlidingTabStrip		tabs;
-
 	private LinearLayout				customView;
 
 	private int[]						showItems;
@@ -764,49 +756,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private FragmentManager				fragmentManager;
 
 	private int							customLayout;
-
-	/**
-	 * ViewPager tabs 类型
-	 */
-	public static final int				TABS_TYPE_CUSTOM			= 7777 << 1;
-
-	public static final int				TABS_TYPE_COUNT				= 6666 << 1;
-
-	public static final int				TABS_TYPE_ICON				= 5555 << 1;
-
-	public static final int				TABS_TYPE_DEFAULT			= 0;
-
-	// Tabs 属性
-
-	private boolean						tabsShouldExpand			= true;
-
-	private int							tabsDividerColor			= android.R.color.transparent;
-
-	private int							tabsUnderlineHeight			= 1;
-
-	private int							tabsUnderlineColor			= android.R.color.transparent;
-
-	private int							tabsIndicatorHeight			= 1;
-
-	private int							tabsTextSize				= 12;
-
-	private int							tabsIndicatorColor			= R.color.J2WTabsBackground;
-
-	private int							tabsSelectedTextColor		= R.color.J2WTabsBackground;
-
-	private int							tabsTextColor				= R.color.J2WTabsText;
-
-	private int							tabsBackgroundResource		= android.R.color.transparent;
-
-	private int							tabsItemBackground			= 0;
-
-	private int							tabsTabWidth				= 0;
-
-	private boolean						tabsIsCurrentItemAnimation	= false;
-
-	private int							tabsMargins					= 0;
-
-	private int							tabsPaddingLeftRight		= 20;
 
 	// 获取
 	int getViewpagerId() {
@@ -827,70 +776,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	int getViewPageroffScreenPageLimit() {
 		return viewPageroffScreenPageLimit;
-	}
-
-	PagerSlidingTabStrip getTabs() {
-		return tabs;
-	}
-
-	boolean getTabsShouldExpand() {
-		return tabsShouldExpand;
-	}
-
-	int getTabsDividerColor() {
-		return tabsDividerColor;
-	}
-
-	int getTabsUnderlineHeight() {
-		return tabsUnderlineHeight;
-	}
-
-	int getTabsUnderlineColor() {
-		return tabsUnderlineColor;
-	}
-
-	int getTabsIndicatorHeight() {
-		return tabsIndicatorHeight;
-	}
-
-	int getTabsTextSize() {
-		return tabsTextSize;
-	}
-
-	int getTabsIndicatorColor() {
-		return tabsIndicatorColor;
-	}
-
-	int getTabsSelectedTextColor() {
-		return tabsSelectedTextColor;
-	}
-
-	int getTabsTextColor() {
-		return tabsTextColor;
-	}
-
-	int getTabsItemBackground() {
-		return tabsItemBackground;
-	}
-
-	int getTabsBackgroundResource() {
-		return tabsBackgroundResource;
-	}
-
-	int getTabsTabWidth() {
-		return tabsTabWidth;
-	}
-
-	boolean getTabsIsCurrentItemAnimation() {
-		return tabsIsCurrentItemAnimation;
-	}
-
-	int getTabsMargins() {
-		return tabsMargins;
-	}
-
-	int getTabsPaddingLeftRight() {
-		return tabsPaddingLeftRight;
 	}
 
 	J2WViewPagerChangeListener getViewPagerChangeListener() {
@@ -930,66 +815,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void viewPageroffScreenPageLimit(int viewPageroffScreenPageLimit) {
 		this.viewPageroffScreenPageLimit = viewPageroffScreenPageLimit;
-	}
-
-	public void tabsShouldExpand(boolean tabsShouldExpand) {
-		this.tabsShouldExpand = tabsShouldExpand;
-	}
-
-	public void tabsDividerColor(int tabsDividerColor) {
-		this.tabsDividerColor = tabsDividerColor;
-	}
-
-	public void tabsUnderlineHeight(int tabsUnderlineHeight) {
-		this.tabsUnderlineHeight = tabsUnderlineHeight;
-	}
-
-	public void tabsUnderlineColor(int tabsUnderlineColor) {
-		this.tabsUnderlineColor = tabsUnderlineColor;
-	}
-
-	public void tabsIndicatorHeight(int tabsIndicatorHeight) {
-		this.tabsIndicatorHeight = tabsIndicatorHeight;
-	}
-
-	public void tabsTextSize(int tabsTextSize) {
-		this.tabsTextSize = tabsTextSize;
-	}
-
-	public void tabsIndicatorColor(int tabsIndicatorColor) {
-		this.tabsIndicatorColor = tabsIndicatorColor;
-	}
-
-	public void tabsSelectedTextColor(int tabsSelectedTextColor) {
-		this.tabsSelectedTextColor = tabsSelectedTextColor;
-	}
-
-	public void tabsTextColor(int tabsTextColor) {
-		this.tabsTextColor = tabsTextColor;
-	}
-
-	public void tabsBackgroundResource(int tabsBackgroundResource) {
-		this.tabsBackgroundResource = tabsBackgroundResource;
-	}
-
-	public void tabsItemBackground(int tabsItemBackground) {
-		this.tabsItemBackground = tabsItemBackground;
-	}
-
-	public void tabsMargins(int tabsMargins) {
-		this.tabsMargins = tabsMargins;
-	}
-
-	public void tabsPaddingLeftRight(int tabsPaddingLeftRight) {
-		this.tabsPaddingLeftRight = tabsPaddingLeftRight;
-	}
-
-	public void tabsTabWidth(int tabsTabWidth) {
-		this.tabsTabWidth = tabsTabWidth;
-	}
-
-	public void tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation) {
-		this.tabsIsCurrentItemAnimation = tabsIsCurrentItemAnimation;
 	}
 
 	public void tabsCustomLayout(int customLayout, int... showItems) {
@@ -1386,46 +1211,13 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			j2WViewPager = ButterKnife.findById(view, getViewpagerId());
 			J2WCheckUtils.checkNotNull(j2WViewPager, "无法根据布局文件ID,获取ViewPager");
 
-			if (getTabsId() > 0) {
-				tabs = ButterKnife.findById(view, getTabsId());
-				J2WCheckUtils.checkNotNull(tabs, "无法根据布局文件ID,获取tabs");
-				// 设置Tab是自动填充满屏幕的
-				tabs.setShouldExpand(getTabsShouldExpand());
-				// 设置Tab的分割线是透明的
-				tabs.setDividerColor(getTabsDividerColor());
-				// 设置Tab底部线的高度
-				tabs.setUnderlineHeight(getTabsUnderlineHeight());
-				// 设置Tab底部线的颜色
-				tabs.setUnderlineColor(getTabsUnderlineColor());
-				// 设置Tab 指示灯的高度
-				tabs.setIndicatorHeight(getTabsIndicatorHeight());
-				// 设置Tab标题文字的大小
-				tabs.setTextSize(getTabsTextSize());
-				// 设置Tab Indicator 指示灯的颜色
-				tabs.setIndicatorColor(getTabsIndicatorColor());
-				// 设置选中Tab文字的颜色 (这是我自定义的一个方法)
-				tabs.setSelectedTextColor(getTabsSelectedTextColor());
-				// 设置Tab文字颜色
-				tabs.setTextColor(getTabsTextColor());
-				// 取消点击Tab时的背景色
-				tabs.setTabItemBackground(getTabsItemBackground());
-				// 设置背景颜色
-				tabs.setBackgroundResource(getTabsBackgroundResource());
-				// 设置Tabs宽度
-				tabs.setTabWidth(getTabsTabWidth());
-				// 设置Tasb切换动画
-				tabs.setIsCurrentItemAnimation(getTabsIsCurrentItemAnimation());
-				// 设置间距
-				tabs.setTabMarginsLeftRight(getTabsMargins());
-				// 设置padding
-				tabs.setTabPaddingLeftRight(getTabsPaddingLeftRight());
-			} else if (getCustomLayout() > 0) {
+			if (getCustomLayout() > 0) {
 				customView = ButterKnife.findById(view, getCustomLayout());
 				J2WCheckUtils.checkNotNull(customView, "无法根据布局文件ID,获取tabs");
 			}
 			J2WCheckUtils.checkNotNull(fragmentManager, "fragmentManager不能为空");
 
-			j2WViewPagerAdapter = new J2WViewPagerAdapter(getTabsType(), fragmentManager, tabs, customView, showItems, j2WViewPager, viewPagerChangeListener, j2WTabsCustomListener);
+			j2WViewPagerAdapter = new J2WViewPagerAdapter(getTabsType(), fragmentManager, customView, showItems, j2WViewPager, viewPagerChangeListener, j2WTabsCustomListener);
 
 			j2WViewPager.setAdapter(j2WViewPagerAdapter);
 			// 间隔距离
@@ -1434,16 +1226,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			j2WViewPager.setPageMargin(pageMargin);
 			// 预留数量
 			j2WViewPager.setOffscreenPageLimit(getViewPageroffScreenPageLimit());
-			if (tabs != null) {
-				// 设置给头部
-				tabs.setViewPager(j2WViewPager);
-			}
 		}
 	}
 
 	private void detachViewPager() {
 		j2WViewPager = null;
-		tabs = null;
 		if (j2WViewPagerAdapter != null) {
 			j2WViewPagerAdapter.clearData();
 		}

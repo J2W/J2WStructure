@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
-import j2w.team.common.view.PagerSlidingTabStrip;
 import j2w.team.view.common.J2WViewPagerChangeListener;
 import j2w.team.view.model.J2WModelPager;
 
@@ -20,7 +19,7 @@ import j2w.team.view.model.J2WModelPager;
  * @创建时间 15/4/24 下午3:09
  * @类描述 ViewPager 默认适配器
  */
-public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener, PagerSlidingTabStrip.TabsTypeProvider, J2WIViewPagerAdapter {
+public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener, J2WIViewPagerAdapter {
 
 	protected J2WModelPager[]			viewPagerDatas;			// 数据类型
 
@@ -29,8 +28,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	protected int						currentPageIndex	= -1;	// 当前page索引（切换之前）
 
 	protected String					tag;						// 标记
-
-	protected PagerSlidingTabStrip		tabs;						// 标题
 
 	protected J2WViewPager				pager;						// viewpager
 
@@ -70,22 +67,15 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * 
 	 * @param fragmentManager
 	 *            管理器
-	 * @param tabs
-	 *            标题
 	 * @param pager
 	 *            内容
 	 */
-	public J2WViewPagerAdapter(int type, FragmentManager fragmentManager, PagerSlidingTabStrip tabs, LinearLayout customView, int[] showItems, J2WViewPager pager,
-			J2WViewPagerChangeListener j2WViewPagerChangeListener, J2WTabsCustomListener j2WTabsCustomListener) {
+	public J2WViewPagerAdapter(int type, FragmentManager fragmentManager, LinearLayout customView, int[] showItems, J2WViewPager pager, J2WViewPagerChangeListener j2WViewPagerChangeListener,
+			J2WTabsCustomListener j2WTabsCustomListener) {
 		this.type = type;
 		this.fragmentManager = fragmentManager;
-		this.tabs = tabs;
 		this.pager = pager;
-		if (tabs != null) {
-			this.tabs.setOnPageChangeListener(this);
-		} else {
-			this.pager.addOnPageChangeListener(this);
-		}
+		this.pager.addOnPageChangeListener(this);
 		this.j2WViewPagerChangeListener = j2WViewPagerChangeListener;
 		this.j2WTabsCustomListener = j2WTabsCustomListener;
 		this.customView = customView;
@@ -101,9 +91,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		J2WCheckUtils.checkNotNull(viewPagerDatas, "J2WModelPager 不能为空");
 		this.viewPagerDatas = viewPagerDatas;
 		notifyDataSetChanged();
-		if (tabs != null && viewPagerDatas.length > 0) {
-			tabs.notifyDataSetChanged();
-		}
 	}
 
 	public void clearData() {
@@ -128,9 +115,6 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 			viewPagerDatas[position] = modelPager;
 		}
 		notifyDataSetChanged();
-		if (tabs != null && modelPagers.length > 0) {
-			tabs.notifyDataSetChanged();
-		}
 	}
 
 	/**
@@ -252,21 +236,16 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 */
 	@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-		if (tabs != null) {
-			left = tabs.tabsContainer.getChildAt(position);
-			right = tabs.tabsContainer.getChildAt(position + 1);
-		} else {
-			if (customView != null) {
-				left = customView.getChildAt(showItems[position]);
-				if (position + 1 < getCount()) {
-					right = customView.getChildAt(showItems[position + 1]);
-				}else{
-					right = null;
-				}
+		if (customView != null) {
+			left = customView.getChildAt(showItems[position]);
+			if (position + 1 < getCount()) {
+				right = customView.getChildAt(showItems[position + 1]);
+			} else {
+				right = null;
 			}
 		}
 		if (j2WViewPagerChangeListener != null) {
-			j2WViewPagerChangeListener.onExtraPageScrolled(position,left, right, positionOffset, positionOffsetPixels);
+			j2WViewPagerChangeListener.onExtraPageScrolled(position, left, right, positionOffset, positionOffsetPixels);
 		}
 	}
 
@@ -276,11 +255,11 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 	 * @param position
 	 */
 	@Override public void onPageSelected(int position) {
-		if (tabs != null) {
 
+		if (customView != null) {
 			if (currentPageIndex == -1) {
 				currentPageIndex = 0;
-				oldView = tabs.tabsContainer.getChildAt(0);
+				oldView = customView.getChildAt(showItems[0]);
 				oldPosition = 0;
 			} else {
 				viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
@@ -293,34 +272,11 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 			currentPageIndex = position;
 			if (j2WViewPagerChangeListener != null) {
-				j2WViewPagerChangeListener.onExtraPageSelected(tabs.tabsContainer.getChildAt(position), oldView, position, oldPosition);
+				j2WViewPagerChangeListener.onExtraPageSelected(customView.getChildAt(showItems[position]), oldView, position, oldPosition);
 			}
 
-			oldView = tabs.tabsContainer.getChildAt(position);// 缓存视图
+			oldView = customView.getChildAt(showItems[position]);// 缓存视图
 			oldPosition = position; // 缓存坐标
-		} else {
-			if (customView != null) {
-				if (currentPageIndex == -1) {
-					currentPageIndex = 0;
-					oldView = customView.getChildAt(showItems[0]);
-					oldPosition = 0;
-				} else {
-					viewPagerDatas[currentPageIndex].fragment.onInvisible(); // 调用切换前Fargment的onPause()
-				}
-
-				// 调用切换前Fargment的onStop()
-				if (viewPagerDatas[position].fragment.isAdded()) {
-					viewPagerDatas[position].fragment.onVisible(); // 调用切换后Fargment的onResume()
-				}
-
-				currentPageIndex = position;
-				if (j2WViewPagerChangeListener != null) {
-					j2WViewPagerChangeListener.onExtraPageSelected(customView.getChildAt(showItems[position]), oldView, position, oldPosition);
-				}
-
-				oldView = customView.getChildAt(showItems[position]);// 缓存视图
-				oldPosition = position; // 缓存坐标
-			}
 		}
 	}
 
@@ -344,44 +300,4 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		return type;
 	}
 
-	/** 自定义 **/
-	@Override public int getCustomTabView() {
-		J2WCheckUtils.checkNotNull(j2WTabsCustomListener, "Viewpager Tabs 自定义事件不能为空");
-		int layoutId = j2WTabsCustomListener.getViewPagerItemLayout();
-		J2WCheckUtils.checkArgument(layoutId > 0, "Viewpager Tabs 自定义布局 不能为空~");
-		return layoutId;
-	}
-
-	@Override public void initTabsItem(View view, int position) {
-		J2WCheckUtils.checkNotNull(j2WTabsCustomListener, "Viewpager Tabs 自定义事件不能为空");
-		J2WCheckUtils.checkPositionIndex(position, viewPagerDatas.length - 1, "Viewpager 获取Tabs 数量时 下标越界");
-		j2WTabsCustomListener.initTab(view, viewPagerDatas[position]);
-	}
-
-	/** 图标 **/
-	@Override public int getPageIconResId(int position) {
-		J2WCheckUtils.checkPositionIndex(position, viewPagerDatas.length - 1, "Viewpager 获取Tabs 获取图标地址 下标越界");
-		int resId = viewPagerDatas[position].icon;
-		J2WCheckUtils.checkArgument(resId > 0, "Viewpager Tabs 图标地址 不能为空~");
-		return resId;
-	}
-
-	/** 数量 **/
-	@Override public String getPageCount(int position) {
-		J2WCheckUtils.checkPositionIndex(position, viewPagerDatas.length - 1, "Viewpager 获取Tabs 数量时 下标越界");
-		String count = String.valueOf(viewPagerDatas[position].count);
-		if (J2WCheckUtils.isEmpty(count)) {
-			return null;
-		}
-		return count;
-	}
-
-	public void setTitleCount(int position, String count) {
-		J2WCheckUtils.checkPositionIndex(position, viewPagerDatas.length - 1, "Viewpager 获取Tabs 数量时 下标越界");
-		if (tabs == null) {
-			return;
-		}
-		viewPagerDatas[position].count = Integer.valueOf(count);
-		tabs.notifyDataSetChanged();
-	}
 }
