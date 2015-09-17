@@ -4,3 +4,6 @@ build
 *.iml
 local.properties
 app/app.iml
+settings.gradle
+gradle.properties
+README.md
