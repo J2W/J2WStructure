@@ -300,6 +300,10 @@ public class J2WDisplay implements J2WIDisplay {
 		manager().popBackStack(clazz.getName(), 0);
 	}
 
+	@Override public void popBackStack(String clazzName) {
+		manager().popBackStack(clazzName, 0);
+	}
+
 	@Override public void popBackStackAll() {
 		manager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 	}

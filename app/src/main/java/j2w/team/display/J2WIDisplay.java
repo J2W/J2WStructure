@@ -84,6 +84,8 @@ public interface J2WIDisplay {
 
 	void popBackStack(Class clazz);
 
+	void popBackStack(String clazzName);
+
 	void popBackStackAll();
 
 	void commitAdd(Fragment fragment);
