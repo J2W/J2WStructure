@@ -278,7 +278,12 @@ public class J2WDownloadDispatcher extends Thread {
 				}
 			});
 		} catch (Exception e) {
-			L.i("上传成功-数据转换失败");
+			e.printStackTrace();
+			J2WHelper.mainLooper().execute(new Runnable() {
+				public void run() {
+					request.getJ2WUploadListener().onUploadFailed(request.getRequestId(), 0, "上传成功-数据转换失败");
+				}
+			});
 		}
 	}
 
