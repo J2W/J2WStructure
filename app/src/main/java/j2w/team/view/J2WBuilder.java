@@ -702,6 +702,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.layoutManager = linearLayoutManager;
 	}
 
+	public void recyclerviewAnimator(RecyclerView.ItemAnimator itemAnimator) {
+		this.itemAnimator = itemAnimator;
+	}
+
 	public void recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
 		this.layoutManager = new LinearLayoutManager(j2WView.activity(), direction, reverseLayout == null ? true : false);
 		this.itemDecoration = itemDecoration;
