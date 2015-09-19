@@ -48,6 +48,8 @@ public interface J2WIViewCommon {
 
 	void onFragmentStop(J2WFragment j2WFragment);
 
+	void onFragmentDestroy(J2WFragment j2WFragment);
+
 	/**
 	 * 进度布局
 	 *

@@ -77,7 +77,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		bindData(v, getItem(position), position, getItemCount());
 	}
 
-	public List getItems() {
+	public List<T> getItems() {
 		return mItems;
 	}
 
@@ -158,6 +158,10 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public T getItem(int position) {
 		return (T) mItems.get(position);
+	}
+
+	public void updateData(){
+		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	/**

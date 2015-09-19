@@ -140,14 +140,18 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 				J2WHelper.eventBus().unregister(this);
 			}
 		}
-		/** 清空注解view **/
-		ButterKnife.unbind(this);
+
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
 		/** 清楚结构 **/
 		j2WStructureIManage.detachFragment(this);
 		j2WStructureIManage = null;
+	}
+
+	@Override public void onDestroy() {
+		super.onDestroy();
+		J2WHelper.getInstance().onFragmentDestroy(this);
 	}
 
 	/**
@@ -268,7 +272,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return j2WBuilder.getToolbar();
 	}
 
-	public SystemBarTintManager tintManager(){
+	public SystemBarTintManager tintManager() {
 		return j2WBuilder.getTintManager();
 	}
 
@@ -282,7 +286,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return j2WBuilder.getLayoutManager();
 	}
 
-	protected RecyclerView recyclerView() {
+	public RecyclerView recyclerView() {
 		return j2WBuilder.getRecyclerView();
 	}
 
