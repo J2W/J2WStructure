@@ -294,17 +294,21 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void popBackStack() {
 		manager().popBackStack();
+		manager().executePendingTransactions();
 	}
 
 	@Override public void popBackStack(Class clazz) {
 		manager().popBackStack(clazz.getName(), 0);
+		manager().executePendingTransactions();
 	}
 
 	@Override public void popBackStack(String clazzName) {
 		manager().popBackStack(clazzName, 0);
+		manager().executePendingTransactions();
 	}
 
 	@Override public void popBackStackAll() {
 		manager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		manager().executePendingTransactions();
 	}
 }

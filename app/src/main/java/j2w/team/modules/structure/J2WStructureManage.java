@@ -107,6 +107,9 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 	}
 
 	@Override public void detachFragment(J2WFragment fragment) {
+		/** 清空注解view **/
+		ButterKnife.unbind(fragment);
+		System.gc();
 		/** 默认初始化 **/
 		detach();
 		/** 关闭键盘 **/
@@ -125,6 +128,8 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 	}
 
 	@Override public void detachDialogFragment(J2WDialogFragment dialogFragment) {
+		/** 清空注解view **/
+		ButterKnife.unbind(dialogFragment);
 		/** 默认初始化 **/
 		detach();
 		/** 关闭键盘 **/

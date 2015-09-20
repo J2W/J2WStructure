@@ -177,8 +177,6 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
-		/** 清空注解view **/
-		ButterKnife.unbind(this);
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
