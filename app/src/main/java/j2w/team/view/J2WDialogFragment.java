@@ -165,12 +165,10 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public void onPause() {
 		super.onPause();
-		/** 判断EventBus 是否销毁 **/
+		/** 关闭event **/
 		if (j2WBuilder.isOpenEventBus()) {
-			if (!j2WBuilder.isNotCloseEventBus()) {
-				if (J2WHelper.eventBus().isRegistered(this)) {
-					J2WHelper.eventBus().unregister(this);
-				}
+			if (J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().unregister(this);
 			}
 		}
 		// 恢复初始化
@@ -179,12 +177,6 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
-		/** 关闭event **/
-		if (j2WBuilder.isNotCloseEventBus()) {
-			if (J2WHelper.eventBus().isRegistered(this)) {
-				J2WHelper.eventBus().unregister(this);
-			}
-		}
 		/** 清空注解view **/
 		ButterKnife.unbind(this);
 		/** 移除builder **/

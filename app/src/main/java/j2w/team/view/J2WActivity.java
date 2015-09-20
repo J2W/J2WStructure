@@ -145,10 +145,8 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	@Override protected void onDestroy() {
 		super.onDestroy();
 		/** 关闭event **/
-		if (j2WBuilder.isNotCloseEventBus()) {
-			if (J2WHelper.eventBus().isRegistered(this)) {
-				J2WHelper.eventBus().unregister(this);
-			}
+		if (J2WHelper.eventBus().isRegistered(this)) {
+			J2WHelper.eventBus().unregister(this);
 		}
 		/** 移除builder **/
 		j2WBuilder.detach();

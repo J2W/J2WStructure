@@ -107,12 +107,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	@Override public void onPause() {
 		super.onPause();
 		J2WHelper.getInstance().onFragmentPause(this);
-		/** 判断EventBus 是否销毁 **/
+		/** 关闭event **/
 		if (j2WBuilder.isOpenEventBus()) {
-			if (!j2WBuilder.isNotCloseEventBus()) {
-				if (J2WHelper.eventBus().isRegistered(this)) {
-					J2WHelper.eventBus().unregister(this);
-				}
+			if (J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().unregister(this);
 			}
 		}
 		// 恢复初始化
@@ -134,13 +132,9 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
-		/** 关闭event **/
-		if (j2WBuilder.isNotCloseEventBus()) {
-			if (J2WHelper.eventBus().isRegistered(this)) {
-				J2WHelper.eventBus().unregister(this);
-			}
+		if (J2WHelper.eventBus().isRegistered(this)) {
+			J2WHelper.eventBus().unregister(this);
 		}
-
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
