@@ -943,6 +943,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		layoutBizError = null;
 		layoutHttpError = null;
 		layoutEmpty = null;
+		vsLoading = null;
+		layoutLoading = null;
+		dragEdge = null;
+		listener = null;
+		tintManager = null;
 	}
 
 	/**
@@ -1041,6 +1046,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private void detachActionbar() {
 		menuListener = null;
+		toolbar = null;
+		menuListener = null;
 	}
 
 	/**
@@ -1106,6 +1113,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		itemLongListener = null;
 		swipe_container = null;
 		colorResIds = null;
+		j2WRefreshListener = null;
 	}
 
 	/**
@@ -1234,10 +1242,12 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	private void detachViewPager() {
-		j2WViewPager = null;
 		if (j2WViewPagerAdapter != null) {
 			j2WViewPagerAdapter.clearData();
 		}
+		j2WViewPager = null;
+		customView = null;
+		showItems = null;
 		j2WViewPagerAdapter = null;
 		fragmentManager = null;
 		viewPagerChangeListener = null;

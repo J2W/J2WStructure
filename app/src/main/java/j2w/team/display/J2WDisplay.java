@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import j2w.team.J2WHelper;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.structure.R;
@@ -129,6 +130,20 @@ public class J2WDisplay implements J2WIDisplay {
 		commitReplace(R.id.j2w_home, fragment);
 	}
 
+	@Override public void commitChildReplace(int layoutId, Fragment fragment) {
+		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
+		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		fragment().getChildFragmentManager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+				.commitAllowingStateLoss();
+		L.tag("J2WDisplay");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("fragment: ");
+		stringBuilder.append(fragment.getClass().getSimpleName());
+		stringBuilder.append(" 提交到 ");
+		stringBuilder.append(activity().getClass().getSimpleName());
+		L.i(stringBuilder.toString());
+	}
+
 	@Override public void commitReplace(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
@@ -149,8 +164,13 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitHideAndBackStack(Fragment fragment) {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 
-		beginTransaction().hide(j2WView.fragment()).add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
-				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
+		FragmentTransaction transaction = beginTransaction();
+
+		if (j2WView.fragment() != null) {
+			transaction.hide(j2WView.fragment());
+		}
+		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+				.commitAllowingStateLoss();
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("fragment: ");
@@ -165,9 +185,13 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void commitDetachAndBackStack(Fragment fragment) {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		FragmentTransaction transaction = beginTransaction();
 
-		beginTransaction().detach(j2WView.fragment()).add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
-				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
+		if (j2WView.fragment() != null) {
+			transaction.detach(j2WView.fragment());
+		}
+		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+				.commitAllowingStateLoss();
 		L.tag("J2WDisplay");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("fragment: ");
@@ -293,22 +317,18 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void popBackStack() {
-		manager().popBackStack();
-		manager().executePendingTransactions();
+		manager().popBackStackImmediate();
 	}
 
 	@Override public void popBackStack(Class clazz) {
-		manager().popBackStack(clazz.getName(), 0);
-		manager().executePendingTransactions();
+		manager().popBackStackImmediate(clazz.getName(), 0);
 	}
 
 	@Override public void popBackStack(String clazzName) {
-		manager().popBackStack(clazzName, 0);
-		manager().executePendingTransactions();
+		manager().popBackStackImmediate(clazzName, 0);
 	}
 
 	@Override public void popBackStackAll() {
-		manager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-		manager().executePendingTransactions();
+		manager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 	}
 }
