@@ -111,8 +111,6 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 		detach();
 		/** 清空注解view **/
 		ButterKnife.unbind(fragment);
-		/** 回收内存 **/
-		Runtime.getRuntime().gc();
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(fragment.getActivity());
 	}
@@ -297,8 +295,8 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 					stringBuilder.append(fragment.getClass().getSimpleName());
 				}
 			}
-			stringBuilder.append(";");
-			stringBuilder.deleteCharAt(0);
+			stringBuilder.append("]");
+			stringBuilder.deleteCharAt(1);
 			L.tag("Activity FragmentManager:");
 			L.i(stringBuilder.toString());
 		}
