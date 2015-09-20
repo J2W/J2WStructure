@@ -9,6 +9,7 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
+import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 
 /**
@@ -16,15 +17,12 @@ import j2w.team.common.utils.J2WAppUtil;
  */
 public final class L {
 
-	private static Context	CONTEXT;
-
 	/**
 	 * 初始化操作
 	 */
-	public static void init(boolean isLogOpen, Context context) {
+	public static void init(boolean isLogOpen) {
 		if (isLogOpen) {
 			L.plant(new DebugTree());
-			CONTEXT = context;
 		}
 	}
 
@@ -391,7 +389,7 @@ public final class L {
 		@Override public void m(String message, Object... args) {
 			StringBuffer stringBuffer = new StringBuffer(message);
 			stringBuffer.append(" 内存使用:");
-			stringBuffer.append(J2WAppUtil.getAppMemory(L.CONTEXT));
+			stringBuffer.append(J2WAppUtil.getAppMemory(J2WHelper.getInstance()));
 			throwShade(Log.VERBOSE, formatString(stringBuffer.toString(), args), null);
 		}
 

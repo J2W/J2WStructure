@@ -55,7 +55,7 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		// 初始化 fresco
 		mJ2WModulesManage.setImagePipelineConfig(initImagePipelineConfig(OkHttpImagePipelineConfigFactory.newBuilder(this, initFrescoHttpClient())));
 		// 日志初始化
-		L.init(isLogOpen(), this);
+		L.init(isLogOpen());
 	}
 
 	/**
@@ -111,6 +111,10 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 	}
 
 	@Override public void onFragmentStop(J2WFragment j2WFragment) {
+
+	}
+
+	@Override public void onFragmentDestroy(J2WFragment j2WFragment) {
 
 	}
 
