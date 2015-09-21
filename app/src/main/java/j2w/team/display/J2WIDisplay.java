@@ -95,6 +95,7 @@ public interface J2WIDisplay {
 	void commitReplace(Fragment fragment);
 
 	void commitChildReplace(int layoutId, Fragment fragment);
+
 	void commitReplace(int layoutId, Fragment fragment);
 
 	void commitBackStack(Fragment fragment);
