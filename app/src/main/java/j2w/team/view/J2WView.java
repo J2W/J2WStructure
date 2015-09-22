@@ -67,8 +67,8 @@ public class J2WView {
 		return context;
 	}
 
-	public J2WActivity activity() {
-		return mJ2WActivity;
+	public <A extends J2WActivity> A activity() {
+		return (A) mJ2WActivity;
 	}
 
 	public FragmentManager manager() {
@@ -110,8 +110,8 @@ public class J2WView {
 		return (F) mJ2WFragment;
 	}
 
-	public J2WDialogFragment dialogFragment() {
-		return mJ2WDialogFragment;
+	public <D extends J2WDialogFragment> D dialogFragment() {
+		return (D) mJ2WDialogFragment;
 	}
 
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
