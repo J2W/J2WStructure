@@ -106,8 +106,8 @@ public class J2WView {
 		return state;
 	}
 
-	public J2WFragment fragment() {
-		return mJ2WFragment;
+	public <F extends J2WFragment> F fragment() {
+		return (F) mJ2WFragment;
 	}
 
 	public J2WDialogFragment dialogFragment() {
