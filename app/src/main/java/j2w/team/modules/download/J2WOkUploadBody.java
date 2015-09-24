@@ -1,5 +1,7 @@
 package j2w.team.modules.download;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
@@ -8,8 +10,10 @@ import com.squareup.okhttp.internal.Util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import j2w.team.common.log.L;
+import j2w.team.modules.http.converter.GsonConverter;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
@@ -31,11 +35,15 @@ public class J2WOkUploadBody extends RequestBody {
 
 	private final J2WUploadRequest	j2WUploadRequest;		// 请求
 
+	private final GsonConverter		gsonConverter;
+
 	public J2WOkUploadBody(J2WUploadRequest j2WUploadRequest, J2WUploadListener listener) {
 		this.file = j2WUploadRequest.getJ2WUploadBody().file;
 		totalSize = file.length();
 		this.j2WUploadRequest = j2WUploadRequest;
 		this.listener = listener;
+		this.gsonConverter = new GsonConverter();
+
 	}
 
 	@Override public long contentLength() {
@@ -55,6 +63,7 @@ public class J2WOkUploadBody extends RequestBody {
 	@Override public void writeTo(BufferedSink sink) throws IOException {
 		Source source = null;
 		try {
+
 			source = Okio.source(file);
 			long total = 0;
 			long read;
@@ -82,7 +91,8 @@ public class J2WOkUploadBody extends RequestBody {
 	public RequestBody build() {
 		// 请求头信息
 		Headers headers = j2WUploadRequest.getJ2WUploadBody().getHeader();
-		RequestBody requestBody = new MultipartBuilder().type(MultipartBuilder.FORM).addPart(headers, this).build();
+		RequestBody requestBody = new MultipartBuilder().type(MultipartBuilder.FORM).addPart(headers, this)
+				.addPart(headers, gsonConverter.toBody(j2WUploadRequest.getJ2WUploadBody().body, j2WUploadRequest.getJ2WUploadBody().body.getClass())).build();
 		return requestBody;
 	}
 }

@@ -11,7 +11,7 @@ import j2w.team.common.utils.J2WCheckUtils;
  * @创建时间 15/4/8 上午11:10
  * @类描述 头部信息 - 仅仅支持一种 还需要完善
  */
-public class J2WUploadBody {
+public class J2WUploadBody<T> {
 
 	public static final String		CONTENT_DISPOSITION	= "Content-Disposition";
 
@@ -22,6 +22,8 @@ public class J2WUploadBody {
 	public File						file;											// 文件
 
 	private final Headers.Builder	headers				= new Headers.Builder();
+
+	public T						body;
 
 	public Headers getHeader() {
 		if (isDisposition()) {
@@ -43,4 +45,9 @@ public class J2WUploadBody {
 	private boolean isDisposition() {
 		return CONTENT_DISPOSITION.equals(headerName) ? true : false;
 	}
+
+	public T getBody() {
+		return body;
+	}
+
 }
