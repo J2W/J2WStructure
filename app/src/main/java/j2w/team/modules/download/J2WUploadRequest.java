@@ -38,13 +38,6 @@ public class J2WUploadRequest extends J2WBaseRequest {
 		if (J2WCheckUtils.isEmpty(j2WUploadBody.headerName) || J2WCheckUtils.isEmpty(j2WUploadBody.headerValue)) {
 			throw new IllegalArgumentException("文件体头信息不能为空！");
 		}
-		if (j2WUploadBody.file == null) {
-			throw new NullPointerException();
-		}
-
-		if (!j2WUploadBody.file.exists()) {
-			throw new IllegalArgumentException("文件不存在！");
-		}
 
 		String scheme = uri.getScheme();
 		if (scheme == null || (!scheme.equals("http") && !scheme.equals("https"))) {

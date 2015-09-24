@@ -34,7 +34,9 @@ public class J2WOkUploadBody extends RequestBody {
 
 	public J2WOkUploadBody(J2WUploadRequest j2WUploadRequest, J2WUploadListener listener) {
 		this.file = j2WUploadRequest.getJ2WUploadBody().file;
-		totalSize = file.length();
+		if(file != null){
+			totalSize = file.length();
+		}
 		this.j2WUploadRequest = j2WUploadRequest;
 		this.listener = listener;
 	}
@@ -84,7 +86,10 @@ public class J2WOkUploadBody extends RequestBody {
 	public RequestBody build() {
 		// 请求头信息
 		Headers headers = j2WUploadRequest.getJ2WUploadBody().getHeader();
-		MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM).addPart(headers, this);
+		MultipartBuilder multipartBuilder = new MultipartBuilder().type(MultipartBuilder.FORM);
+		if(file != null){
+			multipartBuilder.addPart(headers, this);
+		}
 		List<J2WFromData> j2WHeadersBeans = j2WUploadRequest.getJ2WUploadBody().j2wFromData;
 		if (j2WHeadersBeans != null && j2WHeadersBeans.size() > 0) {
 			int count = j2WUploadRequest.getJ2WUploadBody().j2wFromData.size();

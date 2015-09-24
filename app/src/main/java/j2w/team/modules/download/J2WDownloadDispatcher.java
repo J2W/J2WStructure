@@ -153,11 +153,12 @@ public class J2WDownloadDispatcher extends Thread {
 		J2WOkUploadBody j2WOkUploadBody = new J2WOkUploadBody(j2WUploadRequest, j2WUploadRequest.getJ2WUploadListener());
 		// 请求
 		Request request = new Request.Builder().tag(j2WUploadRequest.getRequestTag()).url(url).headers(j2WUploadRequest.getHeaders()).post(j2WOkUploadBody.build()).build();// 创建请求
+
 		try {
 			updateUploadState(j2WUploadRequest, J2WDownloadManager.STATUS_RUNNING);
 			Response response = okHttpClient.newCall(request).execute();
 			final int responseCode = response.code();
-
+			L.i("请求头信息:" + request.headers().toString());
 			L.i("请求编号:" + j2WUploadRequest.getRequestId() + ", 响应编号 : " + responseCode);
 
 			switch (responseCode) {
