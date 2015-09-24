@@ -3,6 +3,7 @@ package j2w.team.modules.download;
 import com.squareup.okhttp.Headers;
 
 import java.io.File;
+import java.util.List;
 
 import j2w.team.common.utils.J2WCheckUtils;
 
@@ -23,7 +24,7 @@ public class J2WUploadBody<T> {
 
 	private final Headers.Builder	headers				= new Headers.Builder();
 
-	public T						body;
+	public List<J2WFromData>		j2wFromData;								// 表单
 
 	public Headers getHeader() {
 		if (isDisposition()) {
@@ -44,10 +45,6 @@ public class J2WUploadBody<T> {
 
 	private boolean isDisposition() {
 		return CONTENT_DISPOSITION.equals(headerName) ? true : false;
-	}
-
-	public T getBody() {
-		return body;
 	}
 
 }
