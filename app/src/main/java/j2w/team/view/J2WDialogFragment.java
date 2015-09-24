@@ -188,7 +188,13 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 			getDialog().setDismissMessage(null);
 		}
 	}
-
+	/**
+	 * 设置输入法
+	 * @param mode
+	 */
+	public void setSoftInputMode(int mode){
+		getActivity().getWindow().setSoftInputMode(mode);
+	}
 	/**
 	 * 获取显示调度
 	 *

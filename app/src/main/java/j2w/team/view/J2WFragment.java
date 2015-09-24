@@ -213,6 +213,14 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 		return true;
 	}
 
+	/**
+	 * 设置输入法
+	 * @param mode
+	 */
+	public void setSoftInputMode(int mode){
+		getActivity().getWindow().setSoftInputMode(mode);
+	}
+
 	/********************** View业务代码 *********************/
 	/**
 	 * 获取fragment

@@ -117,6 +117,15 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		J2WHelper.getInstance().onResume(this);
 	}
 
+	/**
+	 * 设置输入法
+	 * 
+	 * @param mode
+	 */
+	public void setSoftInputMode(int mode) {
+		getWindow().setSoftInputMode(mode);
+	}
+
 	@Override protected void onPause() {
 		super.onPause();
 		J2WHelper.getInstance().onPause(this);
