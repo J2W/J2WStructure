@@ -231,5 +231,7 @@ public interface J2WIDownloadMagnager {
 	 */
 	int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, File file, J2WUploadListener j2WUploadListener);
 
-	int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, File file,J2WContentType j2WContentType, J2WUploadListener j2WUploadListener);
+	int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, File file, J2WContentType j2WContentType, J2WUploadListener j2WUploadListener);
+
+	int upload(String uploadUri, List<J2WUploadHeader> j2WUploadHeaders, J2WUploadBody j2WUploadBody, J2WContentType j2WContentType, J2WUploadListener j2WUploadListener);
 }
