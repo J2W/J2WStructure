@@ -182,6 +182,10 @@ public final class J2WBizUtils {
 				}
 			}
 
+			if(iView == null){
+				return obj;
+			}
+
 			// 获得接口数组
 			Class<?>[] interfaces = iView.getClass().getInterfaces();
 			// 如果没有实现接口，获取父类接口

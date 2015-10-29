@@ -98,6 +98,20 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		return j2WStructureIManage.ui(ui, this, callback == null ? j2WView.getView() : callback);
 	}
 
+	@Override public <C> void Success(int code, C c) {
+		J2WCallBack j2WCallBack = j2WStructureIManage.ui(J2WCallBack.class, this, callback == null ? j2WView.getView() : callback);
+		if (j2WCallBack != null) {
+			j2WCallBack.onSuccess(code, c);
+		}
+	}
+
+	@Override public void Failure(int code, String msg) {
+		J2WCallBack j2WCallBack = j2WStructureIManage.ui(J2WCallBack.class, this, callback == null ? j2WView.getView() : callback);
+		if (j2WCallBack != null) {
+			j2WCallBack.onFailure(code, msg);
+		}
+	}
+
 	/**
 	 * 检查UI
 	 *

@@ -50,6 +50,27 @@ public interface J2WIBiz {
 	<U> U ui(Class<U> ui);
 
 	/**
+	 * 成功
+	 *
+	 * @param code
+	 *            请求编号
+	 *
+	 * @param c
+	 *            结果
+	 */
+	<C> void Success(int code, C c);
+
+	/**
+	 * 失败
+	 *
+	 * @param code
+	 *            请求编号
+	 * @param msg
+	 *            错误内容
+	 */
+	void Failure(int code, String msg);
+
+	/**
 	 * 检查UI
 	 *
 	 * @return

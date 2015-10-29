@@ -100,7 +100,7 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	 */
 	<B extends J2WIBiz> B biz(Class<B> biz, J2WView j2WView);
 
-	<B extends J2WIBiz> B biz(Class<B> biz, Object object);
+	<B extends J2WIBiz> B biz(Class<B> biz);
 
 	/**
 	 * 网络

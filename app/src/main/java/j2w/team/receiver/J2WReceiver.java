@@ -38,7 +38,7 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 	 * @return
 	 */
 	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WStructureIManage.biz(biz, this);
+		return j2WStructureIManage.biz(biz);
 	}
 
 	/**
