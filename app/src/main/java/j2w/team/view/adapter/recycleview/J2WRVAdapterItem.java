@@ -22,18 +22,6 @@ import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
  */
 public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends RecyclerView.Adapter<V> {
 
-	/**
-	 * 绑定数据
-	 *
-	 * @param t
-	 *            数据类型泛型
-	 * @param position
-	 *            下标
-	 * @param count
-	 *            数量
-	 */
-	public abstract void bindData(V viewholder, T t, int position, int count);
-
 	public abstract V newViewHolder(ViewGroup viewGroup, int type);
 
 	private J2WRVAdapterItem() {}
@@ -74,7 +62,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	@Override public void onBindViewHolder(V v, int position) {
-		bindData(v, getItem(position), position, getItemCount());
+		v.bindData(getItem(position), getItemCount());
 	}
 
 	public List<T> getItems() {
@@ -160,7 +148,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return (T) mItems.get(position);
 	}
 
-	public void updateData(){
+	public void updateData() {
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
