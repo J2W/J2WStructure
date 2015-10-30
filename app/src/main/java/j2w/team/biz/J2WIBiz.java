@@ -58,7 +58,7 @@ public interface J2WIBiz {
 	 * @param c
 	 *            结果
 	 */
-	<C> void Success(int code, C c);
+	<C> void success(int code, C c);
 
 	/**
 	 * 失败
@@ -68,7 +68,7 @@ public interface J2WIBiz {
 	 * @param msg
 	 *            错误内容
 	 */
-	void Failure(int code, String msg);
+	void failure(int code, String msg);
 
 	/**
 	 * 检查UI
