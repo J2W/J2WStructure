@@ -29,6 +29,10 @@ public abstract class J2WReceiver<D extends J2WIDisplay> extends BroadcastReceiv
 		j2WStructureIManage.attachReceiver(this);
 	}
 
+	protected void detach(){
+		j2WStructureIManage.detachReceiver(this);
+	}
+
 	/**
 	 * 获取业务
 	 *

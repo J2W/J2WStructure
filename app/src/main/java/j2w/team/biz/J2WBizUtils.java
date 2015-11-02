@@ -93,7 +93,7 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <D extends J2WIDisplay> D createDisplayBiz(Class<D> iDisplay,J2WView j2WView) {
+	public static final <D extends J2WIDisplay> D createDisplayBiz(Class<D> iDisplay, J2WView j2WView) {
 		D interfaceDisplay;
 		Class clazz;
 		try {
@@ -125,7 +125,7 @@ public final class J2WBizUtils {
 	 *
 	 * @return
 	 */
-	public static final <D extends J2WIDisplay> D createDisplayNotView(Class<D> iDisplay,Context context) {
+	public static final <D extends J2WIDisplay> D createDisplayNotView(Class<D> iDisplay, Context context) {
 		D interfaceDisplay;
 		Class clazz;
 		try {
@@ -153,7 +153,7 @@ public final class J2WBizUtils {
 	}
 
 	/**
-	 * 创建View层类
+	 * 创建View层类 - 动态代理
 	 *
 	 * @return
 	 */
@@ -182,7 +182,7 @@ public final class J2WBizUtils {
 				}
 			}
 
-			if(iView == null){
+			if (iView == null) {
 				return obj;
 			}
 
@@ -202,6 +202,42 @@ public final class J2WBizUtils {
 			return obj;
 		}
 		return obj;
+	}
+
+	/**
+	 * 创建View层类 - 获取接口
+	 *
+	 * @return
+	 */
+	public static final <V> J2WCallBack createCallBack(V iView) {
+		J2WCallBack j2WCallBack = null;
+		if (iView instanceof J2WFragment) {
+			J2WFragment j2WFragment = (J2WFragment) iView;
+			final Fragment targetFragment = j2WFragment.getTargetFragment();
+			if (targetFragment != null) {
+				iView = (V) targetFragment;
+			} else {
+				if (j2WFragment.isTargetActivity()) {
+					iView = (V) j2WFragment.getActivity();
+				}
+			}
+		} else if (iView instanceof J2WDialogFragment) {
+			J2WDialogFragment j2WDialogFragment = (J2WDialogFragment) iView;
+			final Fragment targetFragment = j2WDialogFragment.getTargetFragment();
+			if (targetFragment != null) {
+				iView = (V) targetFragment;
+			} else {
+				if (j2WDialogFragment.isTargetActivity()) {
+					iView = (V) j2WDialogFragment.getActivity();
+				}
+			}
+		}
+
+		if (iView instanceof J2WCallBack) {
+			j2WCallBack = (J2WCallBack) iView;
+		}
+
+		return j2WCallBack;
 	}
 
 	/**

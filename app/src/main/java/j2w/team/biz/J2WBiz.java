@@ -1,5 +1,6 @@
 package j2w.team.biz;
 
+import j2w.team.J2WHelper;
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.biz.exception.J2WHTTPException;
 import j2w.team.biz.exception.J2WUINullPointerException;
@@ -50,8 +51,10 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	}
 
 	@Override public void detachUI() {
-		j2WStructureIManage.detachBiz(this);
-		j2WStructureIManage = null;
+		if(j2WStructureIManage != null){
+			j2WStructureIManage.detachBiz(this);
+			j2WStructureIManage = null;
+		}
 		callback = null;
 		j2WView = null;
 	}
@@ -78,7 +81,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	/**
 	 * 根据接口获取实现类
-	 * 
+	 *
 	 * @param inter
 	 * @param <I>
 	 * @return
@@ -89,7 +92,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	/**
 	 * View层 回调引用
-	 * 
+	 *
 	 * @param ui
 	 * @param <U>
 	 * @return
@@ -98,16 +101,56 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		return j2WStructureIManage.ui(ui, this, callback == null ? j2WView.getView() : callback);
 	}
 
-	@Override public <C> void success(int code, C c) {
-		J2WCallBack j2WCallBack = j2WStructureIManage.ui(J2WCallBack.class, this, callback == null ? j2WView.getView() : callback);
-		if (j2WCallBack != null) {
+	@Override public <C> void onSuccess(final int code, final C c) {
+		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
+		if(j2WCallBack == null){
+			return;
+		}
+		boolean isMainLooper = J2WHelper.isMainLooperThread();
+		if (isMainLooper) {
+			J2WHelper.mainLooper().execute(new Runnable() {
+
+				@Override public void run() {
+					if (!checkUI()) {
+						detachUI();
+						return;
+					}
+					j2WCallBack.onSuccess(code, c);
+
+				}
+			});
+		} else {
+			if (!checkUI()) {
+				detachUI();
+				return;
+			}
 			j2WCallBack.onSuccess(code, c);
 		}
 	}
 
-	@Override public void failure(int code, String msg) {
-		J2WCallBack j2WCallBack = j2WStructureIManage.ui(J2WCallBack.class, this, callback == null ? j2WView.getView() : callback);
-		if (j2WCallBack != null) {
+	@Override public void onFailure(final int code, final String msg) {
+		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
+		if(j2WCallBack == null){
+			return;
+		}
+		boolean isMainLooper = J2WHelper.isMainLooperThread();
+		if (isMainLooper) {
+			J2WHelper.mainLooper().execute(new Runnable() {
+
+				@Override public void run() {
+					if (!checkUI()) {
+						detachUI();
+						return;
+					}
+					j2WCallBack.onFailure(code, msg);
+
+				}
+			});
+		} else {
+			if (!checkUI()) {
+				detachUI();
+				return;
+			}
 			j2WCallBack.onFailure(code, msg);
 		}
 	}

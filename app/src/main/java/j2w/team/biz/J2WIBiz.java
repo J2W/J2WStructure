@@ -2,7 +2,6 @@ package j2w.team.biz;
 
 import j2w.team.biz.exception.J2WBizException;
 import j2w.team.modules.http.J2WError;
-import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.view.J2WView;
 
 /**
@@ -58,7 +57,7 @@ public interface J2WIBiz {
 	 * @param c
 	 *            结果
 	 */
-	<C> void success(int code, C c);
+	<C> void onSuccess(int code, C c);
 
 	/**
 	 * 失败
@@ -68,7 +67,7 @@ public interface J2WIBiz {
 	 * @param msg
 	 *            错误内容
 	 */
-	void failure(int code, String msg);
+	void onFailure(int code, String msg);
 
 	/**
 	 * 检查UI

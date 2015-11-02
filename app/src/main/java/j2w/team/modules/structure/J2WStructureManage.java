@@ -6,11 +6,9 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
-import j2w.team.J2WApplication;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBiz;
 import j2w.team.biz.J2WBizUtils;
@@ -62,6 +60,13 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 				j2WIDisplay.detach();
 			}
 		}
+		for (Object item : stackBiz.values()) {
+			J2WIBiz j2WIBiz = (J2WIBiz) item;
+			if (j2WIBiz != null) {
+				j2WIBiz.detach();
+			}
+		}
+
 		if (stackDisplay != null) {
 			stackDisplay.clear();
 			stackDisplay = null;
@@ -257,7 +262,7 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 	@Override public <U> U ui(Class<U> ui, J2WBiz j2WBiz, Object object) {
 		J2WCheckUtils.checkNotNull(ui, "请指定View接口～");
 		Object obj = stackBiz.get(ui.getSimpleName());
-		if (obj == null) {// 如果没有索索到
+		if (obj == null) {// 如果没有搜索到
 			obj = J2WBizUtils.createUI(ui, object, j2WBiz);
 			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
 			stackBiz.put(ui.getSimpleName(), obj);
@@ -300,6 +305,5 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 			L.tag("Activity FragmentManager:");
 			L.i(stringBuilder.toString());
 		}
-
 	}
 }
