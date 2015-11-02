@@ -40,19 +40,30 @@ public final class J2WBizHandler<T> extends BaseHandler<T> {
 						methodReturn = method.invoke(t, args);
 					} catch (Throwable throwable) {
 						throwable.printStackTrace();
+						if (j2WBiz != null) {
+							j2WBiz.methodCodingError(method.getName(), throwable);
+						}
 					} finally {
 						countDownLatch.countDown();
 					}
 				}
 			});
 			countDownLatch.await();
-			return methodReturn;
 		} else {
-			if (!checkUI()) {
-				return null;
+			try {
+				if (!checkUI()) {
+					return null;
+				}
+				methodReturn = method.invoke(t, args);
+			} catch (Throwable throwable) {
+				throwable.printStackTrace();
+				if (j2WBiz != null) {
+					j2WBiz.methodCodingError(method.getName(), throwable);
+				}
 			}
-			return method.invoke(t, args);
 		}
+		return methodReturn;
+
 	}
 
 	/**

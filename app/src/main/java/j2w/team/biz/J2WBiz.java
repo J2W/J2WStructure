@@ -51,7 +51,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	}
 
 	@Override public void detachUI() {
-		if(j2WStructureIManage != null){
+		if (j2WStructureIManage != null) {
 			j2WStructureIManage.detachBiz(this);
 			j2WStructureIManage = null;
 		}
@@ -103,7 +103,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 
 	@Override public <C> void onSuccess(final int code, final C c) {
 		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
-		if(j2WCallBack == null){
+		if (j2WCallBack == null) {
 			return;
 		}
 		boolean isMainLooper = J2WHelper.isMainLooperThread();
@@ -115,7 +115,12 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 						detachUI();
 						return;
 					}
-					j2WCallBack.onSuccess(code, c);
+					try {
+						j2WCallBack.onSuccess(code, c);
+					} catch (Throwable throwable) {
+						throwable.printStackTrace();
+						methodCodingError("onSuccess", throwable);
+					}
 
 				}
 			});
@@ -124,13 +129,18 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 				detachUI();
 				return;
 			}
-			j2WCallBack.onSuccess(code, c);
+			try {
+				j2WCallBack.onSuccess(code, c);
+			} catch (Throwable throwable) {
+				throwable.printStackTrace();
+				methodCodingError("onSuccess", throwable);
+			}
 		}
 	}
 
 	@Override public void onFailure(final int code, final String msg) {
 		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
-		if(j2WCallBack == null){
+		if (j2WCallBack == null) {
 			return;
 		}
 		boolean isMainLooper = J2WHelper.isMainLooperThread();
@@ -142,8 +152,12 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 						detachUI();
 						return;
 					}
-					j2WCallBack.onFailure(code, msg);
-
+					try {
+						j2WCallBack.onFailure(code, msg);
+					} catch (Throwable throwable) {
+						throwable.printStackTrace();
+						methodCodingError("onSuccess", throwable);
+					}
 				}
 			});
 		} else {
@@ -151,7 +165,12 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 				detachUI();
 				return;
 			}
-			j2WCallBack.onFailure(code, msg);
+			try {
+				j2WCallBack.onFailure(code, msg);
+			} catch (Throwable throwable) {
+				throwable.printStackTrace();
+				methodCodingError("onSuccess", throwable);
+			}
 		}
 	}
 
