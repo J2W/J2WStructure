@@ -101,7 +101,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		return j2WStructureIManage.ui(ui, this, callback == null ? j2WView.getView() : callback);
 	}
 
-	@Override public <C> void onSuccess(final int code, final C c) {
+	@Override public <C> void onSuccess(final C c) {
 		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
 		if (j2WCallBack == null) {
 			return;
@@ -116,7 +116,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 						return;
 					}
 					try {
-						j2WCallBack.onSuccess(code, c);
+						j2WCallBack.onSuccess(c);
 					} catch (Throwable throwable) {
 						throwable.printStackTrace();
 						methodCodingError("onSuccess", throwable);
@@ -130,7 +130,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 				return;
 			}
 			try {
-				j2WCallBack.onSuccess(code, c);
+				j2WCallBack.onSuccess(c);
 			} catch (Throwable throwable) {
 				throwable.printStackTrace();
 				methodCodingError("onSuccess", throwable);
@@ -138,7 +138,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 		}
 	}
 
-	@Override public void onFailure(final int code, final String msg) {
+	@Override public <C> void onFailure(final C c) {
 		final J2WCallBack j2WCallBack = J2WBizUtils.createCallBack(callback == null ? j2WView.getView() : callback);
 		if (j2WCallBack == null) {
 			return;
@@ -153,7 +153,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 						return;
 					}
 					try {
-						j2WCallBack.onFailure(code, msg);
+						j2WCallBack.onFailure(c);
 					} catch (Throwable throwable) {
 						throwable.printStackTrace();
 						methodCodingError("onSuccess", throwable);
@@ -166,7 +166,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 				return;
 			}
 			try {
-				j2WCallBack.onFailure(code, msg);
+				j2WCallBack.onFailure(c);
 			} catch (Throwable throwable) {
 				throwable.printStackTrace();
 				methodCodingError("onSuccess", throwable);

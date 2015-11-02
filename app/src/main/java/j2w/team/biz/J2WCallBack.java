@@ -10,18 +10,16 @@ public interface J2WCallBack<T> {
 	/**
 	 * 成功
 	 * 
-	 * @param code
-	 *            编码
 	 * @param t
 	 *            结果
 	 */
-	void onSuccess(int code, T t);
+	void onSuccess(T t);
 
 	/**
 	 * 失败
 	 * 
-	 * @param code
-	 * @param msg
+	 * @param t
+	 *            结果
 	 */
-	void onFailure(int code, String msg);
+	void onFailure(T t);
 }

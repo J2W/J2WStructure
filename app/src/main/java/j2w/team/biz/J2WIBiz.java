@@ -51,23 +51,18 @@ public interface J2WIBiz {
 	/**
 	 * 成功
 	 *
-	 * @param code
-	 *            请求编号
-	 *
 	 * @param c
 	 *            结果
 	 */
-	<C> void onSuccess(int code, C c);
+	<C> void onSuccess(C c);
 
 	/**
 	 * 失败
 	 *
-	 * @param code
-	 *            请求编号
-	 * @param msg
+	 * @param c
 	 *            错误内容
 	 */
-	void onFailure(int code, String msg);
+	<C> void onFailure(C c);
 
 	/**
 	 * 检查UI
