@@ -303,6 +303,6 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	@Override public void errorUnexpected(String methodName) {}
 
 	/** 编码异常 **/
-	@Override public void methodCodingError(String methodName, Throwable throwable) {}
+	public void methodCodingError(String methodName, Throwable throwable) {}
 
 }

@@ -1,14 +1,14 @@
 package j2w.team.view.adapter.recycleview;
 
+import java.util.List;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import j2w.team.biz.J2WIBiz;
-import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -20,12 +20,11 @@ import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
  * @创建时间 15/7/17 上午10:51
  * @类描述 RecyclerView 适配器
  */
-@Deprecated
-public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.Adapter<V> {
 
 	public abstract V newViewHolder(ViewGroup viewGroup, int type);
 
-	private J2WRVAdapterItem() {}
+	private J2WRVAdapter() {}
 
 	/**
 	 * 数据
@@ -39,34 +38,23 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	private J2WView				j2WView;
 
-	public J2WRVAdapterItem(J2WActivity j2WActivity) {
+	public J2WRVAdapter(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
 		this.j2WView = j2WActivity.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
-	public J2WRVAdapterItem(J2WFragment j2WFragment) {
+	public J2WRVAdapter(J2WFragment j2WFragment) {
 		J2WCheckUtils.checkNotNull(j2WFragment, "View层不存在");
 		this.j2WView = j2WFragment.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
-	public J2WRVAdapterItem(J2WDialogFragment j2WDialogFragment) {
+	public J2WRVAdapter(J2WDialogFragment j2WDialogFragment) {
 		J2WCheckUtils.checkNotNull(j2WDialogFragment, "View层不存在");
 		this.j2WView = j2WDialogFragment.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
-	/**
-	 * 绑定数据
-	 *
-	 * @param t
-	 *            数据类型泛型
-	 * @param position
-	 *            下标
-	 * @param count
-	 *            数量
-	 */
-	public abstract void bindData(V viewholder, T t, int position, int count);
 
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -75,7 +63,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	@Override public void onBindViewHolder(V v, int position) {
-		bindData(v, getItem(position), position, getItemCount());
+		v.bindData(getItem(position), getItemCount());
 	}
 
 	public List<T> getItems() {

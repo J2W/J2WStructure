@@ -110,7 +110,7 @@ public interface J2WIBiz {
 	/** 编码异常 **/
 	/**
 	 * 编码异常
-	 * 
+	 *
 	 * @param methodName
 	 *            方法名称
 	 * @param throwable

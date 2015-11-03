@@ -10,11 +10,13 @@ import butterknife.ButterKnife;
  * @创建时间 15/7/17 上午10:58
  * @类描述 适配器优化holder
  */
-@Deprecated
-public abstract class J2WViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class J2WHolder<T> extends RecyclerView.ViewHolder {
 
-	public J2WViewHolder(View itemView) {
+	public J2WHolder(View itemView) {
 		super(itemView);
 		ButterKnife.bind(this, itemView);
 	}
+
+	public abstract void bindData(T t, int count);
+
 }
