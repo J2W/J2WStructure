@@ -41,7 +41,7 @@ App-build.gradle:
 
      dependencies {
         compile fileTree(dir: 'libs', include: ['*.jar'])
-        compile 'j2w.team:structure:1.0.0'
+        compile 'j2w.team:structure:1.0.2'
      }
 
 MVP使用说明帮助
