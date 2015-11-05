@@ -276,10 +276,3 @@ MVP使用说明帮助
     tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation)  // 设置切换是否有动画
 
 
-整体结构使用项目
------------------------------------
-###暂时不完整, 有时间持续更新
-
-[完整使用用例](https://github.com/skyJinc/J2WStructureTest)
-
-
