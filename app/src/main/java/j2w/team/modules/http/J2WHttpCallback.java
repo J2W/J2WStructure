@@ -5,7 +5,7 @@ import com.squareup.okhttp.Response;
 /**
  * Created by sky on 15/2/23.
  */
-public interface J2WCallback<T> {
+public interface J2WHttpCallback<T> {
 
 	/**
 	 * 成功

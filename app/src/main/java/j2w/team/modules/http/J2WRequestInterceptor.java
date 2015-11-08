@@ -33,10 +33,17 @@ public interface J2WRequestInterceptor {
 	/**
 	 * 默认什么都不做
 	 */
-	J2WRequestInterceptor	NONE	= new J2WRequestInterceptor() {
+	J2WRequestInterceptor	NONE			= new J2WRequestInterceptor() {
 
-										@Override public void intercept(RequestFacade request) {
-											// Do nothing.
-										}
-									};
+												@Override public void intercept(RequestFacade request) {
+													// Do nothing.
+												}
+											};
+
+	J2WResponseInterceptor	NONE_RESPONSE	= new J2WResponseInterceptor() {
+
+												@Override public void httpInterceptorResults(String name, Object object) {
+													// Do nothing.
+												}
+											};
 }

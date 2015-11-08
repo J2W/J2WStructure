@@ -3,11 +3,8 @@ package j2w.team.modules.http;
 import com.squareup.okhttp.Request;
 
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Map;
 
-import j2w.team.biz.Interceptor;
-import j2w.team.biz.J2WBiz;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.proxy.BaseHandler;
 
@@ -21,14 +18,12 @@ public class J2WRestHandler extends BaseHandler {
     private final J2WRestAdapter j2WRestAdapter;
 
     private final String serviceName;
-    private final J2WBiz j2wBiz;
 
-    public J2WRestHandler(J2WRestAdapter j2WRestAdapter, Map<Method, J2WMethodInfo> methodDetailsCache, String serviceName, J2WBiz j2WBiz) {
+    public J2WRestHandler(J2WRestAdapter j2WRestAdapter, Map<Method, J2WMethodInfo> methodDetailsCache, String serviceName) {
         super("");
         this.j2WRestAdapter = j2WRestAdapter;
         this.methodDetailsCache = methodDetailsCache;
         this.serviceName = serviceName;
-        this.j2wBiz = j2WBiz;
     }
 
     @SuppressWarnings("unchecked")
@@ -52,13 +47,10 @@ public class J2WRestHandler extends BaseHandler {
         switch (methodInfo.executionType) {
             case SYNC:
                 returnObject = j2WRestAdapter.invokeSync(methodInfo, request);// 执行
-                Interceptor interceptor = method.getAnnotation(Interceptor.class);
-                if (interceptor != null && j2wBiz != null) {
-                    j2wBiz.interceptorHttp(method.getName(),returnObject);
-                }
+                j2WRestAdapter.responseInterceptor(method.getName(),returnObject);
                 return returnObject;
             case ASYNC:
-                j2WRestAdapter.invokeAsync(methodInfo, request, (J2WCallback) args[args.length - 1]);
+                j2WRestAdapter.invokeAsync(methodInfo, request, (J2WHttpCallback) args[args.length - 1]);
                 return null;
             case URL:
                 J2WUrl j2WUrl = new J2WUrl();

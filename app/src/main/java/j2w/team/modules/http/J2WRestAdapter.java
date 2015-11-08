@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import j2w.team.biz.J2WBiz;
 import j2w.team.common.log.L;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.http.converter.GsonConverter;
@@ -39,6 +38,8 @@ public class J2WRestAdapter {
 	// 拦截器
 	private J2WRequestInterceptor							requestInterceptor;
 
+	private J2WResponseInterceptor							responseInterceptor;
+
 	// OKHTTP
 	private final OkHttpClient								client;
 
@@ -50,8 +51,10 @@ public class J2WRestAdapter {
 	 *
 	 * @param j2WEndpoint
 	 *            端点地址
+	 * @param responseInterceptor
 	 */
-	public J2WRestAdapter(OkHttpClient client, J2WEndpoint j2WEndpoint, J2WConverter converter, J2WRequestInterceptor requestInterceptor, J2WErrorHandler errorHandler) {
+	public J2WRestAdapter(OkHttpClient client, J2WEndpoint j2WEndpoint, J2WConverter converter, J2WRequestInterceptor requestInterceptor, J2WResponseInterceptor responseInterceptor,
+			J2WErrorHandler errorHandler) {
 		// OKHTTP
 		this.client = client;
 		// 端点地址
@@ -60,6 +63,8 @@ public class J2WRestAdapter {
 		this.converter = converter;
 		// 拦截器
 		this.requestInterceptor = requestInterceptor;
+		// 拦截器
+		this.responseInterceptor = responseInterceptor;
 		// 错误
 		this.errorHandler = errorHandler;
 	}
@@ -72,23 +77,12 @@ public class J2WRestAdapter {
 	 * @return
 	 */
 	public <T> T create(Class<T> service) {
-		return create(service, null);
-	}
-
-	/**
-	 * 创建代理
-	 *
-	 * @param service
-	 * @param <T>
-	 * @return
-	 */
-	public <T> T create(Class<T> service, J2WBiz j2WBiz) {
 		// 验证是否是接口
 		DynamicProxyUtils.validateServiceClass(service);
 		// 验证是否继承其他接口
 		DynamicProxyUtils.validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
-		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName(), j2WBiz);
+		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName());
 		// 创建代理类并返回
 		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 	}
@@ -187,7 +181,7 @@ public class J2WRestAdapter {
 	 * @param request
 	 * @param callback
 	 */
-	void invokeAsync(final J2WMethodInfo methodInfo, final Request request, final J2WCallback callback) {
+	void invokeAsync(final J2WMethodInfo methodInfo, final Request request, final J2WHttpCallback callback) {
 		Call call = client.newCall(request);
 		call.enqueue(new com.squareup.okhttp.Callback() {
 
@@ -214,7 +208,7 @@ public class J2WRestAdapter {
 	 * @param result
 	 * @param response
 	 */
-	private void callResponse(final J2WCallback callback, final Object result, final Response response) {
+	private void callResponse(final J2WHttpCallback callback, final Object result, final Response response) {
 		// 主线程执行
 		J2WHelper.mainLooper().execute(new Runnable() {
 
@@ -236,7 +230,7 @@ public class J2WRestAdapter {
 	 * @param callback
 	 * @param error
 	 */
-	private void callFailure(final J2WCallback callback, J2WError error) {
+	private void callFailure(final J2WHttpCallback callback, J2WError error) {
 		Throwable throwable = handleError(error);
 		if (throwable != error) {// 如果是自定义异常
 			Response response = error.getResponse();
@@ -363,6 +357,16 @@ public class J2WRestAdapter {
 	}
 
 	/**
+	 * 执行拦截
+	 * 
+	 * @param name
+	 * @param object
+	 */
+	void responseInterceptor(String name, Object object) {
+		responseInterceptor.httpInterceptorResults(name, object);
+	}
+
+	/**
 	 * 获取方法信息
 	 *
 	 * @param cache
@@ -423,6 +427,11 @@ public class J2WRestAdapter {
 		private J2WRequestInterceptor	requestInterceptor;
 
 		/**
+		 * 响应拦截器
+		 */
+		private J2WResponseInterceptor	responseInterceptor;
+
+		/**
 		 * 转换器
 		 */
 		private J2WConverter			converter;
@@ -474,6 +483,17 @@ public class J2WRestAdapter {
 				throw new NullPointerException("请求拦截器不得空.");
 			}
 			this.requestInterceptor = requestInterceptor;
+			return this;
+		}
+
+		/**
+		 * 设置拦截器
+		 */
+		public Builder setResponseInterceptor(J2WResponseInterceptor responseInterceptor) {
+			if (responseInterceptor == null) {
+				throw new NullPointerException("响应拦截器不得空.");
+			}
+			this.responseInterceptor = responseInterceptor;
 			return this;
 		}
 
@@ -534,7 +554,7 @@ public class J2WRestAdapter {
 			}
 			// 默认值
 			ensureSaneDefaults();
-			return new J2WRestAdapter(client, endpoint, converter, requestInterceptor, errorHandler);
+			return new J2WRestAdapter(client, endpoint, converter, requestInterceptor, responseInterceptor, errorHandler);
 		}
 
 		/**
@@ -567,6 +587,10 @@ public class J2WRestAdapter {
 			// 拦截器-默认什么都不做
 			if (requestInterceptor == null) {
 				requestInterceptor = J2WRequestInterceptor.NONE;
+			}
+			// 拦截器-默认什么都不做
+			if (responseInterceptor == null) {
+				responseInterceptor = J2WRequestInterceptor.NONE_RESPONSE;
 			}
 		}
 	}

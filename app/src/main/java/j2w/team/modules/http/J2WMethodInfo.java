@@ -284,7 +284,7 @@ public final class J2WMethodInfo {
             }
         }
         boolean hasReturnType = returnType != void.class; // 返回类型 是否为NULL
-        boolean hasCallback = lastArgClass != null && J2WCallback.class.isAssignableFrom(lastArgClass);// 判断是否是回调接接口
+        boolean hasCallback = lastArgClass != null && J2WHttpCallback.class.isAssignableFrom(lastArgClass);// 判断是否是回调接接口
 
         if (hasReturnType && hasCallback) {
             throw methodError("返回类型和回调接口不能同时存在！");
@@ -304,7 +304,7 @@ public final class J2WMethodInfo {
             return ExecutionType.SYNC;
         }
         // 获取父类的类型
-        lastArgType = Types.getSupertype(lastArgType, Types.getRawType(lastArgType), J2WCallback.class);
+        lastArgType = Types.getSupertype(lastArgType, Types.getRawType(lastArgType), J2WHttpCallback.class);
         if (lastArgType instanceof ParameterizedType) { // 判断是否是参数类型
             responseObjectType = getParameterUpperBound((ParameterizedType) lastArgType);// 获取绑定的参数类型
             return ExecutionType.ASYNC;
