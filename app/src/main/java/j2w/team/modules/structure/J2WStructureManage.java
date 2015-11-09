@@ -237,11 +237,11 @@ public class J2WStructureManage<D extends J2WIDisplay> implements J2WStructureIM
 		return (B) obj;
 	}
 
-	@Override public <H> H http(Class<H> hClass, J2WBiz j2WBiz) {
+	@Override public <H> H http(Class<H> hClass) {
 		J2WCheckUtils.checkNotNull(hClass, "请指定View接口～");
 		Object obj = stackBiz.get(hClass.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.httpAdapter().create(hClass, j2WBiz);
+			obj = J2WHelper.httpAdapter().create(hClass);
 			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
 			stackBiz.put(hClass.getSimpleName(), obj);
 		}

@@ -111,7 +111,7 @@ public interface J2WStructureIManage<D extends J2WIDisplay> {
 	 * @param <H>
 	 * @return
 	 */
-	<H> H http(Class<H> hClass, J2WBiz j2WBiz);
+	<H> H http(Class<H> hClass);
 
 	/**
 	 * 实现
