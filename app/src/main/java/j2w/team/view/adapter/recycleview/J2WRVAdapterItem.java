@@ -56,6 +56,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		this.j2WView = j2WDialogFragment.j2wView();
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
+
 	/**
 	 * 绑定数据
 	 *
@@ -67,7 +68,6 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	 *            数量
 	 */
 	public abstract void bindData(V viewholder, T t, int position, int count);
-
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 		V v = newViewHolder(viewGroup, viewType);
@@ -163,6 +163,10 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public void updateData() {
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+	}
+
+	public HeaderRecyclerViewAdapterV1 adapter(){
+		return headerRecyclerViewAdapterV1;
 	}
 
 	/**
