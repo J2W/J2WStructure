@@ -33,14 +33,6 @@ public interface J2WIBiz {
 	void interceptorImpl(Class clazz);
 
 	/**
-	 * 网络拦截器
-	 * 
-	 * @param name
-	 * @param object
-	 */
-	void interceptorHttp(String name, Object object);
-
-	/**
 	 * View层 回调引用
 	 *
 	 * @param ui

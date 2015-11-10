@@ -67,7 +67,7 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 * 获取网络
 	 */
 	protected <H> H http(Class<H> hClass) {
-		return j2WStructureIManage.http(hClass, this);
+		return j2WStructureIManage.http(hClass);
 	}
 
 	/**
@@ -188,13 +188,6 @@ public abstract class J2WBiz<T extends J2WIDisplay> implements J2WIBiz {
 	 */
 	@Override public void interceptorImpl(Class clazz) {
 		L.i("拦截器IMPL:" + clazz);
-	}
-
-	/**
-	 * 拦截器
-	 */
-	@Override public void interceptorHttp(String name, Object object) {
-		L.i("名称:" + name + " 拦截器HTTP:" + object);
 	}
 
 	/**
