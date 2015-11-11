@@ -13,7 +13,6 @@ import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
 
 /**
  * @创建人 sky
@@ -72,25 +71,16 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 
 	public void setItems(List items) {
 		mItems = items;
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 		mItems.add(position, object);
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
 	}
 
 	public void add(Object object) {
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
 		mItems.add(object);
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
@@ -98,9 +88,6 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void addList(int position, List list) {
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 		mItems.addAll(position, list);
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, list.size());
@@ -110,18 +97,12 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	public void addList(List list) {
 		headerRecyclerViewAdapterV1.notifyItemInserted(getItemCount());
 		mItems.addAll(list);
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
 	}
 
 	public void delete(int position) {
 		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
 		mItems.remove(position);
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
 	}
 
@@ -131,17 +112,8 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
 	}
 
-	J2WStickyAdapterItem	j2WStickyAdapterItem;
-
-	public void setJ2WStickyAdapterItem(J2WStickyAdapterItem j2WStickyAdapterItem) {
-		this.j2WStickyAdapterItem = j2WStickyAdapterItem;
-	}
-
 	public void clear() {
 		mItems.clear();
-		if (j2WStickyAdapterItem != null) {
-			j2WStickyAdapterItem.setItems(mItems);
-		}
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 

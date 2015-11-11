@@ -2,19 +2,35 @@ package j2w.team.view.adapter.recycleview.stickyheader;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-/**
- * @创建人 sky
- * @创建时间 15/8/28 上午2:00
- * @类描述
- */
-public interface J2WStickyHeaders<HeaderViewHolder extends RecyclerView.ViewHolder> {
 
+public interface J2WStickyHeaders<VH extends RecyclerView.ViewHolder> {
+  /**
+   * Get the ID of the header associated with this item.  For example, if your headers group
+   * items by their first letter, you could return the character representation of the first letter.
+   * Return a value < 0 if the view should not have a header (like, a header view or footer view)
+   *
+   * @param position
+   * @return
+   */
+   long getHeaderId(int position);
 
-    HeaderViewHolder onCreateViewHolder(ViewGroup parent);
+  /**
+   * Creates a new ViewHolder for a header.  This works the same way onCreateViewHolder in
+   * Recycler.Adapter, ViewHolders can be reused for different views.  This is usually a good place
+   * to inflate the layout for the header.
+   *
+   * @param parent
+   * @return
+   */
+   VH onCreateHeaderViewHolder(ViewGroup parent);
 
+  /**
+   * Binds an existing ViewHolder to the specified adapter position.
+   *
+   * @param holder
+   * @param position
+   */
+   void onBindHeaderViewHolder(VH holder, int position);
 
-    void onBindViewHolder(HeaderViewHolder headerViewHolder, int position);
-
-
-    long getHeaderId(int position);
+   int getItemCount();
 }

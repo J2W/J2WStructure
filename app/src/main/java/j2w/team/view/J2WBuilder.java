@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -45,8 +46,9 @@ import j2w.team.view.adapter.J2WTabsCustomListener;
 import j2w.team.view.adapter.J2WViewPagerAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
 import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyAdapterItem;
-import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeadersBuilder;
+import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeaders;
+import j2w.team.view.adapter.recycleview.stickyheader.StickyRecyclerHeadersDecoration;
+import j2w.team.view.adapter.recycleview.stickyheader.StickyRecyclerHeadersTouchListener;
 import j2w.team.view.common.J2WRefreshListener;
 import j2w.team.view.common.J2WViewPagerChangeListener;
 
@@ -641,7 +643,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private boolean						isHeaderFooter;
 
-	private J2WStickyAdapterItem		j2WStickyAdapterItem;
+	private StickyRecyclerHeadersTouchListener.OnHeaderClickListener onHeaderClickListener;
 
 	// 获取
 	int getRecyclerviewId() {
@@ -686,8 +688,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isHeaderFooter = bool;
 	}
 
-	public void recyclerviewStickyHeader(J2WStickyAdapterItem j2WStickyAdapterItem) {
-		this.j2WStickyAdapterItem = j2WStickyAdapterItem;
+	public void recyclerviewStickyHeaderClick(StickyRecyclerHeadersTouchListener.OnHeaderClickListener onHeaderClickListener) {
+		this.onHeaderClickListener = onHeaderClickListener;
 	}
 
 	public void recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem) {
@@ -1132,11 +1134,24 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			headerRecyclerViewAdapterV1 = new HeaderRecyclerViewAdapterV1(j2WRVAdapterItem);
 			j2WRVAdapterItem.setHeaderRecyclerViewAdapterV1(headerRecyclerViewAdapterV1);
 
-			if (j2WStickyAdapterItem != null) {
-				j2WRVAdapterItem.setJ2WStickyAdapterItem(j2WStickyAdapterItem);
-				headerRecyclerViewAdapterV1.setHasStableIds(true);
-				itemDecoration = new J2WStickyHeadersBuilder().setAdapter(headerRecyclerViewAdapterV1).setRecyclerView(recyclerView).setStickyHeadersAdapter(j2WStickyAdapterItem).build();
+			if(j2WRVAdapterItem instanceof J2WStickyHeaders){
+				J2WStickyHeaders j2WStickyHeaders = (J2WStickyHeaders) j2WRVAdapterItem;
+				final StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration(j2WStickyHeaders);
+				recyclerView.addItemDecoration(headersDecor);
 
+				if(onHeaderClickListener != null){
+					StickyRecyclerHeadersTouchListener touchListener =
+							new StickyRecyclerHeadersTouchListener(recyclerView, headersDecor);
+					touchListener.setOnHeaderClickListener(onHeaderClickListener);
+					recyclerView.addOnItemTouchListener(touchListener);
+
+				}
+				j2WRVAdapterItem.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+					@Override
+					public void onChanged() {
+						headersDecor.invalidateHeaders();
+					}
+				});
 			}
 			recyclerView.setAdapter(headerRecyclerViewAdapterV1);
 
@@ -1203,7 +1218,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			j2WRVAdapterItem.detach();
 			j2WRVAdapterItem = null;
 		}
-		j2WStickyAdapterItem = null;
+		onHeaderClickListener = null;
 		layoutManager = null;
 		itemAnimator = null;
 		itemDecoration = null;
