@@ -116,12 +116,18 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private FrameLayout	contentRoot;
 
+	private int			contentRootColor;
+
 	int getLayoutId() {
 		return layoutId;
 	}
 
 	public void layoutId(int layoutId) {
 		this.layoutId = layoutId;
+	}
+
+	public void layoutColor(int color) {
+		this.contentRootColor = color;
 	}
 
 	/**
@@ -619,31 +625,31 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 * RecyclerView 替代ListView GradView 可以实现瀑布流
 	 */
 
-	private int							recyclerviewId;
+	private int															recyclerviewId;
 
-	private int							recyclerviewColorResIds[];
+	private int															recyclerviewColorResIds[];
 
-	private int							recyclerviewSwipRefreshId;
+	private int															recyclerviewSwipRefreshId;
 
-	private RecyclerView				recyclerView;
+	private RecyclerView												recyclerView;
 
-	private J2WRVAdapterItem			j2WRVAdapterItem;
+	private J2WRVAdapterItem											j2WRVAdapterItem;
 
-	private HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
+	private HeaderRecyclerViewAdapterV1									headerRecyclerViewAdapterV1;
 
-	private RecyclerView.LayoutManager	layoutManager;					// 布局管理器
+	private RecyclerView.LayoutManager									layoutManager;					// 布局管理器
 
-	private RecyclerView.ItemAnimator	itemAnimator;					// 动画
+	private RecyclerView.ItemAnimator									itemAnimator;					// 动画
 
-	private RecyclerView.ItemDecoration	itemDecoration;				// 分割线
+	private RecyclerView.ItemDecoration									itemDecoration;				// 分割线
 
-	private SwipeRefreshLayout			recyclerviewSwipeContainer;
+	private SwipeRefreshLayout											recyclerviewSwipeContainer;
 
-	private J2WRefreshListener			recyclerviewJ2WRefreshListener;
+	private J2WRefreshListener											recyclerviewJ2WRefreshListener;
 
-	private boolean						isHeaderFooter;
+	private boolean														isHeaderFooter;
 
-	private StickyRecyclerHeadersTouchListener.OnHeaderClickListener onHeaderClickListener;
+	private StickyRecyclerHeadersTouchListener.OnHeaderClickListener	onHeaderClickListener;
 
 	// 获取
 	int getRecyclerviewId() {
@@ -879,6 +885,9 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH) private void createLayout() {
 		contentRoot = new FrameLayout(j2WView.context());
+		if (contentRootColor > 0) {
+			contentRoot.setBackgroundColor(contentRootColor);
+		}
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 		// 如果swiplayout打开
 		if (isOpenSwipBackLayout()) {
@@ -1134,21 +1143,20 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			headerRecyclerViewAdapterV1 = new HeaderRecyclerViewAdapterV1(j2WRVAdapterItem);
 			j2WRVAdapterItem.setHeaderRecyclerViewAdapterV1(headerRecyclerViewAdapterV1);
 
-			if(j2WRVAdapterItem instanceof J2WStickyHeaders){
+			if (j2WRVAdapterItem instanceof J2WStickyHeaders) {
 				J2WStickyHeaders j2WStickyHeaders = (J2WStickyHeaders) j2WRVAdapterItem;
 				final StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration(j2WStickyHeaders);
 				recyclerView.addItemDecoration(headersDecor);
 
-				if(onHeaderClickListener != null){
-					StickyRecyclerHeadersTouchListener touchListener =
-							new StickyRecyclerHeadersTouchListener(recyclerView, headersDecor);
+				if (onHeaderClickListener != null) {
+					StickyRecyclerHeadersTouchListener touchListener = new StickyRecyclerHeadersTouchListener(recyclerView, headersDecor);
 					touchListener.setOnHeaderClickListener(onHeaderClickListener);
 					recyclerView.addOnItemTouchListener(touchListener);
 
 				}
 				j2WRVAdapterItem.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-					@Override
-					public void onChanged() {
+
+					@Override public void onChanged() {
 						headersDecor.invalidateHeaders();
 					}
 				});

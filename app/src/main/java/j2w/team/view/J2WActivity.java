@@ -91,6 +91,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 			if (fragment != null) {
 				FragmentManager fm = getSupportFragmentManager();
 				fm.beginTransaction().add(R.id.j2w_home, fragment).commit();
+				fm.executePendingTransactions();
 			}
 		}
 		initData(getIntent().getExtras());

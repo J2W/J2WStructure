@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
+import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -72,18 +73,7 @@ public class J2WView {
 	}
 
 	public FragmentManager manager() {
-		switch (state) {
-			case STATE_ACTIVITY:
-				fragmentManager = mJ2WActivity.getSupportFragmentManager();
-				break;
-			case STATE_FRAGMENT:
-				fragmentManager = mJ2WFragment.getFragmentManager();
-				break;
-			case STATE_DIALOGFRAGMENT:
-				fragmentManager = mJ2WDialogFragment.getFragmentManager();
-				break;
-		}
-		return fragmentManager;
+		return J2WHelper.screenHelper().currentActivity().getSupportFragmentManager();
 	}
 
 	public Object getView() {
