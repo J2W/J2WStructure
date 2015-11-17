@@ -111,14 +111,10 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 * @return
 	 */
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState) {
-		// 获取参数
-		Bundle args = getArguments();
 		// 创建对话框
 		Dialog dialog = new Dialog(getActivity(), getJ2WStyle());
 		// 获取参数-设置是否可取消
-		if (args != null) {
-			dialog.setCanceledOnTouchOutside(isCancel());
-		}
+		dialog.setCanceledOnTouchOutside(isCancel());
 		return dialog;
 	}
 
@@ -188,13 +184,16 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 			getDialog().setDismissMessage(null);
 		}
 	}
+
 	/**
 	 * 设置输入法
+	 * 
 	 * @param mode
 	 */
-	public void setSoftInputMode(int mode){
+	public void setSoftInputMode(int mode) {
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
+
 	/**
 	 * 获取显示调度
 	 *
