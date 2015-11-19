@@ -33,6 +33,8 @@ public class J2WContentType {
 
 	public static final J2WContentType	IMAGE_PNG					= create("image/png", (Charset) null);
 
+	public static final J2WContentType	IMAGE_JPG					= create("image/jpeg", (Charset) null);
+
 	public static final J2WContentType	WILDCARD					= create("*/*", (Charset) null);
 
 	public static final J2WContentType	DEFAULT_TEXT				= TEXT_PLAIN;
