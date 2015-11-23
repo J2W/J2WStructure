@@ -588,8 +588,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			operationsDelete.add(operation.build());
 
 			// 在添加
-			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 			for (ContactEmail item : emails) {
+				operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
 				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/email_v2");
 				operation.withValue(ContactsContract.Data.DATA2, item.emailType);
@@ -609,12 +609,12 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		if (address != null && address.size() > 0) {
 			// 先删除
 			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
-			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/postal-address_v2" });
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{id, "vnd.android.cursor.item/postal-address_v2"});
 			operationsDelete.add(operation.build());
 
 			// 在添加
-			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 			for (ContactAddress item : address) {
+				operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
 				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/postal-address_v2");
 				operation.withValue(ContactsContract.Data.DATA2, item.type);
@@ -635,8 +635,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/phone_v2" });
 			operationsDelete.add(operation.build());
 
-			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 			for (ContactPhone item : phone) {
+				operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
 				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
 				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/phone_v2");
 				operation.withValue(ContactsContract.Data.DATA2, item.phoneType);
