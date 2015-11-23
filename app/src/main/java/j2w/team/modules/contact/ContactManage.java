@@ -1,20 +1,27 @@
 package j2w.team.modules.contact;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract.*;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.Data;
+import android.text.TextUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.provider.ContactsContract.CommonDataKinds.*;
-import android.provider.ContactsContract.Contacts;
-
+import j2w.team.common.log.L;
 import j2w.team.modules.contact.bean.ContactAddress;
 import j2w.team.modules.contact.bean.ContactDetailModel;
 import j2w.team.modules.contact.bean.ContactEmail;
@@ -28,7 +35,7 @@ import j2w.team.modules.contact.bean.ContactWebsite;
  * @创建时间 15/5/4 下午5:26
  * @类描述 电话本工具类
  */
-public class ContactManage implements J2WIContact {
+public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 	private final Context	context;
 
@@ -42,12 +49,8 @@ public class ContactManage implements J2WIContact {
 
 	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
-	/**
-	 * 获取联系人头像
-	 *
-	 * @param id
-	 * @return
-	 */
+	private static final String[]	PHONES_ID			= new String[] { Data.RAW_CONTACT_ID };
+
 	@Override public Bitmap getContactPhotoByContactId(String id) {
 		Uri contactUri = Uri.withAppendedPath(Contacts.CONTENT_URI, id);
 		InputStream photoInputStream = Contacts.openContactPhotoInputStream(context.getContentResolver(), contactUri);
@@ -59,12 +62,6 @@ public class ContactManage implements J2WIContact {
 		return bitmap;
 	}
 
-	/**
-	 * 根据名称搜索
-	 *
-	 * @param partialName
-	 * @return
-	 */
 	@Override public ContactModel getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail) {
 		ContactModel contact = new ContactModel();
 
@@ -90,11 +87,6 @@ public class ContactManage implements J2WIContact {
 		return contact;
 	}
 
-	/**
-	 * 获取所有联系人
-	 *
-	 * @return
-	 */
 	@Override public List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail) {
 		List<ContactModel> contacts = new ArrayList<>();
 
@@ -156,20 +148,10 @@ public class ContactManage implements J2WIContact {
 		return contacts;
 	}
 
-	/**
-	 * 获取所有联系人
-	 *
-	 * @return
-	 */
 	@Override public List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail) {
 		return getAllPhoneContacts("", isPhone, isEmail);
 	}
 
-	/**
-	 * 获取所有联系人
-	 *
-	 * @return
-	 */
 	@Override public List<ContactModel> getAllPhoneContacts() {
 		List<ContactModel> contacts = new ArrayList<>();
 
@@ -293,11 +275,6 @@ public class ContactManage implements J2WIContact {
 		return contacts;
 	}
 
-	/**
-	 * 获取所有联系人 - 详情
-	 *
-	 * @return
-	 */
 	@Override public List<String> getAllPhoneDetailIDs(int version) {
 		List<String> contacts = new ArrayList<>();
 
@@ -306,11 +283,28 @@ public class ContactManage implements J2WIContact {
 		stringBuilder.append("");
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts._ID + " > ?", new String[] { stringBuilder.toString(),String.valueOf(version) }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts._ID + " > ?", new String[] { stringBuilder.toString(),
+				String.valueOf(version) }, null);
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts._ID));
 				contacts.add(contactId);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
+	@Override public List<String> getFilterPhoneNumber(String number) {
+		List<String> contacts = new ArrayList<>();
+
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Data.CONTENT_URI, PHONES_ID, Data.DATA1 + "=?", new String[] { number }, null);
+
+		if (idCursor.moveToFirst()) {
+			do {
+				String idCursorString = idCursor.getString(idCursor.getColumnIndex(Data.RAW_CONTACT_ID));
+				contacts.add(idCursorString);
 			} while (idCursor.moveToNext());
 		}
 		idCursor.close();
@@ -371,7 +365,7 @@ public class ContactManage implements J2WIContact {
 
 	@Override public ContactDetailModel getContactDataByContactId(String id) {
 		ContactDetailModel contactModel = new ContactDetailModel();
-		contactModel.contactId = id;
+
 		contactModel.photo = getContactPhotoByContactId(id);
 		// 邮件
 		List<ContactEmail> emailAddresses = null;
@@ -388,16 +382,16 @@ public class ContactManage implements J2WIContact {
 		// 地址
 		List<ContactAddress> contactAddresses = null;
 		ContactAddress contactAddress = null;
-		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] { Data.MIMETYPE, Data.DATA1, Data.DATA2, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP }, Data.CONTACT_ID + " = ?", new String[] { id }, null);
+		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] {Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP },
+				Data.RAW_CONTACT_ID + " = ?", new String[] { id }, null);
 
 		if (contactInfoCursor.moveToFirst()) {
-			contactModel.lastUpdate  = contactInfoCursor.getLong(contactInfoCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
-
+			contactModel.lastUpdate = contactInfoCursor.getLong(contactInfoCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
+			contactModel.contactId = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.RAW_CONTACT_ID));
 			do {
 				String mimeType = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.MIMETYPE));
 				String value = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.DATA1));
 				int type = contactInfoCursor.getInt(contactInfoCursor.getColumnIndex(Data.DATA2));
-
 
 				if (mimeType.contains("/name")) {// 名称
 					contactModel.name = value;
@@ -471,4 +465,197 @@ public class ContactManage implements J2WIContact {
 		return contactModel;
 	}
 
+	@Override public void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException,
+			OperationApplicationException {
+		ContentResolver resolver = context.getContentResolver();
+		Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
+		// 第一个参数：内容提供者的主机名
+		// 第二个参数：要执行的操作
+		ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+
+		// 操作1.添加Google账号，这里值为null，表示不添加
+		ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue("account_name", null)// account_name:Google账号
+				.build();
+		operations.add(operation);
+
+		uri = Uri.parse("content://com.android.contacts/data");
+
+		// 操作2.添加data表中name字段
+		if (!TextUtils.isEmpty(name)) {
+
+			ContentProviderOperation operation2 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+					.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/name").withValue(ContactsContract.Data.DATA1, name).build();
+			operations.add(operation2);
+		}
+
+		// 操作3.添加data表中organization字段
+		if (!TextUtils.isEmpty(organization)) {
+
+			ContentProviderOperation operation3 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+					.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/organization").withValue(ContactsContract.Data.DATA1, organization).build();
+			operations.add(operation3);
+		}
+
+		if (!TextUtils.isEmpty(note)) {
+			ContentProviderOperation operation3 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+					.withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE).withValue(ContactsContract.Data.DATA1, note).build();
+			operations.add(operation3);
+		}
+
+		// 操作4.添加data表中phone字段
+		if (phone != null) {
+			for (ContactPhone item : phone) {
+				ContentProviderOperation operation4 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/phone_v2").withValue(ContactsContract.Data.DATA2, item.phoneType)
+						.withValue(ContactsContract.Data.DATA1, item.phone).build();
+				operations.add(operation4);
+			}
+		}
+
+		// 操作5.添加data表中的Email字段
+		if (emails != null) {
+			for (ContactEmail item : emails) {
+				ContentProviderOperation operation5 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/email_v2").withValue(ContactsContract.Data.DATA2, item.emailType)
+						.withValue(ContactsContract.Data.DATA1, item.emailAddress).build();
+				operations.add(operation5);
+			}
+		}
+		// 操作6.添加data表中的地址字段
+		if (address != null) {
+			for (ContactAddress item : address) {
+				ContentProviderOperation operation6 = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/postal-address_v2").withValue(ContactsContract.Data.DATA2, item.type)
+						.withValue(ContactsContract.Data.DATA1, item.address).build();
+				operations.add(operation6);
+			}
+		}
+
+		resolver.applyBatch("com.android.contacts", operations);
+	}
+
+	@Override public void updateSystemContact(String id, String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails)
+			throws RemoteException, OperationApplicationException {
+
+		if (TextUtils.isEmpty(id)) {
+			return;
+		}
+
+		ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+		ArrayList<ContentProviderOperation> operationsDelete = new ArrayList<>();
+		Uri uri = ContactsContract.Data.CONTENT_URI.buildUpon().appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true").build();
+
+		ContentResolver resolver = context.getContentResolver();
+
+		// 操作1.添加data表中name字段
+		if (!TextUtils.isEmpty(name)) {
+			ContentProviderOperation operation = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+					.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/name" })
+					.withValue(ContactsContract.Data.DATA1, name).build();
+			operations.add(operation);
+		}
+
+		// 操作2.添加data表中organization字段
+		if (!TextUtils.isEmpty(organization)) {
+			ContentProviderOperation operation = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+					.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/organization" })
+					.withValue(ContactsContract.Data.DATA1, organization).build();
+			operations.add(operation);
+		} else {
+			// 先删除
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/organization" });
+			operationsDelete.add(operation.build());
+		}
+		if (!TextUtils.isEmpty(note)) {
+
+			ContentProviderOperation contentProviderOperation = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+					.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/note" })
+					.withValue(ContactsContract.Data.DATA1, note).build();
+			operations.add(contentProviderOperation);
+		} else {
+			// 先删除
+			ContentProviderOperation.Builder contentProviderOperation = ContentProviderOperation.newDelete(uri);
+			contentProviderOperation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/note" });
+			operationsDelete.add(contentProviderOperation.build());
+		}
+
+		// 操作3.添加data表中的Email字段
+		if (emails != null && emails.size() > 0) {
+			// 先删除
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/email_v2" });
+			operationsDelete.add(operation.build());
+
+			// 在添加
+			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+			for (ContactEmail item : emails) {
+				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/email_v2");
+				operation.withValue(ContactsContract.Data.DATA2, item.emailType);
+				operation.withValue(ContactsContract.Data.DATA4, item.emailAddress);
+				operation.withValue(ContactsContract.Data.DATA1, item.emailAddress);
+				operations.add(operation.build());
+
+			}
+		} else {
+			// 先删除
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/email_v2" });
+			operationsDelete.add(operation.build());
+		}
+
+		// 操作4.添加data表中的地址字段
+		if (address != null && address.size() > 0) {
+			// 先删除
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/postal-address_v2" });
+			operationsDelete.add(operation.build());
+
+			// 在添加
+			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+			for (ContactAddress item : address) {
+				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/postal-address_v2");
+				operation.withValue(ContactsContract.Data.DATA2, item.type);
+				operation.withValue(ContactsContract.Data.DATA4, item.address);
+				operation.withValue(ContactsContract.Data.DATA1, item.address);
+				operations.add(operation.build());
+			}
+		} else {
+			// 先删除
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/postal-address_v2" });
+			operationsDelete.add(operation.build());
+		}
+
+		// 操作5.添加data表中的phone字段
+		if (phone != null && phone.size() > 0) {
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/phone_v2" });
+			operationsDelete.add(operation.build());
+
+			operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+			for (ContactPhone item : phone) {
+				operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+				operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/phone_v2");
+				operation.withValue(ContactsContract.Data.DATA2, item.phoneType);
+				operation.withValue(ContactsContract.Data.DATA4, item.phone);
+				operation.withValue(ContactsContract.Data.DATA1, item.phone);
+				operations.add(operation.build());
+			}
+		}
+		if (operations.size() > 0) {
+
+			ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+			for (ContentProviderResult s : rsDelete) {
+				L.i(s.toString());
+			}
+			ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+
+			for (ContentProviderResult s : rs) {
+				L.i(s.toString());
+			}
+		}
+	}
 }

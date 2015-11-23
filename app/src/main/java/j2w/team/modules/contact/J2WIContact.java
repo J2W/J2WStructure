@@ -14,7 +14,7 @@ import j2w.team.modules.contact.bean.ContactModel;
  * @类描述 通讯录接口
  */
 @Impl(ContactManage.class)
-public interface J2WIContact {
+public interface J2WIContact extends J2WIWriteContact {
 
 	/**
 	 * 获取联系人头像
@@ -37,7 +37,7 @@ public interface J2WIContact {
 	ContactModel getPhoneContactByName(String partialName, boolean isPhone, boolean isEmail);
 
 	/**
-	 * 获取所有联系人
+	 * 获取联系人 - 根据姓名
 	 *
 	 * @param userName
 	 *            用户名
@@ -49,14 +49,34 @@ public interface J2WIContact {
 	 */
 	List<ContactModel> getAllPhoneContacts(String userName, boolean isPhone, boolean isEmail);
 
+	/**
+	 * 获取联系人 - 根据ID
+	 * 
+	 * @param id
+	 * @param isPhone
+	 * @param isEmail
+	 * @return
+	 */
 	List<ContactModel> getAllPhoneContactsByContactId(int id, boolean isPhone, boolean isEmail);
 
+	/**
+	 * 获取联系人 - 所有人
+	 * 
+	 * @param isPhone
+	 * @param isEmail
+	 * @return
+	 */
 	List<ContactModel> getAllPhoneContacts(boolean isPhone, boolean isEmail);
 
+	/**
+	 * 获取联系人 - 取单个手机号
+	 * 
+	 * @return
+	 */
 	List<ContactModel> getAllPhoneContacts();
 
 	/**
-	 * 获取所有联系人 详情
+	 * 获取联系人-详情 - 根据名称
 	 * 
 	 * @param userName
 	 *            名称
@@ -64,11 +84,35 @@ public interface J2WIContact {
 	 */
 	List<ContactDetailModel> getAllPhoneDetailContacts(String userName);
 
+	/**
+	 * 获取联系人-详情
+	 * 
+	 * @return
+	 */
 	List<ContactDetailModel> getAllPhoneDetailContacts();
 
+	/**
+	 * 获取联系人
+	 * 
+	 * @return
+	 */
 	List<String> getAllPhoneDetailIDs();
 
+	/**
+	 * 获取联系人ID - 根据版本
+	 * 
+	 * @param version
+	 * @return
+	 */
 	List<String> getAllPhoneDetailIDs(int version);
+
+	/**
+	 * 根据手机号 过滤获取用户ID
+	 * 
+	 * @param number
+	 * @return
+	 */
+	List<String> getFilterPhoneNumber(String number);
 
 	/**
 	 * 获取联系人 - 找出大于 ID 的数据
