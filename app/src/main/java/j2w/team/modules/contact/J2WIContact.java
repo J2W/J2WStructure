@@ -106,6 +106,8 @@ public interface J2WIContact extends J2WIWriteContact {
 	 */
 	List<String> getAllPhoneDetailIDs(int version);
 
+	List<String> getAllPhoneDetailIDs(long time);
+
 	/**
 	 * 根据手机号 过滤获取用户ID
 	 * 
@@ -129,6 +131,13 @@ public interface J2WIContact extends J2WIWriteContact {
 	 * @return
 	 */
 	int getVersion();
+
+	/**
+	 * 获取最后更新时间
+	 * 
+	 * @return
+	 */
+	long getLastTime();
 
 	/**
 	 * 根据ID 获取实力
