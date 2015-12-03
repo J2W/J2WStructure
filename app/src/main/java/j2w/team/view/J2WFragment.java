@@ -213,9 +213,10 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	/**
 	 * 设置输入法
+	 * 
 	 * @param mode
 	 */
-	public void setSoftInputMode(int mode){
+	public void setSoftInputMode(int mode) {
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
 
@@ -248,31 +249,43 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	/********************** Actionbar业务代码 *********************/
 
 	protected void showContent() {
-		j2WBuilder.layoutContent();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutContent();
+		}
 	}
 
 	protected void showLoading() {
-		j2WBuilder.layoutLoading();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutLoading();
+		}
 	}
 
 	protected void showBizError() {
-		j2WBuilder.layoutBizError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutBizError();
+		}
 	}
 
 	protected void showEmpty() {
-		j2WBuilder.layoutEmpty();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutEmpty();
+		}
 	}
 
 	protected void showHttpError() {
-		j2WBuilder.layoutHttpError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutHttpError();
+		}
 	}
 
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
+
 	}
 
 	public SystemBarTintManager tintManager() {
+
 		return j2WBuilder.getTintManager();
 	}
 
@@ -293,27 +306,40 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	/********************** ListView业务代码 *********************/
 
 	protected void addListHeader() {
-		j2WBuilder.addListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListHeader();
+		}
 	}
 
 	protected void addListFooter() {
-		j2WBuilder.addListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListFooter();
+		}
 	}
 
 	protected void removeListHeader() {
-		j2WBuilder.removeListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListHeader();
+		}
 	}
 
 	protected void removeListFooter() {
-		j2WBuilder.removeListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListFooter();
+		}
+
 	}
 
 	protected void listRefreshing(boolean bool) {
-		j2WBuilder.listRefreshing(bool);
+		if (j2WBuilder != null) {
+			j2WBuilder.listRefreshing(bool);
+		}
 	}
 
 	protected void listLoadMoreOpen() {
-		j2WBuilder.loadMoreOpen();
+		if (j2WBuilder != null) {
+			j2WBuilder.loadMoreOpen();
+		}
 	}
 
 	protected J2WListAdapter adapter() {

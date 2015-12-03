@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -248,25 +246,34 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	/********************** Actionbar业务代码 *********************/
 
 	protected void showContent() {
-		j2WBuilder.layoutContent();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutContent();
+		}
 	}
 
 	protected void showLoading() {
-		j2WBuilder.layoutLoading();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutLoading();
+		}
 	}
 
 	protected void showBizError() {
-		j2WBuilder.layoutBizError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutBizError();
+		}
 	}
 
 	protected void showEmpty() {
-		j2WBuilder.layoutEmpty();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutEmpty();
+		}
 	}
 
 	protected void showHttpError() {
-		j2WBuilder.layoutHttpError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutHttpError();
+		}
 	}
-
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
@@ -293,27 +300,40 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	/********************** ListView业务代码 *********************/
 
 	protected void addListHeader() {
-		j2WBuilder.addListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListHeader();
+		}
 	}
 
 	protected void addListFooter() {
-		j2WBuilder.addListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListFooter();
+		}
 	}
 
 	protected void removeListHeader() {
-		j2WBuilder.removeListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListHeader();
+		}
 	}
 
 	protected void removeListFooter() {
-		j2WBuilder.removeListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListFooter();
+		}
+
 	}
 
 	protected void listRefreshing(boolean bool) {
-		j2WBuilder.listRefreshing(bool);
+		if (j2WBuilder != null) {
+			j2WBuilder.listRefreshing(bool);
+		}
 	}
 
 	protected void listLoadMoreOpen() {
-		j2WBuilder.loadMoreOpen();
+		if (j2WBuilder != null) {
+			j2WBuilder.loadMoreOpen();
+		}
 	}
 
 	protected J2WListAdapter adapter() {

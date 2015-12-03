@@ -1,7 +1,6 @@
 package j2w.team.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,16 +15,9 @@ import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
@@ -240,23 +232,33 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	/********************** Actionbar业务代码 *********************/
 
 	protected void showContent() {
-		j2WBuilder.layoutContent();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutContent();
+		}
 	}
 
 	protected void showLoading() {
-		j2WBuilder.layoutLoading();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutLoading();
+		}
 	}
 
 	protected void showBizError() {
-		j2WBuilder.layoutBizError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutBizError();
+		}
 	}
 
 	protected void showEmpty() {
-		j2WBuilder.layoutEmpty();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutEmpty();
+		}
 	}
 
 	protected void showHttpError() {
-		j2WBuilder.layoutHttpError();
+		if (j2WBuilder != null) {
+			j2WBuilder.layoutHttpError();
+		}
 	}
 
 	/********************** Actionbar业务代码 *********************/
@@ -285,27 +287,40 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	/********************** ListView业务代码 *********************/
 
 	protected void addListHeader() {
-		j2WBuilder.addListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListHeader();
+		}
 	}
 
 	protected void addListFooter() {
-		j2WBuilder.addListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.addListFooter();
+		}
 	}
 
 	protected void removeListHeader() {
-		j2WBuilder.removeListHeader();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListHeader();
+		}
 	}
 
 	protected void removeListFooter() {
-		j2WBuilder.removeListFooter();
+		if (j2WBuilder != null) {
+			j2WBuilder.removeListFooter();
+		}
+
 	}
 
 	protected void listRefreshing(boolean bool) {
-		j2WBuilder.listRefreshing(bool);
+		if (j2WBuilder != null) {
+			j2WBuilder.listRefreshing(bool);
+		}
 	}
 
 	protected void listLoadMoreOpen() {
-		j2WBuilder.loadMoreOpen();
+		if (j2WBuilder != null) {
+			j2WBuilder.loadMoreOpen();
+		}
 	}
 
 	protected J2WListAdapter adapter() {
