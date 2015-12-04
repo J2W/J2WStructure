@@ -3,7 +3,6 @@ package j2w.team.modules;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
@@ -12,7 +11,6 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.contact.ContactManage;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.download.J2WDownloadManager;
-import j2w.team.modules.fresco.FrescoTools;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.screen.J2WScreenManager;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
@@ -42,10 +40,6 @@ public class J2WModulesManage {
 
 	private J2WRestAdapter			mJ2WRestAdapter;		// 网络适配器
 
-	private FrescoTools				frescoTools;			// 图片架构
-
-	private ImagePipelineConfig		imagePipelineConfig;	// frescoTools图片架构配置
-
 	private J2WToast				j2WToast;				// 提示信息
 
 	private ContactManage			contactManage;			// 通讯录
@@ -64,10 +58,6 @@ public class J2WModulesManage {
 
 	public void setJ2WRestAdapter(J2WRestAdapter j2WRestAdapter) {
 		this.mJ2WRestAdapter = j2WRestAdapter;
-	}
-
-	public void setImagePipelineConfig(ImagePipelineConfig imagePipelineConfig) {
-		this.imagePipelineConfig = imagePipelineConfig;
 	}
 
 	public J2WRestAdapter getJ2WRestAdapter() {
@@ -121,13 +111,6 @@ public class J2WModulesManage {
 			j2WDownloadManager = new J2WDownloadManager(threadPoolSize);
 		}
 		return j2WDownloadManager;
-	}
-
-	public FrescoTools getFrescoTools() {
-		if (frescoTools == null) {
-			frescoTools = new FrescoTools(mJ2WApplication, imagePipelineConfig);
-		}
-		return frescoTools;
 	}
 
 	public J2WToast getJ2WToast() {

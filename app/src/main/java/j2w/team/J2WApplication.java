@@ -3,8 +3,6 @@ package j2w.team;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.concurrent.TimeUnit;
@@ -52,8 +50,6 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		J2WHelper.with(mJ2WModulesManage);
 		// 初始化 HTTP
 		mJ2WModulesManage.setJ2WRestAdapter(getRestAdapter(mJ2WModulesManage.getJ2WRestAdapterBuilder()));
-		// 初始化 fresco
-		mJ2WModulesManage.setImagePipelineConfig(initImagePipelineConfig(OkHttpImagePipelineConfigFactory.newBuilder(this, initFrescoHttpClient())));
 		// 日志初始化
 		L.init(isLogOpen());
 	}
@@ -116,15 +112,6 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 
 	@Override public void onFragmentDestroy(J2WFragment j2WFragment) {
 
-	}
-
-	/**
-	 * fresco 默认配置
-	 * 
-	 * @return
-	 */
-	protected ImagePipelineConfig initImagePipelineConfig(ImagePipelineConfig.Builder builder) {
-		return builder.build();
 	}
 
 	/**

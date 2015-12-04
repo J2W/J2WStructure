@@ -11,7 +11,6 @@ import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
-import j2w.team.modules.fresco.IFresco;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.screen.J2WIScreenManager;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
@@ -125,15 +124,6 @@ public class J2WHelper {
 	 */
 	public static final J2WSystemUiHider systemHider(AppCompatActivity activity, View anchorView, int flags) {
 		return mJ2WModulesManage.getJ2WSystemUiHider(activity, anchorView, flags);
-	}
-
-	/**
-	 * Fresco 图片架构
-	 *
-	 * @return
-	 */
-	public static final IFresco frescoHelper() {
-		return mJ2WModulesManage.getFrescoTools();
 	}
 
 	/**
