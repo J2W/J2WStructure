@@ -90,7 +90,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 * @return
 	 */
 	protected boolean isCancel() {
-		return true;
+		return false;
 	}
 
 	/**
