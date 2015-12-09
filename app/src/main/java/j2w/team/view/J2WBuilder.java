@@ -27,7 +27,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -996,7 +995,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				toolbar.inflateMenu(getToolbarMenuId());
 			}
 			if (isOpenToolbarBack()) {
-				toolbar.setNavigationIcon(R.mipmap.j2w_toolbar_back);
 				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
 					@Override public void onClick(View v) {
@@ -1027,7 +1025,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				drawerLayout.setDrawerListener(mDrawerToggle);
 			}
 			if (isOpenToolbarBack()) {
-				toolbar.setNavigationIcon(R.mipmap.j2w_toolbar_back);
 				toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
 					@Override public void onClick(View v) {

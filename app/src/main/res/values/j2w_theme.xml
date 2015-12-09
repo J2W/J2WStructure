@@ -41,7 +41,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
         <item name="android:background">?colorPrimary</item>
+        <item name="theme">@style/J2WToolbar.Theme</item>
     </style>
+
+    <style name="J2WToolbar.Theme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="homeAsUpIndicator">@mipmap/j2w_toolbar_back</item>
+    </style>
+
 
     <color name="J2WTabsBackground">#6633B5E5</color>
     <color name="J2WTabsText">#FF666666</color>
