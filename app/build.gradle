@@ -26,7 +26,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //外部依赖
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'de.greenrobot:eventbus:2.4.0'
@@ -35,6 +34,7 @@ dependencies {
     //状态栏
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.code.gson:gson:2.5'
 }
 //打包
 apply from: 'maven-release-aar.gradle'

@@ -113,18 +113,4 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 	@Override public void onFragmentDestroy(J2WFragment j2WFragment) {
 
 	}
-
-	/**
-	 * fresco 低层网络
-	 * 
-	 * @return
-	 */
-	protected OkHttpClient initFrescoHttpClient() {
-		OkHttpClient okHttpClient = new OkHttpClient();
-		okHttpClient.setConnectTimeout(J2WConstants.DEFAULT_TIME_OUT, TimeUnit.SECONDS);// 连接超时
-		okHttpClient.setReadTimeout(J2WConstants.DEFAULT_TIME_OUT, TimeUnit.SECONDS);// 读取超时
-		okHttpClient.setWriteTimeout(J2WConstants.DEFAULT_TIME_OUT, TimeUnit.SECONDS);// 写入超时
-		return okHttpClient;
-	}
-
 }
