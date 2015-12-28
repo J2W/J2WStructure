@@ -1187,7 +1187,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				recyclerviewSwipeContainer = ButterKnife.findById(view, getRecyclerviewSwipRefreshId());
 				J2WCheckUtils.checkNotNull(recyclerviewSwipeContainer, "无法根据布局文件ID,获取recyclerview的SwipRefresh下载刷新布局");
 				J2WCheckUtils.checkNotNull(recyclerviewJ2WRefreshListener, " recyclerview的SwipRefresh 下拉刷新和上拉加载事件没有设置");
-				recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+				recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
 					@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 						super.onScrollStateChanged(recyclerView, newState);
