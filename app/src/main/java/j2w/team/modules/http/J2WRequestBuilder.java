@@ -12,7 +12,8 @@ import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import j2w.team.common.log.L;
+import j2w.team.core.plugin.J2WRequestInterceptor;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.annotations.Body;
 import j2w.team.modules.http.annotations.Header;

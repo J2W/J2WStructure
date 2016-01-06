@@ -1,6 +1,6 @@
 package j2w.team.modules.http;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * Created by sky on 15/2/24.

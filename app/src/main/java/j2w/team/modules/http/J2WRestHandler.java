@@ -5,7 +5,7 @@ import com.squareup.okhttp.Request;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.proxy.BaseHandler;
 
 /**

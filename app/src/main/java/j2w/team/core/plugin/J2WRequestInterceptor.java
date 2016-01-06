@@ -1,4 +1,4 @@
-package j2w.team.modules.http;
+package j2w.team.core.plugin;
 
 /**
  * Created by sky on 15/2/24. 请求拦截器- 主要是用来组装请求路径

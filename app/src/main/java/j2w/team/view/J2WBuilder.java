@@ -32,7 +32,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WSwipeBackLayout;
@@ -1230,6 +1230,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		recyclerviewSwipeContainer = null;
 		recyclerviewJ2WRefreshListener = null;
 		headerRecyclerViewAdapterV1 = null;
+
 	}
 
 	/**

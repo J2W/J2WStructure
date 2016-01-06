@@ -1,7 +1,7 @@
 package j2w.team.modules.download;
 
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * @创建人 sky

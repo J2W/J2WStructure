@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import android.content.res.Resources;
 
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.J2WHelper;
 

@@ -3,17 +3,12 @@ package j2w.team;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.squareup.okhttp.OkHttpClient;
-
-import java.util.concurrent.TimeUnit;
-
-import j2w.team.common.log.L;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.http.J2WRestAdapter;
+import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.common.J2WIViewCommon;
-import j2w.team.view.model.J2WConstants;
 
 /**
  * Created by sky on 15/1/26. 说明：使用架构必须继承
@@ -40,6 +35,14 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 	public abstract J2WRestAdapter getRestAdapter(J2WRestAdapter.Builder builder);
 
 	/**
+	 * 方法拦截器适配
+	 * 
+	 * @param builder
+	 * @return
+	 */
+	public abstract J2WMethods getMethodInterceptor(J2WMethods.Builder builder);
+
+	/**
 	 * 应用程序启动首先被执行
 	 */
 	@Override public void onCreate() {
@@ -49,9 +52,11 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		// 初始化Application
 		J2WHelper.with(mJ2WModulesManage);
 		// 初始化 HTTP
-		mJ2WModulesManage.setJ2WRestAdapter(getRestAdapter(mJ2WModulesManage.getJ2WRestAdapterBuilder()));
-		// 日志初始化
-		L.init(isLogOpen());
+		mJ2WModulesManage.initJ2WRestAdapter(getRestAdapter(new J2WRestAdapter.Builder()));
+		// 初始化 LOG
+		mJ2WModulesManage.initLog(isLogOpen());
+		// 初始化 代理方法
+		mJ2WModulesManage.initMehtodProxy(getMethodInterceptor(new J2WMethods.Builder()));
 	}
 
 	/**

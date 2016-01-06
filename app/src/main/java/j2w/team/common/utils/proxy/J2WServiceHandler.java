@@ -1,13 +1,8 @@
 package j2w.team.common.utils.proxy;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.CountDownLatch;
 
-import android.os.Looper;
-
-import j2w.team.J2WHelper;
-import j2w.team.biz.J2WBiz;
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * Created by sky on 15/2/7.动态代理 - 业务层

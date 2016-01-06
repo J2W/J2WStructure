@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 102
-        versionName "1.0.2"
+        versionCode 200
+        versionName "2.0.0"
     }
     buildTypes {
         release {
@@ -35,6 +35,7 @@ dependencies {
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'org.jetbrains:annotations:13.0'
 }
 //打包
 apply from: 'maven-release-aar.gradle'

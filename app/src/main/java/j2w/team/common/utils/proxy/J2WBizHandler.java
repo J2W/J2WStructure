@@ -5,7 +5,6 @@ import android.os.Looper;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 
-import j2w.team.common.log.L;
 import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBiz;
 

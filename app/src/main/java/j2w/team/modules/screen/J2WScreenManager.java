@@ -4,7 +4,7 @@ import android.support.v4.app.FragmentActivity;
 
 import java.util.Stack;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.J2WHelper;
 
 /**

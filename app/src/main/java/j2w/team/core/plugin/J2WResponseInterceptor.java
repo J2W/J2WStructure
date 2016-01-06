@@ -1,4 +1,4 @@
-package j2w.team.modules.http;
+package j2w.team.core.plugin;
 
 /**
  * @创建人 sky

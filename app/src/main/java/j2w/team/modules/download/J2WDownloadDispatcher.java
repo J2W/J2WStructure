@@ -17,7 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.BlockingQueue;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.modules.http.converter.GsonConverter;

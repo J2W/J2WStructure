@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.modules.contact.bean.ContactAddress;
 import j2w.team.modules.contact.bean.ContactDetailModel;
 import j2w.team.modules.contact.bean.ContactEmail;

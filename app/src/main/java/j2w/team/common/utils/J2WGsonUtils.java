@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * @创建人 sky

@@ -2,6 +2,8 @@ package j2w.team.modules.threadpool;
 
 import java.lang.reflect.Method;
 
+import j2w.team.core.J2WRunnable;
+
 /**
  * Created by sky on 15/2/20.
  */

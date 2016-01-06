@@ -35,6 +35,17 @@ public class J2WHelper {
 	}
 
 	/**
+	 * 创建接口代理
+	 * 
+	 * @param service
+	 * @param <T>
+	 * @return
+	 */
+	public static final <T> T createProxy(Class<T> service) {
+		return mJ2WModulesManage.getJ2WMethods().create(service);
+	}
+
+	/**
 	 * 获取全局上下文
 	 *
 	 * @return
@@ -59,15 +70,6 @@ public class J2WHelper {
 	 */
 	public static final J2WRestAdapter httpAdapter() {
 		return mJ2WModulesManage.getJ2WRestAdapter();
-	}
-
-	/**
-	 * 网络适配器-生成器
-	 *
-	 * @return
-	 */
-	public static final J2WRestAdapter.Builder j2WRestBuilder() {
-		return mJ2WModulesManage.getJ2WRestAdapterBuilder();
 	}
 
 	/**

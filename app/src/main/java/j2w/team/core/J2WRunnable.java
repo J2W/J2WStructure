@@ -1,9 +1,9 @@
-package j2w.team.modules.threadpool;
+package j2w.team.core;
 
 /**
  * Created by sky on 15/2/20.
  */
-abstract class J2WRunnable implements Runnable {
+public abstract class J2WRunnable implements Runnable {
 
 	protected final String	name;
 

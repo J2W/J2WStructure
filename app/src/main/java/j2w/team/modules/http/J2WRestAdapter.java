@@ -14,7 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import j2w.team.common.log.L;
+import j2w.team.core.plugin.J2WRequestInterceptor;
+import j2w.team.core.plugin.J2WResponseInterceptor;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.http.converter.GsonConverter;
 import j2w.team.modules.http.converter.J2WConverter;

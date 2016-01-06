@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 /**
  * @创建人 sky
  * @创建时间 15/4/15 下午9:31
- * @类描述 方法是否重复
+ * @类描述 方法是否重复 - 默认不可重复
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface J2WRepeat {
 
-	boolean value() default true;
+	boolean value() default false;
 }

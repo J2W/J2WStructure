@@ -2,7 +2,7 @@ package j2w.team.common.utils.proxy;
 
 import java.lang.reflect.Method;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * Created by sky on 15/1/27.动态代理-日志系统

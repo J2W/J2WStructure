@@ -6,14 +6,11 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.ResponseBody;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WGsonUtils;
 
 /**

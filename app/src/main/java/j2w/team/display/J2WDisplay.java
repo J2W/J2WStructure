@@ -14,8 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import j2w.team.J2WHelper;
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;

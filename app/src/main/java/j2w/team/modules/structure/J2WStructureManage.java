@@ -13,7 +13,7 @@ import j2w.team.J2WHelper;
 import j2w.team.biz.J2WBiz;
 import j2w.team.biz.J2WBizUtils;
 import j2w.team.biz.J2WIBiz;
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;

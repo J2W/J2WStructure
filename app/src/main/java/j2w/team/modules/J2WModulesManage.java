@@ -8,10 +8,12 @@ import com.squareup.picasso.PicassoTools;
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.contact.ContactManage;
 import j2w.team.common.utils.looper.SynchronousExecutor;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
+import j2w.team.modules.log.L;
 import j2w.team.modules.screen.J2WScreenManager;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
@@ -27,8 +29,6 @@ public class J2WModulesManage {
 	private final J2WApplication	mJ2WApplication;		// 全局上下文
 
 	private EventBus				bus;					// 事件总线
-
-	private J2WRestAdapter.Builder	j2WRestAdapterBuilder;	// 网络适配器编辑器
 
 	private J2WScreenManager		j2WScreenManager;		// Activity堆栈管理
 
@@ -48,6 +48,10 @@ public class J2WModulesManage {
 
 	private J2WSystemUiHider		j2WSystemUiHider;		// 标题栏和状态栏控制
 
+	private L.DebugTree				debugTree;				// 打印信息
+
+	private J2WMethods				j2WMethods;			// 方法代理
+
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
 	}
@@ -56,8 +60,25 @@ public class J2WModulesManage {
 		return this.mJ2WApplication;
 	}
 
-	public void setJ2WRestAdapter(J2WRestAdapter j2WRestAdapter) {
+	public void initJ2WRestAdapter(J2WRestAdapter j2WRestAdapter) {
 		this.mJ2WRestAdapter = j2WRestAdapter;
+	}
+
+	public void initLog(boolean logOpen) {
+		if (logOpen) {
+			if (debugTree == null) {
+				debugTree = new L.DebugTree();
+			}
+			L.plant(debugTree);
+		}
+	}
+
+	public void initMehtodProxy(J2WMethods methodInterceptor) {
+		j2WMethods = methodInterceptor;
+	}
+
+	public J2WMethods getJ2WMethods() {
+		return j2WMethods;
 	}
 
 	public J2WRestAdapter getJ2WRestAdapter() {
@@ -69,13 +90,6 @@ public class J2WModulesManage {
 			bus = EventBus.getDefault();
 		}
 		return bus;
-	}
-
-	public J2WRestAdapter.Builder getJ2WRestAdapterBuilder() {
-		if (j2WRestAdapterBuilder == null) {
-			j2WRestAdapterBuilder = new J2WRestAdapter.Builder();
-		}
-		return j2WRestAdapterBuilder;
 	}
 
 	public J2WScreenManager getJ2WScreenManager() {

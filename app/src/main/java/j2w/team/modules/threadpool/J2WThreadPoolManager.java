@@ -2,7 +2,7 @@ package j2w.team.modules.threadpool;
 
 import java.util.concurrent.ExecutorService;
 
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 
 /**
  * Created by sky on 15/2/20.调度

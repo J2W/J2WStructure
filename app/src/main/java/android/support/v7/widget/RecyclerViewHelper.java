@@ -1,7 +1,9 @@
 package android.support.v7.widget;
 
 /**
- * Created by aurel on 19/10/14.
+ * @创建人 sky
+ * @创建时间 15/7/18 上午11:49
+ * @类描述
  */
 public class RecyclerViewHelper {
 

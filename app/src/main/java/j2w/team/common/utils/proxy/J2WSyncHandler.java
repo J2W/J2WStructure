@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Stack;
 
 import j2w.team.biz.J2WBiz;
-import j2w.team.common.log.L;
+import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.http.J2WMethodInfo;
 import j2w.team.modules.threadpool.BackgroundType;
