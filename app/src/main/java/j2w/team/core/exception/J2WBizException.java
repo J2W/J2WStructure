@@ -1,4 +1,4 @@
-package j2w.team.biz.exception;
+package j2w.team.core.exception;
 
 /**
  * @创建人 sky

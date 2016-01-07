@@ -16,9 +16,9 @@ import android.widget.ListView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.structure.J2WStructureManage;
@@ -32,7 +32,7 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  * @创建时间 15/7/8 上午12:15
  * @类描述 activity
  */
-public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivity {
+public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	/**
 	 * 定制
@@ -54,7 +54,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	private J2WBuilder				j2WBuilder;
 
 	/** 结构 **/
-	private J2WStructureIManage<D>	j2WStructureIManage;
+	private J2WStructureIManage<B>	j2WStructureIManage;
 
 	/**
 	 * 初始化
@@ -74,7 +74,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		/** 初始化业务 **/
 		j2WStructureIManage.attachActivity(this);
 		/** 初始化 **/
-		J2WHelper.getInstance().onCreate(this, getIntent().getExtras());
+		J2WHelper.methodsProxy().activityInterceptor().onCreate(this, getIntent().getExtras(), savedInstanceState);
 		/** 提交fragment **/
 		if (savedInstanceState == null) {
 			Fragment fragment = createFragment();
@@ -93,7 +93,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onStart() {
 		super.onStart();
-		J2WHelper.getInstance().onStart(this);
+		J2WHelper.methodsProxy().activityInterceptor().onStart(this);
 	}
 
 	@Override protected void onResume() {
@@ -105,7 +105,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 			}
 		}
 		listLoadMoreOpen();
-		J2WHelper.getInstance().onResume(this);
+		J2WHelper.methodsProxy().activityInterceptor().onResume(this);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onPause() {
 		super.onPause();
-		J2WHelper.getInstance().onPause(this);
+		J2WHelper.methodsProxy().activityInterceptor().onPause(this);
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!j2WBuilder.isNotCloseEventBus()) {
@@ -134,12 +134,12 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 
 	@Override protected void onRestart() {
 		super.onRestart();
-		J2WHelper.getInstance().onRestart(this);
+		J2WHelper.methodsProxy().activityInterceptor().onRestart(this);
 	}
 
 	@Override protected void onStop() {
 		super.onStop();
-		J2WHelper.getInstance().onStop(this);
+		J2WHelper.methodsProxy().activityInterceptor().onStop(this);
 	}
 
 	@Override protected void onDestroy() {
@@ -155,7 +155,7 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 		j2WStructureIManage.detachActivity(this);
 		j2WStructureIManage = null;
 
-		J2WHelper.getInstance().onDestroy(this);
+		J2WHelper.methodsProxy().activityInterceptor().onDestroy(this);
 	}
 
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -184,25 +184,17 @@ public abstract class J2WActivity<D extends J2WIDisplay> extends AppCompatActivi
 	 *
 	 * @return
 	 */
-	public D display() {
-		j2WStructureIManage.getDisplay().initDisplay(j2wView());
-		return j2WStructureIManage.getDisplay();
-	}
-
 	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass, j2wView());
+		return j2WStructureIManage.display(eClass);
 	}
 
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
-	 * @param <B>
 	 * @return
 	 */
-	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WStructureIManage.biz(biz, j2wView());
+	public B biz() {
+		return j2WStructureIManage.getBiz();
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {

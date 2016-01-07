@@ -7,11 +7,12 @@ import android.view.View;
 import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
-import j2w.team.common.utils.looper.SynchronousExecutor;
+import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
+import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.screen.J2WIScreenManager;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
@@ -38,11 +39,53 @@ public class J2WHelper {
 	 * 创建接口代理
 	 * 
 	 * @param service
+	 *            接口
 	 * @param <T>
 	 * @return
 	 */
-	public static final <T> T createProxy(Class<T> service) {
-		return mJ2WModulesManage.getJ2WMethods().create(service);
+	public static final <T> T createBiz(Class<T> service) {
+		return methodsProxy().create(service);
+	}
+
+	/**
+	 * 创建UI和Display接口代理
+	 * 
+	 * @param service
+	 * @param <T>
+	 * @return
+	 */
+	public static final <T> T createMain(Class<T> service) {
+		return methodsProxy().createMain(service);
+	}
+
+	/**
+	 * 获取视图
+	 * 
+	 * @param viewName
+	 * @param <T>
+	 * @return
+	 */
+	public static final <T> T UI(String viewName) {
+		return screenHelper().getView(viewName);
+	}
+
+	/**
+	 * 判断视图存在不存在
+	 * 
+	 * @param viewName
+	 * @return true 存在 false 不存在
+	 */
+	public static final boolean isUI(String viewName) {
+		return screenHelper().isUI(viewName);
+	}
+
+	/**
+	 * 获取方法代理
+	 * 
+	 * @return
+	 */
+	public static final J2WMethods methodsProxy() {
+		return mJ2WModulesManage.getJ2WMethods();
 	}
 
 	/**

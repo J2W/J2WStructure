@@ -1,9 +1,10 @@
 package j2w.team.common.utils;
 
-import j2w.team.biz.exception.J2WArgumentException;
-import j2w.team.biz.exception.J2WIndexOutOfException;
-import j2w.team.biz.exception.J2WNullPointerException;
-import j2w.team.biz.exception.J2WUINullPointerException;
+
+import j2w.team.core.exception.J2WArgumentException;
+import j2w.team.core.exception.J2WIndexOutOfException;
+import j2w.team.core.exception.J2WNullPointerException;
+import j2w.team.core.exception.J2WUINullPointerException;
 
 /**
  * @创建人 sky
@@ -69,7 +70,7 @@ public final class J2WCheckUtils {
 
 	/**
 	 * 判断是否相同
-	 * 
+	 *
 	 * @param a
 	 * @param b
 	 * @return
@@ -80,7 +81,7 @@ public final class J2WCheckUtils {
 
 	/**
 	 * 判断是否为空
-	 * 
+	 *
 	 * @param text
 	 * @return
 	 */

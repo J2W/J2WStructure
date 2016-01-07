@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import j2w.team.biz.J2WIBiz;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
@@ -125,7 +125,6 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
 	}
 
-
 	public void clear() {
 		mItems.clear();
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
@@ -139,29 +138,18 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
-	public HeaderRecyclerViewAdapterV1 adapter(){
+	public HeaderRecyclerViewAdapterV1 adapter() {
 		return headerRecyclerViewAdapterV1;
 	}
 
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
 	 * @param <B>
 	 * @return
 	 */
-	protected <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WView.biz(biz);
-	}
-
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-	protected <E extends J2WIDisplay> E display() {
-		return j2WView.display();
+	protected <B extends J2WIBiz> B biz() {
+		return j2WView.biz();
 	}
 
 	/**

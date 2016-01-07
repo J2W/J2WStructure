@@ -9,12 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface J2WEndInterceptor {
 
-	<T> void intercept(T service, Method method);
+	<T> void interceptEnd(String viewName,Class<T> service, Method method, int interceptor);
 
-	J2WEndInterceptor	NONE	= new J2WEndInterceptor() {
-
-									@Override public <T> void intercept(T service, Method method) {
-
-									}
-								};
 }

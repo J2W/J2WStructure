@@ -1,4 +1,4 @@
-package j2w.team.modules.threadpool;
+package j2w.team.modules.methodProxy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Background {
+public @interface Interceptor {
 
-	BackgroundType value() default BackgroundType.HTTP;
+	int value() default 0;
 }

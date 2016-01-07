@@ -9,12 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface J2WStartInterceptor {
 
-	<T> void intercept(Class<T> service, Method method);
-
-	J2WStartInterceptor	NONE	= new J2WStartInterceptor() {
-
-									@Override public <T> void intercept(Class<T> service, Method method) {
-									}
-								};
+	<T> void interceptStart(String viewName,Class<T> service, Method method, int interceptor);
 
 }

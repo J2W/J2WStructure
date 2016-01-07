@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.dialog.iface.INegativeButtonDialogListener;
@@ -29,7 +30,7 @@ import j2w.team.view.J2WDialogFragment;
  * @创建时间 15/8/8 下午3:31
  * @类描述 简单弹框
  */
-public class J2WDialogSimpleFragment extends J2WDialogFragment<J2WIDisplay> implements View.OnClickListener, DialogInterface.OnShowListener {
+public class J2WDialogSimpleFragment extends J2WDialogFragment<J2WIBiz> implements View.OnClickListener, DialogInterface.OnShowListener {
 
 	protected final static String	ARG_MESSAGE			= "message";
 

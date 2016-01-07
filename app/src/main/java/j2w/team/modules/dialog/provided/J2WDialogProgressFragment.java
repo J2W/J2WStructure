@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.structure.R;
@@ -16,7 +17,7 @@ import j2w.team.view.J2WDialogFragment;
  * @创建时间 15/8/8 下午3:31
  * @类描述 进度条弹框
  */
-public class J2WDialogProgressFragment extends J2WDialogFragment<J2WIDisplay> {
+public class J2WDialogProgressFragment extends J2WDialogFragment<J2WIBiz> {
 
 	protected final static String	ARG_MESSAGE	= "message";
 

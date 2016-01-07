@@ -3,6 +3,7 @@ package j2w.team.modules.dialog.provided;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.dialog.blur.BlurDialogEngine;
 import j2w.team.view.J2WDialogFragment;
@@ -12,7 +13,7 @@ import j2w.team.view.J2WDialogFragment;
  * @创建时间 15/6/24 上午10:34
  * @类描述 背景模糊弹框
  */
-public abstract class J2WDialogBlurFragment<T extends J2WIDisplay> extends J2WDialogFragment<T> {
+public abstract class J2WDialogBlurFragment<T extends J2WIBiz> extends J2WDialogFragment<T> {
 
 	private static final String	TAG								= J2WDialogBlurFragment.class.getSimpleName();
 

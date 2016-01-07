@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
@@ -128,22 +128,11 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
 	 * @param <B>
 	 * @return
 	 */
-	protected <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WView.biz(biz);
-	}
-
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-	protected <E extends J2WIDisplay> E display() {
-		return j2WView.display();
+	protected <B extends J2WIBiz> B biz() {
+		return j2WView.biz();
 	}
 
 	/**

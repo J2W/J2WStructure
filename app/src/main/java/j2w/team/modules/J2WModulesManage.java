@@ -7,10 +7,9 @@ import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
-import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.contact.ContactManage;
-import j2w.team.common.utils.looper.SynchronousExecutor;
+import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.log.L;
@@ -53,7 +52,7 @@ public class J2WModulesManage {
 	private J2WMethods				j2WMethods;			// 方法代理
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
-		this.mJ2WApplication = J2WCheckUtils.checkNotNull(j2WApplication, "Application初始化失败");
+		this.mJ2WApplication = j2WApplication;
 	}
 
 	public J2WApplication getJ2WApplication() {

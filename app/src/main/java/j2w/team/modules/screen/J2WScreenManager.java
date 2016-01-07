@@ -2,6 +2,7 @@ package j2w.team.modules.screen;
 
 import android.support.v4.app.FragmentActivity;
 
+import java.util.HashMap;
 import java.util.Stack;
 
 import j2w.team.modules.log.L;
@@ -17,8 +18,11 @@ public class J2WScreenManager implements J2WIScreenManager {
 	 */
 	private final Stack<FragmentActivity>	fragmentActivities;
 
+	private final HashMap<String, Object>	viewMap;
+
 	public J2WScreenManager() {
 		fragmentActivities = new Stack<>();
+		viewMap = new HashMap<>();
 	}
 
 	/**
@@ -26,13 +30,12 @@ public class J2WScreenManager implements J2WIScreenManager {
 	 *
 	 * @return
 	 */
-	@Override public FragmentActivity currentActivity() {
+	@Override public <T extends FragmentActivity> T currentActivity() {
 		if (fragmentActivities.size() == 0) {
 			L.i("FragmentActivity堆栈 size = 0");
 			return null;
 		}
-		FragmentActivity fragmentActivity = fragmentActivities.peek();
-		return fragmentActivity;
+		return (T) fragmentActivities.peek();
 	}
 
 	/**
@@ -45,9 +48,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 			L.e("传入的参数为空!");
 			return;
 		}
-		if (fragmentActivities != null) {
-			fragmentActivities.add(activity);
-		}
+		fragmentActivities.add(activity);
 	}
 
 	/**
@@ -112,6 +113,27 @@ public class J2WScreenManager implements J2WIScreenManager {
 			J2WHelper.picassoHelper().clearCache();// 缓存
 			J2WHelper.threadPoolHelper().finish();// 线程池
 			fragmentActivities.clear();
+			viewMap.clear();
 		}
+	}
+
+	@Override public boolean isUI(String name) {
+
+		if (viewMap.get(name) != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override public <T> T getView(String name) {
+		return (T) viewMap.get(name);
+	}
+
+	@Override public void pushView(String name, Object object) {
+		viewMap.put(name, object);
+	}
+
+	@Override public void popView(String name) {
+		viewMap.remove(name);
 	}
 }

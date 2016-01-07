@@ -12,7 +12,7 @@ public interface J2WIScreenManager {
 	 *
 	 * @return
 	 */
-	FragmentActivity currentActivity();
+	<T extends FragmentActivity> T currentActivity();
 
 	/**
 	 * 入栈
@@ -36,13 +36,28 @@ public interface J2WIScreenManager {
 	 */
 	void popAllActivityExceptMain(Class clazz);
 
-    /**
-     * 退出堆栈中所有activity,登陆activity 除掉
-      */
-    void popAllActivityExceptionLoginActivity(Class logoin);
+	/**
+	 * 退出堆栈中所有activity,登陆activity 除掉
+	 */
+	void popAllActivityExceptionLoginActivity(Class logoin);
 
 	/**
 	 * 退出程序
 	 */
 	void logout();
+
+	/**
+	 * 判断是否存在
+	 * 
+	 * @param name
+	 * @return true 存在 false 不存在
+	 */
+	boolean isUI(String name);
+
+	<T> T getView(String name);
+
+	void pushView(String name, Object object);
+
+	void popView(String name);
+
 }

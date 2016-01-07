@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WIBiz;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 
@@ -104,36 +104,20 @@ public class J2WView {
 		return (D) mJ2WDialogFragment;
 	}
 
-	public <B extends J2WIBiz> B biz(Class<B> biz) {
+	public <B extends J2WIBiz> B biz() {
 		B b = null;
 		switch (state) {
 			case STATE_ACTIVITY:
-				b = (B) mJ2WActivity.biz(biz);
+				b = (B) mJ2WActivity.biz();
 				break;
 			case STATE_FRAGMENT:
-				b = (B) mJ2WFragment.biz(biz);
+				b = (B) mJ2WFragment.biz();
 				break;
 			case STATE_DIALOGFRAGMENT:
-				b = (B) mJ2WDialogFragment.biz(biz);
+				b = (B) mJ2WDialogFragment.biz();
 				break;
 		}
 		return b;
-	}
-
-	public <E extends J2WIDisplay> E display() {
-		E e = null;
-		switch (state) {
-			case STATE_ACTIVITY:
-				e = (E) mJ2WActivity.display();
-				break;
-			case STATE_FRAGMENT:
-				e = (E) mJ2WFragment.display();
-				break;
-			case STATE_DIALOGFRAGMENT:
-				e = (E) mJ2WDialogFragment.display();
-				break;
-		}
-		return e;
 	}
 
 	public <E extends J2WIDisplay> E display(Class<E> display) {

@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.dialog.iface.IDialogCancelListener;
 import j2w.team.modules.dialog.provided.J2WIDialogFragment;
@@ -43,7 +43,7 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  * @创建时间 15/8/8 下午1:29
  * @类描述 View层碎片 dialog
  */
-public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFragment implements J2WIDialogFragment {
+public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragment implements J2WIDialogFragment {
 
 	private boolean					targetActivity;
 
@@ -57,7 +57,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	private J2WBuilder				j2WBuilder;
 
 	/** 结构 **/
-	private J2WStructureIManage<D>	j2WStructureIManage;
+	private J2WStructureIManage<B>	j2WStructureIManage;
 
 	/**
 	 * 定制
@@ -195,25 +195,18 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 	 *
 	 * @return
 	 */
-	public D display() {
-		j2WStructureIManage.getDisplay().initDisplay(j2wView());
-		return j2WStructureIManage.getDisplay();
-	}
-
 	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass, j2wView());
+		return j2WStructureIManage.display(eClass);
 	}
 
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
-	 * @param <B>
 	 * @return
 	 */
-	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WStructureIManage.biz(biz, j2wView());
+
+	public B biz() {
+		return j2WStructureIManage.getBiz();
 	}
 
 	/**
@@ -272,6 +265,7 @@ public abstract class J2WDialogFragment<D extends J2WIDisplay> extends DialogFra
 			j2WBuilder.layoutHttpError();
 		}
 	}
+
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();

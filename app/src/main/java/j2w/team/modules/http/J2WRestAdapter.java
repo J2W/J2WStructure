@@ -8,6 +8,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.net.CookieHandler;
 import java.util.LinkedHashMap;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import j2w.team.core.plugin.J2WRequestInterceptor;
 import j2w.team.core.plugin.J2WResponseInterceptor;
 import j2w.team.modules.log.L;
-import j2w.team.common.utils.proxy.DynamicProxyUtils;
 import j2w.team.modules.http.converter.GsonConverter;
 import j2w.team.modules.http.converter.J2WConverter;
 import j2w.team.view.model.J2WConstants;
@@ -80,15 +80,42 @@ public class J2WRestAdapter {
 	 */
 	public <T> T create(Class<T> service) {
 		// 验证是否是接口
-		DynamicProxyUtils.validateServiceClass(service);
+		validateServiceClass(service);
 		// 验证是否继承其他接口
-		DynamicProxyUtils.validateInterfaceServiceClass(service);
+		validateInterfaceServiceClass(service);
 		// 创建动态代理-网络层
 		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName());
 		// 创建代理类并返回
-		return DynamicProxyUtils.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[]{service},j2WRestHandler);
+
+	}
+	/**
+	 * 验证类 - 判断是否是一个接口
+	 *
+	 * @param service
+	 * @param <T>
+	 */
+	private  <T> void validateServiceClass(Class<T> service) {
+		if (service == null || !service.isInterface()) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(service);
+			stringBuilder.append("，该类不是接口！");
+			throw new IllegalArgumentException(stringBuilder.toString());
+		}
 	}
 
+	/**
+	 * 验证类 - 判断是否继承其他接口
+	 *
+	 * @param service
+	 * @param <T>
+	 */
+	private  <T> void validateInterfaceServiceClass(Class<T> service) {
+		if (service.getInterfaces().length > 0) {
+			throw new IllegalArgumentException("接口不能继承其它接口");
+		}
+
+	}
 	/**
 	 * 取消请求
 	 *

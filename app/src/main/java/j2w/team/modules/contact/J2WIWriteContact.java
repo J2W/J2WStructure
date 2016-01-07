@@ -5,7 +5,7 @@ import android.os.RemoteException;
 
 import java.util.List;
 
-import j2w.team.biz.Impl;
+import j2w.team.core.Impl;
 import j2w.team.modules.contact.bean.ContactAddress;
 import j2w.team.modules.contact.bean.ContactEmail;
 import j2w.team.modules.contact.bean.ContactPhone;

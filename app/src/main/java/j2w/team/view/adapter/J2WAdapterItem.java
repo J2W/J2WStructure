@@ -2,7 +2,7 @@ package j2w.team.view.adapter;
 
 import android.view.View;
 
-import j2w.team.biz.J2WIBiz;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WView;
@@ -48,22 +48,11 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
 	 * @param <B>
 	 * @return
 	 */
-	protected <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WView.biz(biz);
-	}
-
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-	protected <E extends J2WIDisplay> E display() {
-		return j2WView.display();
+	protected <B extends J2WIBiz> B biz() {
+		return j2WView.biz();
 	}
 
 	/**

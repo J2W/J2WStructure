@@ -1,18 +1,18 @@
-package j2w.team.modules.threadpool;
+package j2w.team.modules.methodProxy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import j2w.team.modules.threadpool.BackgroundType;
+
 /**
- * @创建人 sky
- * @创建时间 15/4/15 下午9:31
- * @类描述 方法是否重复 - 默认不可重复
+ * Created by sky on 15/2/20.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface J2WRepeat {
+public @interface Background {
 
-	boolean value() default false;
+	BackgroundType value() default BackgroundType.HTTP;
 }

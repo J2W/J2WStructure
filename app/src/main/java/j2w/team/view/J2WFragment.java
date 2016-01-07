@@ -14,9 +14,9 @@ import android.widget.ListView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import j2w.team.J2WHelper;
-import j2w.team.biz.J2WIBiz;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.structure.J2WStructureManage;
@@ -29,7 +29,7 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
  * @创建时间 15/7/18 上午11:49
  * @类描述 View层碎片
  */
-public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implements View.OnTouchListener {
+public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements View.OnTouchListener {
 
 	private boolean	targetActivity;
 
@@ -53,7 +53,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	private J2WBuilder				j2WBuilder;
 
 	/** 结构 **/
-	private J2WStructureIManage<D>	j2WStructureIManage;
+	private J2WStructureIManage<B>	j2WStructureIManage;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,13 +78,13 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		J2WHelper.getInstance().onFragmentCreated(this, savedInstanceState);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentCreated(this, getArguments(), savedInstanceState);
 		initData(getArguments());
 	}
 
 	@Override public void onStart() {
 		super.onStart();
-		J2WHelper.getInstance().onFragmentStart(this);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentStart(this);
 	}
 
 	@Override public void onResume() {
@@ -96,13 +96,13 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 			}
 		}
 		j2WStructureIManage.printBackStackEntry(getFragmentManager());
-		J2WHelper.getInstance().onFragmentResume(this);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentResume(this);
 		listLoadMoreOpen();
 	}
 
 	@Override public void onPause() {
 		super.onPause();
-		J2WHelper.getInstance().onFragmentPause(this);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentPause(this);
 		/** 关闭event **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (J2WHelper.eventBus().isRegistered(this)) {
@@ -115,7 +115,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onStop() {
 		super.onStop();
-		J2WHelper.getInstance().onFragmentStop(this);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentStop(this);
 	}
 
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -141,7 +141,7 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 
 	@Override public void onDestroy() {
 		super.onDestroy();
-		J2WHelper.getInstance().onFragmentDestroy(this);
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentDestroy(this);
 	}
 
 	/**
@@ -149,25 +149,18 @@ public abstract class J2WFragment<D extends J2WIDisplay> extends Fragment implem
 	 *
 	 * @return
 	 */
-	public D display() {
-		j2WStructureIManage.getDisplay().initDisplay(j2wView());
-		return j2WStructureIManage.getDisplay();
-	}
 
 	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass, j2wView());
+		return j2WStructureIManage.display(eClass);
 	}
 
 	/**
 	 * 获取业务
 	 *
-	 * @param biz
-	 *            泛型
-	 * @param <B>
 	 * @return
 	 */
-	public <B extends J2WIBiz> B biz(Class<B> biz) {
-		return j2WStructureIManage.biz(biz, j2wView());
+	public B biz() {
+		return j2WStructureIManage.getBiz();
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package j2w.team.common.utils.looper;
+package j2w.team.core;
 
 import android.os.Handler;
 import android.os.Looper;

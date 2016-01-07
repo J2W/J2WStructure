@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import j2w.team.biz.Impl;
+import j2w.team.core.Impl;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
@@ -30,26 +30,6 @@ public interface J2WIDisplay {
 
 	J2WActivity activity();
 
-	J2WFragment fragment();
-
-	boolean isActivity();
-
-	/**
-	 * 设置 上下文
-	 * 
-	 * @param j2WView
-	 */
-	void initDisplay(J2WView j2WView);
-
-	void initDisplay(Context context);
-
-	/**
-	 * 获取碎片管理
-	 * 
-	 * @return
-	 */
-	FragmentManager manager();
-
 	/**
 	 * 跳转
 	 * 
@@ -67,13 +47,6 @@ public interface J2WIDisplay {
 	 * @param requestCode
 	 */
 	void intentFromFragment(Intent intent, Fragment fragment, int requestCode);
-
-	/**
-	 * 销毁引用
-	 */
-	void detach();
-
-	FragmentTransaction beginTransaction();
 
 	/**
 	 * home键
@@ -94,15 +67,15 @@ public interface J2WIDisplay {
 
 	void commitReplace(Fragment fragment);
 
-	void commitChildReplace(int layoutId, Fragment fragment);
+	void commitChildReplace(Fragment srcFragment,int layoutId, Fragment fragment);
 
 	void commitReplace(int layoutId, Fragment fragment);
 
 	void commitBackStack(Fragment fragment);
 
-	void commitHideAndBackStack(Fragment fragment);
+	void commitHideAndBackStack(Fragment srcFragment, Fragment fragment);
 
-	void commitDetachAndBackStack(Fragment fragment);
+	void commitDetachAndBackStack(Fragment srcFragment, Fragment fragment);
 
 	void commitBackStack(int layoutId, Fragment fragment);
 

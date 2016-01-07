@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import java.util.List;
 
-import j2w.team.biz.Impl;
+import j2w.team.core.Impl;
 import j2w.team.modules.contact.bean.ContactDetailModel;
 import j2w.team.modules.contact.bean.ContactModel;
 

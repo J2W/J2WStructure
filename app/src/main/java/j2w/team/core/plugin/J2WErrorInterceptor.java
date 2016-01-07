@@ -9,13 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface J2WErrorInterceptor {
 
-	<T> void methodError(T service, Method method, Throwable throwable);
-
-	J2WErrorInterceptor	NONE	= new J2WErrorInterceptor() {
-
-									@Override public <T> void methodError(T service, Method method, Throwable throwable) {
-
-									}
-								};
+	<T> void interceptorError(String viewName,Class<T> service, Method method, int interceptor, Throwable throwable);
 
 }
