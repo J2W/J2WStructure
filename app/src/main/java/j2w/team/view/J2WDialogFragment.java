@@ -209,6 +209,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		return j2WStructureIManage.getBiz();
 	}
 
+	public B biz(Class<B> service) {
+		return j2WStructureIManage.biz(service);
+	}
+
 	/**
 	 * 创建menu
 	 *

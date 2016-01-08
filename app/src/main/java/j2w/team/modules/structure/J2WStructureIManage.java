@@ -49,6 +49,8 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 
 	<D extends J2WIDisplay> D display(Class<D> eClass);
 
+	<B extends J2WIBiz> B biz(Class<B> biz);
+
 	/**
 	 * 拦截back 交给 fragment onKeyBack
 	 * 

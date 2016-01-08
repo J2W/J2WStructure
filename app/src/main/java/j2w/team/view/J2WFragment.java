@@ -163,6 +163,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		return j2WStructureIManage.getBiz();
 	}
 
+	public B biz(Class<B> service) {
+		return j2WStructureIManage.biz(service);
+	}
+
 	/**
 	 * 是否设置目标活动
 	 *

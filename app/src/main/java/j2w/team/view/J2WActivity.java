@@ -197,6 +197,10 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WStructureIManage.getBiz();
 	}
 
+	public B biz(Class<B> service) {
+		return j2WStructureIManage.biz(service);
+	}
+
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager())) {
 			return true;
