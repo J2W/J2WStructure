@@ -44,18 +44,29 @@ public class J2WHelper {
 	 * @return
 	 */
 	public static final <T> T createBiz(Class<T> service) {
-		return methodsProxy().create(service);
+		return methodsProxy().createBiz(service);
 	}
 
 	/**
-	 * 创建UI和Display接口代理
+	 * 创建UI接口代理
 	 * 
 	 * @param service
 	 * @param <T>
 	 * @return
 	 */
-	public static final <T> T createMain(Class<T> service) {
-		return methodsProxy().createMain(service);
+	public static final <T> T createUI(Class<T> service) {
+		return methodsProxy().createUI(service);
+	}
+
+	/**
+	 * Display接口代理
+	 * 
+	 * @param service
+	 * @param <T>
+	 * @return
+	 */
+	public static final <T> T createDisplay(Class<T> service) {
+		return methodsProxy().createDisplay(service);
 	}
 
 	/**

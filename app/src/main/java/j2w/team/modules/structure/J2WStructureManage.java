@@ -123,24 +123,12 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
 		D obj = (D) stackDisplay.get(eClass.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createMain(eClass);
+			obj = J2WHelper.createDisplay(eClass);
 			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
 			stackDisplay.put(eClass.getSimpleName(), obj);
 		}
 		return obj;
 	}
-
-	@Override public B biz(Class<B> biz) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stack.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createBiz(biz);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stack.put(biz.getSimpleName(), obj);
-		}
-		return (B) obj;
-	}
-
 
 	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {

@@ -21,7 +21,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 		/** 初始化集合 **/
 		stack = new HashMap<>();
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-		u = (U) J2WHelper.createMain(bizClass);
+		u = (U) J2WHelper.createUI(bizClass);
 	}
 
 	protected <H> H http(Class<H> hClass) {
@@ -50,7 +50,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
 		D obj = (D) stack.get(eClass.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createMain(eClass);
+			obj = J2WHelper.createDisplay(eClass);
 			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
 			stack.put(eClass.getSimpleName(), obj);
 		}

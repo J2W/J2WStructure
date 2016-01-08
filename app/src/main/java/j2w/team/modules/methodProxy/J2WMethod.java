@@ -1,5 +1,6 @@
 package j2w.team.modules.methodProxy;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 
@@ -26,6 +27,8 @@ public final class J2WMethod {
 
 	public static final int	TYPE_INVOKE_UI_EXE						= 4;
 
+	public static final int	TYPE_INVOKE_DISPLAY_EXE					= 5;
+
 	// 执行后台方法
 	public static final int	TYPE_INVOKE_BACKGROUD_HTTP_EXE			= 1;
 
@@ -33,28 +36,57 @@ public final class J2WMethod {
 
 	public static final int	TYPE_INVOKE_BACKGROUD_WORK_EXE			= 3;
 
-	static J2WMethod createMethod(J2WMethods j2WMethods, Object impl, Method method, Class service) {
-		// 默认不可重复
-		boolean isRepeat = false;
-		// 默认方法执行
-		int type = TYPE_INVOKE_EXE;
-		// 拦截标记
-		int interceptor = 0;
+	static J2WMethod createBizMethod(J2WMethods j2WMethods, Method method, Class service) {
 		// 键值
 		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
-
 		// 是否重复
+		boolean isRepeat = parseRepeat(method);
+		// 拦截方法标记
+		int interceptor = parseInterceptor(method);
+		// 判断是否是子线程
+		int type = parseBackground(method);
+
+		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WMethods, service);
+	}
+
+	static J2WMethod createUIMethod(J2WMethods j2WMethods, Method method, Class service) {
+		// 默认方法执行
+		int type = TYPE_INVOKE_UI_EXE;
+		// 键值
+		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		// 是否重复
+		boolean isRepeat = parseRepeat(method);
+		// 拦截方法标记
+		int interceptor = parseInterceptor(method);
+
+		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WMethods, service);
+	}
+
+	static J2WMethod createDisplayMethod(J2WMethods j2WMethods, Method method, Class service) {
+		// 默认方法执行
+		int type = TYPE_INVOKE_DISPLAY_EXE;
+		// 键值
+		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		// 是否重复
+		boolean isRepeat = parseRepeat(method);
+		// 拦截方法标记
+		int interceptor = parseInterceptor(method);
+
+		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WMethods, service);
+	}
+
+	private static boolean parseRepeat(Method method) {
+
 		Repeat j2WRepeat = method.getAnnotation(Repeat.class);
 		if (j2WRepeat != null && j2WRepeat.value()) {
-			isRepeat = true;
+			return true;
+		} else {
+			return false;
 		}
-		// 拦截方法标记
-		Interceptor interceptorClass = method.getAnnotation(Interceptor.class);
-		if (interceptorClass != null) {
-			interceptor = interceptorClass.value();
-		}
+	}
 
-		// 判断是否是子线程
+	private static int parseBackground(Method method) {
+		int type = TYPE_INVOKE_EXE;
 		Background background = method.getAnnotation(Background.class);
 
 		if (background != null) {
@@ -73,33 +105,20 @@ public final class J2WMethod {
 			}
 		}
 
-		return new J2WMethod(key, interceptor, impl, method, type, isRepeat, j2WMethods, service);
+		return type;
 	}
 
-	static J2WMethod createMainMethod(J2WMethods j2WMethods, Object impl, Method method, Class service) {
-
-		// 默认不可重复
-		boolean isRepeat = false;
-		// 默认方法执行
-		int type = TYPE_INVOKE_UI_EXE;
-		// 拦截标记
-		int interceptor = 0;
-		// 键值
-		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
-		// 是否重复
-		Repeat j2WRepeat = method.getAnnotation(Repeat.class);
-		if (j2WRepeat != null && j2WRepeat.value()) {
-			isRepeat = true;
-		}
+	private static int parseInterceptor(Method method) {
 		// 拦截方法标记
 		Interceptor interceptorClass = method.getAnnotation(Interceptor.class);
 		if (interceptorClass != null) {
-			interceptor = interceptorClass.value();
+			return interceptorClass.value();
+		} else {
+			return 0;
 		}
-		return new J2WMethod(key, interceptor, impl, method, type, isRepeat, j2WMethods, service);
 	}
 
-	public <T> T invoke(final Object[] args) throws InterruptedException {
+	public <T> T invoke(final Object impl, final Object[] args) throws InterruptedException {
 		T result = null;
 		if (!isRepeat) {
 			if (j2WMethods.stack.search(key) != -1) { // 如果存在什么都不做
@@ -109,36 +128,53 @@ public final class J2WMethod {
 			}
 			j2WMethods.stack.push(key); // 入栈
 		}
+		this.impl = impl;
+		this.implName = impl.getClass().getName();
 
-		if (type == TYPE_INVOKE_EXE) {
-			exeMethod(args);
-			result = (T) backgroundResult;
-		} else if (type == TYPE_INVOKE_UI_EXE) {
-			if (J2WHelper.isMainLooperThread()) {// 子线程
+		switch (type) {
+			case TYPE_INVOKE_EXE:
+				defaultMethod(args);
+				result = (T) backgroundResult;
+				break;
+			case TYPE_INVOKE_UI_EXE:
+				if (J2WHelper.isMainLooperThread()) {// 子线程
+					methodRunnable.setArgs(args);
+					J2WHelper.mainLooper().execute(methodRunnable);
+					countDownLatch.await();
+					result = (T) backgroundResult;
+				} else {
+					uiMethod(args);
+					result = (T) backgroundResult;
+				}
+				break;
+			case TYPE_INVOKE_DISPLAY_EXE:
+				if (J2WHelper.isMainLooperThread()) {// 子线程
+					methodRunnable.setArgs(args);
+					J2WHelper.mainLooper().execute(methodRunnable);
+					countDownLatch.await();
+					result = (T) backgroundResult;
+				} else {
+					displayMethod(args);
+					result = (T) backgroundResult;
+				}
+				break;
+			default:
+				if (isRepeat) {
+					methodRunnable = new MethodRunnable();
+				}
 				methodRunnable.setArgs(args);
-				J2WHelper.mainLooper().execute(methodRunnable);
-				countDownLatch.await();
-				result = (T) backgroundResult;
-			} else {
-				exeMethod(args);
-				result = (T) backgroundResult;
-			}
-		} else {
-			if (isRepeat) {
-				methodRunnable = new MethodRunnable();
-			}
-			methodRunnable.setArgs(args);
-			switch (type) {
-				case TYPE_INVOKE_BACKGROUD_HTTP_EXE:
-					J2WHelper.threadPoolHelper().getHttpExecutorService().execute(methodRunnable);
-					break;
-				case TYPE_INVOKE_BACKGROUD_SINGLEWORK_EXE:
-					J2WHelper.threadPoolHelper().getSingleWorkExecutorService().execute(methodRunnable);
-					break;
-				case TYPE_INVOKE_BACKGROUD_WORK_EXE:
-					J2WHelper.threadPoolHelper().getWorkExecutorService().execute(methodRunnable);
-					break;
-			}
+				switch (type) {
+					case TYPE_INVOKE_BACKGROUD_HTTP_EXE:
+						J2WHelper.threadPoolHelper().getHttpExecutorService().execute(methodRunnable);
+						break;
+					case TYPE_INVOKE_BACKGROUD_SINGLEWORK_EXE:
+						J2WHelper.threadPoolHelper().getSingleWorkExecutorService().execute(methodRunnable);
+						break;
+					case TYPE_INVOKE_BACKGROUD_WORK_EXE:
+						J2WHelper.threadPoolHelper().getWorkExecutorService().execute(methodRunnable);
+						break;
+				}
+				break;
 		}
 
 		return result;
@@ -157,47 +193,80 @@ public final class J2WMethod {
 		}
 
 		@Override protected void execute() {
-			exeMethod(objects);
+			switch (type) {
+				case TYPE_INVOKE_UI_EXE:
+					uiMethod(objects);
+					break;
+				case TYPE_INVOKE_DISPLAY_EXE:
+					displayMethod(objects);
+					break;
+				default:
+					defaultMethod(objects);
+					break;
+			}
 		}
 	}
 
-	private void exeMethod(Object[] objects) {
+	private void defaultMethod(Object[] objects) {
 		try {
-			if (type == TYPE_INVOKE_UI_EXE) {
-				if (!J2WHelper.isUI(implName)) {
-					return;
-				}
-			}
-
-			// 业务拦截器 - 前
-			for (J2WStartInterceptor item : j2WMethods.j2WStartInterceptor) {
-				item.interceptStart(implName, service, method, interceptor);
-			}
-			backgroundResult = method.invoke(impl, objects);// 执行
-			// 业务拦截器 - 后
-			for (J2WEndInterceptor item : j2WMethods.j2WEndInterceptor) {
-				item.interceptEnd(implName, service, method, interceptor);
-			}
-
+			exeMethod(method, impl, objects);
 		} catch (Throwable throwable) {
-			if(J2WHelper.getInstance().isLogOpen()){
-				throwable.printStackTrace();
-			}
-			if (throwable instanceof J2WError) {
-				// 网络错误拦截器
-				for (J2WHttpErrorInterceptor item : j2WMethods.j2WHttpErrorInterceptor) {
-					item.methodError(implName, service, method, interceptor, (J2WError) throwable);
-				}
-			} else {
-				// 业务错误拦截器
-				for (J2WErrorInterceptor item : j2WMethods.j2WErrorInterceptor) {
-					item.interceptorError(implName, service, method, interceptor, throwable);
-				}
-			}
+			exeError(method, throwable);
 		} finally {
 			j2WMethods.stack.remove(key);// 出栈
-			if (type == TYPE_INVOKE_UI_EXE) {
-				countDownLatch.countDown();
+		}
+	}
+
+	private void uiMethod(Object[] objects) {
+		try {
+			if (!J2WHelper.isUI(implName)) {
+				return;
+			}
+			exeMethod(method, impl, objects);
+		} catch (Throwable throwable) {
+			exeError(method, throwable);
+		} finally {
+			j2WMethods.stack.remove(key);// 出栈
+			countDownLatch.countDown();
+		}
+	}
+
+	private void displayMethod(Object[] objects) {
+		try {
+			exeMethod(method, impl, objects);
+		} catch (Throwable throwable) {
+			exeError(method, throwable);
+		} finally {
+			j2WMethods.stack.remove(key);// 出栈
+			countDownLatch.countDown();
+		}
+	}
+
+	public void exeMethod(Method method, Object impl, Object[] objects) throws InvocationTargetException, IllegalAccessException {
+		// 业务拦截器 - 前
+		for (J2WStartInterceptor item : j2WMethods.j2WStartInterceptor) {
+			item.interceptStart(implName, service, method, interceptor);
+		}
+		backgroundResult = method.invoke(impl, objects);// 执行
+		// 业务拦截器 - 后
+		for (J2WEndInterceptor item : j2WMethods.j2WEndInterceptor) {
+			item.interceptEnd(implName, service, method, interceptor);
+		}
+	}
+
+	public void exeError(Method method, Throwable throwable) {
+		if (J2WHelper.getInstance().isLogOpen()) {
+			throwable.printStackTrace();
+		}
+		if (throwable instanceof J2WError) {
+			// 网络错误拦截器
+			for (J2WHttpErrorInterceptor item : j2WMethods.j2WHttpErrorInterceptor) {
+				item.methodError(implName, service, method, interceptor, (J2WError) throwable);
+			}
+		} else {
+			// 业务错误拦截器
+			for (J2WErrorInterceptor item : j2WMethods.j2WErrorInterceptor) {
+				item.interceptorError(implName, service, method, interceptor, throwable);
 			}
 		}
 	}
@@ -231,7 +300,6 @@ public final class J2WMethod {
 	 *
 	 * @param key
 	 * @param interceptor
-	 * @param impl
 	 * @param method
 	 * @param type
 	 *            执行类型
@@ -239,11 +307,9 @@ public final class J2WMethod {
 	 * @param j2WMethods
 	 * @param service
 	 */
-	public J2WMethod(String key, int interceptor, Object impl, Method method, int type, boolean isRepeat, J2WMethods j2WMethods, Class service) {
+	public J2WMethod(String key, int interceptor, Method method, int type, boolean isRepeat, J2WMethods j2WMethods, Class service) {
 		this.key = key;
 		this.interceptor = interceptor;
-		this.impl = impl;
-		this.implName = impl.getClass().getName();
 		this.type = type;
 		this.isRepeat = isRepeat;
 		this.j2WMethods = j2WMethods;
@@ -251,7 +317,7 @@ public final class J2WMethod {
 		this.service = service;
 		if (type == TYPE_INVOKE_BACKGROUD_HTTP_EXE || type == TYPE_INVOKE_BACKGROUD_SINGLEWORK_EXE || type == TYPE_INVOKE_BACKGROUD_WORK_EXE) {
 			this.methodRunnable = new MethodRunnable();
-		} else if (type == TYPE_INVOKE_UI_EXE) {
+		} else if (type == TYPE_INVOKE_UI_EXE || type == TYPE_INVOKE_DISPLAY_EXE) {
 			this.methodRunnable = new MethodRunnable();
 			this.countDownLatch = new CountDownLatch(1);
 		}
