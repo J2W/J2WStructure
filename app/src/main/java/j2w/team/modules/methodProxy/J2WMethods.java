@@ -285,7 +285,7 @@ public final class J2WMethods {
 			}
 		}
 
-		public void addErrorInterceptor(J2WHttpErrorInterceptor j2WHttpErrorInterceptor) {
+		public void addHttpErrorInterceptor(J2WHttpErrorInterceptor j2WHttpErrorInterceptor) {
 			if (j2WHttpErrorInterceptors == null) {
 				j2WHttpErrorInterceptors = new ArrayList<>();
 			}
