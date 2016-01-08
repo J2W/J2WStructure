@@ -48,8 +48,22 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		return new J2WModulesManage(this);
 	}
 
+	/**
+	 * 初始化帮助类
+	 * 
+	 * @param j2WModulesManage
+	 */
 	public void initHelper(J2WModulesManage j2WModulesManage) {
 		J2WHelper.with(j2WModulesManage);
+	}
+
+	/**
+	 * 设置全局异常处理
+	 * 
+	 * @return
+	 */
+	public Thread.UncaughtExceptionHandler getExceptionHandler() {
+		return Thread.getDefaultUncaughtExceptionHandler();
 	}
 
 	/**
@@ -67,5 +81,7 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		mJ2WModulesManage.initLog(isLogOpen());
 		// 初始化 代理方法
 		mJ2WModulesManage.initMehtodProxy(getMethodInterceptor(new J2WMethods.Builder()));
+		// 初始化统一错误处理
+		Thread.setDefaultUncaughtExceptionHandler(getExceptionHandler());
 	}
 }
