@@ -23,7 +23,7 @@ import j2w.team.modules.toast.J2WToast;
  */
 public class J2WHelper {
 
-	private volatile static J2WModulesManage	mJ2WModulesManage	= null;
+	protected volatile static J2WModulesManage	mJ2WModulesManage	= null;
 
 	/**
 	 * 单例模式-初始化J2WHelper
@@ -31,8 +31,18 @@ public class J2WHelper {
 	 * @param j2WModulesManage
 	 *            Modules
 	 */
-	static void with(J2WModulesManage j2WModulesManage) {
+	public static void with(J2WModulesManage j2WModulesManage) {
 		mJ2WModulesManage = j2WModulesManage;
+	}
+
+	/**
+	 * 获取管理
+	 * 
+	 * @param <M>
+	 * @return
+	 */
+	protected static <M> M getManage() {
+		return (M) mJ2WModulesManage;
 	}
 
 	/**

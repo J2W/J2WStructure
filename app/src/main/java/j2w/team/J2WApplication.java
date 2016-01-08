@@ -40,14 +40,27 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 	public abstract J2WMethods getMethodInterceptor(J2WMethods.Builder builder);
 
 	/**
+	 * 获取配置管理器
+	 * 
+	 * @return
+	 */
+	public J2WModulesManage getModulesManage() {
+		return new J2WModulesManage(this);
+	}
+
+	public void initHelper(J2WModulesManage j2WModulesManage) {
+		J2WHelper.with(j2WModulesManage);
+	}
+
+	/**
 	 * 应用程序启动首先被执行
 	 */
 	@Override public void onCreate() {
 		super.onCreate();
-		// 初始化Modules
-		mJ2WModulesManage = new J2WModulesManage(this);
+		// 初始化
+		mJ2WModulesManage = getModulesManage();
 		// 初始化Application
-		J2WHelper.with(mJ2WModulesManage);
+		initHelper(mJ2WModulesManage);
 		// 初始化 HTTP
 		mJ2WModulesManage.initJ2WRestAdapter(getRestAdapter(new J2WRestAdapter.Builder()));
 		// 初始化 LOG
