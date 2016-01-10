@@ -62,7 +62,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	 *
 	 * @return
 	 */
-	protected U UI() {
+	protected U ui() {
 		return u;
 	}
 
