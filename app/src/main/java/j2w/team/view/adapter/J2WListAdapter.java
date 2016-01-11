@@ -173,6 +173,10 @@ public class J2WListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	public J2WView getUI() {
+		return j2WView;
+	}
+
 	/**
 	 * 单类型
 	 * 

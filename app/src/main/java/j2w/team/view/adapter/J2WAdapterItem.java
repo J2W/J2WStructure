@@ -55,6 +55,10 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 		return j2WView.biz();
 	}
 
+	public J2WView getUI() {
+		return j2WView;
+	}
+
 	/**
 	 * 获取调度
 	 *

@@ -145,7 +145,9 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
 		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
 	}
-
+	public J2WView getUI(){
+		return j2WView;
+	}
 	/**
 	 * 获取调度
 	 *

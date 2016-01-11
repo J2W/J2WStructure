@@ -77,6 +77,10 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		bindData(v, getItem(position), position, getItemCount());
 	}
 
+	public J2WView getUI(){
+		return j2WView;
+	}
+
 	public List<T> getItems() {
 		return mItems;
 	}
