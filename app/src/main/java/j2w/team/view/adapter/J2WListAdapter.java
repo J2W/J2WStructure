@@ -177,27 +177,19 @@ public class J2WListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	protected <B extends J2WIBiz> B biz() {
-		return j2WView.biz();
-	}
-
-	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return j2WView.biz(service);
-	}
-
 	public J2WView getUI() {
 		return j2WView;
 	}
 
-	public J2WFragment fragment() {
+	public <V extends J2WFragment> V fragment() {
 		return j2WView.fragment();
 	}
 
-	public J2WActivity activity() {
+	public <A extends J2WActivity> A activity() {
 		return j2WView.activity();
 	}
 
-	public J2WDialogFragment dialogFragment() {
+	public <D extends J2WDialogFragment> D dialogFragment() {
 		return j2WView.dialogFragment();
 	}
 

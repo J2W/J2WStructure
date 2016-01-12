@@ -163,11 +163,11 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	 *
 	 * @return
 	 */
-	public B biz() {
+	protected B biz() {
 		return j2WStructureIManage.getBiz();
 	}
 
-	public <C extends J2WIBiz> C biz(Class<C> service) {
+	protected <C extends J2WIBiz> C biz(Class<C> service) {
 		return j2WStructureIManage.biz(service);
 	}
 

@@ -108,6 +108,10 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		J2WHelper.methodsProxy().activityInterceptor().onResume(this);
 	}
 
+	public B getBiz() {
+		return biz();
+	}
+
 	/**
 	 * 设置输入法
 	 * 
@@ -197,11 +201,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 *
 	 * @return
 	 */
-	public B biz() {
+	protected B biz() {
 		return j2WStructureIManage.getBiz();
 	}
 
-	public <C extends J2WIBiz> C biz(Class<C> service) {
+	protected <C extends J2WIBiz> C biz(Class<C> service) {
 		return j2WStructureIManage.biz(service);
 	}
 

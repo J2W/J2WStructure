@@ -48,29 +48,16 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 	 */
 	public abstract void bindData(T t, int position, int count);
 
-	/**
-	 * 获取业务
-	 *
-	 * @param <B>
-	 * @return
-	 */
-	protected <B extends J2WIBiz> B biz() {
-		return j2WView.biz();
-	}
 
-	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return j2WView.biz(service);
-	}
-
-	public J2WFragment fragment() {
+	public <V extends J2WFragment> V fragment() {
 		return j2WView.fragment();
 	}
 
-	public J2WActivity activity() {
+	public <A extends J2WActivity> A activity() {
 		return j2WView.activity();
 	}
 
-	public J2WDialogFragment dialogFragment() {
+	public <D extends J2WDialogFragment > D dialogFragment() {
 		return j2WView.dialogFragment();
 	}
 
