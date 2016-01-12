@@ -156,6 +156,10 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return j2WView.biz();
 	}
 
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return j2WView.biz(service);
+	}
+
 	/**
 	 * 获取fragment
 	 *
@@ -165,6 +169,18 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
 		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
+	}
+
+	public J2WFragment fragment() {
+		return j2WView.fragment();
+	}
+
+	public J2WActivity activity() {
+		return j2WView.activity();
+	}
+
+	public J2WDialogFragment dialogFragment() {
+		return j2WView.dialogFragment();
 	}
 
 	/**

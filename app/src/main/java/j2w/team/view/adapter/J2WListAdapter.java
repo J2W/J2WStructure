@@ -9,7 +9,11 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.J2WIBiz;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
+import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
 
 /**
@@ -173,8 +177,50 @@ public class J2WListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	protected <B extends J2WIBiz> B biz() {
+		return j2WView.biz();
+	}
+
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return j2WView.biz(service);
+	}
+
 	public J2WView getUI() {
 		return j2WView;
+	}
+
+	public J2WFragment fragment() {
+		return j2WView.fragment();
+	}
+
+	public J2WActivity activity() {
+		return j2WView.activity();
+	}
+
+	public J2WDialogFragment dialogFragment() {
+		return j2WView.dialogFragment();
+	}
+
+	/**
+	 * 获取调度
+	 *
+	 * @param e
+	 * @param <E>
+	 * @return
+	 */
+	protected <E extends J2WIDisplay> E display(Class<E> e) {
+		return j2WView.display(e);
+	}
+
+	/**
+	 * 获取fragment
+	 *
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T findFragment(Class<T> clazz) {
+		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
+		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
 	}
 
 	/**

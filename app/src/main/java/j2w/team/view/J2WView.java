@@ -120,6 +120,22 @@ public class J2WView {
 		return b;
 	}
 
+	public <B extends J2WIBiz> B biz(Class<B> service) {
+		B b = null;
+		switch (state) {
+			case STATE_ACTIVITY:
+				b = (B) mJ2WActivity.biz(service);
+				break;
+			case STATE_FRAGMENT:
+				b = (B) mJ2WFragment.biz(service);
+				break;
+			case STATE_DIALOGFRAGMENT:
+				b = (B) mJ2WDialogFragment.biz(service);
+				break;
+		}
+		return b;
+	}
+
 	public <E extends J2WIDisplay> E display(Class<E> display) {
 		E e = null;
 		switch (state) {

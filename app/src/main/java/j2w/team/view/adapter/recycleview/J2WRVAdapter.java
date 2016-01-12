@@ -55,7 +55,6 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
 	}
 
-
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 		V v = newViewHolder(viewGroup, viewType);
 		return v;
@@ -135,6 +134,22 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		return j2WView.biz();
 	}
 
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return j2WView.biz(service);
+	}
+
+	public J2WFragment fragment() {
+		return j2WView.fragment();
+	}
+
+	public J2WActivity activity() {
+		return j2WView.activity();
+	}
+
+	public J2WDialogFragment dialogFragment() {
+		return j2WView.dialogFragment();
+	}
+
 	/**
 	 * 获取fragment
 	 *
@@ -145,9 +160,11 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
 		return (T) j2WView.manager().findFragmentByTag(clazz.getSimpleName());
 	}
-	public J2WView getUI(){
+
+	public J2WView getUI() {
 		return j2WView;
 	}
+
 	/**
 	 * 获取调度
 	 *

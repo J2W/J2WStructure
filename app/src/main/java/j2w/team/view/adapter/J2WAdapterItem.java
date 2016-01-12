@@ -5,6 +5,9 @@ import android.view.View;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
+import j2w.team.view.J2WFragment;
 import j2w.team.view.J2WView;
 
 /**
@@ -53,6 +56,22 @@ public abstract class J2WAdapterItem<T> implements Cloneable {
 	 */
 	protected <B extends J2WIBiz> B biz() {
 		return j2WView.biz();
+	}
+
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return j2WView.biz(service);
+	}
+
+	public J2WFragment fragment() {
+		return j2WView.fragment();
+	}
+
+	public J2WActivity activity() {
+		return j2WView.activity();
+	}
+
+	public J2WDialogFragment dialogFragment() {
+		return j2WView.dialogFragment();
 	}
 
 	public J2WView getUI() {
