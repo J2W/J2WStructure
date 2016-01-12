@@ -1,6 +1,5 @@
 package j2w.team.common.utils;
 
-
 import j2w.team.core.exception.J2WArgumentException;
 import j2w.team.core.exception.J2WIndexOutOfException;
 import j2w.team.core.exception.J2WNullPointerException;
@@ -12,6 +11,18 @@ import j2w.team.core.exception.J2WUINullPointerException;
  * @类描述 检查
  */
 public final class J2WCheckUtils {
+
+	/**
+	 * 验证
+	 *
+	 * @param service
+	 * @param <T>
+	 */
+	public static <T> void validateServiceInterface(Class<T> service) {
+		if (!service.isInterface()) {
+			throw new IllegalArgumentException("该类不是接口");
+		}
+	}
 
 	/**
 	 * 检查是否为空

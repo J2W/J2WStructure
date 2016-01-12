@@ -146,6 +146,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		initData(getArguments());
 	}
 
+	public J2WStructureIManage getStructureManage() {
+		return j2WStructureIManage;
+	}
+
 	@Override public void onResume() {
 		super.onResume();
 		/** 判断EventBus 是否注册 **/
@@ -212,7 +216,6 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	public <C extends J2WIBiz> C biz(Class<C> service) {
 		return j2WStructureIManage.biz(service);
 	}
-
 
 	/**
 	 * 创建menu

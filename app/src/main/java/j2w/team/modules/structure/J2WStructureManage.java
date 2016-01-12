@@ -141,6 +141,18 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		return (B) obj;
 	}
 
+	@Override public <H> H http(Class<H> hClass) {
+		J2WCheckUtils.checkNotNull(hClass, "请指定View接口～");
+		Object obj = stack.get(hClass.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WHelper.httpAdapter().create(hClass);
+			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
+			stack.put(hClass.getSimpleName(), obj);
+		}
+
+		return (H) obj;
+	}
+
 	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 

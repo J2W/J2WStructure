@@ -62,7 +62,7 @@ public final class J2WMethods {
 	 * @return
 	 */
 	<T> T create(final Class<T> service, int type) {
-		validateServiceInterface(service);
+		J2WCheckUtils.validateServiceInterface(service);
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(service, type) {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
@@ -86,17 +86,17 @@ public final class J2WMethods {
 
 
 	public <T> T createUI(final Class<T> service) {
-		validateServiceInterface(service);
+		J2WCheckUtils.validateServiceInterface(service);
 		return create(service, J2WInvocationHandler.TYPE_UI);
 	}
 
 	public <T> T createDisplay(final Class<T> service) {
-		validateServiceInterface(service);
+		J2WCheckUtils.validateServiceInterface(service);
 		return create(service, J2WInvocationHandler.TYPE_DISPLA);
 	}
 
 	public <T> T createBiz(final Class<T> service) {
-		validateServiceInterface(service);
+		J2WCheckUtils.validateServiceInterface(service);
 		return create(service, J2WInvocationHandler.TYPE_BIZ);
 	}
 
@@ -177,60 +177,6 @@ public final class J2WMethods {
 			}
 		}
 		return j2WMethod;
-	}
-
-	/**
-	 * 获取实现类
-	 *
-	 * @param service
-	 * @param <D>
-	 * @return
-	 */
-	<D> Object getImplClass(@NotNull Class<D> service) {
-		validateServiceClass(service);
-		try {
-			// 获取注解
-			Impl impl = service.getAnnotation(Impl.class);
-			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
-			/** 加载类 **/
-			Class clazz = Class.forName(impl.value().getName());
-			J2WCheckUtils.checkNotNull(clazz, "业务类为空～");
-			/** 创建类BIZ **/
-			return clazz.newInstance();
-		} catch (ClassNotFoundException e) {
-			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到业务类！");
-		} catch (java.lang.InstantiationException e) {
-			throw new IllegalArgumentException(String.valueOf(service) + "，实例化异常！");
-		} catch (IllegalAccessException e) {
-			throw new IllegalArgumentException(String.valueOf(service) + "，访问权限异常！");
-		}
-	}
-
-	/**
-	 * 验证
-	 *
-	 * @param service
-	 * @param <T>
-	 */
-	private <T> void validateServiceInterface(Class<T> service) {
-		if (!service.isInterface()) {
-			throw new IllegalArgumentException("该类不是接口");
-		}
-	}
-
-	/**
-	 * 验证类 - 判断是否是一个接口
-	 *
-	 * @param service
-	 * @param <T>
-	 */
-	private <T> void validateServiceClass(Class<T> service) {
-		if (service == null || !service.isInterface()) {
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append(service);
-			stringBuilder.append("，该类不是接口！");
-			throw new IllegalArgumentException(stringBuilder.toString());
-		}
 	}
 
 	public static class Builder {

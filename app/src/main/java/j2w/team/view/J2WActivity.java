@@ -188,6 +188,10 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WStructureIManage.display(eClass);
 	}
 
+	public J2WStructureIManage getStructureManage() {
+		return j2WStructureIManage;
+	}
+
 	/**
 	 * 获取业务
 	 *

@@ -87,6 +87,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentStart(this);
 	}
 
+	public J2WStructureIManage getStructureManage() {
+		return j2WStructureIManage;
+	}
+
 	@Override public void onResume() {
 		super.onResume();
 		/** 判断EventBus 是否注册 **/

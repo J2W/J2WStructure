@@ -51,6 +51,8 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 
 	<B extends J2WIBiz> B biz(Class<B> biz);
 
+	<H> H http(Class<H> hClass);
+
 	/**
 	 * 拦截back 交给 fragment onKeyBack
 	 * 
