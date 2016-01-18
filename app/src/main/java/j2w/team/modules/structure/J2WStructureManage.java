@@ -148,7 +148,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		return obj;
 	}
 
-	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
+	@Override public <B> B biz(Class<B> biz) {
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stack.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
