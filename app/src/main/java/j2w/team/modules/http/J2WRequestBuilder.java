@@ -74,7 +74,7 @@ final class J2WRequestBuilder implements J2WRequestInterceptor.RequestFacade {
 		requestMethod = methodInfo.requestMethod;// 请求方法
 		contentTypeHeader = methodInfo.contentTypeHeader;// 头信息内容类型
 		relativeUrl = methodInfo.requestUrl;// 请求相对路径
-		methodName = J2WMethodInfo.getMethodString(methodInfo.method, methodInfo.method.getParameterTypes());// 方法名
+		methodName = J2WMethodInfo.getMethodString(null, methodInfo.method, methodInfo.method.getParameterTypes());// 方法名
 		/** 初始化-头信息 */
 		if (methodInfo.headers != null) {
 			headers = methodInfo.headers.newBuilder();

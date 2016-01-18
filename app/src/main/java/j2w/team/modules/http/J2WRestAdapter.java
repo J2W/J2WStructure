@@ -145,7 +145,7 @@ public class J2WRestAdapter {
 
 		for (Method method : methods) {
 			if (method.getName().equals(methodName)) {
-				String methodString = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+				String methodString = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
 				client.cancel(methodString);
 			}
 		}
@@ -167,7 +167,7 @@ public class J2WRestAdapter {
 		Method[] methods = service.getMethods();
 
 		for (Method method : methods) {
-			String methodString = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+			String methodString = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
 			client.cancel(methodString);
 		}
 	}

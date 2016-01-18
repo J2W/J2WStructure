@@ -38,7 +38,7 @@ public final class J2WMethod {
 
 	static J2WMethod createBizMethod(J2WMethods j2WMethods, Method method, Class service) {
 		// 键值
-		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		String key = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -53,7 +53,7 @@ public final class J2WMethod {
 		// 默认方法执行
 		int type = TYPE_INVOKE_UI_EXE;
 		// 键值
-		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		String key = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -66,7 +66,7 @@ public final class J2WMethod {
 		// 默认方法执行
 		int type = TYPE_INVOKE_DISPLAY_EXE;
 		// 键值
-		String key = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		String key = J2WMethodInfo.getMethodString(service,method, method.getParameterTypes());
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记

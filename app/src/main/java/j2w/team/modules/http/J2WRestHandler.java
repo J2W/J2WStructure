@@ -37,7 +37,7 @@ public class J2WRestHandler implements InvocationHandler {
 		// 获取方法
 		J2WMethodInfo methodInfo = J2WRestAdapter.getMethodInfo(methodDetailsCache, method);
 
-		String methodString = J2WMethodInfo.getMethodString(method, method.getParameterTypes());
+		String methodString = J2WMethodInfo.getMethodString(null, method, method.getParameterTypes());
 		// 创建请求
 		Request request = j2WRestAdapter.createRequest(methodInfo, serviceName, methodString, args);
 

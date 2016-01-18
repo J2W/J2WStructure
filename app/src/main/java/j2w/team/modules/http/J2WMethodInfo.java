@@ -398,9 +398,13 @@ public final class J2WMethodInfo {
      *
      * @return
      */
-    public static final String getMethodString(Method method, Class[] classes) {
+    public static final String getMethodString(Class service, Method method, Class[] classes) {
         boolean bool = false;
         StringBuilder stringBuilder = new StringBuilder();
+        if(service != null){
+            stringBuilder.append(service.getSimpleName());
+            stringBuilder.append("_");
+        }
         stringBuilder.append(method.getName());
         stringBuilder.append("(");
         for (Class clazz : classes) {
