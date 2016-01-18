@@ -8,6 +8,7 @@ import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
+import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -92,6 +93,9 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 			j2WStructureIManage = ((J2WActivity) object).getStructureManage();
 		} else if (object instanceof J2WDialogFragment) {
 			j2WStructureIManage = ((J2WDialogFragment) object).getStructureManage();
+		} else if( object instanceof J2WService){
+			j2WStructureIManage = ((J2WService) object).getStructureManage();
+
 		}
 		return j2WStructureIManage;
 	}

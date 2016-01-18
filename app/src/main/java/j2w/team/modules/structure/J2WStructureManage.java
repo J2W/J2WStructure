@@ -16,6 +16,7 @@ import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.log.L;
+import j2w.team.service.J2WService;
 import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
@@ -117,6 +118,23 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		detach();
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(dialogFragment.getActivity());
+	}
+
+	@Override public void attachService(J2WService activity) {
+		/** 默认初始化 **/
+		attach();
+		/** 添加到堆栈 **/
+		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
+		/** 初始化 **/
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
+		biz = (B) J2WHelper.createBiz(bizClass);
+	}
+
+	@Override public void detachService(J2WService activity) {
+		/** 默认销毁化 **/
+		detach();
+		/** 从堆栈里移除 **/
+		J2WHelper.screenHelper().popView(activity.getClass().getName());
 	}
 
 	@Override public <D extends J2WIDisplay> D display(Class<D> eClass) {

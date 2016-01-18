@@ -5,6 +5,7 @@ import android.view.View;
 
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -46,6 +47,14 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 	void attachDialogFragment(J2WDialogFragment dialogFragment, View view);
 
 	void detachDialogFragment(J2WDialogFragment dialogFragment);
+
+
+	/**
+	 * service
+	 */
+	void attachService(J2WService activity);
+
+	void detachService(J2WService activity);
 
 	<D extends J2WIDisplay> D display(Class<D> eClass);
 
