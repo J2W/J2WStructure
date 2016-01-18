@@ -111,8 +111,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// 创建对话框
 		Dialog dialog = new Dialog(getActivity(), getJ2WStyle());
-		// 获取参数-设置是否可取消
-		dialog.setCanceledOnTouchOutside(isCancel());
+
 		return dialog;
 	}
 
@@ -138,6 +137,9 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
 		j2WStructureIManage.attachDialogFragment(this, view);
+
+		// 获取参数-设置是否可取消
+		getDialog().setCanceledOnTouchOutside(isCancel());
 		return view;
 	}
 
