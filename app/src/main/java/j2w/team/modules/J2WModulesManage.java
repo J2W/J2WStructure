@@ -5,6 +5,10 @@ import android.view.View;
 
 import com.squareup.picasso.PicassoTools;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 import de.greenrobot.event.EventBus;
 import j2w.team.J2WApplication;
 import j2w.team.modules.methodProxy.J2WMethods;
@@ -51,8 +55,11 @@ public class J2WModulesManage {
 
 	private J2WMethods				j2WMethods;			// 方法代理
 
+	private Map<String, Object>		stack;
+
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = j2WApplication;
+		this.stack = new Hashtable<>();
 	}
 
 	public J2WApplication getJ2WApplication() {
@@ -82,6 +89,10 @@ public class J2WModulesManage {
 
 	public J2WRestAdapter getJ2WRestAdapter() {
 		return this.mJ2WRestAdapter;
+	}
+
+	public Map<String, Object> getStatck() {
+		return stack;
 	}
 
 	public EventBus getBus() {

@@ -7,6 +7,8 @@ import android.view.View;
 import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
+import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
@@ -77,6 +79,17 @@ public class J2WHelper {
 	 */
 	public static final <T> T createDisplay(Class<T> service) {
 		return methodsProxy().createDisplay(service);
+	}
+
+	public static final <B> B BIZ(Class<B> service) {
+		J2WCheckUtils.checkNotNull(service, "请指定业务接口～");
+		Object obj = mJ2WModulesManage.getStatck().get(service.getSimpleName());
+		if (obj == null) {// 如果没有索索到
+			obj = J2WHelper.createBiz(service);
+			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
+			mJ2WModulesManage.getStatck().put(service.getSimpleName(), obj);
+		}
+		return (B) obj;
 	}
 
 	/**

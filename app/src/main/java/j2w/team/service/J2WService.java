@@ -47,11 +47,11 @@ public abstract class J2WService<B extends J2WIBiz> extends Service {
 		initData();
 	}
 
-	protected B biz() {
+	public B biz() {
 		return j2WStructureIManage.getBiz();
 	}
 
-	protected <C extends J2WIBiz> C biz(Class<C> service) {
+	public <C extends J2WIBiz> C biz(Class<C> service) {
 		return j2WStructureIManage.biz(service);
 	}
 

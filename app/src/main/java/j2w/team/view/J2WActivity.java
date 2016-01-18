@@ -201,11 +201,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 *
 	 * @return
 	 */
-	protected B biz() {
+	public B biz() {
 		return j2WStructureIManage.getBiz();
 	}
 
-	protected <C extends J2WIBiz> C biz(Class<C> service) {
+	public <C extends J2WIBiz> C biz(Class<C> service) {
 		return j2WStructureIManage.biz(service);
 	}
 
