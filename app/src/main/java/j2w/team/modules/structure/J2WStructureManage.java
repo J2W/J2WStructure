@@ -66,6 +66,8 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(),biz);
+
 	}
 
 	@Override public void detachActivity(J2WActivity activity) {
@@ -87,6 +89,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(),biz);
 	}
 
 	@Override public void detachFragment(J2WFragment fragment) {
@@ -108,6 +111,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(dialogFragment.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(),biz);
 	}
 
 	@Override public void detachDialogFragment(J2WDialogFragment dialogFragment) {
@@ -128,6 +132,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(),biz);
 	}
 
 	@Override public void detachService(J2WService activity) {
@@ -155,6 +160,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 			obj = J2WHelper.createBiz(biz);
 			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
 			stack.put(biz.getSimpleName(), obj);
+
 		}
 		return (B) obj;
 	}
@@ -167,7 +173,6 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
 			stack.put(hClass.getSimpleName(), obj);
 		}
-
 		return (H) obj;
 	}
 
