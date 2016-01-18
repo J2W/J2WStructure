@@ -30,7 +30,7 @@ import j2w.team.view.J2WView;
 public class J2WDisplay implements J2WIDisplay {
 
 	@Override public Context context() {
-		return J2WHelper.getInstance();
+		return J2WHelper.screenHelper().currentActivity();
 	}
 
 	@Override public J2WActivity activity() {

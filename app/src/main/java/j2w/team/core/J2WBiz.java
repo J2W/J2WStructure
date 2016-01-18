@@ -55,7 +55,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	protected <B extends J2WIBiz> B biz() {
 		J2WCheckUtils.checkNotNull(this.getClass().getInterfaces()[0], "display接口不能为空");
 		J2WCheckUtils.validateServiceInterface(this.getClass().getInterfaces()[0]);
-		return (B) structureManage(UI).biz(this.getClass().getInterfaces()[0]);
+		return (B) structureManage(UI).getBiz();
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
