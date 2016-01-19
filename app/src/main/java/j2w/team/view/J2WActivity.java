@@ -63,14 +63,16 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 */
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		/** 初始化结构 **/
+		j2WStructureIManage = new J2WStructureManage();
+		/** 初始化业务 **/
+		j2WStructureIManage.attachABiz(this);
 		/** 初始化视图 **/
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		j2WBuilder = new J2WBuilder(this, inflater);
 		setContentView(build(j2WBuilder).create());
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化结构 **/
-		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
 		j2WStructureIManage.attachActivity(this);
 		/** 初始化 **/

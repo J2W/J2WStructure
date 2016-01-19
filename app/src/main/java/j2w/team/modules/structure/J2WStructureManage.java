@@ -37,37 +37,48 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 
 	private B					biz;
 
-	@Override public B getBiz() {
-		return biz;
-	}
-
-	@Override public void attach() {
+	public J2WStructureManage() {
 		/** 初始化集合 **/
 		stack = new HashMap<>();
 		stackDisplay = new HashMap<>();
 	}
 
+	@Override public B getBiz() {
+		return biz;
+	}
+
 	@Override public void detach() {
-		/** 清除 **/
+
+		if (stack != null) {
+			stack.clear();
+			stack = null;
+		}
+
+		if (stackDisplay != null) {
+			stackDisplay.clear();
+			stackDisplay = null;
+		}
+
 		if (biz != null) {
 			biz.detach();
 			biz = null;
 		}
 	}
 
+	@Override public void attachABiz(J2WActivity activity) {
+		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
+		/** 初始化 **/
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
+		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(), biz);
+	}
+
 	@Override public void attachActivity(J2WActivity activity) {
-		/** 默认初始化 **/
-		attach();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(activity);
 		/** 添加到堆栈 **/
 		J2WHelper.screenHelper().pushActivity(activity);
 		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
-		stack.put(bizClass.getSimpleName(),biz);
-
 	}
 
 	@Override public void detachActivity(J2WActivity activity) {
@@ -80,16 +91,17 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WHelper.screenHelper().popView(activity.getClass().getName());
 	}
 
-	@Override public void attachFragment(J2WFragment fragment, View view) {
-		/** 默认初始化 **/
-		attach();
-		/** 初始化所有组建 **/
-		ButterKnife.bind(fragment, view);
+	@Override public void attachFBiz(J2WFragment fragment) {
 		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
-		stack.put(bizClass.getSimpleName(),biz);
+		stack.put(bizClass.getSimpleName(), biz);
+	}
+
+	@Override public void attachFragment(J2WFragment fragment, View view) {
+		/** 初始化所有组建 **/
+		ButterKnife.bind(fragment, view);
 	}
 
 	@Override public void detachFragment(J2WFragment fragment) {
@@ -102,16 +114,17 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WKeyboardUtils.hideSoftInput(fragment.getActivity());
 	}
 
+	@Override public void attachDBiz(J2WDialogFragment fragment) {
+		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
+		/** 初始化 **/
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
+		biz = (B) J2WHelper.createBiz(bizClass);
+		stack.put(bizClass.getSimpleName(), biz);
+	}
+
 	@Override public void attachDialogFragment(J2WDialogFragment dialogFragment, View view) {
-		/** 默认初始化 **/
-		attach();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(dialogFragment, view);
-		J2WHelper.screenHelper().pushView(dialogFragment.getClass().getName(), dialogFragment);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(dialogFragment.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
-		stack.put(bizClass.getSimpleName(),biz);
 	}
 
 	@Override public void detachDialogFragment(J2WDialogFragment dialogFragment) {
@@ -125,14 +138,12 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 	}
 
 	@Override public void attachService(J2WService activity) {
-		/** 默认初始化 **/
-		attach();
 		/** 添加到堆栈 **/
 		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
 		biz = (B) J2WHelper.createBiz(bizClass);
-		stack.put(bizClass.getSimpleName(),biz);
+		stack.put(bizClass.getSimpleName(), biz);
 	}
 
 	@Override public void detachService(J2WService activity) {

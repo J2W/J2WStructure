@@ -17,64 +17,69 @@ import j2w.team.view.J2WFragment;
  */
 public interface J2WStructureIManage<B extends J2WIBiz> {
 
-	B getBiz();
+    B getBiz();
 
-	/**
-	 * deafualt
-	 */
+    /**
+     * deafualt
+     */
 
-	void attach();
+    void detach();
 
-	void detach();
+    /**
+     * activity
+     */
+    void attachABiz(J2WActivity activity);
 
-	/**
-	 * activity
-	 */
-	void attachActivity(J2WActivity activity);
+    void attachActivity(J2WActivity activity);
 
-	void detachActivity(J2WActivity activity);
+    void detachActivity(J2WActivity activity);
 
-	/**
-	 * fragment
-	 */
-	void attachFragment(J2WFragment fragment, View view);
+    /**
+     * fragment
+     */
+    void attachFBiz(J2WFragment fragment);
 
-	void detachFragment(J2WFragment fragment);
+    void attachFragment(J2WFragment fragment, View view);
 
-	/**
-	 * dialogfragment
-	 */
-	void attachDialogFragment(J2WDialogFragment dialogFragment, View view);
+    void detachFragment(J2WFragment fragment);
 
-	void detachDialogFragment(J2WDialogFragment dialogFragment);
+    /**
+     * dialogfragment
+     */
+    void attachDBiz(J2WDialogFragment fragment);
+
+    void attachDialogFragment(J2WDialogFragment dialogFragment, View view);
+
+    void detachDialogFragment(J2WDialogFragment dialogFragment);
 
 
-	/**
-	 * service
-	 */
-	void attachService(J2WService activity);
+    /**
+     * service
+     */
+    void attachService(J2WService activity);
 
-	void detachService(J2WService activity);
+    void detachService(J2WService activity);
 
-	<D extends J2WIDisplay> D display(Class<D> eClass);
+    <D extends J2WIDisplay> D display(Class<D> eClass);
 
-	<B> B biz(Class<B> biz);
+    <B> B biz(Class<B> biz);
 
-	<H> H http(Class<H> hClass);
+    <H> H http(Class<H> hClass);
 
-	/**
-	 * 拦截back 交给 fragment onKeyBack
-	 * 
-	 * @param keyCode
-	 * @param fragmentManager
-	 * @return
-	 */
-	boolean onKeyBack(int keyCode, FragmentManager fragmentManager);
+    /**
+     * 拦截back 交给 fragment onKeyBack
+     *
+     * @param keyCode
+     * @param fragmentManager
+     * @return
+     */
+    boolean onKeyBack(int keyCode, FragmentManager fragmentManager);
 
-	/**
-	 * 打印堆栈内容
-	 * 
-	 * @param fragmentManager
-	 */
-	void printBackStackEntry(FragmentManager fragmentManager);
+    /**
+     * 打印堆栈内容
+     *
+     * @param fragmentManager
+     */
+    void printBackStackEntry(FragmentManager fragmentManager);
+
 }

@@ -111,7 +111,6 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	@Override public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// 创建对话框
 		Dialog dialog = new Dialog(getActivity(), getJ2WStyle());
-
 		return dialog;
 	}
 
@@ -128,13 +127,15 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		/** 初始化结构 **/
+		j2WStructureIManage = new J2WStructureManage();
+		/** 初始化业务 **/
+		j2WStructureIManage.attachDBiz(this);
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化结构 **/
-		j2WStructureIManage = new J2WStructureManage();
 		/** 初始化业务 **/
 		j2WStructureIManage.attachDialogFragment(this, view);
 
