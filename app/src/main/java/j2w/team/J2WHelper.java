@@ -10,6 +10,7 @@ import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
+import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
@@ -19,6 +20,7 @@ import j2w.team.modules.screen.J2WIScreenManager;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
 import j2w.team.modules.toast.J2WToast;
+import j2w.team.view.J2WActivity;
 
 /**
  * Created by sky on 15/1/28. helper 管理
@@ -79,6 +81,11 @@ public class J2WHelper {
 	 */
 	public static final <T> T createDisplay(Class<T> service) {
 		return methodsProxy().createDisplay(service);
+	}
+
+	public static  <D extends J2WIDisplay> D display(Class<D> eClass) {
+		J2WActivity j2WActivity = mJ2WModulesManage.getJ2WScreenManager().currentActivity();
+		return (D) j2WActivity.display(eClass);
 	}
 
 	public static final <B> B BIZ(Class<B> service) {
