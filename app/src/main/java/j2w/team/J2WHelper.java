@@ -7,9 +7,12 @@ import android.view.View;
 import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
+import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
@@ -17,10 +20,14 @@ import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.screen.J2WIScreenManager;
+import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
 import j2w.team.modules.toast.J2WToast;
+import j2w.team.service.J2WService;
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WDialogFragment;
+import j2w.team.view.J2WFragment;
 
 /**
  * Created by sky on 15/1/28. helper 管理
@@ -83,20 +90,52 @@ public class J2WHelper {
 		return methodsProxy().createDisplay(service);
 	}
 
-	public static  <D extends J2WIDisplay> D display(Class<D> eClass) {
+	public static <D extends J2WIDisplay> D display(Class<D> eClass) {
 		J2WActivity j2WActivity = mJ2WModulesManage.getJ2WScreenManager().currentActivity();
 		return (D) j2WActivity.display(eClass);
 	}
 
-	public static final <B> B BIZ(Class<B> service) {
+	public static final <B> B biz(Class<B> service) {
 		J2WCheckUtils.checkNotNull(service, "请指定业务接口～");
-		Object obj = mJ2WModulesManage.getStatck().get(service.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createBiz(service);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			mJ2WModulesManage.getStatck().put(service.getSimpleName(), obj);
+		Object biz = mJ2WModulesManage.getStatck().get(service.getSimpleName());
+		if (biz == null) {// 如果没有索索到
+			Impl impl = service.getAnnotation(Impl.class);
+			Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
+			Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
+			if (uiImpl == null) {
+				biz = J2WHelper.createBiz(service);
+			} else {
+				Object ui = J2WHelper.UI(uiImpl.value().getName());
+				if (ui == null) {
+					throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
+				}
+				biz = structureManage(ui).biz(service);
+				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+			}
+			J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+			mJ2WModulesManage.getStatck().put(service.getSimpleName(), biz);
 		}
-		return (B) obj;
+		return (B) biz;
+	}
+
+	/**
+	 * 获取结构管理器
+	 *
+	 * @return
+	 */
+	public static final J2WStructureIManage structureManage(Object object) {
+		J2WStructureIManage j2WStructureIManage = null;
+		if (object instanceof J2WFragment) {
+			j2WStructureIManage = ((J2WFragment) object).getStructureManage();
+		} else if (object instanceof J2WActivity) {
+			j2WStructureIManage = ((J2WActivity) object).getStructureManage();
+		} else if (object instanceof J2WDialogFragment) {
+			j2WStructureIManage = ((J2WDialogFragment) object).getStructureManage();
+		} else if (object instanceof J2WService) {
+			j2WStructureIManage = ((J2WService) object).getStructureManage();
+
+		}
+		return j2WStructureIManage;
 	}
 
 	/**

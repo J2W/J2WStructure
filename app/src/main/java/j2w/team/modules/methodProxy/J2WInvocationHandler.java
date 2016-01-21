@@ -2,7 +2,9 @@ package j2w.team.modules.methodProxy;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -66,15 +68,21 @@ public abstract class J2WInvocationHandler<T> implements InvocationHandler {
 			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
 			/** 加载类 **/
 			Class clazz = Class.forName(impl.value().getName());
+			Constructor c = clazz.getDeclaredConstructor();
+			c.setAccessible(true);
 			J2WCheckUtils.checkNotNull(clazz, "业务类为空～");
 			/** 创建类BIZ **/
-			return clazz.newInstance();
+			return c.newInstance();
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到业务类！");
 		} catch (java.lang.InstantiationException e) {
 			throw new IllegalArgumentException(String.valueOf(service) + "，实例化异常！");
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(String.valueOf(service) + "，访问权限异常！");
+		} catch (NoSuchMethodException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到构造方法！");
+		} catch (InvocationTargetException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，反射异常！");
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 
 import j2w.team.J2WHelper;
 import j2w.team.core.J2WRunnable;
+import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.core.plugin.J2WEndInterceptor;
 import j2w.team.core.plugin.J2WErrorInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
@@ -66,7 +67,7 @@ public final class J2WMethod {
 		// 默认方法执行
 		int type = TYPE_INVOKE_DISPLAY_EXE;
 		// 键值
-		String key = J2WMethodInfo.getMethodString(service,method, method.getParameterTypes());
+		String key = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -263,6 +264,9 @@ public final class J2WMethod {
 			for (J2WHttpErrorInterceptor item : j2WMethods.j2WHttpErrorInterceptor) {
 				item.methodError(implName, service, method, interceptor, (J2WError) throwable);
 			}
+		} else if (throwable instanceof J2WNotUIPointerException) {
+			//忽略
+			return;
 		} else {
 			// 业务错误拦截器
 			for (J2WErrorInterceptor item : j2WMethods.j2WErrorInterceptor) {

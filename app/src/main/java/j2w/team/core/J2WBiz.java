@@ -6,6 +6,7 @@ import java.util.Map;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.service.J2WService;
@@ -37,28 +38,28 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	protected <H> H http(Class<H> hClass) {
 		J2WCheckUtils.checkNotNull(hClass, "请指定View接口～");
 		J2WCheckUtils.validateServiceInterface(hClass);
-		return (H) structureManage(UI).http(hClass);
+		return (H) J2WHelper.structureManage(UI).http(hClass);
 	}
 
 	protected <I> I createImpl(Class<I> inter) {
 		J2WCheckUtils.checkNotNull(inter, "请指定View接口～");
 		J2WCheckUtils.validateServiceInterface(inter);
-		return (I) structureManage(UI).biz(inter);
+		return (I) J2WHelper.structureManage(UI).biz(inter);
 	}
 
 	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
 		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
 		J2WCheckUtils.validateServiceInterface(eClass);
-		return (D) structureManage(UI).display(eClass);
+		return (D) J2WHelper.structureManage(UI).display(eClass);
 	}
 
-	protected <B extends J2WIBiz> B biz() {
+	private <B extends J2WIBiz> B biz() {
 		J2WCheckUtils.checkNotNull(this.getClass().getInterfaces()[0], "display接口不能为空");
 		J2WCheckUtils.validateServiceInterface(this.getClass().getInterfaces()[0]);
-		return (B) structureManage(UI).getBiz();
+		return (B) J2WHelper.structureManage(UI).getBiz();
 	}
 
-	public <C extends J2WIBiz> C biz(Class<C> service) {
+	public <C> C biz(Class<C> service) {
 		J2WCheckUtils.checkNotNull(service, "请指定View接口～");
 		J2WCheckUtils.validateServiceInterface(this.getClass().getInterfaces()[0]);
 
@@ -71,33 +72,21 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 			Impl impl = service.getAnnotation(Impl.class);
 			Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
 			Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-			Object ui = J2WHelper.UI(uiImpl.value().getName());
-			biz = structureManage(ui).biz(service);
-			J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+			if(uiImpl == null){
+				biz = J2WHelper.createBiz(service);
+			}else{
+				Object ui = J2WHelper.UI(uiImpl.value().getName());
+				if(ui == null){
+					throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
+				}
+				biz = J2WHelper.structureManage(ui).biz(service);
+				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+			}
+
 			stack.put(service.getSimpleName(), biz);
 		}
 
 		return (C) biz;
-	}
-
-	/**
-	 * 获取结构管理器
-	 * 
-	 * @return
-	 */
-	private J2WStructureIManage structureManage(Object object) {
-		J2WStructureIManage j2WStructureIManage = null;
-		if (object instanceof J2WFragment) {
-			j2WStructureIManage = ((J2WFragment) object).getStructureManage();
-		} else if (object instanceof J2WActivity) {
-			j2WStructureIManage = ((J2WActivity) object).getStructureManage();
-		} else if (object instanceof J2WDialogFragment) {
-			j2WStructureIManage = ((J2WDialogFragment) object).getStructureManage();
-		} else if( object instanceof J2WService){
-			j2WStructureIManage = ((J2WService) object).getStructureManage();
-
-		}
-		return j2WStructureIManage;
 	}
 
 	/**
