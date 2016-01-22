@@ -100,7 +100,7 @@ public abstract class J2WProperties {
 	 * @return
 	 */
 	public File getPropertyFilePath() {
-		return J2WHelper.getInstance().getApplicationContext().getCacheDir();// 存储到/DATA/DATA/
+		return J2WHelper.getInstance().getApplicationContext().getFilesDir();// 存储到/DATA/DATA/
 	}
 
 	/**

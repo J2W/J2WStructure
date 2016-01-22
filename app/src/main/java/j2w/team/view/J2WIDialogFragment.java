@@ -1,4 +1,4 @@
-package j2w.team.modules.dialog.provided;
+package j2w.team.view;
 
 import android.app.Activity;
 import android.support.v4.app.DialogFragment;

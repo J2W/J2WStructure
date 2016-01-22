@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package j2w.team.modules.dialog.iface;
+package j2w.team.view;
 
 /**
  * 所有dialog取消回调接口

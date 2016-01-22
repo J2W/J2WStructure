@@ -3,6 +3,8 @@ package j2w.team.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -29,8 +33,6 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
-import j2w.team.modules.dialog.iface.IDialogCancelListener;
-import j2w.team.modules.dialog.provided.J2WIDialogFragment;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.structure.R;
@@ -93,6 +95,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		return false;
 	}
 
+	protected boolean isFull() {
+		return false;
+	}
+
 	/**
 	 * 是否设置目标活动
 	 *
@@ -146,6 +152,12 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		if (isFull()) {
+			Window window = getDialog().getWindow();
+			window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+		}
+
 		initData(getArguments());
 	}
 
