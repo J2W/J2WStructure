@@ -212,7 +212,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager())) {
+		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager(),this)) {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -343,5 +343,10 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	protected J2WViewPager viewPager() {
 		return j2WBuilder.getViewPager();
+	}
+
+	public boolean onKeyBack() {
+		onBackPressed();
+		return true;
 	}
 }

@@ -71,9 +71,10 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
      *
      * @param keyCode
      * @param fragmentManager
+     * @param bj2WActivity
      * @return
      */
-    boolean onKeyBack(int keyCode, FragmentManager fragmentManager);
+    boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity<B> bj2WActivity);
 
     /**
      * 打印堆栈内容

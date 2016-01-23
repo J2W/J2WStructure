@@ -187,7 +187,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		return (H) obj;
 	}
 
-	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager) {
+	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity<B> bj2WActivity) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 
 			int idx = fragmentManager.getBackStackEntryCount();
@@ -202,6 +202,9 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 				if (j2WFragment != null) {
 					return j2WFragment.onKeyBack();
 				}
+			}
+			if (bj2WActivity != null) {
+				return bj2WActivity.onKeyBack();
 			}
 		}
 		return false;
