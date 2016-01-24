@@ -41,7 +41,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 		return (H) J2WHelper.structureManage(UI).http(hClass);
 	}
 
-	protected <I> I createImpl(Class<I> inter) {
+	protected <I> I impl(Class<I> inter) {
 		J2WCheckUtils.checkNotNull(inter, "请指定View接口～");
 		J2WCheckUtils.validateServiceInterface(inter);
 		return (I) J2WHelper.structureManage(UI).biz(inter);
