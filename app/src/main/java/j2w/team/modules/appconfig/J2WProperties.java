@@ -12,8 +12,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
+import android.content.Context;
 import android.content.res.Resources;
-
 
 import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -73,19 +73,21 @@ public abstract class J2WProperties {
 	 */
 	private PropertyCallback		propertyCallback;
 
+	private J2WProperties(){
+	}
 	/**
 	 * 构造函数
 	 */
-	public J2WProperties() {
-		this("config");
+	public J2WProperties(Context context) {
+		this(context, "config");
 	}
 
-	public J2WProperties(String propertiesFileName) {
+	public J2WProperties(Context context, String propertiesFileName) {
 		propertyFilePath = getPropertyFilePath();
 		mPropertiesFileName = propertiesFileName;
 		switch (initType()) {
 			case OPEN_TYPE_ASSETS:
-				Resources mResources = J2WHelper.getInstance().getApplicationContext().getResources();
+				Resources mResources = context.getResources();
 				openAssetProperties(mResources);
 				break;
 			case OPEN_TYPE_DATA:
