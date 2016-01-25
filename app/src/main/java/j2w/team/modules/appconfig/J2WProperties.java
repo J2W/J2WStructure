@@ -17,7 +17,6 @@ import android.content.res.Resources;
 
 import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.J2WHelper;
 
 /**
  * Created by sky on 9/10/14. 临时信息存储
@@ -73,8 +72,10 @@ public abstract class J2WProperties {
 	 */
 	private PropertyCallback		propertyCallback;
 
-	private J2WProperties(){
-	}
+	private Context					context;
+
+	private J2WProperties() {}
+
 	/**
 	 * 构造函数
 	 */
@@ -83,6 +84,7 @@ public abstract class J2WProperties {
 	}
 
 	public J2WProperties(Context context, String propertiesFileName) {
+		this.context = context;
 		propertyFilePath = getPropertyFilePath();
 		mPropertiesFileName = propertiesFileName;
 		switch (initType()) {
@@ -102,7 +104,7 @@ public abstract class J2WProperties {
 	 * @return
 	 */
 	public File getPropertyFilePath() {
-		return J2WHelper.getInstance().getApplicationContext().getFilesDir();// 存储到/DATA/DATA/
+		return context.getFilesDir();// 存储到/DATA/DATA/
 	}
 
 	/**
