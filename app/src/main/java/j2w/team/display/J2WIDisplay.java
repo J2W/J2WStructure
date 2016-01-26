@@ -66,7 +66,7 @@ public interface J2WIDisplay {
 
 	void commitReplace(Fragment fragment);
 
-	void commitChildReplace(Fragment srcFragment,int layoutId, Fragment fragment);
+	void commitChildReplace(Fragment srcFragment, int layoutId, Fragment fragment);
 
 	void commitReplace(int layoutId, Fragment fragment);
 
@@ -99,4 +99,16 @@ public interface J2WIDisplay {
 	void intentForResult(Intent intent, Bundle options, int requestCode);
 
 	void intentAnimation(Class clazz, View view, Bundle bundle);
+
+	void intentAnimation(Class clazz, int in, int out);
+
+	void intentAnimation(Class clazz, int in, int out, Bundle bundle);
+
+	void intentForResultAnimation(Class clazz, View view,int requestCode);
+
+	void intentForResultAnimation(Class clazz, View view, Bundle bundle,int requestCode);
+
+	void intentForResultAnimation(Class clazz, int in, int out,int requestCode);
+
+	void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle,int requestCode);
 }

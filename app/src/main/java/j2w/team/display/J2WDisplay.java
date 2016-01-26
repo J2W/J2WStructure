@@ -44,17 +44,6 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void intentFromFragment(Intent intent, Fragment fragment, int requestCode) {
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("从 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		stringBuilder.append(" 跳转到 ");
-		ComponentName component = intent.getComponent();
-		stringBuilder.append(component == null ? "" : component.getClassName());
-		stringBuilder.append(" Tag :");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-
-		L.i(stringBuilder.toString());
 		activity().startActivityFromFragment(fragment, intent, requestCode);
 	}
 
@@ -68,13 +57,6 @@ public class J2WDisplay implements J2WIDisplay {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
 	}
 
 	@Override public void commitReplace(Fragment fragment) {
@@ -86,13 +68,6 @@ public class J2WDisplay implements J2WIDisplay {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 		srcFragment.getChildFragmentManager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
 	}
 
 	@Override public void commitReplace(int layoutId, Fragment fragment) {
@@ -100,13 +75,6 @@ public class J2WDisplay implements J2WIDisplay {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
 		activity().getSupportFragmentManager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
 	}
 
 	@Override public void commitBackStack(Fragment fragment) {
@@ -119,16 +87,6 @@ public class J2WDisplay implements J2WIDisplay {
 		transaction.hide(srcFragment);
 		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(srcFragment.getClass().getSimpleName());
-		stringBuilder.append(" 隐藏，仅仅是设为不可见，并不会销毁, ");
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
 	}
 
 	@Override public void commitDetachAndBackStack(Fragment srcFragment, Fragment fragment) {
@@ -137,16 +95,6 @@ public class J2WDisplay implements J2WIDisplay {
 		transaction.detach(srcFragment);
 		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(srcFragment.getClass().getSimpleName());
-		stringBuilder.append(" UI中移除 状态依然由FragmentManger维护, ");
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
 	}
 
 	@Override public void commitBackStack(int layoutId, Fragment fragment) {
@@ -155,13 +103,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
 				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getSimpleName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getSimpleName());
-		L.i(stringBuilder.toString());
+
 	}
 
 	@Override public void commitBackStack(int layoutId, Fragment fragment, int animation) {
@@ -171,13 +113,6 @@ public class J2WDisplay implements J2WIDisplay {
 
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
 				.setTransition(animation != 0 ? animation : FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("fragment: ");
-		stringBuilder.append(fragment.getClass().getName());
-		stringBuilder.append(" 提交到 ");
-		stringBuilder.append(activity().getClass().getName());
-		L.i(stringBuilder.toString());
 	}
 
 	/** 跳转intent **/
@@ -216,12 +151,6 @@ public class J2WDisplay implements J2WIDisplay {
 	/** 根据某个View 位置 启动跳转动画 **/
 
 	@Override public void intentAnimation(Class clazz, View view, Bundle bundle) {
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("从 ");
-		stringBuilder.append(activity().getClass().getName());
-		stringBuilder.append(" 跳转到 ");
-		stringBuilder.append(clazz.getName());
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		if (bundle != null) {
@@ -230,16 +159,41 @@ public class J2WDisplay implements J2WIDisplay {
 		ActivityCompat.startActivity(activity(), intent, ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
 	}
 
+	@Override public void intentAnimation(Class clazz, int in, int out) {
+		intent(clazz);
+		activity().overridePendingTransition(in,out);
+	}
+
+	@Override public void intentAnimation(Class clazz, int in, int out, Bundle bundle) {
+		intent(clazz,bundle);
+		activity().overridePendingTransition(in,out);
+	}
+
+	@Override public void intentForResultAnimation(Class clazz, View view,int requestCode) {
+		intentForResultAnimation(clazz, view, null, requestCode);
+	}
+
+	@Override public void intentForResultAnimation(Class clazz, View view, Bundle bundle,int requestCode) {
+		Intent intent = new Intent();
+		intent.setClass(activity(), clazz);
+		if (bundle != null) {
+			intent.putExtras(bundle);
+		}
+		ActivityCompat.startActivityForResult(activity(), intent, requestCode, ActivityOptionsCompat.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
+
+	}
+
+	@Override public void intentForResultAnimation(Class clazz, int in, int out,int requestCode) {
+		intentForResultAnimation(clazz,in,out,null,requestCode);
+	}
+
+	@Override public void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle,int requestCode) {
+		intentForResult(clazz,bundle,requestCode);
+		activity().overridePendingTransition(in,out);
+	}
+
 	@Override @TargetApi(Build.VERSION_CODES.JELLY_BEAN) public void intentForResult(Intent intent, Bundle options, int requestCode) {
 		J2WCheckUtils.checkNotNull(intent, "intent不能为空～");
-		L.tag("J2WDisplay");
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("从 ");
-		stringBuilder.append(activity().getClass().getName());
-		stringBuilder.append(" 跳转到 ");
-		ComponentName component = intent.getComponent();
-		stringBuilder.append(component == null ? "" : component.getClassName());
-		L.i(stringBuilder.toString());
 		if (options != null) {
 			intent.putExtras(options);
 		}
