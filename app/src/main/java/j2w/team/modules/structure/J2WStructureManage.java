@@ -196,16 +196,12 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 				Object view = fragmentManager.findFragmentByTag(entry.getName());
 				if (view instanceof J2WFragment) {
 					return ((J2WFragment)view).onKeyBack();
-				}else if(view instanceof J2WDialogFragment){
-					return ((J2WDialogFragment)view).onKeyBack();
 				}
 			} else {
 
 				Object view = fragmentManager.findFragmentById(R.id.j2w_home);
 				if (view instanceof J2WFragment) {
 					return ((J2WFragment)view).onKeyBack();
-				}else if(view instanceof J2WDialogFragment){
-					return ((J2WDialogFragment)view).onKeyBack();
 				}
 			}
 			if (bj2WActivity != null) {
