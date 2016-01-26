@@ -1006,6 +1006,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						}
 					}
 				});
+			}else{
 			}
 
 			toolbarRoot.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -1044,6 +1045,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			if (getToolbarMenuId() > 0) {
 				toolbar.inflateMenu(getToolbarMenuId());
 			}
+
 			return view;
 		} else {
 			view.setId(R.id.j2w_home);

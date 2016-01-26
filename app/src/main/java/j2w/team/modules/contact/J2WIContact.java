@@ -7,6 +7,7 @@ import java.util.List;
 import j2w.team.core.Impl;
 import j2w.team.modules.contact.bean.ContactDetailModel;
 import j2w.team.modules.contact.bean.ContactModel;
+import j2w.team.modules.contact.bean.ContactUser;
 
 /**
  * @创建人 sky
@@ -99,6 +100,13 @@ public interface J2WIContact extends J2WIWriteContact {
 	List<String> getAllPhoneDetailIDs();
 
 	/**
+	 * 获取所有用户
+	 * 
+	 * @return
+	 */
+	List<ContactUser> getAllUser();
+
+	/**
 	 * 获取联系人ID - 根据版本
 	 * 
 	 * @param version
@@ -140,7 +148,7 @@ public interface J2WIContact extends J2WIWriteContact {
 	long getLastTime();
 
 	/**
-	 * 根据ID 获取实力
+	 * 根据ID 获取详细数据
 	 * 
 	 * @param id
 	 * @return

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import j2w.team.modules.contact.bean.ContactUser;
 import j2w.team.modules.log.L;
 import j2w.team.modules.contact.bean.ContactAddress;
 import j2w.team.modules.contact.bean.ContactDetailModel;
@@ -275,6 +276,28 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contacts;
 	}
 
+	@Override public List<ContactUser> getAllUser() {
+		List<ContactUser> contacts = new ArrayList<>();
+
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("%");
+		stringBuilder.append("");
+		stringBuilder.append("%");
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
+		ContactUser contactUser;
+		if (idCursor.moveToFirst()) {
+			do {
+				contactUser = new ContactUser();
+				contactUser.contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
+				contactUser.name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
+				contacts.add(contactUser);
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
 	@Override public List<String> getAllPhoneDetailIDs(int version) {
 		List<String> contacts = new ArrayList<>();
 
@@ -283,8 +306,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append("");
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { stringBuilder.toString(),
-				String.valueOf(version) }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.NAME_RAW_CONTACT_ID + " > ?",
+				new String[] { stringBuilder.toString(), String.valueOf(version) }, null);
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
@@ -303,8 +326,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append("");
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " > ?", new String[] { stringBuilder.toString(),
-				String.valueOf(time) }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " > ?", new String[] {
+				stringBuilder.toString(), String.valueOf(time) }, null);
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
@@ -351,7 +374,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) }, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " desc");
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) },
+				Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " desc");
 		ContactDetailModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
