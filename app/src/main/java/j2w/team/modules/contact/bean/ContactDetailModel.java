@@ -73,11 +73,6 @@ public class ContactDetailModel implements Cloneable {
 	public List<ContactIM>		contactIMs;
 
 	/**
-	 * 邮件
-	 */
-	public List<ContactEmail>	contactEmails;
-
-	/**
 	 * 地址
 	 */
 	public List<ContactAddress>	contactAddresses;
@@ -108,7 +103,7 @@ public class ContactDetailModel implements Cloneable {
 	@Override public String toString() {
 		return "ContactDetailModel{" + "name='" + name + '\'' + ", nickname='" + nickname + '\'' + ", organization='" + organization + '\'' + ", networkPhone='" + networkPhone + '\'' + ", birthday='"
 				+ birthday + '\'' + ", lunarBirthday='" + lunarBirthday + '\'' + ", note='" + note + '\'' + ", contactId='" + contactId + '\'' + ", photo=" + photo + ", emailAddresses="
-				+ emailAddresses + ", phoneNumbers=" + phoneNumbers + ", contactIMs=" + contactIMs + ", contactEmails=" + contactEmails + ", contactAddresses=" + contactAddresses
+				+ emailAddresses + ", phoneNumbers=" + phoneNumbers + ", contactIMs=" + contactIMs + ",  contactAddresses=" + contactAddresses
 				+ ", contactWebsites=" + contactWebsites + '}';
 	}
 }

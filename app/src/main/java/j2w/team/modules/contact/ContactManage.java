@@ -17,6 +17,8 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.text.TextUtils;
 
+import org.w3c.dom.Text;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -525,6 +527,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			OperationApplicationException {
 		ContentResolver resolver = context.getContentResolver();
 		Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
+
 		// 第一个参数：内容提供者的主机名
 		// 第二个参数：要执行的操作
 		ArrayList<ContentProviderOperation> operations = new ArrayList<>();
@@ -713,5 +716,289 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				L.i(s.toString());
 			}
 		}
+	}
+
+	@Override public void wirteAndUpdateSystemContact(ContactDetailModel contactDetailModel) throws RemoteException, OperationApplicationException {
+
+		if (contactDetailModel == null) {
+			return;
+		}
+		ContentResolver resolver = context.getContentResolver();
+
+		if (TextUtils.isEmpty(contactDetailModel.contactId)) { // 插入
+			Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
+			// 第一个参数：内容提供者的主机名
+			// 第二个参数：要执行的操作
+			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+			// 操作1.添加Google账号，这里值为null，表示不添加
+			ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue("account_name", null)// account_name:Google账号
+					.build();
+			operations.add(operation);
+
+			uri = Uri.parse("content://com.android.contacts/data");
+
+			if (!TextUtils.isEmpty(contactDetailModel.name)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/name").withValue(ContactsContract.Data.DATA1, contactDetailModel.name).build();
+				operations.add(item);
+			}
+			if (!TextUtils.isEmpty(contactDetailModel.nickname)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/nickname").withValue(ContactsContract.Data.DATA1, contactDetailModel.nickname).build();
+				operations.add(item);
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.organization)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/organization").withValue(ContactsContract.Data.DATA1, contactDetailModel.organization).build();
+				operations.add(item);
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.networkPhone)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/sip_address").withValue(ContactsContract.Data.DATA1, contactDetailModel.networkPhone).build();
+				operations.add(item);
+			}
+			if (!TextUtils.isEmpty(contactDetailModel.birthday)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/contact_event").withValue(ContactsContract.Data.DATA1, contactDetailModel.birthday).build();
+				operations.add(item);
+			}
+			if (!TextUtils.isEmpty(contactDetailModel.lunarBirthday)) {
+
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/lunarBirthday").withValue(ContactsContract.Data.DATA1, contactDetailModel.lunarBirthday).build();
+				operations.add(item);
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.note)) {
+				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/note").withValue(ContactsContract.Data.DATA1, contactDetailModel.note).build();
+				operations.add(item);
+			}
+
+			if (contactDetailModel.phoneNumbers != null) {
+				for (ContactPhone item : contactDetailModel.phoneNumbers) {
+					ContentProviderOperation contentProviderOperation = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+							.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/phone_v2").withValue(ContactsContract.Data.DATA2, item.phoneType)
+							.withValue(ContactsContract.Data.DATA1, item.phone).build();
+					operations.add(contentProviderOperation);
+				}
+			}
+
+			if (contactDetailModel.emailAddresses != null) {
+				for (ContactEmail item : contactDetailModel.emailAddresses) {
+					ContentProviderOperation contentProviderOperation = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+							.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/email_v2").withValue(ContactsContract.Data.DATA2, item.emailType)
+							.withValue(ContactsContract.Data.DATA1, item.emailAddress).build();
+					operations.add(contentProviderOperation);
+				}
+			}
+			if (contactDetailModel.contactAddresses != null) {
+				for (ContactAddress item : contactDetailModel.contactAddresses) {
+					ContentProviderOperation contentProviderOperation = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+							.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/postal-address_v2").withValue(ContactsContract.Data.DATA2, item.type)
+							.withValue(ContactsContract.Data.DATA1, item.address).build();
+					operations.add(contentProviderOperation);
+				}
+			}
+			if (contactDetailModel.contactIMs != null) {
+				for (ContactIM item : contactDetailModel.contactIMs) {
+					ContentProviderOperation contentProviderOperation = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+							.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/im").withValue(ContactsContract.Data.DATA2, item.type).withValue(ContactsContract.Data.DATA1, item.im)
+							.build();
+					operations.add(contentProviderOperation);
+				}
+			}
+			if (contactDetailModel.contactWebsites != null) {
+				for (ContactWebsite item : contactDetailModel.contactWebsites) {
+					ContentProviderOperation contentProviderOperation = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+							.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/website").withValue(ContactsContract.Data.DATA2, item.type)
+							.withValue(ContactsContract.Data.DATA1, item.websit).build();
+					operations.add(contentProviderOperation);
+				}
+			}
+			resolver.applyBatch("com.android.contacts", operations);
+		} else {// 更新
+			String id = contactDetailModel.contactId;
+			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+			ArrayList<ContentProviderOperation> operationsDelete = new ArrayList<>();
+			Uri uri = ContactsContract.Data.CONTENT_URI.buildUpon().appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true").build();
+
+			if (!TextUtils.isEmpty(contactDetailModel.name)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/name" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.name).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/name" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.nickname)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/nickname" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.nickname).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/nickname" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.organization)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/organization" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.organization).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/organization" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.networkPhone)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/sip_address" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.networkPhone).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/sip_address" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.birthday)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/contact_event" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.birthday).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/contact_event" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.lunarBirthday)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/lunarBirthday" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.lunarBirthday).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/lunarBirthday" });
+				operationsDelete.add(operation.build());
+			}
+
+			if (!TextUtils.isEmpty(contactDetailModel.note)) {
+				ContentProviderOperation item = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+						.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/note" })
+						.withValue(ContactsContract.Data.DATA1, contactDetailModel.note).build();
+				operations.add(item);
+			} else {
+				ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+				operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/note" });
+				operationsDelete.add(operation.build());
+			}
+
+			// 电话
+			ContentProviderOperation.Builder operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/phone_v2" });
+			operationsDelete.add(operation.build());
+			if (contactDetailModel.phoneNumbers != null) {
+				for (ContactPhone item : contactDetailModel.phoneNumbers) {
+					operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+					operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+					operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/phone_v2");
+					operation.withValue(ContactsContract.Data.DATA2, item.phoneType);
+					operation.withValue(ContactsContract.Data.DATA4, item.phone);
+					operation.withValue(ContactsContract.Data.DATA1, item.phone);
+					operations.add(operation.build());
+				}
+			}
+
+
+			// 邮箱
+			operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/email_v2" });
+			operationsDelete.add(operation.build());
+			if (contactDetailModel.emailAddresses != null) {
+				for (ContactEmail item : contactDetailModel.emailAddresses) {
+					operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+					operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+					operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/email_v2");
+					operation.withValue(ContactsContract.Data.DATA2, item.emailType);
+					operation.withValue(ContactsContract.Data.DATA4, item.emailAddress);
+					operation.withValue(ContactsContract.Data.DATA1, item.emailAddress);
+					operations.add(operation.build());
+				}
+			}
+			// 地址
+			operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/postal-address_v2" });
+			operationsDelete.add(operation.build());
+			if (contactDetailModel.contactAddresses != null) {
+				for (ContactAddress item : contactDetailModel.contactAddresses) {
+					operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+					operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+					operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/postal-address_v2");
+					operation.withValue(ContactsContract.Data.DATA2, item.type);
+					operation.withValue(ContactsContract.Data.DATA4, item.address);
+					operation.withValue(ContactsContract.Data.DATA1, item.address);
+					operations.add(operation.build());
+				}
+			}
+
+			//IM
+			operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/im" });
+			operationsDelete.add(operation.build());
+			if (contactDetailModel.contactIMs != null) {
+				for (ContactIM item : contactDetailModel.contactIMs) {
+					operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+					operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+					operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/im");
+					operation.withValue(ContactsContract.Data.DATA2, item.type);
+					operation.withValue(ContactsContract.Data.DATA4, item.im);
+					operation.withValue(ContactsContract.Data.DATA1, item.im);
+					operations.add(operation.build());
+				}
+			}
+			//WebSite
+			operation = ContentProviderOperation.newDelete(uri);
+			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/website" });
+			operationsDelete.add(operation.build());
+			if (contactDetailModel.contactWebsites != null) {
+				for (ContactWebsite item : contactDetailModel.contactWebsites) {
+					operation = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
+					operation.withValue(ContactsContract.Data.RAW_CONTACT_ID, id);
+					operation.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/website");
+					operation.withValue(ContactsContract.Data.DATA2, item.type);
+					operation.withValue(ContactsContract.Data.DATA4, item.websit);
+					operation.withValue(ContactsContract.Data.DATA1, item.websit);
+					operations.add(operation.build());
+				}
+			}
+			if (operations.size() > 0) {
+
+				ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+				for (ContentProviderResult s : rsDelete) {
+					L.i(s.toString());
+				}
+				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+
+				for (ContentProviderResult s : rs) {
+					L.i(s.toString());
+				}
+			}
+
+		}
+
 	}
 }

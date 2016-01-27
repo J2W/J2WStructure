@@ -7,6 +7,7 @@ import java.util.List;
 
 import j2w.team.core.Impl;
 import j2w.team.modules.contact.bean.ContactAddress;
+import j2w.team.modules.contact.bean.ContactDetailModel;
 import j2w.team.modules.contact.bean.ContactEmail;
 import j2w.team.modules.contact.bean.ContactPhone;
 
@@ -30,7 +31,8 @@ public interface J2WIWriteContact {
 	 * @throws RemoteException
 	 * @throws OperationApplicationException
 	 */
-	void writeSystemContact(String name, String organization,String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException, OperationApplicationException;
+	void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException,
+			OperationApplicationException;
 
 	/**
 	 * 更新系统通讯录 - 根据ID
@@ -45,6 +47,13 @@ public interface J2WIWriteContact {
 	 * @throws RemoteException
 	 * @throws OperationApplicationException
 	 */
-	void updateSystemContact(String id, String name, String organization,String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException, OperationApplicationException;
+	void updateSystemContact(String id, String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException,
+			OperationApplicationException;
 
+	/**
+	 * 写入 或者更新
+	 * 
+	 * @param contactDetailModel
+	 */
+	void wirteAndUpdateSystemContact(ContactDetailModel contactDetailModel) throws RemoteException, OperationApplicationException;
 }
