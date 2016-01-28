@@ -36,6 +36,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.5'
     compile 'org.jetbrains:annotations:13.0'
+    compile 'com.github.bumptech.glide:okhttp-integration:1.4.0'
 }
 //打包
 apply from: 'maven-release-aar.gradle'

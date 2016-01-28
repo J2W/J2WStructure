@@ -3,9 +3,6 @@ package j2w.team.modules;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.squareup.picasso.PicassoTools;
-
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -46,8 +43,6 @@ public class J2WModulesManage {
 	private J2WToast				j2WToast;				// 提示信息
 
 	private ContactManage			contactManage;			// 通讯录
-
-	private PicassoTools			picassoTools;			// 图片加载器
 
 	private J2WSystemUiHider		j2WSystemUiHider;		// 标题栏和状态栏控制
 
@@ -149,13 +144,6 @@ public class J2WModulesManage {
 			contactManage = new ContactManage(mJ2WApplication);
 		}
 		return contactManage;
-	}
-
-	public PicassoTools getPicassoTools() {
-		if (picassoTools == null) {
-			picassoTools = new PicassoTools();
-		}
-		return picassoTools;
 	}
 
 	public J2WSystemUiHider getJ2WSystemUiHider(AppCompatActivity activity, View anchorView, int flags) {

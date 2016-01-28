@@ -2,6 +2,8 @@ package j2w.team.modules.screen;
 
 import android.support.v4.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
+
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -81,7 +83,6 @@ public class J2WScreenManager implements J2WIScreenManager {
 			if (activity.getClass().equals(clazz)) {
 				break;
 			}
-
 			popActivity(activity);
 		}
 	}
@@ -110,7 +111,6 @@ public class J2WScreenManager implements J2WIScreenManager {
 		if (fragmentActivities.size() < 1) {
 			/** 清空内存缓存picasso **/
 			L.i("清空内存缓存-J2WHelper.getPicassoHelper().clearCache()");
-			J2WHelper.picassoHelper().clearCache();// 缓存
 			J2WHelper.threadPoolHelper().finish();// 线程池
 			fragmentActivities.clear();
 			viewMap.clear();

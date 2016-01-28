@@ -4,13 +4,11 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.squareup.picasso.PicassoTools;
 
 import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.Impl;
-import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
 import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
@@ -249,15 +247,6 @@ public class J2WHelper {
 	 */
 	public static final J2WSystemUiHider systemHider(AppCompatActivity activity, View anchorView, int flags) {
 		return mJ2WModulesManage.getJ2WSystemUiHider(activity, anchorView, flags);
-	}
-
-	/**
-	 * Picasso工具
-	 *
-	 * @return picasso
-	 */
-	public static final PicassoTools picassoHelper() {
-		return mJ2WModulesManage.getPicassoTools();
 	}
 
 	/**
