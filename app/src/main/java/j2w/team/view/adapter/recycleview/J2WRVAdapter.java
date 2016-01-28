@@ -105,10 +105,10 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
 	}
 
-	HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
+	HeaderRecyclerViewAdapterV2	headerRecyclerViewAdapterV1;
 
-	public void setHeaderRecyclerViewAdapterV1(HeaderRecyclerViewAdapterV1 headerRecyclerViewAdapterV1) {
-		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
+	public void setHeaderRecyclerViewAdapterV2(HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2) {
+		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV2;
 	}
 
 	public void clear() {

@@ -23,6 +23,7 @@ import j2w.team.modules.structure.J2WStructureManage;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
+import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
 
 /**
  * @创建人 sky
@@ -294,6 +295,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
+	}
+
+	protected HeaderRecyclerViewAdapterV2 recyclerAdapter() {
+		return j2WBuilder.getJ2WRVAdapterItem2();
 	}
 
 	protected RecyclerView.LayoutManager recyclerLayoutManager() {

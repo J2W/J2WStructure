@@ -7,10 +7,9 @@ import android.view.ViewGroup;
  * @创建时间 15/7/18 上午9:41
  * @类描述 一句话说明这个类是干什么的
  */
-@Deprecated
-public interface HeaderRecyclerView<T extends J2WViewHolder> {
+public interface FooterView<T extends J2WHolder> {
 
-    T onCreateHeaderViewHolder(ViewGroup parent, int viewType);
+    T onCreateFooterViewHolder(ViewGroup parent, int viewType);
 
-    void onBindHeaderView(T holder, int position);
+    void onBindFooterView(T holder, int position);
 }

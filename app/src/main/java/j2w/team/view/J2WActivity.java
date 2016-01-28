@@ -26,6 +26,7 @@ import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
+import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
 
 /**
  * @创建人 sky
@@ -278,6 +279,10 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
+	}
+
+	protected HeaderRecyclerViewAdapterV2 recyclerAdapter(){
+		return j2WBuilder.getJ2WRVAdapterItem2();
 	}
 
 	protected RecyclerView.LayoutManager recyclerLayoutManager() {

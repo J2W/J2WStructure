@@ -1,9 +1,9 @@
 package j2w.team.view.adapter.recycleview;
 
+import java.util.List;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-
-import java.util.List;
 
 import j2w.team.common.utils.J2WCheckUtils;
 
@@ -12,8 +12,7 @@ import j2w.team.common.utils.J2WCheckUtils;
  * @创建时间 15/7/17 下午9:40
  * @类描述 适配器扩展 增加头部和尾部布局
  */
-@Deprecated
-public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends RecyclerView.Adapter<V> {
+public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerView.Adapter<V> {
 
 	private static final int		TYPE_HEADER			= Integer.MIN_VALUE;
 
@@ -21,30 +20,30 @@ public class HeaderRecyclerViewAdapterV1<V extends J2WViewHolder> extends Recycl
 
 	private static final int		TYPE_ADAPTEE_OFFSET	= 2;
 
-	private final J2WRVAdapterItem	mAdaptee;
+	private final J2WRVAdapter	mAdaptee;
 
-	public HeaderRecyclerViewAdapterV1(J2WRVAdapterItem adaptee) {
+	public HeaderRecyclerViewAdapterV2(J2WRVAdapter adaptee) {
 		mAdaptee = adaptee;
 	}
 
-	public J2WRVAdapterItem getAdapter() {
+	public J2WRVAdapter getAdapter() {
 		return mAdaptee;
 	}
 
 	@Override public V onCreateViewHolder(ViewGroup parent, int viewType) {
 		if (viewType == TYPE_HEADER && mAdaptee instanceof HeaderRecyclerView) {
-			return (V) ((HeaderRecyclerView) mAdaptee).onCreateHeaderViewHolder(parent, viewType);
+			return (V) ((HeaderView) mAdaptee).onCreateHeaderViewHolder(parent, viewType);
 		} else if (viewType == TYPE_FOOTER && mAdaptee instanceof FooterRecyclerView) {
-			return (V) ((FooterRecyclerView) mAdaptee).onCreateFooterViewHolder(parent, viewType);
+			return (V) ((FooterView) mAdaptee).onCreateFooterViewHolder(parent, viewType);
 		}
 		return (V) mAdaptee.onCreateViewHolder(parent, viewType - TYPE_ADAPTEE_OFFSET);
 	}
 
 	@Override public void onBindViewHolder(V holder, int position) {
 		if (position == 0 && holder.getItemViewType() == TYPE_HEADER && useHeader()) {
-			((HeaderRecyclerView) mAdaptee).onBindHeaderView(holder, position);
+			((HeaderView) mAdaptee).onBindHeaderView(holder, position);
 		} else if (position == mAdaptee.getItemCount() && holder.getItemViewType() == TYPE_FOOTER && useFooter()) {
-			((FooterRecyclerView) mAdaptee).onBindFooterView(holder, position);
+			((FooterView) mAdaptee).onBindFooterView(holder, position);
 		} else {
 			mAdaptee.onBindViewHolder(holder, position - (useHeader() ? 1 : 0));
 		}
