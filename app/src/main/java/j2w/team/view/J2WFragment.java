@@ -292,8 +292,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	/********************** RecyclerView业务代码 *********************/
-
-	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
+	@Deprecated protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 

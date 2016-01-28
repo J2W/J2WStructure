@@ -213,7 +213,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager(),this)) {
+		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager(), this)) {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -277,11 +277,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	/********************** RecyclerView业务代码 *********************/
 
-	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
+	@Deprecated protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
-	protected HeaderRecyclerViewAdapterV2 recyclerAdapter(){
+	protected HeaderRecyclerViewAdapterV2 recyclerAdapter() {
 		return j2WBuilder.getJ2WRVAdapterItem2();
 	}
 

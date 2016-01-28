@@ -300,8 +300,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	/********************** RecyclerView业务代码 *********************/
-
-	protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
+	@Deprecated protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
