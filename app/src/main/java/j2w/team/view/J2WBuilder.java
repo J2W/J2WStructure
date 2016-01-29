@@ -50,6 +50,7 @@ import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 import j2w.team.view.adapter.recycleview.stickyheader.J2WStickyHeaders;
 import j2w.team.view.adapter.recycleview.stickyheader.StickyRecyclerHeadersDecoration;
 import j2w.team.view.adapter.recycleview.stickyheader.StickyRecyclerHeadersTouchListener;
+import j2w.team.view.common.J2WFooterListener;
 import j2w.team.view.common.J2WRefreshListener;
 import j2w.team.view.common.J2WViewPagerChangeListener;
 
@@ -632,6 +633,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private int															recyclerviewSwipRefreshId;
 
+	private J2WFooterListener j2WFooterListener;
+
 	private RecyclerView												recyclerView;
 
 	private J2WRVAdapterItem											j2WRVAdapterItem;
@@ -697,6 +700,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	// 设置
 	public void recyclerviewId(int recyclerviewId) {
 		this.recyclerviewId = recyclerviewId;
+	}
+
+	public void recyclerviewLoadingMore(J2WFooterListener j2WFooterListener) {
+		this.j2WFooterListener = j2WFooterListener;
 	}
 
 	public void recyclerviewGridOpenHeaderFooter(boolean bool) {
@@ -1205,8 +1212,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					J2WCheckUtils.checkNotNull(recyclerviewJ2WRefreshListener, " recyclerview的SwipRefresh 下拉刷新和上拉加载事件没有设置");
 					recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
-						@Override
-						public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+						@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 							super.onScrollStateChanged(recyclerView, newState);
 							if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 								if (recyclerviewJ2WRefreshListener.onScrolledToBottom()) {
@@ -1216,8 +1222,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 							}
 						}
 
-						@Override
-						public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+						@Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 							super.onScrolled(recyclerView, dx, dy);
 							if (layoutManager instanceof LinearLayoutManager) {
 								int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
@@ -1226,6 +1231,29 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						}
 					});// 加载更多
 					recyclerviewSwipeContainer.setOnRefreshListener(recyclerviewJ2WRefreshListener);// 下载刷新
+				}else{
+					if(j2WFooterListener != null){
+						recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+							@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+								super.onScrollStateChanged(recyclerView, newState);
+								if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
+									if (j2WFooterListener.onScrolledToBottom()) {
+										mLoadMoreRequestedItemCount = headerRecyclerViewAdapterV2.getItemCount();
+										mLoadMoreIsAtBottom = false;
+									}
+								}
+							}
+
+							@Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+								super.onScrolled(recyclerView, dx, dy);
+								if (layoutManager instanceof LinearLayoutManager) {
+									int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+									mLoadMoreIsAtBottom = headerRecyclerViewAdapterV2.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == headerRecyclerViewAdapterV2.getItemCount();
+								}
+							}
+						});
+					}
 				}
 			} else if (j2WRVAdapterItem != null) {
 				// 扩展适配器
@@ -1257,7 +1285,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					J2WCheckUtils.checkNotNull(gridLayoutManager, "LayoutManger，不是GridLayoutManager");
 					gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
-						@Override public int getSpanSize(int position) {
+						@Override
+						public int getSpanSize(int position) {
 
 							return j2WRVAdapterItem.isHeaderAndFooter(position) ? gridLayoutManager.getSpanCount() : 1;
 						}
@@ -1274,6 +1303,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				}
 				// 优化
 				recyclerView.setHasFixedSize(true);
+
 				// 设置上拉和下拉事件
 				if (getRecyclerviewSwipRefreshId() != 0) {
 					recyclerviewSwipeContainer = ButterKnife.findById(view, getRecyclerviewSwipRefreshId());
@@ -1281,8 +1311,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					J2WCheckUtils.checkNotNull(recyclerviewJ2WRefreshListener, " recyclerview的SwipRefresh 下拉刷新和上拉加载事件没有设置");
 					recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
-						@Override
-						public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+						@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 							super.onScrollStateChanged(recyclerView, newState);
 							if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 								if (recyclerviewJ2WRefreshListener.onScrolledToBottom()) {
@@ -1292,8 +1321,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 							}
 						}
 
-						@Override
-						public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+						@Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 							super.onScrolled(recyclerView, dx, dy);
 							if (layoutManager instanceof LinearLayoutManager) {
 								int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
@@ -1302,11 +1330,33 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						}
 					});// 加载更多
 					recyclerviewSwipeContainer.setOnRefreshListener(recyclerviewJ2WRefreshListener);// 下载刷新
+				}else{
+					if(j2WFooterListener != null){
+						recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+							@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+								super.onScrollStateChanged(recyclerView, newState);
+								if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
+									if (j2WFooterListener.onScrolledToBottom()) {
+										mLoadMoreRequestedItemCount = headerRecyclerViewAdapterV1.getItemCount();
+										mLoadMoreIsAtBottom = false;
+									}
+								}
+							}
+
+							@Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+								super.onScrolled(recyclerView, dx, dy);
+								if (layoutManager instanceof LinearLayoutManager) {
+									int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+									mLoadMoreIsAtBottom = headerRecyclerViewAdapterV1.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == headerRecyclerViewAdapterV1.getItemCount();
+								}
+							}
+						});
+					}
 				}
 			} else {
 				J2WCheckUtils.checkNotNull(null, "J2WRVAdapter适配器不能为空");
 			}
-
 
 			// 设置进度颜色
 			if (getRecyclerviewColorResIds() != null) {
