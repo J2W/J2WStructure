@@ -17,4 +17,9 @@ public class ContactUser {
 	 */
 	public String	name;
 
+	/**
+	 * 最后更新时间
+	 */
+	public long		lastUpdateTime;
+
 }

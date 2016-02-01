@@ -77,7 +77,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 			}else{
 				Object ui = J2WHelper.UI(uiImpl.value().getName());
 				if(ui == null){
-					throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
+					return null;
 				}
 				biz = J2WHelper.structureManage(ui).biz(service);
 				J2WCheckUtils.checkNotNull(biz, "没有实现接口");

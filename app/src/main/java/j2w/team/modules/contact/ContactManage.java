@@ -48,7 +48,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 	private static final String[]	CONTACTS_ID			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
-	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY };
+	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
 	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
 
@@ -293,6 +293,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				contactUser = new ContactUser();
 				contactUser.contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
 				contactUser.name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
+				contactUser.lastUpdateTime = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contacts.add(contactUser);
 			} while (idCursor.moveToNext());
 		}
