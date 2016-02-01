@@ -130,7 +130,7 @@ public final class J2WAppUtil {
 	 * 
 	 * @return true 表示开启
 	 */
-	public static final boolean isOpenGps(ActionBarActivity activity) {
+	public static final boolean isOpenGps(Activity activity) {
 		LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 		// 通过GPS卫星定位，定位级别可以精确到街（通过24颗卫星定位，在室外和空旷的地方定位准确、速度快）
 		boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -148,7 +148,7 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isNetworkConnected(ActionBarActivity activity) {
+	public static boolean isNetworkConnected(Activity activity) {
 		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
 		return mNetworkInfo == null ? false : mNetworkInfo.isAvailable();
@@ -159,7 +159,7 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isWifiConnected(ActionBarActivity activity) {
+	public static boolean isWifiConnected(Activity activity) {
 		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWiFiNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWiFiNetworkInfo == null ? false : mWiFiNetworkInfo.isAvailable();
@@ -170,7 +170,7 @@ public final class J2WAppUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isMobileConnected(ActionBarActivity activity) {
+	public static boolean isMobileConnected(Activity activity) {
 		ConnectivityManager mConnectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mMobileNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		return mMobileNetworkInfo == null ? false : mMobileNetworkInfo.isAvailable();

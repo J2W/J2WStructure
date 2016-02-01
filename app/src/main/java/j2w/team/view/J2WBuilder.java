@@ -633,7 +633,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private int															recyclerviewSwipRefreshId;
 
-	private J2WFooterListener j2WFooterListener;
+	private J2WFooterListener											j2WFooterListener;
 
 	private RecyclerView												recyclerView;
 
@@ -1020,10 +1020,16 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 					@Override public void onClick(View v) {
 						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
-						if (j2WView.getState() == J2WView.STATE_ACTIVITY) {
-							j2WView.activity().onBackPressed();
-						} else {
-							j2WView.fragment().onKeyBack();
+						switch (j2WView.getState()) {
+							case J2WView.STATE_ACTIVITY:
+								j2WView.activity().onKeyBack();
+								break;
+							case J2WView.STATE_FRAGMENT:
+								j2WView.fragment().onKeyBack();
+								break;
+							case J2WView.STATE_DIALOGFRAGMENT:
+								j2WView.dialogFragment().onKeyBack();
+								break;
 						}
 					}
 				});
@@ -1051,10 +1057,16 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 					@Override public void onClick(View v) {
 						J2WKeyboardUtils.hideSoftInput(j2WView.activity());
-						if (j2WView.getState() == J2WView.STATE_ACTIVITY) {
-							j2WView.activity().onBackPressed();
-						} else {
-							j2WView.fragment().onKeyBack();
+						switch (j2WView.getState()) {
+							case J2WView.STATE_ACTIVITY:
+								j2WView.activity().onKeyBack();
+								break;
+							case J2WView.STATE_FRAGMENT:
+								j2WView.fragment().onKeyBack();
+								break;
+							case J2WView.STATE_DIALOGFRAGMENT:
+								j2WView.dialogFragment().onKeyBack();
+								break;
 						}
 					}
 				});
@@ -1231,8 +1243,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						}
 					});// 加载更多
 					recyclerviewSwipeContainer.setOnRefreshListener(recyclerviewJ2WRefreshListener);// 下载刷新
-				}else{
-					if(j2WFooterListener != null){
+				} else {
+					if (j2WFooterListener != null) {
 						recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
 							@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -1285,8 +1297,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					J2WCheckUtils.checkNotNull(gridLayoutManager, "LayoutManger，不是GridLayoutManager");
 					gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
-						@Override
-						public int getSpanSize(int position) {
+						@Override public int getSpanSize(int position) {
 
 							return j2WRVAdapterItem.isHeaderAndFooter(position) ? gridLayoutManager.getSpanCount() : 1;
 						}
@@ -1330,8 +1341,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 						}
 					});// 加载更多
 					recyclerviewSwipeContainer.setOnRefreshListener(recyclerviewJ2WRefreshListener);// 下载刷新
-				}else{
-					if(j2WFooterListener != null){
+				} else {
+					if (j2WFooterListener != null) {
 						recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
 							@Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
