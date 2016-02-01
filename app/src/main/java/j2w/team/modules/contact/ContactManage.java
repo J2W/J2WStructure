@@ -279,11 +279,15 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 	}
 
 	@Override public List<ContactUser> getAllUser() {
+		return getAllUser("");
+	}
+
+	@Override public List<ContactUser> getAllUser(String name) {
 		List<ContactUser> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("%");
-		stringBuilder.append("");
+		stringBuilder.append(name);
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
 		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
@@ -924,7 +928,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				}
 			}
 
-
 			// 邮箱
 			operation = ContentProviderOperation.newDelete(uri);
 			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/email_v2" });
@@ -956,7 +959,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				}
 			}
 
-			//IM
+			// IM
 			operation = ContentProviderOperation.newDelete(uri);
 			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/im" });
 			operationsDelete.add(operation.build());
@@ -971,7 +974,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 					operations.add(operation.build());
 				}
 			}
-			//WebSite
+			// WebSite
 			operation = ContentProviderOperation.newDelete(uri);
 			operation.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/website" });
 			operationsDelete.add(operation.build());

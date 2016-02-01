@@ -107,6 +107,14 @@ public interface J2WIContact extends J2WIWriteContact {
 	List<ContactUser> getAllUser();
 
 	/**
+	 * 搜索用户
+	 * 
+	 * @param name
+	 * @return
+	 */
+	List<ContactUser> getAllUser(String name);
+
+	/**
 	 * 获取联系人ID - 根据版本
 	 * 
 	 * @param version
