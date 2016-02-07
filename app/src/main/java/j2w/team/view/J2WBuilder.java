@@ -505,6 +505,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	int getListId() {
 		return listId;
 	}
+	
 
 	J2WAdapterItem getJ2WAdapterItem() {
 		return j2WAdapterItem;
