@@ -367,6 +367,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private boolean							isOpenToolbar;
 
+	private boolean							isSetToolbarToActionbar = true;
+
 	private boolean							isOpenCustomToolbar;
 
 	private boolean							isOpenToolbarBack;
@@ -386,6 +388,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	boolean isOpenToolbarBack() {
 		return isOpenToolbarBack;
+	}
+
+	boolean isSetToolbarToActionbar() {
+		return isSetToolbarToActionbar;
 	}
 
 	int getToolbarId() {
@@ -429,6 +435,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void toolbarIsOpen(boolean isOpenToolbar) {
 		this.isOpenToolbar = isOpenToolbar;
+	}
+
+	public void toolbarToActionbar(boolean isSetToolbarToActionbar) {
+		this.isSetToolbarToActionbar = isSetToolbarToActionbar;
 	}
 
 	public void toolbarMenuId(int toolbarMenuId) {
@@ -505,7 +515,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	int getListId() {
 		return listId;
 	}
-	
 
 	J2WAdapterItem getJ2WAdapterItem() {
 		return j2WAdapterItem;
@@ -872,6 +881,17 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		createViewPager(contentRoot);
 		/** actoinbar **/
 		View view = createActionbar(contentRoot);
+		switch (j2WView.getState()) {
+			case J2WView.STATE_ACTIVITY:
+				if (toolbar != null && isSetToolbarToActionbar()) {
+					j2WView.activity().setSupportActionBar(toolbar);
+				}
+				break;
+			case J2WView.STATE_FRAGMENT:
+				break;
+			case J2WView.STATE_DIALOGFRAGMENT:
+				break;
+		}
 		return view;
 	}
 
