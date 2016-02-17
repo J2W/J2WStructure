@@ -47,6 +47,14 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		return biz;
 	}
 
+	@Override public void addStack(String key, B biz) {
+		stack.put(key, biz);
+	}
+
+	@Override public B getStack(Class<B> biz) {
+		return (B) stack.get(biz.getSimpleName());
+	}
+
 	@Override public void detach() {
 
 		if (stack != null) {
@@ -195,13 +203,13 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 				FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(idx - 1);
 				Object view = fragmentManager.findFragmentByTag(entry.getName());
 				if (view instanceof J2WFragment) {
-					return ((J2WFragment)view).onKeyBack();
+					return ((J2WFragment) view).onKeyBack();
 				}
 			} else {
 
 				Object view = fragmentManager.findFragmentById(R.id.j2w_home);
 				if (view instanceof J2WFragment) {
-					return ((J2WFragment)view).onKeyBack();
+					return ((J2WFragment) view).onKeyBack();
 				}
 			}
 			if (bj2WActivity != null) {

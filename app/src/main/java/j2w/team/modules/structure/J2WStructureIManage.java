@@ -17,70 +17,85 @@ import j2w.team.view.J2WFragment;
  */
 public interface J2WStructureIManage<B extends J2WIBiz> {
 
-    B getBiz();
+	B getBiz();
 
-    /**
-     * deafualt
-     */
+	/**
+	 * 添加到堆栈
+	 * 
+	 * @param biz
+	 */
+	void addStack(String key,B biz);
 
-    void detach();
+	/**
+	 * 获取
+	 * 
+	 * @param biz
+	 * @return
+	 */
+	B getStack(Class<B> biz);
 
-    /**
-     * activity
-     */
-    void attachABiz(J2WActivity activity);
+	/**
+	 * deafualt
+	 */
 
-    void attachActivity(J2WActivity activity);
+	void detach();
 
-    void detachActivity(J2WActivity activity);
+	/**
+	 * activity
+	 */
+	void attachABiz(J2WActivity activity);
 
-    /**
-     * fragment
-     */
-    void attachFBiz(J2WFragment fragment);
+	void attachActivity(J2WActivity activity);
 
-    void attachFragment(J2WFragment fragment, View view);
+	void detachActivity(J2WActivity activity);
 
-    void detachFragment(J2WFragment fragment);
+	/**
+	 * fragment
+	 */
+	void attachFBiz(J2WFragment fragment);
 
-    /**
-     * dialogfragment
-     */
-    void attachDBiz(J2WDialogFragment fragment);
+	void attachFragment(J2WFragment fragment, View view);
 
-    void attachDialogFragment(J2WDialogFragment dialogFragment, View view);
+	void detachFragment(J2WFragment fragment);
 
-    void detachDialogFragment(J2WDialogFragment dialogFragment);
+	/**
+	 * dialogfragment
+	 */
+	void attachDBiz(J2WDialogFragment fragment);
 
+	void attachDialogFragment(J2WDialogFragment dialogFragment, View view);
 
-    /**
-     * service
-     */
-    void attachService(J2WService activity);
+	void detachDialogFragment(J2WDialogFragment dialogFragment);
 
-    void detachService(J2WService activity);
+	/**
+	 * service
+	 */
+	void attachService(J2WService activity);
 
-    <D extends J2WIDisplay> D display(Class<D> eClass);
+	void detachService(J2WService activity);
 
-    <B> B biz(Class<B> biz);
+	<D extends J2WIDisplay> D display(Class<D> eClass);
 
-    <H> H http(Class<H> hClass);
+	<B> B biz(Class<B> biz);
 
-    /**
-     * 拦截back 交给 fragment onKeyBack
-     *
-     * @param keyCode
-     * @param fragmentManager
-     * @param bj2WActivity
-     * @return
-     */
-    boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity<B> bj2WActivity);
+	<H> H http(Class<H> hClass);
 
-    /**
-     * 打印堆栈内容
-     *
-     * @param fragmentManager
-     */
-    void printBackStackEntry(FragmentManager fragmentManager);
+	/**
+	 * 拦截back 交给 fragment onKeyBack
+	 *
+	 * @param keyCode
+	 * @param fragmentManager
+	 * @param bj2WActivity
+	 * @return
+	 */
+	boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity<B> bj2WActivity);
+
+	/**
+	 * 打印堆栈内容
+	 *
+	 * @param fragmentManager
+	 */
+	void printBackStackEntry(FragmentManager fragmentManager);
+
 
 }
