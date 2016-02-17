@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface J2WStartInterceptor {
 
-	<T> void interceptStart(String viewName,Class<T> service, Method method, int interceptor);
+	<T> void interceptStart(String viewName, Class<T> service, Method method, int interceptor, Object[] objects);
 
 }

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.modules.http.annotations.Header;
 
 /**
  * @创建人 sky
@@ -31,9 +32,9 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 	}
 
 	@Override public V onCreateViewHolder(ViewGroup parent, int viewType) {
-		if (viewType == TYPE_HEADER && mAdaptee instanceof HeaderRecyclerView) {
+		if (viewType == TYPE_HEADER && mAdaptee instanceof HeaderView) {
 			return (V) ((HeaderView) mAdaptee).onCreateHeaderViewHolder(parent, viewType);
-		} else if (viewType == TYPE_FOOTER && mAdaptee instanceof FooterRecyclerView) {
+		} else if (viewType == TYPE_FOOTER && mAdaptee instanceof FooterView) {
 			return (V) ((FooterView) mAdaptee).onCreateFooterViewHolder(parent, viewType);
 		}
 		return (V) mAdaptee.onCreateViewHolder(parent, viewType - TYPE_ADAPTEE_OFFSET);

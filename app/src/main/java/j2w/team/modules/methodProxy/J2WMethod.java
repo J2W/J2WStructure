@@ -246,12 +246,12 @@ public final class J2WMethod {
 	public void exeMethod(Method method, Object impl, Object[] objects) throws InvocationTargetException, IllegalAccessException {
 		// 业务拦截器 - 前
 		for (J2WStartInterceptor item : j2WMethods.j2WStartInterceptor) {
-			item.interceptStart(implName, service, method, interceptor);
+			item.interceptStart(implName, service, method, interceptor,objects);
 		}
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (J2WEndInterceptor item : j2WMethods.j2WEndInterceptor) {
-			item.interceptEnd(implName, service, method, interceptor);
+			item.interceptEnd(implName, service, method, interceptor,objects);
 		}
 	}
 
