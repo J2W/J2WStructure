@@ -138,6 +138,15 @@ public class J2WDisplay implements J2WIDisplay {
 		intentForResult(clazz, null, requestCode);
 	}
 
+	@Override public void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode,Fragment fragment) {
+		Intent intent = new Intent();
+		intent.setClass(activity(), clazz);
+		if (bundle != null) {
+			intent.putExtras(bundle);
+		}
+		activity().startActivityFromFragment(fragment,intent,requestCode);
+	}
+
 	@Override public void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
@@ -161,19 +170,19 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentAnimation(Class clazz, int in, int out) {
 		intent(clazz);
-		activity().overridePendingTransition(in,out);
+		activity().overridePendingTransition(in, out);
 	}
 
 	@Override public void intentAnimation(Class clazz, int in, int out, Bundle bundle) {
-		intent(clazz,bundle);
-		activity().overridePendingTransition(in,out);
+		intent(clazz, bundle);
+		activity().overridePendingTransition(in, out);
 	}
 
-	@Override public void intentForResultAnimation(Class clazz, View view,int requestCode) {
+	@Override public void intentForResultAnimation(Class clazz, View view, int requestCode) {
 		intentForResultAnimation(clazz, view, null, requestCode);
 	}
 
-	@Override public void intentForResultAnimation(Class clazz, View view, Bundle bundle,int requestCode) {
+	@Override public void intentForResultAnimation(Class clazz, View view, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		if (bundle != null) {
@@ -183,13 +192,13 @@ public class J2WDisplay implements J2WIDisplay {
 
 	}
 
-	@Override public void intentForResultAnimation(Class clazz, int in, int out,int requestCode) {
-		intentForResultAnimation(clazz,in,out,null,requestCode);
+	@Override public void intentForResultAnimation(Class clazz, int in, int out, int requestCode) {
+		intentForResultAnimation(clazz, in, out, null, requestCode);
 	}
 
-	@Override public void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle,int requestCode) {
-		intentForResult(clazz,bundle,requestCode);
-		activity().overridePendingTransition(in,out);
+	@Override public void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle, int requestCode) {
+		intentForResult(clazz, bundle, requestCode);
+		activity().overridePendingTransition(in, out);
 	}
 
 	@Override @TargetApi(Build.VERSION_CODES.JELLY_BEAN) public void intentForResult(Intent intent, Bundle options, int requestCode) {

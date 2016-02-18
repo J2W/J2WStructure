@@ -92,6 +92,8 @@ public interface J2WIDisplay {
 
 	void intentForResult(Class clazz, int requestCode);
 
+	void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode,Fragment fragment);
+
 	void intentForResult(Class clazz, Bundle bundle, int requestCode);
 
 	void intentForResult(Intent intent, int requestCod);
