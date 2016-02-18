@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,7 +49,7 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
  * @创建时间 15/8/8 下午1:29
  * @类描述 View层碎片 dialog
  */
-public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragment implements J2WIDialogFragment {
+public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragment implements J2WIDialogFragment, DialogInterface.OnKeyListener {
 
 	private boolean					targetActivity;
 
@@ -150,6 +151,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 		// 获取参数-设置是否可取消
 		getDialog().setCanceledOnTouchOutside(isCancel());
+		getDialog().setOnKeyListener(this);
 		return view;
 	}
 
@@ -260,6 +262,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 		return (C) biz;
 	}
+
 	/**
 	 * 创建menu
 	 *
@@ -565,5 +568,13 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		ft.add(this, this.getClass().getSimpleName());
 		ft.commitAllowingStateLoss();
 		return this;
+	}
+
+	@Override public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			return onKeyBack();
+		}else{
+			return false;
+		}
 	}
 }
