@@ -251,7 +251,7 @@ public final class J2WMethod {
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (J2WEndInterceptor item : j2WMethods.j2WEndInterceptor) {
-			item.interceptEnd(implName, service, method, interceptor,objects);
+			item.interceptEnd(implName, service, method, interceptor,objects,backgroundResult);
 		}
 	}
 
