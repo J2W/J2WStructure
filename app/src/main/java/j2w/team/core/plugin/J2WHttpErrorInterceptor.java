@@ -11,5 +11,5 @@ import j2w.team.modules.http.J2WError;
  */
 public interface J2WHttpErrorInterceptor {
 
-	<T> void methodError(String viewName,Class<T> service, Method method, int interceptor, J2WError j2WError);
+	<T> void methodError(Class<T> service, Method method, int interceptor, J2WError j2WError);
 }

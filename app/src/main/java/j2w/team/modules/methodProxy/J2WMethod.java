@@ -259,12 +259,12 @@ public final class J2WMethod {
 		if (J2WHelper.getInstance().isLogOpen()) {
 			throwable.printStackTrace();
 		}
-		if (throwable instanceof J2WError) {
+		if (throwable.getCause() instanceof J2WError) {
 			// 网络错误拦截器
 			for (J2WHttpErrorInterceptor item : j2WMethods.j2WHttpErrorInterceptor) {
-				item.methodError(implName, service, method, interceptor, (J2WError) throwable);
+				item.methodError(service, method, interceptor, (J2WError) throwable.getCause());
 			}
-		} else if (throwable instanceof J2WNotUIPointerException) {
+		} else if (throwable.getCause() instanceof J2WNotUIPointerException) {
 			//忽略
 			return;
 		} else {

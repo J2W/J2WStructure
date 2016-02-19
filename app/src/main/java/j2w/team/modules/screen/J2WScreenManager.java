@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Stack;
 
 import j2w.team.modules.log.L;
@@ -66,6 +67,16 @@ public class J2WScreenManager implements J2WIScreenManager {
 		activity.finish();
 		fragmentActivities.remove(activity);
 		activity = null;
+	}
+
+	@Override public void popNotEqualActivity(Class clazz) {
+		for (Iterator<FragmentActivity> iter = fragmentActivities.iterator(); iter.hasNext();) {
+			FragmentActivity item = iter.next();
+			if (!item.getClass().equals(clazz)) {
+				item.finish();
+				iter.remove();
+			}
+		}
 	}
 
 	/**

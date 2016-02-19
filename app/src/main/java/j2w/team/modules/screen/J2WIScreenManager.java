@@ -29,6 +29,13 @@ public interface J2WIScreenManager {
 	void popActivity(FragmentActivity activity);
 
 	/**
+	 * 出栈不相等的activity
+	 * 
+	 * @param clazz
+	 */
+	void popNotEqualActivity(Class clazz);
+
+	/**
 	 * 退出堆栈中所有Activity, 当前的Activity除外
 	 *
 	 * @param clazz
