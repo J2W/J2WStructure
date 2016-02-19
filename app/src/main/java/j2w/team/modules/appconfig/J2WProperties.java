@@ -136,7 +136,6 @@ public abstract class J2WProperties {
 			/** 处理配置文件的变化 **/
 			if (!file.exists()) {
 				L.tag("J2WProperties create file ");
-				L.i(file.createNewFile() + "");
 			}
 			in = new BufferedInputStream(new FileInputStream(file));
 			L.tag(initTag());
@@ -496,6 +495,21 @@ public abstract class J2WProperties {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 删除
+	 */
+	public void delete() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(mPropertiesFileName);
+		stringBuilder.append(EXTENSION);
+		File file = new File(propertyFilePath, stringBuilder.toString());
+		if (!file.exists()) {
+			return;
+		}
+		// 删除
+		file.delete();
 	}
 
 	/**

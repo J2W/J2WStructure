@@ -82,6 +82,10 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 		this.showItems = showItems;
 	}
 
+	@Override public J2WViewPagerAdapter adapter() {
+		return this;
+	}
+
 	/**
 	 * 设置数据
 	 * 

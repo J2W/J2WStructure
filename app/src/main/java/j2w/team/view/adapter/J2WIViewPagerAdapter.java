@@ -10,6 +10,11 @@ import j2w.team.view.model.J2WModelPager;
 public interface J2WIViewPagerAdapter {
 
 	/**
+	 * 获取适配器
+	 * @return
+	 */
+	J2WViewPagerAdapter adapter();
+	/**
 	 * 设置数据
 	 * 
 	 * @param viewPagerDatas
