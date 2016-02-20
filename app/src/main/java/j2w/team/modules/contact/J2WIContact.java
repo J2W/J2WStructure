@@ -113,6 +113,9 @@ public interface J2WIContact extends J2WIWriteContact {
 	 * @return
 	 */
 	List<ContactUser> getAllUser(String name);
+	List<ContactUser> getAllUser(String name,List<String> contactIds);
+
+
 
 	/**
 	 * 获取联系人ID - 根据版本
