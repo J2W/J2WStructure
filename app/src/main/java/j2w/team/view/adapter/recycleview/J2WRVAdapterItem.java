@@ -77,7 +77,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		bindData(v, getItem(position), position, getItemCount());
 	}
 
-	public J2WView getUI(){
+	public J2WView getUI() {
 		return j2WView;
 	}
 
@@ -165,10 +165,13 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return j2WView.activity();
 	}
 
-	public <D extends J2WDialogFragment > D dialogFragment() {
+	public <D extends J2WDialogFragment> D dialogFragment() {
 		return j2WView.dialogFragment();
 	}
 
+	public <B extends J2WIBiz> B biz(Class<B> service) {
+		return j2WView.biz(service);
+	}
 
 	/**
 	 * 获取调度

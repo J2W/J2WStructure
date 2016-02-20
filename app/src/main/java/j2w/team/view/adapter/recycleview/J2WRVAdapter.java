@@ -124,7 +124,6 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		headerRecyclerViewAdapterV1.notifyDataSetChanged();
 	}
 
-
 	public <V extends J2WFragment> V fragment() {
 		return j2WView.fragment();
 	}
@@ -133,7 +132,7 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		return j2WView.activity();
 	}
 
-	public <D extends J2WDialogFragment > D dialogFragment() {
+	public <D extends J2WDialogFragment> D dialogFragment() {
 		return j2WView.dialogFragment();
 	}
 
@@ -150,6 +149,10 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 
 	public J2WView getUI() {
 		return j2WView;
+	}
+
+	public <B extends J2WIBiz> B biz(Class<B> service) {
+		return j2WView.biz(service);
 	}
 
 	/**
