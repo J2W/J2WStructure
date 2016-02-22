@@ -94,6 +94,8 @@ public class J2WHelper {
 	}
 
 	public static final <B> B biz(Class<B> service) {
+
+
 		J2WCheckUtils.checkNotNull(service, "请指定业务接口～");
 		Object biz = mJ2WModulesManage.getStatck().get(service.getSimpleName());
 		if (biz == null) {// 如果没有索索到
@@ -105,7 +107,7 @@ public class J2WHelper {
 			} else {
 				Object ui = J2WHelper.UI(uiImpl.value().getName());
 				if (ui == null) {
-					throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
+					return null;
 				}
 				biz = structureManage(ui).biz(service);
 				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
