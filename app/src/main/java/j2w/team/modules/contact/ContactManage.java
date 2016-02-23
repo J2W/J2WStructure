@@ -17,10 +17,12 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import j2w.team.modules.contact.bean.ContactUser;
@@ -305,7 +307,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contacts;
 	}
 
-	@Override public List<ContactUser> getAllUser(String name, List<String> contactIds) {
+	@Override public List<ContactUser> getAllUser(String name,@NotNull List<String> contactIds) {
 		List<ContactUser> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -313,16 +315,27 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append(name);
 		stringBuilder.append("%");
 
+
+
+		StringBuilder query = new StringBuilder(Contacts.DISPLAY_NAME_PRIMARY);
+		query.append(" LIKE ? ");
+
+		if(contactIds.size() > 0){
+			StringBuilder condition = new StringBuilder(" NOT IN (");
+			appendPlaceholders(condition, contactIds.size()).append(')');
+			query.append(" AND");
+			query.append(Contacts.NAME_RAW_CONTACT_ID);
+			query.append(condition.toString());
+		}
+
 		contactIds.add(0, stringBuilder.toString());
 
-		StringBuilder condition = new StringBuilder(" NOT IN (");
-		appendPlaceholders(condition, contactIds.size()).append(')');
+		String[] selectionArgs = contactIds.toArray(new String[contactIds.size()]);
+
 
 		ContentResolver contentResolver = context.getContentResolver();
 
-		String[] selectionArgs = (String[]) contactIds.toArray();
-
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.NAME_RAW_CONTACT_ID + condition.toString(),selectionArgs, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, query.toString(),selectionArgs, null);
 		ContactUser contactUser;
 		if (idCursor.moveToFirst()) {
 			do {

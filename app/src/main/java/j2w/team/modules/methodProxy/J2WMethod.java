@@ -279,8 +279,6 @@ public final class J2WMethod {
 
 	Object			impl;
 
-	Object			Classl;
-
 	String			implName;
 
 	boolean			isRepeat;

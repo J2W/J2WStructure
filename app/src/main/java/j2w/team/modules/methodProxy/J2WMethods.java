@@ -129,7 +129,7 @@ public final class J2WMethods {
 			synchronized (methodHandlerCache) {
 				j2WMethod = methodHandlerCache.get(method);
 				if (j2WMethod == null) {
-					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+					j2WMethod = J2WMethod.createUIMethod(this, method, service);
 					methodHandlerCache.put(method, j2WMethod);
 				}
 			}
@@ -181,7 +181,7 @@ public final class J2WMethods {
 			synchronized (methodHandlerCache) {
 				j2WMethod = methodHandlerCache.get(method);
 				if (j2WMethod == null) {
-					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+					j2WMethod = J2WMethod.createBizMethod(this, method, service);
 					methodHandlerCache.put(method, j2WMethod);
 				}
 			}
