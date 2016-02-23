@@ -2,8 +2,6 @@ package j2w.team.modules.screen;
 
 import android.support.v4.app.FragmentActivity;
 
-import com.bumptech.glide.Glide;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
