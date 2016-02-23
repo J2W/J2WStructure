@@ -1,17 +1,13 @@
 package j2w.team.modules.methodProxy;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.v4.util.SimpleArrayMap;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Stack;
 
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.core.Impl;
 import j2w.team.core.plugin.J2WActivityInterceptor;
 import j2w.team.core.plugin.J2WEndInterceptor;
 import j2w.team.core.plugin.J2WErrorInterceptor;
@@ -26,7 +22,7 @@ import j2w.team.core.plugin.J2WStartInterceptor;
  */
 public final class J2WMethods {
 
-	final Map<Method, J2WMethod>				methodHandlerCache;
+	final SimpleArrayMap<Method, J2WMethod>		methodHandlerCache;
 
 	final Stack<String>							stack;
 
@@ -44,7 +40,7 @@ public final class J2WMethods {
 
 	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<J2WStartInterceptor> j2WStartInterceptor,
 			ArrayList<J2WEndInterceptor> j2WEndInterceptor, ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
-		this.methodHandlerCache = new LinkedHashMap<>();
+		this.methodHandlerCache = new SimpleArrayMap<>();
 		this.stack = new Stack<>();
 		this.j2WEndInterceptor = j2WEndInterceptor;
 		this.j2WStartInterceptor = j2WStartInterceptor;
@@ -61,21 +57,21 @@ public final class J2WMethods {
 	 * @param <T>
 	 * @return
 	 */
-	<T> T create(final Class<T> service, int type) {
+	<T> T create(final Class<T> service, int type, Object ui) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(service, type) {
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(service, type, ui) {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
 				J2WMethod j2WMethod = null;
 				switch (type) {
 					case J2WInvocationHandler.TYPE_BIZ:
-						j2WMethod = loadJ2WMethod(method, service);
+						j2WMethod = loadJ2WMethod(method, service, isNotCacheMethed);
 						break;
 					case J2WInvocationHandler.TYPE_DISPLA:
-						j2WMethod = loadJ2WDisplayMethod(method, service);
+						j2WMethod = loadJ2WDisplayMethod(method, service, isNotCacheMethed);
 						break;
 					case J2WInvocationHandler.TYPE_UI:
-						j2WMethod = loadJ2WUIMethod(method, service);
+						j2WMethod = loadJ2WUIMethod(method, service, isNotCacheMethed);
 						break;
 				}
 				return j2WMethod.invoke(impl, args);
@@ -83,21 +79,19 @@ public final class J2WMethods {
 		});
 	}
 
-
-
-	public <T> T createUI(final Class<T> service) {
+	public <T> T createUI(final Class<T> service, Object ui) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_UI);
+		return create(service, J2WInvocationHandler.TYPE_UI, ui);
 	}
 
 	public <T> T createDisplay(final Class<T> service) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_DISPLA);
+		return create(service, J2WInvocationHandler.TYPE_DISPLA, null);
 	}
 
-	public <T> T createBiz(final Class<T> service) {
+	public <T> T createBiz(final Class<T> service, Object ui) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_BIZ);
+		return create(service, J2WInvocationHandler.TYPE_BIZ, ui);
 	}
 
 	/**
@@ -121,18 +115,23 @@ public final class J2WMethods {
 	/**
 	 * 加载UI接口
 	 *
-	 * @param <T>
+	 * @param method
 	 * @param service
+	 * @param notCache
+	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WUIMethod(Method method, Class<T> service) {
+	private <T> J2WMethod loadJ2WUIMethod(Method method, Class<T> service, boolean notCache) {
 		J2WMethod j2WMethod;
-
-		synchronized (methodHandlerCache) {
-			j2WMethod = methodHandlerCache.get(method);
-			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createUIMethod(this, method, service);
-				methodHandlerCache.put(method, j2WMethod);
+		if (notCache) {
+			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+		} else {
+			synchronized (methodHandlerCache) {
+				j2WMethod = methodHandlerCache.get(method);
+				if (j2WMethod == null) {
+					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+					methodHandlerCache.put(method, j2WMethod);
+				}
 			}
 		}
 		return j2WMethod;
@@ -141,39 +140,50 @@ public final class J2WMethods {
 	/**
 	 * 加载display接口
 	 *
-	 * @param <T>
+	 * @param method
 	 * @param service
+	 * @param notCache
+	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WDisplayMethod(Method method, Class<T> service) {
+	private <T> J2WMethod loadJ2WDisplayMethod(Method method, Class<T> service, boolean notCache) {
 		J2WMethod j2WMethod;
 
-		synchronized (methodHandlerCache) {
-			j2WMethod = methodHandlerCache.get(method);
-			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
-				methodHandlerCache.put(method, j2WMethod);
+		if (notCache) {
+			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+		} else {
+			synchronized (methodHandlerCache) {
+				j2WMethod = methodHandlerCache.get(method);
+				if (j2WMethod == null) {
+					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+					methodHandlerCache.put(method, j2WMethod);
+				}
 			}
 		}
+
 		return j2WMethod;
 	}
-
 
 	/**
 	 * 加载接口
 	 *
-	 * @param <T>
+	 * @param method
 	 * @param service
+	 * @param notCache
+	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WMethod(Method method, Class<T> service) {
+	private <T> J2WMethod loadJ2WMethod(Method method, Class<T> service, boolean notCache) {
 		J2WMethod j2WMethod;
-
-		synchronized (methodHandlerCache) {
-			j2WMethod = methodHandlerCache.get(method);
-			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createBizMethod(this, method, service);
-				methodHandlerCache.put(method, j2WMethod);
+		if (notCache) {
+			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+		} else {
+			synchronized (methodHandlerCache) {
+				j2WMethod = methodHandlerCache.get(method);
+				if (j2WMethod == null) {
+					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
+					methodHandlerCache.put(method, j2WMethod);
+				}
 			}
 		}
 		return j2WMethod;

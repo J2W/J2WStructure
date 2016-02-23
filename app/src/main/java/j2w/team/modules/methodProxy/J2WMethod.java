@@ -246,12 +246,12 @@ public final class J2WMethod {
 	public void exeMethod(Method method, Object impl, Object[] objects) throws InvocationTargetException, IllegalAccessException {
 		// 业务拦截器 - 前
 		for (J2WStartInterceptor item : j2WMethods.j2WStartInterceptor) {
-			item.interceptStart(implName, service, method, interceptor,objects);
+			item.interceptStart(implName, service, method, interceptor, objects);
 		}
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (J2WEndInterceptor item : j2WMethods.j2WEndInterceptor) {
-			item.interceptEnd(implName, service, method, interceptor,objects,backgroundResult);
+			item.interceptEnd(implName, service, method, interceptor, objects, backgroundResult);
 		}
 	}
 
@@ -265,7 +265,7 @@ public final class J2WMethod {
 				item.methodError(service, method, interceptor, (J2WError) throwable.getCause());
 			}
 		} else if (throwable.getCause() instanceof J2WNotUIPointerException) {
-			//忽略
+			// 忽略
 			return;
 		} else {
 			// 业务错误拦截器
@@ -278,6 +278,8 @@ public final class J2WMethod {
 	int				type;
 
 	Object			impl;
+
+	Object			Classl;
 
 	String			implName;
 

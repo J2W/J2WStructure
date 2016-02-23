@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import android.content.Context;
+import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -21,7 +22,7 @@ public class J2WViewPager extends ViewPager {
 
 	private boolean						isCanScroll	= true;
 
-	private HashMap<Integer, Object>	mObjs		= new LinkedHashMap<Integer, Object>();
+	private SimpleArrayMap<Integer, Object> mObjs		= new SimpleArrayMap<>();
 
 	public J2WViewPager(Context context) {
 		this(context, null);

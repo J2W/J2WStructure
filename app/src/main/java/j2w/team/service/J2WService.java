@@ -6,6 +6,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import j2w.team.J2WHelper;
+import j2w.team.common.utils.J2WAppUtil;
+import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
@@ -52,7 +55,33 @@ public abstract class J2WService<B extends J2WIBiz> extends Service {
 	}
 
 	public <C> C biz(Class<C> service) {
-		return j2WStructureIManage.biz(service);
+		J2WCheckUtils.checkNotNull(service, "请指定View接口～");
+		J2WCheckUtils.validateServiceInterface(this.getClass().getInterfaces()[0]);
+
+		if (service.equals(this.getClass().getInterfaces()[0])) {
+			return (C) biz();
+		}
+		Object biz = null;
+		synchronized (j2WStructureIManage) {
+			biz = j2WStructureIManage.getStack((Class<B>) service);
+			if (biz == null) {
+				Impl impl = service.getAnnotation(Impl.class);
+				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
+				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
+				if (uiImpl == null) {
+					return null;
+				}
+				Object ui = J2WHelper.UI(uiImpl.value().getName());
+				if (ui == null) {
+					return null;
+				}
+				biz = J2WHelper.structureManage(ui).getBiz();
+				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+				j2WStructureIManage.addStack(service.getSimpleName(), (B) biz);
+			}
+		}
+
+		return (C) biz;
 	}
 
 	/**

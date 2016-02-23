@@ -1,6 +1,7 @@
 package j2w.team.modules.screen;
 
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.SimpleArrayMap;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,11 +20,11 @@ public class J2WScreenManager implements J2WIScreenManager {
 	 */
 	private final Stack<FragmentActivity>	fragmentActivities;
 
-	private final HashMap<String, Object>	viewMap;
+	private final SimpleArrayMap<String, Object> viewMap;
 
 	public J2WScreenManager() {
 		fragmentActivities = new Stack<>();
-		viewMap = new HashMap<>();
+		viewMap = new SimpleArrayMap<>();
 	}
 
 	/**

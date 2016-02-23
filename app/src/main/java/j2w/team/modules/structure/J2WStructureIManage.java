@@ -24,7 +24,7 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 	 * 
 	 * @param biz
 	 */
-	void addStack(String key,B biz);
+	void addStack(String key, B biz);
 
 	/**
 	 * 获取
@@ -76,7 +76,7 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 
 	<D extends J2WIDisplay> D display(Class<D> eClass);
 
-	<B> B biz(Class<B> biz);
+	<B> B biz(Class<B> biz, Object ui);
 
 	<H> H http(Class<H> hClass);
 
@@ -96,6 +96,5 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 	 * @param fragmentManager
 	 */
 	void printBackStackEntry(FragmentManager fragmentManager);
-
 
 }

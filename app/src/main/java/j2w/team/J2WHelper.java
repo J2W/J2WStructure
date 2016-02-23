@@ -4,7 +4,6 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-
 import de.greenrobot.event.EventBus;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -62,19 +61,20 @@ public class J2WHelper {
 	 * @param <T>
 	 * @return
 	 */
-	public static final <T> T createBiz(Class<T> service) {
-		return methodsProxy().createBiz(service);
+	public static final <T> T createBiz(Class<T> service, Object ui) {
+		return methodsProxy().createBiz(service, ui);
 	}
 
 	/**
 	 * 创建UI接口代理
 	 * 
 	 * @param service
+	 * @param ui
 	 * @param <T>
 	 * @return
 	 */
-	public static final <T> T createUI(Class<T> service) {
-		return methodsProxy().createUI(service);
+	public static final <T> T createUI(Class<T> service, Object ui) {
+		return methodsProxy().createUI(service, ui);
 	}
 
 	/**
@@ -94,27 +94,27 @@ public class J2WHelper {
 	}
 
 	public static final <B> B biz(Class<B> service) {
-
-
 		J2WCheckUtils.checkNotNull(service, "请指定业务接口～");
-		Object biz = mJ2WModulesManage.getStatck().get(service.getSimpleName());
-		if (biz == null) {// 如果没有索索到
-			Impl impl = service.getAnnotation(Impl.class);
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
-			Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-			if (uiImpl == null) {
-				biz = J2WHelper.createBiz(service);
-			} else {
+		Object biz = null;
+		synchronized (mJ2WModulesManage.getStatck()) {
+			biz = mJ2WModulesManage.getStatck().get(service.getSimpleName());
+			if (biz == null) {// 如果没有索索到
+				Impl impl = service.getAnnotation(Impl.class);
+				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
+				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
+				if (uiImpl == null) {
+					return null;
+				}
 				Object ui = J2WHelper.UI(uiImpl.value().getName());
 				if (ui == null) {
 					return null;
 				}
-				biz = structureManage(ui).biz(service);
+				biz = structureManage(ui).getBiz();
 				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+				mJ2WModulesManage.getStatck().put(service.getSimpleName(), biz);
 			}
-			J2WCheckUtils.checkNotNull(biz, "没有实现接口");
-			mJ2WModulesManage.getStatck().put(service.getSimpleName(), biz);
 		}
+
 		return (B) biz;
 	}
 

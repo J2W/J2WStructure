@@ -1,7 +1,6 @@
 package j2w.team.core;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.support.v4.util.SimpleArrayMap;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
@@ -14,19 +13,15 @@ import j2w.team.display.J2WIDisplay;
  */
 public abstract class J2WBiz<U> implements J2WIBiz {
 
-	private Map<String, Object>	stack;
+	private SimpleArrayMap<String, Object>	stack;
 
-	private U					u;
+	private U								u;
 
-	private Object				UI;
+	private Object							UI;
 
 	public J2WBiz() {
 		/** 初始化集合 **/
-		stack = new HashMap<>();
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
-		Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-		UI = J2WHelper.UI(uiImpl.value().getName());
-		u = (U) J2WHelper.createUI(bizClass);
+		stack = new SimpleArrayMap<>();
 	}
 
 	protected <H> H http(Class<H> hClass) {
@@ -38,7 +33,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	protected <I> I impl(Class<I> inter) {
 		J2WCheckUtils.checkNotNull(inter, "请指定View接口～");
 		J2WCheckUtils.validateServiceInterface(inter);
-		return (I) J2WHelper.structureManage(UI).biz(inter);
+		return (I) J2WHelper.structureManage(UI).biz(inter,null);
 	}
 
 	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
@@ -66,16 +61,15 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 			Impl impl = service.getAnnotation(Impl.class);
 			Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
 			Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-			if(uiImpl == null){
-				biz = J2WHelper.createBiz(service);
-			}else{
-				Object ui = J2WHelper.UI(uiImpl.value().getName());
-				if(ui == null){
-					return null;
-				}
-				biz = J2WHelper.structureManage(ui).biz(service);
-				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
+			if (uiImpl == null) {
+				return null;
 			}
+			Object ui = J2WHelper.UI(uiImpl.value().getName());
+			if (ui == null) {
+				return null;
+			}
+			biz = J2WHelper.structureManage(ui).biz(service, ui);
+			J2WCheckUtils.checkNotNull(biz, "没有实现接口");
 
 			stack.put(service.getSimpleName(), biz);
 		}
@@ -89,10 +83,16 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	 * @return
 	 */
 	protected U ui() {
-		if(u == null) {
+		if (u == null) {
 			throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
 		}
 		return u;
+	}
+
+	@Override public void initUI(Object j2WView) {
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+		UI = j2WView;
+		u = (U) J2WHelper.createUI(bizClass, UI);
 	}
 
 	@Override public void detach() {
@@ -100,6 +100,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 			stack.clear();
 			stack = null;
 		}
+		UI = null;
 		u = null;
 	}
 }

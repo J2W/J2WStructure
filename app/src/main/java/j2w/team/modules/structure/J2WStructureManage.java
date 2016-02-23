@@ -2,11 +2,9 @@ package j2w.team.modules.structure;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.util.SimpleArrayMap;
 import android.view.KeyEvent;
 import android.view.View;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
@@ -30,17 +28,17 @@ import j2w.team.view.J2WFragment;
 
 public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManage<B> {
 
-	private Map<String, Object>	stack;
+	private SimpleArrayMap<String, Object>	stack;
 
 	/** 显示集合 **/
-	private Map<String, Object>	stackDisplay;
+	private SimpleArrayMap<String, Object>	stackDisplay;
 
-	private B					biz;
+	private B								biz;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
-		stack = new HashMap<>();
-		stackDisplay = new HashMap<>();
+		stack = new SimpleArrayMap<>();
+		stackDisplay = new SimpleArrayMap<>();
 	}
 
 	@Override public B getBiz() {
@@ -77,7 +75,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
+		biz = (B) J2WHelper.createBiz(bizClass, activity);
 		stack.put(bizClass.getSimpleName(), biz);
 	}
 
@@ -103,7 +101,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
+		biz = (B) J2WHelper.createBiz(bizClass, fragment);
 		stack.put(bizClass.getSimpleName(), biz);
 	}
 
@@ -126,7 +124,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
+		biz = (B) J2WHelper.createBiz(bizClass, fragment);
 		stack.put(bizClass.getSimpleName(), biz);
 	}
 
@@ -150,7 +148,7 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
 		/** 初始化 **/
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass);
+		biz = (B) J2WHelper.createBiz(bizClass, activity);
 		stack.put(bizClass.getSimpleName(), biz);
 	}
 
@@ -172,11 +170,11 @@ public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManag
 		return obj;
 	}
 
-	@Override public <B> B biz(Class<B> biz) {
+	@Override public <B> B biz(Class<B> biz, Object ui) {
 		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
 		Object obj = stack.get(biz.getSimpleName());
 		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createBiz(biz);
+			obj = J2WHelper.createBiz(biz, ui);
 			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
 			stack.put(biz.getSimpleName(), obj);
 

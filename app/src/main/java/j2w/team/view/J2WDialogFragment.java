@@ -242,19 +242,21 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			return (C) biz();
 		}
 
-		Object biz = j2WStructureIManage.getStack((Class<B>) service);
-		if (biz == null) {// 如果没有索索到
-			Impl impl = service.getAnnotation(Impl.class);
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
-			Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-			if (uiImpl == null) {
-				biz = (B) j2WStructureIManage.biz(service);
-			} else {
+		Object biz = null;
+		synchronized (j2WStructureIManage) {
+			biz = j2WStructureIManage.getStack((Class<B>) service);
+			if (biz == null) {
+				Impl impl = service.getAnnotation(Impl.class);
+				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
+				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
+				if (uiImpl == null) {
+					return null;
+				}
 				Object ui = J2WHelper.UI(uiImpl.value().getName());
 				if (ui == null) {
 					return null;
 				}
-				biz = (B) J2WHelper.structureManage(ui).biz(service);
+				biz = J2WHelper.structureManage(ui).getBiz();
 				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
 				j2WStructureIManage.addStack(service.getSimpleName(), (B) biz);
 			}

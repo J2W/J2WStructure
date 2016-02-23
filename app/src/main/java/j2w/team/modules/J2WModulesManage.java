@@ -1,5 +1,6 @@
 package j2w.team.modules;
 
+import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -50,11 +51,11 @@ public class J2WModulesManage {
 
 	private J2WMethods				j2WMethods;			// 方法代理
 
-	private Map<String, Object>		stack;
+	private SimpleArrayMap<String, Object> stack;
 
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = j2WApplication;
-		this.stack = new Hashtable<>();
+		this.stack = new SimpleArrayMap<>();
 	}
 
 	public J2WApplication getJ2WApplication() {
@@ -86,7 +87,7 @@ public class J2WModulesManage {
 		return this.mJ2WRestAdapter;
 	}
 
-	public Map<String, Object> getStatck() {
+	public SimpleArrayMap<String, Object> getStatck() {
 		return stack;
 	}
 
