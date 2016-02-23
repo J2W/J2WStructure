@@ -8,12 +8,6 @@ import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
-import j2w.team.modules.structure.J2WStructureIManage;
-import j2w.team.service.J2WService;
-import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WDialogFragment;
-import j2w.team.view.J2WFragment;
-import j2w.team.view.J2WView;
 
 /**
  * Created by sky on 15/2/1.

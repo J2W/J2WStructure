@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.view.J2WFragment;
 import j2w.team.view.common.J2WViewPagerChangeListener;
 import j2w.team.view.model.J2WModelPager;
 
@@ -62,6 +63,8 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 	int[]								showItems;
 
+	int									index;
+
 	/**
 	 * 初始化
 	 * 
@@ -84,6 +87,10 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 
 	@Override public J2WViewPagerAdapter adapter() {
 		return this;
+	}
+
+	@Override public void setIndex(int index) {
+		this.index = index;
 	}
 
 	/**
@@ -217,6 +224,11 @@ public class J2WViewPagerAdapter extends PagerAdapter implements ViewPager.OnPag
 			 */
 			fragmentManager.executePendingTransactions();
 			fragment.setHasOptionsMenu(false);// 设置actionbar不执行
+			if (fragment instanceof J2WFragment) {
+				if(index == position){
+					((J2WFragment) fragment).onVisible();
+				}
+			}
 		}
 		if (fragment.getView() == null) {
 			throw new NullPointerException("fragment,没有给布局，导致获取不到View");

@@ -14,6 +14,12 @@ public interface J2WIViewPagerAdapter {
 	 * @return
 	 */
 	J2WViewPagerAdapter adapter();
+
+	/**
+	 * 设置位置 - 影响 onVisible
+	 * @param index
+	 */
+	void setIndex(int index);
 	/**
 	 * 设置数据
 	 * 
