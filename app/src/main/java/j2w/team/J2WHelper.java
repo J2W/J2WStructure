@@ -103,13 +103,14 @@ public class J2WHelper {
 				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
 				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
 				if (uiImpl == null) {
-					return null;
+					biz = J2WHelper.createBiz(service,null);
+				}else{
+					Object ui = J2WHelper.UI(uiImpl.value().getName());
+					if (ui == null) {
+						return null;
+					}
+					biz = structureManage(ui).getBiz();
 				}
-				Object ui = J2WHelper.UI(uiImpl.value().getName());
-				if (ui == null) {
-					return null;
-				}
-				biz = structureManage(ui).getBiz();
 				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
 				mJ2WModulesManage.getStatck().put(service.getSimpleName(), biz);
 			}

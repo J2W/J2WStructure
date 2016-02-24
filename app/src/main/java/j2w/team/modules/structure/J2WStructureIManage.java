@@ -19,16 +19,19 @@ public interface J2WStructureIManage<B extends J2WIBiz> {
 
 	B getBiz();
 
+	<C> C getBiz(Class<C> service, Class aClass);
+
+
 	/**
 	 * 添加到堆栈
-	 * 
+	 *
 	 * @param biz
 	 */
 	void addStack(String key, B biz);
 
 	/**
 	 * 获取
-	 * 
+	 *
 	 * @param biz
 	 * @return
 	 */
