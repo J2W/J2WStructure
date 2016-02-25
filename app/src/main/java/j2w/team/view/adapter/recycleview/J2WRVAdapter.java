@@ -183,4 +183,11 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		return mItems.size();
 	}
 
+	public void isShowHeader(boolean isShowFooter) {
+		headerRecyclerViewAdapterV1.isShowHeader(isShowFooter);
+	}
+
+	public void isShowFooter(boolean isShowFooter) {
+		headerRecyclerViewAdapterV1.isShowFooter(isShowFooter);
+	}
 }

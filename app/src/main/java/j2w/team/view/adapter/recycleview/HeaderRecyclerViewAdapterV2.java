@@ -15,11 +15,14 @@ import j2w.team.modules.http.annotations.Header;
  */
 public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerView.Adapter<V> {
 
-	private static final int		TYPE_HEADER			= Integer.MIN_VALUE;
+	private static final int	TYPE_HEADER		= Integer.MIN_VALUE;
 
-	private static final int		TYPE_FOOTER			= Integer.MIN_VALUE + 1;
+	private static final int	TYPE_FOOTER		= Integer.MIN_VALUE + 1;
 
-	private static final int		TYPE_ADAPTEE_OFFSET	= 2;
+
+	private boolean				isShowHeader	= true;
+
+	private boolean				isShowFooter	= true;
 
 	private final J2WRVAdapter	mAdaptee;
 
@@ -37,7 +40,7 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 		} else if (viewType == TYPE_FOOTER && mAdaptee instanceof FooterView) {
 			return (V) ((FooterView) mAdaptee).onCreateFooterViewHolder(parent, viewType);
 		}
-		return (V) mAdaptee.onCreateViewHolder(parent, viewType - TYPE_ADAPTEE_OFFSET);
+		return (V) mAdaptee.onCreateViewHolder(parent, viewType);
 	}
 
 	@Override public void onBindViewHolder(V holder, int position) {
@@ -62,14 +65,14 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 	}
 
 	private boolean useHeader() {
-		if (mAdaptee instanceof HeaderRecyclerView) {
+		if (mAdaptee instanceof HeaderView && isShowHeader) {
 			return true;
 		}
 		return false;
 	}
 
 	private boolean useFooter() {
-		if (mAdaptee instanceof FooterRecyclerView) {
+		if (mAdaptee instanceof FooterView && isShowFooter) {
 			return true;
 		}
 		return false;
@@ -115,29 +118,36 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 		}
 		mAdaptee.delete(position);
 	}
+
 	public void clear() {
 		if (mAdaptee.getItems() == null) {
 			return;
 		}
 		mAdaptee.clear();
 	}
+
 	public <T> T getItem(int position) {
 		return (T) mAdaptee.getItem(position);
 	}
 
 	@Override public int getItemViewType(int position) {
-		if (position == 0 && useHeader()) {
+		if (position == 0 && useHeader() && isShowHeader) {
 			return TYPE_HEADER;
 		}
-		if (position == mAdaptee.getItemCount() && useFooter()) {
+		if (position == mAdaptee.getItemCount() && useFooter() && isShowFooter) {
 			return TYPE_FOOTER;
 		}
-		if (mAdaptee.getItemCount() >= Integer.MAX_VALUE - TYPE_ADAPTEE_OFFSET) {
-			new IllegalStateException("HeaderRecyclerViewAdapter offsets your BasicItemType by " + TYPE_ADAPTEE_OFFSET + ".");
+		if (mAdaptee.getItemCount() >= Integer.MAX_VALUE) {
+			new IllegalStateException("HeaderRecyclerViewAdapter offsets your BasicItemType by " + ".");
 		}
-		return mAdaptee.getItemViewType(position) + TYPE_ADAPTEE_OFFSET;
+		return mAdaptee.getItemViewType(position - (useHeader() ? 1 : 0));
 	}
 
+	public void isShowHeader(boolean isShowHeader) {
+		this.isShowHeader = isShowHeader;
+	}
 
-
+	public void isShowFooter(boolean isShowFooter) {
+		this.isShowFooter = isShowFooter;
+	}
 }
