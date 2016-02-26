@@ -494,7 +494,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	 */
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager) {
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
@@ -502,7 +502,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, int mRequestCode) {
 		this.mRequestCode = mRequestCode;
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
@@ -512,7 +512,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			this.setTargetFragment(mTargetFragment, mRequestCode);
 		}
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
@@ -522,7 +522,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			this.setTargetFragment(mTargetFragment, mRequestCode);
 		}
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
@@ -530,7 +530,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	@Override public DialogFragment showAllowingStateLoss(FragmentManager fragmentManager, Activity activity) {
 		this.targetActivity = true;
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
@@ -539,7 +539,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		this.targetActivity = true;
 		this.mRequestCode = mRequestCode;
 		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.add(this, this.getClass().getSimpleName());
+		ft.add(this, this.getClass().getName());
 		ft.commitAllowingStateLoss();
 		return this;
 	}
