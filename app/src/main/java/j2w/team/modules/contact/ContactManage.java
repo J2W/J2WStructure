@@ -323,7 +323,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		if(contactIds.size() > 0){
 			StringBuilder condition = new StringBuilder(" NOT IN (");
 			appendPlaceholders(condition, contactIds.size()).append(')');
-			query.append(" AND");
+			query.append(" AND ");
 			query.append(Contacts.NAME_RAW_CONTACT_ID);
 			query.append(condition.toString());
 		}

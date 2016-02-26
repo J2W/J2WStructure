@@ -18,9 +18,9 @@ public class J2WScreenManager implements J2WIScreenManager {
 	/**
 	 * FragmentActivity堆栈 单例模式
 	 */
-	private final Stack<FragmentActivity>	fragmentActivities;
+	private final Stack<FragmentActivity>			fragmentActivities;
 
-	private final SimpleArrayMap<String, Object> viewMap;
+	private final SimpleArrayMap<String, Object>	viewMap;
 
 	public J2WScreenManager() {
 		fragmentActivities = new Stack<>();
@@ -68,7 +68,7 @@ public class J2WScreenManager implements J2WIScreenManager {
 		activity = null;
 	}
 
-	@Override public void popNotEqualActivity(Class clazz) {
+	@Override public synchronized void popNotEqualActivity(Class clazz) {
 		for (Iterator<FragmentActivity> iter = fragmentActivities.iterator(); iter.hasNext();) {
 			FragmentActivity item = iter.next();
 			if (!item.getClass().equals(clazz)) {
