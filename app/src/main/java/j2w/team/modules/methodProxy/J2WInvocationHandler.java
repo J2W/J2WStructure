@@ -14,12 +14,8 @@ public abstract class J2WInvocationHandler<T> implements InvocationHandler {
 
 	Object	impl;
 
-	boolean	isNotCacheMethed;
-
 	public J2WInvocationHandler(Object impl) {
 		this.impl = impl;
-		NotCacheMethods notCacheMethods = impl.getClass().getAnnotation(NotCacheMethods.class);
-		isNotCacheMethed = notCacheMethods != null;
 		J2WCheckUtils.checkNotNull(impl, "接口没有设置@Impl(class)，请设置～");
 	}
 }

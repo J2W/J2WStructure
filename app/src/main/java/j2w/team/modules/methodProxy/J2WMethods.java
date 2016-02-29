@@ -5,15 +5,17 @@ import android.support.v4.util.SimpleArrayMap;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Stack;
 
+import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.plugin.J2WActivityInterceptor;
-import j2w.team.core.plugin.J2WEndInterceptor;
+import j2w.team.core.plugin.ImplEndInterceptor;
+import j2w.team.core.plugin.BizEndInterceptor;
 import j2w.team.core.plugin.J2WErrorInterceptor;
 import j2w.team.core.plugin.J2WFragmentInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
-import j2w.team.core.plugin.J2WStartInterceptor;
+import j2w.team.core.plugin.ImplStartInterceptor;
+import j2w.team.core.plugin.BizStartInterceptor;
 
 /**
  * @创建人 sky
@@ -28,27 +30,34 @@ public final class J2WMethods {
 
 	final J2WFragmentInterceptor				j2WFragmentInterceptor;
 
-	final ArrayList<J2WStartInterceptor>		j2WStartInterceptor;		// 方法开始拦截器
+	final ArrayList<BizStartInterceptor> bizStartInterceptor;		// 方法开始拦截器
 
-	final ArrayList<J2WEndInterceptor>			j2WEndInterceptor;			// 方法结束拦截器
+	final ArrayList<BizEndInterceptor> bizEndInterceptor;			// 方法结束拦截器
+
+	private ArrayList<ImplStartInterceptor> implStartInterceptors;	// 方法开始拦截器
+
+	private ArrayList<ImplEndInterceptor> implEndInterceptors;	// 方法结束拦截器
 
 	final ArrayList<J2WErrorInterceptor>		j2WErrorInterceptor;		// 方法错误拦截器
 
 	final ArrayList<J2WHttpErrorInterceptor>	j2WHttpErrorInterceptor;	// 方法错误拦截器
 
-	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<J2WStartInterceptor> j2WStartInterceptor,
-			ArrayList<J2WEndInterceptor> j2WEndInterceptor, ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
+	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
+			ArrayList<BizEndInterceptor> bizEndInterceptor, ArrayList<ImplStartInterceptor> implStartInterceptors, ArrayList<ImplEndInterceptor> implEndInterceptors,
+			ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
 		this.methodHandlerCache = new SimpleArrayMap<>();
-		this.j2WEndInterceptor = j2WEndInterceptor;
-		this.j2WStartInterceptor = j2WStartInterceptor;
+		this.bizEndInterceptor = bizEndInterceptor;
+		this.bizStartInterceptor = bizStartInterceptor;
 		this.j2WErrorInterceptor = j2WErrorInterceptor;
+		this.implStartInterceptors = implStartInterceptors;
+		this.implEndInterceptors = implEndInterceptors;
 		this.j2WHttpErrorInterceptor = j2WHttpErrorInterceptor;
 		this.j2WActivityInterceptor = j2WActivityInterceptor;
 		this.j2WFragmentInterceptor = j2WFragmentInterceptor;
 	}
 
 	/**
-	 * 创建
+	 * 创建 BIZ
 	 *
 	 * @param service
 	 * @param <T>
@@ -62,6 +71,32 @@ public final class J2WMethods {
 				String key = getKey(impl, method, method.getParameterTypes());
 				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				return j2WMethod.invoke(impl, args);
+			}
+		});
+	}
+
+	/**
+	 * 创建 IMPL
+	 *
+	 * @param service
+	 * @param <T>
+	 * @return
+	 */
+	public <T> T createImpl(final Class<T> service, Object impl) {
+		J2WCheckUtils.validateServiceInterface(service);
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
+
+			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
+				// 业务拦截器 - 前
+				for (ImplStartInterceptor item : J2WHelper.methodsProxy().implStartInterceptors) {
+					item.interceptStart(impl.getClass().getName(), service, method, args);
+				}
+				Object backgroundResult = method.invoke(impl, args);// 执行
+				// 业务拦截器 - 后
+				for (ImplEndInterceptor item : J2WHelper.methodsProxy().implEndInterceptors) {
+					item.interceptEnd(impl.getClass().getName(), service, method, args, backgroundResult);
+				}
+				return backgroundResult;
 			}
 		});
 	}
@@ -129,9 +164,13 @@ public final class J2WMethods {
 
 		private J2WFragmentInterceptor				j2WFragmentInterceptor;	// activity拦截器
 
-		private ArrayList<J2WStartInterceptor>		j2WStartInterceptors;		// 方法开始拦截器
+		private ArrayList<BizStartInterceptor>		j2WStartInterceptors;		// 方法开始拦截器
 
-		private ArrayList<J2WEndInterceptor>		j2WEndInterceptors;		// 方法结束拦截器
+		private ArrayList<BizEndInterceptor> bizEndInterceptors;		// 方法结束拦截器
+
+		private ArrayList<ImplStartInterceptor> implStartInterceptors;	// 方法开始拦截器
+
+		private ArrayList<ImplEndInterceptor> implEndInterceptors;	// 方法结束拦截器
 
 		private ArrayList<J2WErrorInterceptor>		j2WErrorInterceptors;		// 方法错误拦截器
 
@@ -146,22 +185,42 @@ public final class J2WMethods {
 
 		}
 
-		public Builder addStartInterceptor(J2WStartInterceptor j2WStartInterceptor) {
+		public Builder addStartInterceptor(BizStartInterceptor bizStartInterceptor) {
 			if (j2WStartInterceptors == null) {
 				j2WStartInterceptors = new ArrayList<>();
 			}
-			if (!j2WStartInterceptors.contains(j2WStartInterceptor)) {
-				j2WStartInterceptors.add(j2WStartInterceptor);
+			if (!j2WStartInterceptors.contains(bizStartInterceptor)) {
+				j2WStartInterceptors.add(bizStartInterceptor);
 			}
 			return this;
 		}
 
-		public Builder addEndInterceptor(J2WEndInterceptor j2WEndInterceptor) {
-			if (j2WEndInterceptors == null) {
-				j2WEndInterceptors = new ArrayList<>();
+		public Builder addEndInterceptor(BizEndInterceptor bizEndInterceptor) {
+			if (bizEndInterceptors == null) {
+				bizEndInterceptors = new ArrayList<>();
 			}
-			if (!j2WEndInterceptors.contains(j2WEndInterceptor)) {
-				j2WEndInterceptors.add(j2WEndInterceptor);
+			if (!bizEndInterceptors.contains(bizEndInterceptor)) {
+				bizEndInterceptors.add(bizEndInterceptor);
+			}
+			return this;
+		}
+
+		public Builder addStartImplInterceptor(ImplStartInterceptor implStartInterceptor) {
+			if (implStartInterceptors == null) {
+				implStartInterceptors = new ArrayList<>();
+			}
+			if (!implStartInterceptors.contains(implStartInterceptor)) {
+				implStartInterceptors.add(implStartInterceptor);
+			}
+			return this;
+		}
+
+		public Builder addEndImplInterceptor(ImplEndInterceptor implEndInterceptor) {
+			if (implEndInterceptors == null) {
+				implEndInterceptors = new ArrayList<>();
+			}
+			if (!implEndInterceptors.contains(implEndInterceptor)) {
+				implEndInterceptors.add(implEndInterceptor);
 			}
 			return this;
 		}
@@ -187,15 +246,16 @@ public final class J2WMethods {
 		public J2WMethods build() {
 			// 默认值
 			ensureSaneDefaults();
-			return new J2WMethods(j2WActivityInterceptor, j2WFragmentInterceptor, j2WStartInterceptors, j2WEndInterceptors, j2WErrorInterceptors, j2WHttpErrorInterceptors);
+			return new J2WMethods(j2WActivityInterceptor, j2WFragmentInterceptor, j2WStartInterceptors, bizEndInterceptors, implStartInterceptors, implEndInterceptors, j2WErrorInterceptors,
+					j2WHttpErrorInterceptors);
 		}
 
 		private void ensureSaneDefaults() {
 			if (j2WStartInterceptors == null) {
 				j2WStartInterceptors = new ArrayList<>();
 			}
-			if (j2WEndInterceptors == null) {
-				j2WEndInterceptors = new ArrayList<>();
+			if (bizEndInterceptors == null) {
+				bizEndInterceptors = new ArrayList<>();
 			}
 			if (j2WErrorInterceptors == null) {
 				j2WErrorInterceptors = new ArrayList<>();
@@ -208,6 +268,12 @@ public final class J2WMethods {
 			}
 			if (j2WActivityInterceptor == null) {
 				j2WActivityInterceptor = J2WActivityInterceptor.NONE;
+			}
+			if (implStartInterceptors == null) {
+				implStartInterceptors = new ArrayList<>();
+			}
+			if (implEndInterceptors == null) {
+				implEndInterceptors = new ArrayList<>();
 			}
 		}
 

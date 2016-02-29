@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.concurrent.CountDownLatch;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
@@ -170,7 +171,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 		J2WCheckUtils.validateServiceInterface(implClazz);
 		synchronized (stackImpl) {
 			if (stackImpl.get(implClazz) == null) {
-				Object impl = J2WHelper.methodsProxy().create(implClazz, getImplClass(implClazz, null));
+				Object impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz, null));
 				stackImpl.put(implClazz, impl);
 				return (P) impl;
 			} else {
@@ -179,10 +180,11 @@ public class J2WStructureManage implements J2WStructureIManage {
 		}
 	}
 
+
+
 	@Override public <T> T createMainLooper(Class<T> service, final Object ui) {
 		J2WCheckUtils.validateServiceInterface(service);
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
-
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 				// 如果有返回值 - 直接执行
 				if (!method.getReturnType().equals(void.class)) {
@@ -192,12 +194,11 @@ public class J2WStructureManage implements J2WStructureIManage {
 				if (!J2WHelper.isMainLooperThread()) {// 子线程
 					return method.invoke(ui, args);
 				}
-				//
 				J2WHelper.mainLooper().execute(new Runnable() {
 
 					@Override public void run() {
 						try {
-							method.invoke(ui, args);
+							 method.invoke(ui, args);
 						} catch (Exception throwable) {
 							if (J2WHelper.getInstance().isLogOpen()) {
 								throwable.printStackTrace();

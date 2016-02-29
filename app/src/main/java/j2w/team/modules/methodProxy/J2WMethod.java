@@ -6,10 +6,10 @@ import java.lang.reflect.Method;
 import j2w.team.J2WHelper;
 import j2w.team.core.J2WRunnable;
 import j2w.team.core.exception.J2WNotUIPointerException;
-import j2w.team.core.plugin.J2WEndInterceptor;
+import j2w.team.core.plugin.BizEndInterceptor;
 import j2w.team.core.plugin.J2WErrorInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
-import j2w.team.core.plugin.J2WStartInterceptor;
+import j2w.team.core.plugin.BizStartInterceptor;
 import j2w.team.modules.http.J2WError;
 import j2w.team.modules.log.L;
 import j2w.team.modules.threadpool.BackgroundType;
@@ -156,12 +156,12 @@ public final class J2WMethod {
 
 	public void exeMethod(Method method, Object impl, Object[] objects) throws InvocationTargetException, IllegalAccessException {
 		// 业务拦截器 - 前
-		for (J2WStartInterceptor item : J2WHelper.methodsProxy().j2WStartInterceptor) {
+		for (BizStartInterceptor item : J2WHelper.methodsProxy().bizStartInterceptor) {
 			item.interceptStart(implName, service, method, interceptor, objects);
 		}
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
-		for (J2WEndInterceptor item : J2WHelper.methodsProxy().j2WEndInterceptor) {
+		for (BizEndInterceptor item : J2WHelper.methodsProxy().bizEndInterceptor) {
 			item.interceptEnd(implName, service, method, interceptor, objects, backgroundResult);
 		}
 	}

@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
  * @创建时间 16/1/6
  * @类描述 执行结束拦截
  */
-public interface J2WEndInterceptor {
+public interface BizEndInterceptor {
 
 	<T> void interceptEnd(String viewName, Class<T> service, Method method, int interceptor, Object[] objects, Object backgroundResult);
 
