@@ -13,9 +13,11 @@ import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
@@ -53,6 +55,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
+	private J2WBuilder	j2WBuilder;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,9 +65,12 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** 初始化结构 **/
+		J2WHelper.structureHelper().attach(this);
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
+		/** 初始化所有组建 **/
+		ButterKnife.bind(this, view);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
 		/** 初始化点击事件 **/
@@ -85,12 +91,14 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	@Override public void onResume() {
 		super.onResume();
+		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentResume(this);
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!J2WHelper.eventBus().isRegistered(this)) {
 				J2WHelper.eventBus().register(this);
 			}
 		}
+		J2WHelper.structureHelper().printBackStackEntry(getFragmentManager());
 		listLoadMoreOpen();
 	}
 
@@ -129,6 +137,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		j2WBuilder.detach();
 		j2WBuilder = null;
 		J2WHelper.structureHelper().detach(this);
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
+		/** 关闭键盘 **/
+		J2WKeyboardUtils.hideSoftInput(getActivity());
 	}
 
 	@Override public void onDestroy() {
@@ -136,10 +148,17 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentDestroy(this);
 	}
 
+	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
+		return J2WHelper.structureHelper().display(eClass);
 	}
 
+	protected B biz() {
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		return (B) biz(bizClass);
 	}
 
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return J2WHelper.structureHelper().biz(service);
 	}
 
 	/**
