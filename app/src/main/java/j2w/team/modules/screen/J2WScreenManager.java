@@ -226,7 +226,7 @@ public class J2WScreenManager {
 	 *
 	 * @param clazz
 	 */
-	void finishNotInstance(Class<?> clazz) {
+	public void finishNotInstance(Class<?> clazz) {
 		synchronized (activities) {
 			for (Iterator<J2WScreenHolder> iter = activities.iterator(); iter.hasNext();) {
 				J2WScreenHolder item = iter.next();

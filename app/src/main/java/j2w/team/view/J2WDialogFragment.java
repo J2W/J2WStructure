@@ -141,6 +141,8 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
+		/** 初始化所有组建 **/
+		ButterKnife.bind(this, view);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
 

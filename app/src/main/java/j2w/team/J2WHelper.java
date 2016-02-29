@@ -69,6 +69,17 @@ public class J2WHelper {
 	}
 
 	/**
+	 * 公用
+	 * 
+	 * @param service
+	 * @param <B>
+	 * @return
+	 */
+	public static final <B extends J2WIBiz> B common(Class<B> service) {
+		return structureHelper().biz(service);
+	}
+
+	/**
 	 * 获取网络
 	 * 
 	 * @param httpClazz

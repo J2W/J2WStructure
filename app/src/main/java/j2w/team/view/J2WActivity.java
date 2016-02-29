@@ -156,11 +156,19 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		J2WKeyboardUtils.hideSoftInput(this);
 	}
 
+	public void setLanding() {
+		J2WHelper.screenHelper().setAsLanding(this);
+	}
+
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
 			onBackPressed();
 			return true;
 		}
+		J2WActivity j2WActivity = J2WHelper.screenHelper().getCurrentActivity();
+
+		J2WIDisplay androidIDisplay = j2WActivity.display(J2WIDisplay.class);
+
 		return super.onOptionsItemSelected(item);
 	}
 
