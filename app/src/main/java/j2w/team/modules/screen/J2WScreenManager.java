@@ -10,6 +10,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import j2w.team.view.J2WActivity;
+
 /**
  * @创建人 sky
  * @创建时间 16/2/27
@@ -230,10 +232,6 @@ public class J2WScreenManager {
 		synchronized (activities) {
 			for (Iterator<J2WScreenHolder> iter = activities.iterator(); iter.hasNext();) {
 				J2WScreenHolder item = iter.next();
-				if (!item.getClass().equals(clazz)) {
-					item.finish();
-					iter.remove();
-				}
 				if (!clazz.isInstance(item.getActivity())) {
 					item.finish();
 					iter.remove();
