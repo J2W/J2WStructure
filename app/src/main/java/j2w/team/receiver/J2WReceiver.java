@@ -18,18 +18,7 @@ public abstract class J2WReceiver extends BroadcastReceiver {
 	 * @return
 	 */
 	public J2WActivity getView() {
-		return J2WHelper.screenHelper().currentActivity();
-	}
-
-	/**
-	 * 获取View
-	 * 
-	 * @param name
-	 * @param <T>
-	 * @return
-	 */
-	public <T> T getView(String name) {
-		return J2WHelper.screenHelper().getView(name);
+		return J2WHelper.screenHelper().getCurrentActivity();
 	}
 
 }

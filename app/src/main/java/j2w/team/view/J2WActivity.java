@@ -1,9 +1,8 @@
 package j2w.team.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,16 +14,14 @@ import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
-import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
-import j2w.team.modules.structure.J2WStructureIManage;
-import j2w.team.modules.structure.J2WStructureManage;
-import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
@@ -39,7 +36,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	/**
 	 * 定制
-	 * 
+	 *
 	 * @param initialJ2WBuilder
 	 * @return
 	 **/
@@ -53,47 +50,35 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 */
 	protected abstract void initData(Bundle savedInstanceState);
 
-	/** View层编辑器 **/
-	private J2WBuilder				j2WBuilder;
-
-	/** 结构 **/
-	private J2WStructureIManage<B>	j2WStructureIManage;
+	/**
+	 * View层编辑器
+	 **/
+	private J2WBuilder	j2WBuilder;
 
 	/**
 	 * 初始化
-	 * 
+	 *
 	 * @param savedInstanceState
 	 */
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		/** 初始化结构 **/
-		j2WStructureIManage = new J2WStructureManage();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachABiz(this);
+		J2WHelper.structureHelper().attach(this);
+		/** 初始化堆栈 **/
+		J2WHelper.screenHelper().onCreate(this);
+		/** 活动拦截器 **/
+		J2WHelper.methodsProxy().activityInterceptor().onCreate(this, getIntent().getExtras(), savedInstanceState);
 		/** 初始化视图 **/
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		j2WBuilder = new J2WBuilder(this, inflater);
 		setContentView(build(j2WBuilder).create());
+		/** 初始化所有组建 **/
+		ButterKnife.bind(this);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachActivity(this);
-		/** 初始化 **/
-		J2WHelper.methodsProxy().activityInterceptor().onCreate(this, getIntent().getExtras(), savedInstanceState);
-		/** 提交fragment **/
-		if (savedInstanceState == null) {
-			Fragment fragment = createFragment();
-			if (fragment != null) {
-				FragmentManager fm = getSupportFragmentManager();
-				fm.beginTransaction().add(R.id.j2w_home, fragment).commit();
-				fm.executePendingTransactions();
-			}
-		}
-		initData(getIntent().getExtras());
-	}
 
-	protected Fragment createFragment() {
-		return null;
+		/** 初始化数据 **/
+		initData(getIntent().getExtras());
 	}
 
 	@Override protected void onStart() {
@@ -103,6 +88,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	@Override protected void onResume() {
 		super.onResume();
+		J2WHelper.screenHelper().onResume(this);
+		J2WHelper.methodsProxy().activityInterceptor().onResume(this);
+
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			if (!J2WHelper.eventBus().isRegistered(this)) {
@@ -110,7 +98,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 			}
 		}
 		listLoadMoreOpen();
-		J2WHelper.methodsProxy().activityInterceptor().onResume(this);
 	}
 
 	public B getBiz() {
@@ -119,7 +106,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	/**
 	 * 设置输入法
-	 * 
+	 *
 	 * @param mode
 	 */
 	public void setSoftInputMode(int mode) {
@@ -128,6 +115,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	@Override protected void onPause() {
 		super.onPause();
+		J2WHelper.screenHelper().onPause(this);
 		J2WHelper.methodsProxy().activityInterceptor().onPause(this);
 		/** 判断EventBus 是否销毁 **/
 		if (j2WBuilder.isOpenEventBus()) {
@@ -153,6 +141,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 
 	@Override protected void onDestroy() {
 		super.onDestroy();
+
 		/** 关闭event **/
 		if (J2WHelper.eventBus().isRegistered(this)) {
 			J2WHelper.eventBus().unregister(this);
@@ -160,11 +149,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 清楚结构 **/
-		j2WStructureIManage.detachActivity(this);
-		j2WStructureIManage = null;
-
+		J2WHelper.structureHelper().detach(this);
+		J2WHelper.screenHelper().onDestroy(this);
 		J2WHelper.methodsProxy().activityInterceptor().onDestroy(this);
+		/** 关闭键盘 **/
+		J2WKeyboardUtils.hideSoftInput(this);
 	}
 
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
@@ -188,40 +177,29 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass);
+	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
+		return J2WHelper.structureHelper().display(eClass);
 	}
 
-	public J2WStructureIManage getStructureManage() {
-		return j2WStructureIManage;
+	protected B biz() {
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		return (B) biz(bizClass);
 	}
 
-	/**
-	 * 获取业务
-	 *
-	 * @return
-	 */
-	public B biz() {
-		return j2WStructureIManage.getBiz();
-	}
-
-	public <C> C biz(Class<C> service) {
-		return j2WStructureIManage.getBiz(service,this.getClass().getInterfaces()[0]);
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return J2WHelper.structureHelper().biz(service);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (j2WStructureIManage.onKeyBack(keyCode, getSupportFragmentManager(), this)) {
+		if (J2WHelper.structureHelper().onKeyBack(keyCode, getSupportFragmentManager(), this)) {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
 
-	/********************** View业务代码 *********************/
+	/**********************
+	 * View业务代码
+	 *********************/
 
 	public <T> T findFragment(Class<T> clazz) {
 		J2WCheckUtils.checkNotNull(clazz, "class不能为空");
@@ -236,7 +214,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WBuilder.isTintColor();
 	}
 
-	/********************** Actionbar业务代码 *********************/
+	/**********************
+	 * Actionbar业务代码
+	 *********************/
 
 	protected void showContent() {
 		if (j2WBuilder != null) {
@@ -268,7 +248,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		}
 	}
 
-	/********************** Actionbar业务代码 *********************/
+	/**********************
+	 * Actionbar业务代码
+	 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
 	}
@@ -277,7 +259,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WBuilder.getTintManager();
 	}
 
-	/********************** RecyclerView业务代码 *********************/
+	/**********************
+	 * RecyclerView业务代码
+	 *********************/
 
 	@Deprecated protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
@@ -295,7 +279,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WBuilder.getRecyclerView();
 	}
 
-	/********************** ListView业务代码 *********************/
+	/**********************
+	 * ListView业务代码
+	 *********************/
 
 	protected void addListHeader() {
 		if (j2WBuilder != null) {
@@ -342,7 +328,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return j2WBuilder.getListView();
 	}
 
-	/********************** ViewPager业务代码 *********************/
+	/**********************
+	 * ViewPager业务代码
+	 *********************/
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
 		return j2WBuilder.getViewPagerAdapter();

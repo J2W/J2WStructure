@@ -1,6 +1,7 @@
 //框架开发模式-需要测试
 //apply plugin: 'com.android.application'
 apply plugin: 'android-library'
+
 android {
     compileSdkVersion 22
     buildToolsVersion '23.0.1'
@@ -8,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 200
-        versionName "2.0.0"
+        versionCode 201
+        versionName "2.0.1"
     }
     buildTypes {
         release {
@@ -39,4 +40,5 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp-integration:1.4.0'
 }
 //打包
-apply from: 'maven-release-aar.gradle'
+apply from: 'maven-release-aar.gradle'//打包
+

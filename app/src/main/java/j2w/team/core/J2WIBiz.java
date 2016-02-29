@@ -1,8 +1,6 @@
 package j2w.team.core;
 
 
-import j2w.team.view.J2WView;
-
 /**
  * Created by sky on 15/2/7. 业务
  */

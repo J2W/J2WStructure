@@ -22,9 +22,7 @@ import j2w.team.core.plugin.J2WStartInterceptor;
  */
 public final class J2WMethods {
 
-	final SimpleArrayMap<Method, J2WMethod>		methodHandlerCache;
-
-	final Stack<String>							stack;
+	final SimpleArrayMap<String, J2WMethod>		methodHandlerCache;
 
 	final J2WActivityInterceptor				j2WActivityInterceptor;
 
@@ -41,7 +39,6 @@ public final class J2WMethods {
 	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<J2WStartInterceptor> j2WStartInterceptor,
 			ArrayList<J2WEndInterceptor> j2WEndInterceptor, ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
 		this.methodHandlerCache = new SimpleArrayMap<>();
-		this.stack = new Stack<>();
 		this.j2WEndInterceptor = j2WEndInterceptor;
 		this.j2WStartInterceptor = j2WStartInterceptor;
 		this.j2WErrorInterceptor = j2WErrorInterceptor;
@@ -57,41 +54,16 @@ public final class J2WMethods {
 	 * @param <T>
 	 * @return
 	 */
-	<T> T create(final Class<T> service, int type, Object ui) {
+	public <T> T create(final Class<T> service, Object impl) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(service, type, ui) {
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
-				J2WMethod j2WMethod = null;
-				switch (type) {
-					case J2WInvocationHandler.TYPE_BIZ:
-						j2WMethod = loadJ2WMethod(method, service, isNotCacheMethed);
-						break;
-					case J2WInvocationHandler.TYPE_DISPLA:
-						j2WMethod = loadJ2WDisplayMethod(method, service, isNotCacheMethed);
-						break;
-					case J2WInvocationHandler.TYPE_UI:
-						j2WMethod = loadJ2WUIMethod(method, service, isNotCacheMethed);
-						break;
-				}
+				String key = getKey(impl, method, method.getParameterTypes());
+				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				return j2WMethod.invoke(impl, args);
 			}
 		});
-	}
-
-	public <T> T createUI(final Class<T> service, Object ui) {
-		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_UI, ui);
-	}
-
-	public <T> T createDisplay(final Class<T> service) {
-		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_DISPLA, null);
-	}
-
-	public <T> T createBiz(final Class<T> service, Object ui) {
-		J2WCheckUtils.validateServiceInterface(service);
-		return create(service, J2WInvocationHandler.TYPE_BIZ, ui);
 	}
 
 	/**
@@ -113,80 +85,42 @@ public final class J2WMethods {
 	}
 
 	/**
-	 * 加载UI接口
-	 *
-	 * @param method
-	 * @param service
-	 * @param notCache
-	 * @param <T>
-	 * @return
-	 */
-	private <T> J2WMethod loadJ2WUIMethod(Method method, Class<T> service, boolean notCache) {
-		J2WMethod j2WMethod;
-		if (notCache) {
-			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
-		} else {
-			synchronized (methodHandlerCache) {
-				j2WMethod = methodHandlerCache.get(method);
-				if (j2WMethod == null) {
-					j2WMethod = J2WMethod.createUIMethod(this, method, service);
-					methodHandlerCache.put(method, j2WMethod);
-				}
-			}
-		}
-		return j2WMethod;
-	}
-
-	/**
-	 * 加载display接口
-	 *
-	 * @param method
-	 * @param service
-	 * @param notCache
-	 * @param <T>
-	 * @return
-	 */
-	private <T> J2WMethod loadJ2WDisplayMethod(Method method, Class<T> service, boolean notCache) {
-		J2WMethod j2WMethod;
-
-		if (notCache) {
-			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
-		} else {
-			synchronized (methodHandlerCache) {
-				j2WMethod = methodHandlerCache.get(method);
-				if (j2WMethod == null) {
-					j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
-					methodHandlerCache.put(method, j2WMethod);
-				}
-			}
-		}
-
-		return j2WMethod;
-	}
-
-	/**
 	 * 加载接口
 	 *
+	 * @param key
 	 * @param method
 	 * @param service
-	 * @param notCache
 	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WMethod(Method method, Class<T> service, boolean notCache) {
-		J2WMethod j2WMethod;
-		if (notCache) {
-			j2WMethod = J2WMethod.createDisplayMethod(this, method, service);
-		} else {
-			synchronized (methodHandlerCache) {
-				j2WMethod = methodHandlerCache.get(method);
-				if (j2WMethod == null) {
-					j2WMethod = J2WMethod.createBizMethod(this, method, service);
-					methodHandlerCache.put(method, j2WMethod);
-				}
+	private <T> J2WMethod loadJ2WMethod(String key, Method method, Class<T> service) {
+		synchronized (methodHandlerCache) {
+			J2WMethod j2WMethod = methodHandlerCache.get(key);
+			if (j2WMethod == null) {
+				j2WMethod = J2WMethod.createBizMethod(key, method, service);
+				methodHandlerCache.put(key, j2WMethod);
 			}
+			return j2WMethod;
 		}
-		return j2WMethod;
+	}
+
+	private String getKey(Object proxy, Method method, Class[] classes) {
+		boolean bool = false;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(proxy.toString());
+		stringBuilder.append(".");
+		stringBuilder.append(method.getName());
+		stringBuilder.append("(");
+		for (Class clazz : classes) {
+			stringBuilder.append(clazz.getSimpleName());
+			stringBuilder.append(",");
+			bool = true;
+		}
+		if (bool) {
+			stringBuilder = stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+		}
+		stringBuilder.append(")");
+		return stringBuilder.toString();
 	}
 
 	public static class Builder {

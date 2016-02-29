@@ -5,26 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import de.greenrobot.event.EventBus;
-import j2w.team.common.utils.J2WAppUtil;
-import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.core.Impl;
+import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
-import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.methodProxy.J2WMethods;
-import j2w.team.modules.screen.J2WIScreenManager;
+import j2w.team.modules.screen.J2WScreenManager;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.systemuihider.J2WSystemUiHider;
 import j2w.team.modules.threadpool.J2WThreadPoolManager;
 import j2w.team.modules.toast.J2WToast;
-import j2w.team.service.J2WService;
-import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WDialogFragment;
-import j2w.team.view.J2WFragment;
 
 /**
  * Created by sky on 15/1/28. helper 管理
@@ -54,110 +47,48 @@ public class J2WHelper {
 	}
 
 	/**
-	 * 创建接口代理
+	 * 获取启动管理器
 	 * 
-	 * @param service
-	 *            接口
-	 * @param <T>
+	 * @param eClass
+	 * @param <D>
 	 * @return
 	 */
-	public static final <T> T createBiz(Class<T> service, Object ui) {
-		return methodsProxy().createBiz(service, ui);
-	}
-
-	/**
-	 * 创建UI接口代理
-	 * 
-	 * @param service
-	 * @param ui
-	 * @param <T>
-	 * @return
-	 */
-	public static final <T> T createUI(Class<T> service, Object ui) {
-		return methodsProxy().createUI(service, ui);
-	}
-
-	/**
-	 * Display接口代理
-	 * 
-	 * @param service
-	 * @param <T>
-	 * @return
-	 */
-	public static final <T> T createDisplay(Class<T> service) {
-		return methodsProxy().createDisplay(service);
-	}
-
 	public static <D extends J2WIDisplay> D display(Class<D> eClass) {
-		J2WActivity j2WActivity = mJ2WModulesManage.getJ2WScreenManager().currentActivity();
-		return (D) j2WActivity.display(eClass);
-	}
-
-	public static final <B> B biz(Class<B> service) {
-		J2WCheckUtils.checkNotNull(service, "请指定业务接口～");
-		Object biz = null;
-		synchronized (mJ2WModulesManage.getStatck()) {
-			biz = mJ2WModulesManage.getStatck().get(service.getSimpleName());
-			if (biz == null) {// 如果没有索索到
-				Impl impl = service.getAnnotation(Impl.class);
-				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
-				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-				if (uiImpl == null) {
-					biz = J2WHelper.createBiz(service,null);
-				}else{
-					Object ui = J2WHelper.UI(uiImpl.value().getName());
-					if (ui == null) {
-						return null;
-					}
-					biz = structureManage(ui).getBiz();
-				}
-				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
-				mJ2WModulesManage.getStatck().put(service.getSimpleName(), biz);
-			}
-		}
-
-		return (B) biz;
+		return structureHelper().display(eClass);
 	}
 
 	/**
-	 * 获取结构管理器
-	 *
+	 * 获取业务
+	 * 
+	 * @param service
+	 * @param <B>
 	 * @return
 	 */
-	public static final J2WStructureIManage structureManage(Object object) {
-		J2WStructureIManage j2WStructureIManage = null;
-		if (object instanceof J2WFragment) {
-			j2WStructureIManage = ((J2WFragment) object).getStructureManage();
-		} else if (object instanceof J2WActivity) {
-			j2WStructureIManage = ((J2WActivity) object).getStructureManage();
-		} else if (object instanceof J2WDialogFragment) {
-			j2WStructureIManage = ((J2WDialogFragment) object).getStructureManage();
-		} else if (object instanceof J2WService) {
-			j2WStructureIManage = ((J2WService) object).getStructureManage();
-
-		}
-		return j2WStructureIManage;
+	public static final <B extends J2WIBiz> B biz(Class<B> service) {
+		return structureHelper().biz(service);
 	}
 
 	/**
-	 * 获取视图
+	 * 获取网络
 	 * 
-	 * @param viewName
-	 * @param <T>
+	 * @param httpClazz
+	 * @param <H>
 	 * @return
 	 */
-	public static final <T> T UI(String viewName) {
-		return screenHelper().getView(viewName);
+	public static final <H> H http(Class<H> httpClazz) {
+		return structureHelper().http(httpClazz);
+
 	}
 
 	/**
-	 * 判断视图存在不存在
+	 * 获取实现类
 	 * 
-	 * @param viewName
-	 * @return true 存在 false 不存在
+	 * @param implClazz
+	 * @param <P>
+	 * @return
 	 */
-	public static final boolean isUI(String viewName) {
-		return screenHelper().isUI(viewName);
+	public static final <P> P impl(Class<P> implClazz) {
+		return structureHelper().impl(implClazz);
 	}
 
 	/**
@@ -197,11 +128,20 @@ public class J2WHelper {
 	}
 
 	/**
+	 * 结构管理器
+	 * 
+	 * @return 管理器
+	 */
+	public static final J2WStructureIManage structureHelper() {
+		return mJ2WModulesManage.getJ2WStructureManage();
+	}
+
+	/**
 	 * activity管理器
 	 *
 	 * @return 管理器
 	 */
-	public static final J2WIScreenManager screenHelper() {
+	public static final J2WScreenManager screenHelper() {
 		return mJ2WModulesManage.getJ2WScreenManager();
 	}
 

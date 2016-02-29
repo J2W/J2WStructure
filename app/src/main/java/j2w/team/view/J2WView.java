@@ -73,7 +73,7 @@ public class J2WView {
 	}
 
 	public FragmentManager manager() {
-		return J2WHelper.screenHelper().currentActivity().getSupportFragmentManager();
+		return J2WHelper.screenHelper().getCurrentActivity().getSupportFragmentManager();
 	}
 
 	public Object getView() {

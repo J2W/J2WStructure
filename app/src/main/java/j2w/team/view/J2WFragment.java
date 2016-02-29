@@ -53,10 +53,6 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder				j2WBuilder;
-
-	/** 结构 **/
-	private J2WStructureIManage<B>	j2WStructureIManage;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,16 +62,11 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** 初始化结构 **/
-		j2WStructureIManage = new J2WStructureManage();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachFBiz(this);
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachFragment(this, view);
 		/** 初始化点击事件 **/
 		view.setOnTouchListener(this);// 设置点击事件
 		return view;
@@ -92,10 +83,6 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentStart(this);
 	}
 
-	public J2WStructureIManage getStructureManage() {
-		return j2WStructureIManage;
-	}
-
 	@Override public void onResume() {
 		super.onResume();
 		/** 判断EventBus 是否注册 **/
@@ -104,8 +91,6 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 				J2WHelper.eventBus().register(this);
 			}
 		}
-		j2WStructureIManage.printBackStackEntry(getFragmentManager());
-		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentResume(this);
 		listLoadMoreOpen();
 	}
 
@@ -143,9 +128,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 清楚结构 **/
-		j2WStructureIManage.detachFragment(this);
-		j2WStructureIManage = null;
+		J2WHelper.structureHelper().detach(this);
 	}
 
 	@Override public void onDestroy() {
@@ -153,27 +136,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentDestroy(this);
 	}
 
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-
-	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass);
 	}
 
-	/**
-	 * 获取业务
-	 *
-	 * @return
-	 */
-	public B biz() {
-		return j2WStructureIManage.getBiz();
 	}
 
-	public <C> C biz(Class<C> service) {
-		return j2WStructureIManage.getBiz(service,this.getClass().getInterfaces()[0]);
 	}
 
 	/**

@@ -1,24 +1,30 @@
 package j2w.team.modules.structure;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.KeyEvent;
-import android.view.View;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.core.Impl;
+import j2w.team.core.J2WBiz;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.log.L;
-import j2w.team.service.J2WService;
 import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
 
 /**
@@ -27,208 +33,185 @@ import j2w.team.view.J2WFragment;
  * @类描述 结构管理器
  */
 
-public class J2WStructureManage<B extends J2WIBiz> implements J2WStructureIManage<B> {
+public class J2WStructureManage implements J2WStructureIManage {
 
-	private SimpleArrayMap<String, Object>	stack;
+	private final SimpleArrayMap<Class<?>, Object>	stackBiz;
 
-	/**
-	 * 显示集合
-	 **/
-	private SimpleArrayMap<String, Object>	stackDisplay;
+	private final SimpleArrayMap<Class<?>, Object>	stackDisplay;
 
-	private B								biz;
+	private final SimpleArrayMap<Class<?>, Object>	stackHttp;
+
+	private final SimpleArrayMap<Class<?>, Object>	stackImpl;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
-		stack = new SimpleArrayMap<>();
+		stackBiz = new SimpleArrayMap<>();
+		stackHttp = new SimpleArrayMap<>();
 		stackDisplay = new SimpleArrayMap<>();
+		stackImpl = new SimpleArrayMap<>();
 	}
 
-	@Override public B getBiz() {
-		return biz;
-	}
+	@Override public void attach(Object view) {
 
-	@Override public <C> C getBiz(Class<C> service, Class aClass) {
-
-		J2WCheckUtils.checkNotNull(service, "请指定View接口～");
-		J2WCheckUtils.validateServiceInterface(aClass);
-
-		if (service.equals(aClass)) {
-			return (C) getBiz();
+		synchronized (stackBiz) {
+			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
+			J2WCheckUtils.validateServiceInterface(bizClass);
+			Object impl = getImplClass(bizClass, view);
+			stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass,impl));
 		}
-		C biz;
-		synchronized (this) {
-			biz = (C) getStack((Class<B>) service);
-			if (biz == null) {
-				Impl impl = service.getAnnotation(Impl.class);
-				Class bizClass = J2WAppUtil.getSuperClassGenricType(impl.value(), 0);
-				Impl uiImpl = (Impl) bizClass.getAnnotation(Impl.class);
-				if (uiImpl == null) {
-					biz = J2WHelper.createBiz(service, null);
-				} else {
-					Object ui = J2WHelper.UI(uiImpl.value().getName());
-					if (ui == null) {
-						return null;
-					}
-					biz = (C) J2WHelper.structureManage(ui).getBiz();
-				}
-				J2WCheckUtils.checkNotNull(biz, "没有实现接口");
-				addStack(service.getSimpleName(), (B) biz);
+	}
+
+	@Override public void detach(Object view) {
+		synchronized (stackBiz) {
+			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
+			J2WCheckUtils.validateServiceInterface(bizClass);
+			J2WIBiz j2WIBiz = (J2WIBiz) stackBiz.get(bizClass);
+			if (j2WIBiz != null) {
+				j2WIBiz.detach();
+			}
+			stackBiz.remove(bizClass);
+		}
+	}
+
+	/**
+	 * 获取实现类
+	 *
+	 * @param service
+	 * @param <D>
+	 * @return
+	 */
+	<D> Object getImplClass(@NotNull Class<D> service, Object ui) {
+		validateServiceClass(service);
+		try {
+			// 获取注解
+			Impl impl = service.getAnnotation(Impl.class);
+			J2WCheckUtils.checkNotNull(impl, "该接口没有指定实现类～");
+			/** 加载类 **/
+			Class clazz = Class.forName(impl.value().getName());
+			Constructor c = clazz.getDeclaredConstructor();
+			c.setAccessible(true);
+			J2WCheckUtils.checkNotNull(clazz, "业务类为空～");
+			/** 创建类 **/
+			Object o = c.newInstance();
+			// 如果是业务类
+			if (o instanceof J2WBiz) {
+				((J2WBiz) o).initUI(ui);
+			}
+			return o;
+		} catch (ClassNotFoundException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到业务类！");
+		} catch (java.lang.InstantiationException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，实例化异常！");
+		} catch (IllegalAccessException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，访问权限异常！");
+		} catch (NoSuchMethodException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到构造方法！");
+		} catch (InvocationTargetException e) {
+			throw new IllegalArgumentException(String.valueOf(service) + "，反射异常！");
+		}
+	}
+
+	/**
+	 * 验证类 - 判断是否是一个接口
+	 *
+	 * @param service
+	 * @param <T>
+	 */
+	private <T> void validateServiceClass(Class<T> service) {
+		if (service == null || !service.isInterface()) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(service);
+			stringBuilder.append("，该类不是接口！");
+			throw new IllegalArgumentException(stringBuilder.toString());
+		}
+	}
+
+	@Override public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
+		J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
+		J2WCheckUtils.validateServiceInterface(displayClazz);
+
+		synchronized (stackDisplay) {
+			if (stackDisplay.get(displayClazz) == null) {
+				Object display = createMainLooper(displayClazz, getImplClass(displayClazz, null));
+				stackDisplay.put(displayClazz, display);
+				return (D) display;
+			} else {
+				return (D) stackDisplay.get(displayClazz);
 			}
 		}
-
-		return biz;
 	}
 
-	@Override public void addStack(String key, B biz) {
-		stack.put(key, biz);
-	}
-
-	@Override public B getStack(Class<B> biz) {
-		return (B) stack.get(biz.getSimpleName());
-	}
-
-	@Override public void detach() {
-
-		if (stack != null) {
-			stack.clear();
-			stack = null;
+	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
+		J2WCheckUtils.checkNotNull(biz, "biz接口不能为空～");
+		synchronized (stackBiz) {
+			if (stackBiz.get(biz) != null) {
+				return (B) stackBiz.get(biz);
+			}
 		}
+		return null;
+	}
 
-		if (stackDisplay != null) {
-			stackDisplay.clear();
-			stackDisplay = null;
-		}
-
-		if (biz != null) {
-			biz.detach();
-			biz = null;
+	@Override public <H> H http(Class<H> httpClazz) {
+		J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
+		J2WCheckUtils.validateServiceInterface(httpClazz);
+		synchronized (stackHttp) {
+			if (stackHttp.get(httpClazz) == null) {
+				Object http = J2WHelper.httpAdapter().create(httpClazz);
+				stackHttp.put(httpClazz, http);
+				return (H) http;
+			} else {
+				return (H) stackHttp.get(httpClazz);
+			}
 		}
 	}
 
-	@Override public void attachABiz(J2WActivity activity) {
-		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass, activity);
-		stack.put(bizClass.getSimpleName(), biz);
-	}
-
-	@Override public void attachActivity(J2WActivity activity) {
-		/** 初始化所有组建 **/
-		ButterKnife.bind(activity);
-		/** 添加到堆栈 **/
-		J2WHelper.screenHelper().pushActivity(activity);
-		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
-	}
-
-	@Override public void detachActivity(J2WActivity activity) {
-		/** 默认销毁化 **/
-		detach();
-		/** 关闭键盘 **/
-		J2WKeyboardUtils.hideSoftInput(activity);
-		/** 从堆栈里移除 **/
-		J2WHelper.screenHelper().popActivity(activity);
-		J2WHelper.screenHelper().popView(activity.getClass().getName());
-	}
-
-	@Override public void attachFBiz(J2WFragment fragment) {
-		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass, fragment);
-		stack.put(bizClass.getSimpleName(), biz);
-	}
-
-	@Override public void attachFragment(J2WFragment fragment, View view) {
-		/** 初始化所有组建 **/
-		ButterKnife.bind(fragment, view);
-	}
-
-	@Override public void detachFragment(J2WFragment fragment) {
-		/** 默认初始化 **/
-		detach();
-		J2WHelper.screenHelper().popView(fragment.getClass().getName());
-		/** 清空注解view **/
-		ButterKnife.unbind(fragment);
-		/** 关闭键盘 **/
-		J2WKeyboardUtils.hideSoftInput(fragment.getActivity());
-	}
-
-	@Override public void attachDBiz(J2WDialogFragment fragment) {
-		J2WHelper.screenHelper().pushView(fragment.getClass().getName(), fragment);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(fragment.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass, fragment);
-		stack.put(bizClass.getSimpleName(), biz);
-	}
-
-	@Override public void attachDialogFragment(J2WDialogFragment dialogFragment, View view) {
-		/** 初始化所有组建 **/
-		ButterKnife.bind(dialogFragment, view);
-	}
-
-	@Override public void detachDialogFragment(J2WDialogFragment dialogFragment) {
-		/** 清空注解view **/
-		ButterKnife.unbind(dialogFragment);
-		J2WHelper.screenHelper().popView(dialogFragment.getClass().getName());
-		/** 默认初始化 **/
-		detach();
-		/** 关闭键盘 **/
-		J2WKeyboardUtils.hideSoftInput(dialogFragment.getActivity());
-	}
-
-	@Override public void attachService(J2WService activity) {
-		/** 添加到堆栈 **/
-		J2WHelper.screenHelper().pushView(activity.getClass().getName(), activity);
-		/** 初始化 **/
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(activity.getClass(), 0);
-		biz = (B) J2WHelper.createBiz(bizClass, activity);
-		stack.put(bizClass.getSimpleName(), biz);
-	}
-
-	@Override public void detachService(J2WService activity) {
-		/** 默认销毁化 **/
-		detach();
-		/** 从堆栈里移除 **/
-		J2WHelper.screenHelper().popView(activity.getClass().getName());
-	}
-
-	@Override public <D extends J2WIDisplay> D display(Class<D> eClass) {
-		J2WCheckUtils.checkNotNull(eClass, "display接口不能为空");
-		D obj = (D) stackDisplay.get(eClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createDisplay(eClass);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stackDisplay.put(eClass.getSimpleName(), obj);
+	@Override public <P> P impl(Class<P> implClazz) {
+		J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
+		J2WCheckUtils.validateServiceInterface(implClazz);
+		synchronized (stackImpl) {
+			if (stackImpl.get(implClazz) == null) {
+				Object impl = J2WHelper.methodsProxy().create(implClazz, getImplClass(implClazz, null));
+				stackImpl.put(implClazz, impl);
+				return (P) impl;
+			} else {
+				return (P) stackImpl.get(implClazz);
+			}
 		}
-		return obj;
 	}
 
-	@Override public <B> B biz(Class<B> biz, Object ui) {
-		J2WCheckUtils.checkNotNull(biz, "请指定业务接口～");
-		Object obj = stack.get(biz.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.createBiz(biz, ui);
-			J2WCheckUtils.checkNotNull(obj, "没有实现接口");
-			stack.put(biz.getSimpleName(), obj);
+	@Override public <T> T createMainLooper(Class<T> service, final Object ui) {
+		J2WCheckUtils.validateServiceInterface(service);
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
 
-		}
-		return (B) obj;
+			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
+				// 如果有返回值 - 直接执行
+				if (!method.getReturnType().equals(void.class)) {
+					return method.invoke(ui, args);
+				}
+				// 如果是主线程 - 直接执行
+				if (!J2WHelper.isMainLooperThread()) {// 子线程
+					return method.invoke(ui, args);
+				}
+				//
+				J2WHelper.mainLooper().execute(new Runnable() {
+
+					@Override public void run() {
+						try {
+							method.invoke(ui, args);
+						} catch (Exception throwable) {
+							if (J2WHelper.getInstance().isLogOpen()) {
+								throwable.printStackTrace();
+							}
+							return;
+						}
+					}
+				});
+				return null;
+			}
+		});
 	}
 
-	@Override public <H> H http(Class<H> hClass) {
-		J2WCheckUtils.checkNotNull(hClass, "请指定View接口～");
-		Object obj = stack.get(hClass.getSimpleName());
-		if (obj == null) {// 如果没有索索到
-			obj = J2WHelper.httpAdapter().create(hClass);
-			J2WCheckUtils.checkUINotNull(obj, "没有实现接口");
-			stack.put(hClass.getSimpleName(), obj);
-		}
-		return (H) obj;
-	}
-
-	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity<B> bj2WActivity) {
+	@Override public boolean onKeyBack(int keyCode, FragmentManager fragmentManager, J2WActivity bj2WActivity) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 
 			int idx = fragmentManager.getBackStackEntryCount();

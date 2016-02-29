@@ -30,11 +30,11 @@ import j2w.team.view.J2WView;
 public class J2WDisplay implements J2WIDisplay {
 
 	@Override public Context context() {
-		return J2WHelper.screenHelper().currentActivity();
+		return J2WHelper.screenHelper().getCurrentActivity();
 	}
 
 	@Override public J2WActivity activity() {
-		return J2WHelper.screenHelper().currentActivity();
+		return J2WHelper.screenHelper().getCurrentActivity();
 	}
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {

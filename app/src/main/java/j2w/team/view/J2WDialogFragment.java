@@ -29,9 +29,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
@@ -51,19 +53,16 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
  */
 public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragment implements J2WIDialogFragment, DialogInterface.OnKeyListener {
 
-	private boolean					targetActivity;
+	private boolean				targetActivity;
 
 	/** 请求编码 **/
-	protected int					mRequestCode		= 2013 << 5;
+	protected int				mRequestCode		= 2013 << 5;
 
 	/** 请求默认值 **/
-	public final static String		ARG_REQUEST_CODE	= "j2w_request_code";
+	public final static String	ARG_REQUEST_CODE	= "j2w_request_code";
 
 	/** View层编辑器 **/
-	private J2WBuilder				j2WBuilder;
-
-	/** 结构 **/
-	private J2WStructureIManage<B>	j2WStructureIManage;
+	private J2WBuilder			j2WBuilder;
 
 	/**
 	 * 定制
@@ -138,16 +137,12 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** 初始化结构 **/
-		j2WStructureIManage = new J2WStructureManage();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachDBiz(this);
+		J2WHelper.structureHelper().attach(this);
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 初始化业务 **/
-		j2WStructureIManage.attachDialogFragment(this, view);
 
 		// 获取参数-设置是否可取消
 		getDialog().setCanceledOnTouchOutside(isCancel());
@@ -166,17 +161,13 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		initData(getArguments());
 	}
 
-	public J2WStructureIManage getStructureManage() {
-		return j2WStructureIManage;
-	}
-
 	@Override public void onResume() {
 		super.onResume();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
 			J2WHelper.eventBus().register(this);
 		}
-		j2WStructureIManage.printBackStackEntry(getFragmentManager());
+		J2WHelper.structureHelper().printBackStackEntry(getFragmentManager());
 	}
 
 	@Override public void onPause() {
@@ -193,18 +184,20 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
+
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 清楚结构 **/
-		j2WStructureIManage.detachDialogFragment(this);
-		j2WStructureIManage = null;
 		// 销毁
 		if (getDialog() != null && getRetainInstance()) {
 			getDialog().setDismissMessage(null);
 		}
+		J2WHelper.structureHelper().detach(this);
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
+		/** 关闭键盘 **/
+		J2WKeyboardUtils.hideSoftInput(getActivity());
 	}
-
 	/**
 	 * 设置输入法
 	 * 
@@ -214,27 +207,17 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
 
-	/**
-	 * 获取显示调度
-	 *
-	 * @return
-	 */
-	public <N extends J2WIDisplay> N display(Class<N> eClass) {
-		return j2WStructureIManage.display(eClass);
+	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
+		return J2WHelper.structureHelper().display(eClass);
 	}
 
-	/**
-	 * 获取业务
-	 *
-	 * @return
-	 */
-
-	public B biz() {
-		return j2WStructureIManage.getBiz();
+	protected B biz() {
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		return (B) biz(bizClass);
 	}
 
-	public <C> C biz(Class<C> service) {
-		return j2WStructureIManage.getBiz(service,this.getClass().getInterfaces()[0]);
+	public <C extends J2WIBiz> C biz(Class<C> service) {
+		return J2WHelper.structureHelper().biz(service);
 	}
 
 	/**
@@ -545,9 +528,9 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	@Override public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK){
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			return onKeyBack();
-		}else{
+		} else {
 			return false;
 		}
 	}
