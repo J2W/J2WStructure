@@ -50,7 +50,7 @@ public class J2WScreenManager {
 	/**
 	 * 返回当前活动活动
 	 */
-	public <T extends FragmentActivity> T getCurrentActivity() {
+	public <T extends FragmentActivity> T getCurrentIsRunningActivity() {
 		if (activities.size() > 0) {
 			synchronized (activities) {
 				for (int i = 0; i < activities.size(); i++) {
@@ -59,6 +59,13 @@ public class J2WScreenManager {
 					}
 				}
 			}
+		}
+		return null;
+	}
+
+	public <T extends FragmentActivity> T getCurrentActivity() {
+		if (activities.size() > 0) {
+			return (T) activities.get(activities.size() - 1).getActivity();
 		}
 		return null;
 	}
