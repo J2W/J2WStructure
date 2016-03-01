@@ -80,7 +80,7 @@ public final class J2WMethods {
 				String key = getKey(impl, method, method.getParameterTypes());
 				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				// 开始
-				if(!isOpenLog){
+				if (!isOpenLog) {
 					return j2WMethod.invoke(impl, args);
 				}
 				enterMethod(method, args);
@@ -100,22 +100,23 @@ public final class J2WMethods {
 		String methodName = method.getName();
 		Class[] parameterNames = method.getParameterTypes();
 		Object[] parameterValues = args;
-
 		StringBuilder builder = new StringBuilder("\u21E2 ");
 		builder.append(methodName).append('(');
-		for (int i = 0; i < parameterValues.length; i++) {
-			if (i > 0) {
-				builder.append(", ");
+		if (parameterValues != null) {
+			for (int i = 0; i < parameterValues.length; i++) {
+				if (i > 0) {
+					builder.append(", ");
+				}
+				builder.append(parameterNames[i]).append('=');
+				builder.append(Strings.toString(parameterValues[i]));
 			}
-			builder.append(parameterNames[i]).append('=');
-			builder.append(Strings.toString(parameterValues[i]));
 		}
+
 		builder.append(')');
 
 		if (Looper.myLooper() != Looper.getMainLooper()) {
 			builder.append(" [Thread:\"").append(Thread.currentThread().getName()).append("\"]");
 		}
-
 		Log.v(cls.getSimpleName(), builder.toString());
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -158,7 +159,7 @@ public final class J2WMethods {
 					item.interceptStart(impl.getClass().getName(), service, method, args);
 				}
 
-				if(!isOpenLog){
+				if (!isOpenLog) {
 					return method.invoke(impl, args);
 				}
 				enterMethod(method, args);
