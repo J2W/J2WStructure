@@ -1,6 +1,5 @@
 package j2w.team.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
+import j2w.team.core.NotCacheMethods;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
@@ -56,6 +56,12 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	private J2WBuilder	j2WBuilder;
 
 	/**
+	 * 泛型
+	 */
+	Class				bizClass;
+
+	B b;
+	/**
 	 * 初始化
 	 *
 	 * @param savedInstanceState
@@ -76,7 +82,9 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		ButterKnife.bind(this);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-
+		/** 泛型 **/
+		bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		J2WCheckUtils.validateServiceInterface(bizClass);
 		/** 初始化数据 **/
 		initData(getIntent().getExtras());
 	}
@@ -98,10 +106,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 			}
 		}
 		listLoadMoreOpen();
-	}
-
-	public B getBiz() {
-		return biz();
 	}
 
 	/**
@@ -190,11 +194,27 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	protected B biz() {
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		return (B) biz(bizClass);
+		if (b == null) {
+			synchronized (this) {
+				if (b == null) {
+					NotCacheMethods notCacheMethods = this.getClass().getAnnotation(NotCacheMethods.class);
+					if (notCacheMethods != null) {
+						Object impl = J2WHelper.structureHelper().getImplClass(bizClass, this);
+						b = (B) J2WHelper.methodsProxy().create(bizClass, impl);
+					} else {
+						b = (B) biz(bizClass);
+					}
+				}
+				return b;
+			}
+		}
+		return b;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
+		if(bizClass.equals(service) && b != null){
+			return (C) b;
+		}
 		return J2WHelper.structureHelper().biz(service);
 	}
 

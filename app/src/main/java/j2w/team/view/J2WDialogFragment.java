@@ -35,6 +35,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
+import j2w.team.core.NotCacheMethods;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
@@ -59,6 +60,13 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	/** View层编辑器 **/
 	private J2WBuilder			j2WBuilder;
+
+	private B					b;
+
+	/**
+	 * 泛型
+	 */
+	Class						bizClass;
 
 	/**
 	 * 定制
@@ -139,9 +147,11 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
+		/** 泛型 **/
+		bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		J2WCheckUtils.validateServiceInterface(bizClass);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-
 		// 获取参数-设置是否可取消
 		getDialog().setCanceledOnTouchOutside(isCancel());
 		getDialog().setOnKeyListener(this);
@@ -196,6 +206,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(getActivity());
 	}
+
 	/**
 	 * 设置输入法
 	 * 
@@ -210,11 +221,27 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	protected B biz() {
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		return (B) biz(bizClass);
+		if (b == null) {
+			synchronized (this) {
+				if (b == null) {
+					NotCacheMethods notCacheMethods = this.getClass().getAnnotation(NotCacheMethods.class);
+					if (notCacheMethods != null) {
+						Object impl = J2WHelper.structureHelper().getImplClass(bizClass, this);
+						b = (B) J2WHelper.methodsProxy().create(bizClass, impl);
+					} else {
+						b = (B) biz(bizClass);
+					}
+				}
+				return b;
+			}
+		}
+		return b;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
+		if(bizClass.equals(service) && b != null){
+			return (C) b;
+		}
 		return J2WHelper.structureHelper().biz(service);
 	}
 

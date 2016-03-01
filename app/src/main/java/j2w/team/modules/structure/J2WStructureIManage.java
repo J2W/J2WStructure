@@ -2,6 +2,8 @@ package j2w.team.modules.structure;
 
 import android.support.v4.app.FragmentManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.J2WActivity;
@@ -21,10 +23,13 @@ public interface J2WStructureIManage {
 
 	<B extends J2WIBiz> B biz(Class<B> bizClazz);
 
+	<B extends J2WIBiz> B common(Class<B> service);
+
 	<H> H http(Class<H> httpClazz);
 
 	<P> P impl(Class<P> implClazz);
 
+	<D> Object getImplClass(@NotNull Class<D> service, Object ui);
 
 	<T> T createMainLooper(final Class<T> service, Object ui);
 
@@ -44,4 +49,5 @@ public interface J2WStructureIManage {
 	 * @param fragmentManager
 	 */
 	void printBackStackEntry(FragmentManager fragmentManager);
+
 }

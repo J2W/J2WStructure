@@ -1,6 +1,5 @@
 package j2w.team.modules.structure;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.SimpleArrayMap;
@@ -13,9 +12,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.concurrent.CountDownLatch;
 
-import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -58,7 +55,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
 			J2WCheckUtils.validateServiceInterface(bizClass);
 			Object impl = getImplClass(bizClass, view);
-			stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass,impl));
+			stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass, impl));
 		}
 	}
 
@@ -81,7 +78,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 	 * @param <D>
 	 * @return
 	 */
-	<D> Object getImplClass(@NotNull Class<D> service, Object ui) {
+	@Override public <D> Object getImplClass(@NotNull Class<D> service, Object ui) {
 		validateServiceClass(service);
 		try {
 			// 获取注解
@@ -152,6 +149,21 @@ public class J2WStructureManage implements J2WStructureIManage {
 		return null;
 	}
 
+	@Override public <B extends J2WIBiz> B common(Class<B> service) {
+		J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
+		J2WCheckUtils.validateServiceInterface(service);
+		synchronized (stackBiz) {
+			if(stackBiz.get(service) == null){
+				Object impl = getImplClass(service, null);
+				B b = J2WHelper.methodsProxy().create(service, impl);
+				stackBiz.put(service, b);
+				return b;
+			}else{
+				return (B) stackBiz.get(service);
+			}
+		}
+	}
+
 	@Override public <H> H http(Class<H> httpClazz) {
 		J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
 		J2WCheckUtils.validateServiceInterface(httpClazz);
@@ -180,11 +192,10 @@ public class J2WStructureManage implements J2WStructureIManage {
 		}
 	}
 
-
-
 	@Override public <T> T createMainLooper(Class<T> service, final Object ui) {
 		J2WCheckUtils.validateServiceInterface(service);
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
+
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 				// 如果有返回值 - 直接执行
 				if (!method.getReturnType().equals(void.class)) {
@@ -198,7 +209,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 					@Override public void run() {
 						try {
-							 method.invoke(ui, args);
+							method.invoke(ui, args);
 						} catch (Exception throwable) {
 							if (J2WHelper.getInstance().isLogOpen()) {
 								throwable.printStackTrace();

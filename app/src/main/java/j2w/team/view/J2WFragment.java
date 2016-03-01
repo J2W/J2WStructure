@@ -21,6 +21,7 @@ import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
+import j2w.team.core.NotCacheMethods;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.structure.J2WStructureIManage;
 import j2w.team.modules.structure.J2WStructureManage;
@@ -37,6 +38,13 @@ import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
 public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements View.OnTouchListener {
 
 	private boolean	targetActivity;
+
+	B				b;
+
+	/**
+	 * 泛型
+	 */
+	Class			bizClass;
 
 	/**
 	 * 定制
@@ -71,6 +79,9 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
+		/** 泛型 **/
+		bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		J2WCheckUtils.validateServiceInterface(bizClass);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
 		/** 初始化点击事件 **/
@@ -153,11 +164,27 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	protected B biz() {
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		return (B) biz(bizClass);
+		if (b == null) {
+			synchronized (this) {
+				if (b == null) {
+					NotCacheMethods notCacheMethods = this.getClass().getAnnotation(NotCacheMethods.class);
+					if (notCacheMethods != null) {
+						Object impl = J2WHelper.structureHelper().getImplClass(bizClass, this);
+						b = (B) J2WHelper.methodsProxy().create(bizClass, impl);
+					} else {
+						b = (B) biz(bizClass);
+					}
+				}
+				return b;
+			}
+		}
+		return b;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
+		if(bizClass.equals(service) && b != null){
+			return (C) b;
+		}
 		return J2WHelper.structureHelper().biz(service);
 	}
 

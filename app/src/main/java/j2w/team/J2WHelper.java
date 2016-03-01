@@ -76,7 +76,7 @@ public class J2WHelper {
 	 * @return
 	 */
 	public static final <B extends J2WIBiz> B common(Class<B> service) {
-		return structureHelper().biz(service);
+		return structureHelper().common(service);
 	}
 
 	/**
