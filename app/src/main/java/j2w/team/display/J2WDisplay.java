@@ -30,7 +30,7 @@ import j2w.team.view.J2WView;
 public class J2WDisplay implements J2WIDisplay {
 
 	@Override public Context context() {
-		return J2WHelper.screenHelper().getCurrentActivity();
+		return J2WHelper.screenHelper().getCurrentContext();
 	}
 
 	@Override public J2WActivity activity() {
@@ -39,7 +39,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		intentFromFragment(intent, fragment, requestCode);
 	}
 
@@ -122,7 +122,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intent(Class clazz, Bundle bundle) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		intent(intent, bundle);
 	}
 
@@ -140,7 +140,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode,Fragment fragment) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		if (bundle != null) {
 			intent.putExtras(bundle);
 		}
@@ -149,7 +149,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentForResult(Class clazz, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		intentForResult(intent, bundle, requestCode);
 	}
 
@@ -161,7 +161,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentAnimation(Class clazz, View view, Bundle bundle) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		if (bundle != null) {
 			intent.putExtras(bundle);
 		}
@@ -184,7 +184,7 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentForResultAnimation(Class clazz, View view, Bundle bundle, int requestCode) {
 		Intent intent = new Intent();
-		intent.setClass(activity(), clazz);
+		intent.setClass(context(), clazz);
 		if (bundle != null) {
 			intent.putExtras(bundle);
 		}

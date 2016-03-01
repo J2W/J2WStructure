@@ -63,6 +63,15 @@ public class J2WScreenManager {
 		return null;
 	}
 
+	public <T extends FragmentActivity> T getCurrentContext() {
+		if (activities.size() > 0) {
+			synchronized (activities) {
+				return (T) activities.get(activities.size() - 1).getActivity();
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * 保持参考下一个活动，这是必要的，以目前 活动，而不是整理前一个
 	 */
