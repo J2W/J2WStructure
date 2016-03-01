@@ -169,10 +169,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 			onBackPressed();
 			return true;
 		}
-		J2WActivity j2WActivity = J2WHelper.screenHelper().getCurrentActivity();
-
-		J2WIDisplay androidIDisplay = j2WActivity.display(J2WIDisplay.class);
-
 		return super.onOptionsItemSelected(item);
 	}
 
