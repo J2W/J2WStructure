@@ -3,7 +3,6 @@ package j2w.team.modules.methodProxy;
 import java.lang.reflect.InvocationHandler;
 
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.core.NotCacheMethods;
 
 /**
  * @创建人 sky

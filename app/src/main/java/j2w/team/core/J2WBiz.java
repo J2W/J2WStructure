@@ -15,7 +15,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 
 	private U				u;
 
-	private NotCacheMethods	notCacheMethods;
+	private NotCacheBiz notCacheMethods;
 
 	private Object			ui;				// 没有代理的ui
 
@@ -59,7 +59,7 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	@Override public void initUI(Object j2WView) {
 		if (j2WView != null) {
 			ui = j2WView;
-			notCacheMethods = j2WView.getClass().getAnnotation(NotCacheMethods.class);
+			notCacheMethods = j2WView.getClass().getAnnotation(NotCacheBiz.class);
 			Class ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
 			u = (U) J2WHelper.structureHelper().createMainLooper(ui, j2WView);
 		}

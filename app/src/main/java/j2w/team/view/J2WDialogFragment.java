@@ -35,7 +35,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
-import j2w.team.core.NotCacheMethods;
+import j2w.team.core.NotCacheBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
@@ -224,7 +224,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		if (b == null) {
 			synchronized (this) {
 				if (b == null) {
-					NotCacheMethods notCacheMethods = this.getClass().getAnnotation(NotCacheMethods.class);
+					NotCacheBiz notCacheMethods = this.getClass().getAnnotation(NotCacheBiz.class);
 					if (notCacheMethods != null) {
 						Object impl = J2WHelper.structureHelper().getImplClass(bizClass, this);
 						b = (B) J2WHelper.methodsProxy().create(bizClass, impl);
