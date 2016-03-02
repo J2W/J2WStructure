@@ -214,6 +214,17 @@ public class J2WScreenManager {
 		}
 	}
 
+	public void onActivityResult(Activity activity) {
+		synchronized (activities) {
+			for (int i = activities.size() - 1; i >= 0; i--) {
+				if (activities.get(i).getActivity().equals(activity)) {
+					activities.get(i).result();
+					break;
+				}
+			}
+		}
+	}
+
 	public void onDestroy(Activity activity) {
 		synchronized (activities) {
 			for (int i = activities.size() - 1; i >= 0; i--) {

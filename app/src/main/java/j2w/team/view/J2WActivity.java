@@ -1,6 +1,7 @@
 package j2w.team.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -60,7 +61,8 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 */
 	Class				bizClass;
 
-	B b;
+	B					b;
+
 	/**
 	 * 初始化
 	 *
@@ -106,6 +108,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 			}
 		}
 		listLoadMoreOpen();
+	}
+
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		J2WHelper.screenHelper().onActivityResult(this);
 	}
 
 	/**
@@ -208,7 +215,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if(bizClass.equals(service) && b != null){
+		if (bizClass.equals(service) && b != null) {
 			return (C) b;
 		}
 		return J2WHelper.structureHelper().biz(service);

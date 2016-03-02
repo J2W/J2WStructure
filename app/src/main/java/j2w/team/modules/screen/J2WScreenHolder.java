@@ -37,6 +37,10 @@ public class J2WScreenHolder {
 		log(" 运行.");
 	}
 
+	public void result(){
+		this.isRunning = true;
+	}
+
 	public FragmentActivity getActivity() {
 		return activity;
 	}
