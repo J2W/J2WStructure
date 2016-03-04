@@ -22,6 +22,7 @@ import j2w.team.core.plugin.J2WFragmentInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
 import j2w.team.core.plugin.ImplStartInterceptor;
 import j2w.team.core.plugin.BizStartInterceptor;
+import j2w.team.modules.http.J2WMethodInfo;
 import j2w.team.modules.log.L;
 
 /**
@@ -158,12 +159,14 @@ public final class J2WMethods {
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
-				if (stack.search(method) != -1) {
+				String key = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
+
+				if (stack.search(key) != -1) {
 					L.tag("J2WUIAndDisplay");
 					L.i(method.getName() + "方法,正在执行...");
 					return null;
 				}
-				stack.push(method);
+				stack.push(key);
 				try {
 
 					// 业务拦截器 - 前
@@ -187,7 +190,7 @@ public final class J2WMethods {
 					return backgroundResult;
 
 				} finally {
-					stack.remove(method);
+					stack.remove(key);
 				}
 			}
 		});
