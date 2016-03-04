@@ -3,6 +3,7 @@ package j2w.team.modules.structure;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Stack;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
@@ -41,12 +43,15 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	private final SimpleArrayMap<Class<?>, Object>	stackImpl;
 
+	private final Stack								stack;
+
 	public J2WStructureManage() {
 		/** 初始化集合 **/
 		stackBiz = new SimpleArrayMap<>();
 		stackHttp = new SimpleArrayMap<>();
 		stackDisplay = new SimpleArrayMap<>();
 		stackImpl = new SimpleArrayMap<>();
+		stack = new Stack();
 	}
 
 	@Override public void attach(Object view) {
@@ -153,12 +158,12 @@ public class J2WStructureManage implements J2WStructureIManage {
 		J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
 		J2WCheckUtils.validateServiceInterface(service);
 		synchronized (stackBiz) {
-			if(stackBiz.get(service) == null){
+			if (stackBiz.get(service) == null) {
 				Object impl = getImplClass(service, null);
 				B b = J2WHelper.methodsProxy().create(service, impl);
 				stackBiz.put(service, b);
 				return b;
-			}else{
+			} else {
 				return (B) stackBiz.get(service);
 			}
 		}
@@ -197,27 +202,47 @@ public class J2WStructureManage implements J2WStructureIManage {
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
 
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-				// 如果有返回值 - 直接执行
-				if (!method.getReturnType().equals(void.class)) {
-					return method.invoke(ui, args);
-				}
-				// 如果是主线程 - 直接执行
-				if (!J2WHelper.isMainLooperThread()) {// 子线程
-					return method.invoke(ui, args);
-				}
-				J2WHelper.mainLooper().execute(new Runnable() {
 
-					@Override public void run() {
-						try {
-							method.invoke(ui, args);
-						} catch (Exception throwable) {
-							if (J2WHelper.getInstance().isLogOpen()) {
-								throwable.printStackTrace();
-							}
-							return;
-						}
+				if (!J2WHelper.isMainLooperThread()) {
+					if (stack.search(method) != -1) {
+						L.tag("J2WUIAndDisplay");
+						L.i(method.getName() + "方法,正在执行...");
+						return null;
 					}
-				});
+					stack.push(method);
+					try {
+						// 如果是主线程 - 直接执行
+						return method.invoke(ui, args);
+					} catch (Exception throwable) {
+						if (J2WHelper.getInstance().isLogOpen()) {
+							throwable.printStackTrace();
+						}
+					} finally {
+						stack.remove(method);
+					}
+				} else {
+					J2WHelper.mainLooper().execute(new Runnable() {
+
+						@Override public void run() {
+							if (stack.search(method) != -1) {
+								L.tag("J2WUIAndDisplay");
+								L.i(method.getName() + "方法,正在执行...");
+								return;
+							}
+							stack.push(method);
+							try {
+								method.invoke(ui, args);
+							} catch (Exception throwable) {
+								if (J2WHelper.getInstance().isLogOpen()) {
+									throwable.printStackTrace();
+								}
+								return;
+							} finally {
+								stack.remove(method);
+							}
+						}
+					});
+				}
 				return null;
 			}
 		});
