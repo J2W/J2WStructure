@@ -32,7 +32,7 @@ public final class J2WMethod {
 
 	public static final int	TYPE_INVOKE_BACKGROUD_WORK_EXE			= 3;
 
-	static J2WMethod createBizMethod(String key, Method method, Class service) {
+	static J2WMethod createBizMethod(String key,Object impl, Method method, Class service) {
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -40,13 +40,13 @@ public final class J2WMethod {
 		// 判断是否是子线程
 		int type = parseBackground(method);
 
-		boolean j2WBizRunAnnotation = parseRunAnnotation(method);
+		boolean j2WBizRunAnnotation = parseRunAnnotation(impl.getClass());
 
 		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WBizRunAnnotation, service);
 	}
 
-	private static boolean parseRunAnnotation(Method method) {
-		J2WBizRunAnnotation j2WRepeat = method.getAnnotation(J2WBizRunAnnotation.class);
+	private static boolean parseRunAnnotation(Class method) {
+		J2WBizRunAnnotation j2WRepeat = (J2WBizRunAnnotation) method.getAnnotation(J2WBizRunAnnotation.class);
 		if (j2WRepeat != null) {
 			return true;
 		} else {
