@@ -9,7 +9,6 @@ import android.util.Log;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import j2w.team.J2WHelper;
@@ -22,7 +21,6 @@ import j2w.team.core.plugin.J2WFragmentInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
 import j2w.team.core.plugin.ImplStartInterceptor;
 import j2w.team.core.plugin.BizStartInterceptor;
-import j2w.team.modules.http.J2WMethodInfo;
 import j2w.team.modules.log.L;
 
 /**
@@ -52,8 +50,6 @@ public final class J2WMethods {
 
 	private boolean								isOpenLog;
 
-	private final Stack							stack;
-
 	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
 			ArrayList<BizEndInterceptor> bizEndInterceptor, ArrayList<ImplStartInterceptor> implStartInterceptors, ArrayList<ImplEndInterceptor> implEndInterceptors,
 			ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
@@ -67,7 +63,6 @@ public final class J2WMethods {
 		this.j2WActivityInterceptor = j2WActivityInterceptor;
 		this.j2WFragmentInterceptor = j2WFragmentInterceptor;
 		this.isOpenLog = J2WHelper.getInstance().isLogOpen();
-		this.stack = new Stack();
 	}
 
 	/**
@@ -159,39 +154,25 @@ public final class J2WMethods {
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
-				String key = J2WMethodInfo.getMethodString(service, method, method.getParameterTypes());
-
-				if (stack.search(key) != -1) {
-					L.tag("J2WUIAndDisplay");
-					L.i(method.getName() + "方法,正在执行...");
-					return null;
+				// 业务拦截器 - 前
+				for (ImplStartInterceptor item : J2WHelper.methodsProxy().implStartInterceptors) {
+					item.interceptStart(impl.getClass().getName(), service, method, args);
 				}
-				stack.push(key);
-				try {
 
-					// 业务拦截器 - 前
-					for (ImplStartInterceptor item : J2WHelper.methodsProxy().implStartInterceptors) {
-						item.interceptStart(impl.getClass().getName(), service, method, args);
-					}
-
-					if (!isOpenLog) {
-						return method.invoke(impl, args);
-					}
-					enterMethod(method, args);
-					long startNanos = System.nanoTime();
-					Object backgroundResult = method.invoke(impl, args);// 执行
-					long stopNanos = System.nanoTime();
-					long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
-					exitMethod(method, backgroundResult, lengthMillis);
-					// 业务拦截器 - 后
-					for (ImplEndInterceptor item : J2WHelper.methodsProxy().implEndInterceptors) {
-						item.interceptEnd(impl.getClass().getName(), service, method, args, backgroundResult);
-					}
-					return backgroundResult;
-
-				} finally {
-					stack.remove(key);
+				if (!isOpenLog) {
+					return method.invoke(impl, args);
 				}
+				enterMethod(method, args);
+				long startNanos = System.nanoTime();
+				Object backgroundResult = method.invoke(impl, args);// 执行
+				long stopNanos = System.nanoTime();
+				long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
+				exitMethod(method, backgroundResult, lengthMillis);
+				// 业务拦截器 - 后
+				for (ImplEndInterceptor item : J2WHelper.methodsProxy().implEndInterceptors) {
+					item.interceptEnd(impl.getClass().getName(), service, method, args, backgroundResult);
+				}
+				return backgroundResult;
 			}
 		});
 	}
