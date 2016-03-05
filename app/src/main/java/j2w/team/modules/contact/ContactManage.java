@@ -50,9 +50,9 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 	private static final String[]	CONTACTS_ID			= new String[] { Contacts.NAME_RAW_CONTACT_ID };
 
-	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY};
+	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY };
 
-	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID};
+	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID };
 
 	private static final String[]	PHONES_ID			= new String[] { Data.RAW_CONTACT_ID };
 
@@ -71,7 +71,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		ContactModel contact = new ContactModel();
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor c = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[]{partialName}, null);
+		Cursor c = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { partialName }, null);
 
 		if (c.moveToFirst()) {
 			while (c.moveToNext()) {
@@ -101,7 +101,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append("%");
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[]{stringBuilder.toString()}, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
 		ContactModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -266,7 +266,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append(name);
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?   COLLATE NOCASE", new String[] { stringBuilder.toString() }, null);
 		ContactUser contactUser;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -280,7 +280,25 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contacts;
 	}
 
-	@Override public List<ContactUser> getAllUser(String name,@NotNull List<String> contactIds) {
+	@Override public List<ContactUser> getAllUser(int version) {
+		List<ContactUser> contacts = new ArrayList<>();
+
+		ContentResolver contentResolver = context.getContentResolver();
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) }, null);
+		if (idCursor.moveToFirst()) {
+			do {
+				ContactUser contactUser = new ContactUser();
+				contactUser.contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
+				contactUser.name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
+				contacts.add(contactUser);
+
+			} while (idCursor.moveToNext());
+		}
+		idCursor.close();
+		return contacts;
+	}
+
+	@Override public List<ContactUser> getAllUser(String name, @NotNull List<String> contactIds) {
 		List<ContactUser> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -288,12 +306,10 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append(name);
 		stringBuilder.append("%");
 
-
-
 		StringBuilder query = new StringBuilder(Contacts.DISPLAY_NAME_PRIMARY);
 		query.append(" LIKE ? ");
 
-		if(contactIds.size() > 0){
+		if (contactIds.size() > 0) {
 			StringBuilder condition = new StringBuilder(" NOT IN (");
 			appendPlaceholders(condition, contactIds.size()).append(')');
 			query.append(" AND ");
@@ -305,10 +321,9 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 		String[] selectionArgs = contactIds.toArray(new String[contactIds.size()]);
 
-
 		ContentResolver contentResolver = context.getContentResolver();
 
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, query.toString(),selectionArgs, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, query.toString(), selectionArgs, null);
 		ContactUser contactUser;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -350,8 +365,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append("");
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? ", new String[] {
-				stringBuilder.toString() }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? ", new String[] { stringBuilder.toString() }, null);
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
@@ -398,7 +412,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) },null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) }, null);
 		ContactDetailModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -447,8 +461,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		// 地址
 		List<ContactAddress> contactAddresses = null;
 		ContactAddress contactAddress = null;
-		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI,
-				new String[] { Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.DATA1, Data.DATA2 }, Data.RAW_CONTACT_ID + " = ?", new String[] { id }, null);
+		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI, new String[] { Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.DATA1, Data.DATA2 }, Data.RAW_CONTACT_ID + " = ?",
+				new String[] { id }, null);
 
 		if (contactInfoCursor.moveToFirst()) {
 			contactModel.contactId = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.RAW_CONTACT_ID));
@@ -615,7 +629,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		// 操作1.添加data表中name字段
 		if (!TextUtils.isEmpty(name)) {
 			ContentProviderOperation operation = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-					.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{id, "vnd.android.cursor.item/name"})
+					.withSelection(Data.RAW_CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[] { id, "vnd.android.cursor.item/name" })
 					.withValue(ContactsContract.Data.DATA1, name).build();
 			operations.add(operation);
 		}
