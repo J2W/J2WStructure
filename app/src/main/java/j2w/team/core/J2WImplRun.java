@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * @创建时间 16/3/5
  * @类描述
  */
-public interface J2WBizRun {
+public interface J2WImplRun {
 
 	/**
 	 * 执行

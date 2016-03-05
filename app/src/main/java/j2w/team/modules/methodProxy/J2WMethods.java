@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.core.J2WBizRun;
+import j2w.team.core.J2WImplRun;
+import j2w.team.core.J2WMethodProxy;
 import j2w.team.core.plugin.J2WActivityInterceptor;
 import j2w.team.core.plugin.ImplEndInterceptor;
 import j2w.team.core.plugin.BizEndInterceptor;
@@ -22,7 +23,6 @@ import j2w.team.core.plugin.J2WFragmentInterceptor;
 import j2w.team.core.plugin.J2WHttpErrorInterceptor;
 import j2w.team.core.plugin.ImplStartInterceptor;
 import j2w.team.core.plugin.BizStartInterceptor;
-import j2w.team.modules.log.L;
 
 /**
  * @创建人 sky
@@ -49,11 +49,11 @@ public final class J2WMethods {
 
 	final ArrayList<J2WHttpErrorInterceptor>	j2WHttpErrorInterceptor;	// 方法错误拦截器
 
-	final J2WBizRun								j2WBizRun;
+	final J2WImplRun j2WBizRun;
 
 	private boolean								isOpenLog;
 
-	public J2WMethods(J2WBizRun j2WBizRun, J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
+	public J2WMethods(J2WImplRun j2WBizRun, J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
 			ArrayList<BizEndInterceptor> bizEndInterceptor, ArrayList<ImplStartInterceptor> implStartInterceptors, ArrayList<ImplEndInterceptor> implEndInterceptors,
 			ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
 		this.methodHandlerCache = new SimpleArrayMap<>();
@@ -164,13 +164,20 @@ public final class J2WMethods {
 				for (ImplStartInterceptor item : J2WHelper.methodsProxy().implStartInterceptors) {
 					item.interceptStart(impl.getClass().getName(), service, method, args);
 				}
-
 				if (!isOpenLog) {
+					if (j2WBizRun != null && method.getAnnotation(J2WMethodProxy.class) != null) {
+						return j2WBizRun.invoke(method, impl, args);
+					}
 					return method.invoke(impl, args);
 				}
 				enterMethod(method, args);
 				long startNanos = System.nanoTime();
-				Object backgroundResult = method.invoke(impl, args);// 执行
+				Object backgroundResult;
+				if (j2WBizRun != null && method.getAnnotation(J2WMethodProxy.class) != null) {
+					backgroundResult = j2WBizRun.invoke(method, impl, args);
+				}else{
+					backgroundResult = method.invoke(impl, args);// 执行
+				}
 				long stopNanos = System.nanoTime();
 				long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
 				exitMethod(method, backgroundResult, lengthMillis);
@@ -214,7 +221,7 @@ public final class J2WMethods {
 		synchronized (methodHandlerCache) {
 			J2WMethod j2WMethod = methodHandlerCache.get(key);
 			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createBizMethod(key, j2WBizRun, method, service);
+				j2WMethod = J2WMethod.createBizMethod(key, method, service);
 				methodHandlerCache.put(key, j2WMethod);
 			}
 			return j2WMethod;
@@ -242,7 +249,7 @@ public final class J2WMethods {
 
 	public static class Builder {
 
-		private J2WBizRun							j2WBizRun;					// 方法执行
+		private J2WImplRun j2WBizRun;					// 方法执行
 
 		private J2WActivityInterceptor				j2WActivityInterceptor;	// activity拦截器
 
@@ -327,7 +334,7 @@ public final class J2WMethods {
 			}
 		}
 
-		public void setJ2WBizRun(J2WBizRun j2WBizRun) {
+		public void setJ2WBizRun(J2WImplRun j2WBizRun) {
 			this.j2WBizRun = j2WBizRun;
 		}
 

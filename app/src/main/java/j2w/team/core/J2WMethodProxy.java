@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface J2WBizRunAnnotation {
+public @interface J2WMethodProxy {
 }

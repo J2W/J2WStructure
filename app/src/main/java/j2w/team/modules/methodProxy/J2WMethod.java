@@ -4,8 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import j2w.team.J2WHelper;
-import j2w.team.core.J2WBizRun;
-import j2w.team.core.J2WBizRunAnnotation;
+import j2w.team.core.J2WMethodProxy;
 import j2w.team.core.J2WRunnable;
 import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.core.plugin.BizEndInterceptor;
@@ -33,7 +32,7 @@ public final class J2WMethod {
 
 	public static final int	TYPE_INVOKE_BACKGROUD_WORK_EXE			= 3;
 
-	static J2WMethod createBizMethod(String key, J2WBizRun j2WBizRun, Method method, Class service) {
+	static J2WMethod createBizMethod(String key, Method method, Class service) {
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -43,11 +42,11 @@ public final class J2WMethod {
 
 		boolean j2WBizRunAnnotation = parseRunAnnotation(method);
 
-		return new J2WMethod(key, j2WBizRun, interceptor, method, type, isRepeat, j2WBizRunAnnotation, service);
+		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WBizRunAnnotation, service);
 	}
 
 	private static boolean parseRunAnnotation(Method method) {
-		J2WBizRunAnnotation j2WRepeat = method.getAnnotation(J2WBizRunAnnotation.class);
+		J2WMethodProxy j2WRepeat = method.getAnnotation(J2WMethodProxy.class);
 		if (j2WRepeat != null) {
 			return true;
 		} else {
@@ -170,11 +169,7 @@ public final class J2WMethod {
 		for (BizStartInterceptor item : J2WHelper.methodsProxy().bizStartInterceptor) {
 			item.interceptStart(implName, service, method, interceptor, objects);
 		}
-		if (j2WBizRun != null && getRunAnnottation()) {
-			backgroundResult = j2WBizRun.invoke(method, impl, objects);
-		} else {
-			backgroundResult = method.invoke(impl, objects);// 执行
-		}
+		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (BizEndInterceptor item : J2WHelper.methodsProxy().bizEndInterceptor) {
 			item.interceptEnd(implName, service, method, interceptor, objects, backgroundResult);
@@ -229,8 +224,6 @@ public final class J2WMethod {
 
 	boolean			isExe;
 
-	J2WBizRun		j2WBizRun;
-
 	/**
 	 * 构造函数
 	 *
@@ -242,9 +235,8 @@ public final class J2WMethod {
 	 * @param isRepeat
 	 * @param service
 	 */
-	public J2WMethod(String key, J2WBizRun j2WBizRun, int interceptor, Method method, int type, boolean isRepeat, boolean j2WBizRunAnnotation, Class service) {
+	public J2WMethod(String key, int interceptor, Method method, int type, boolean isRepeat, boolean j2WBizRunAnnotation, Class service) {
 		this.key = key;
-		this.j2WBizRun = j2WBizRun;
 		this.interceptor = interceptor;
 		this.type = type;
 		this.isRepeat = isRepeat;
