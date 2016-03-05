@@ -48,11 +48,11 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		this.context = context;
 	}
 
-	private static final String[]	CONTACTS_ID			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
+	private static final String[]	CONTACTS_ID			= new String[] { Contacts.NAME_RAW_CONTACT_ID };
 
-	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
+	private static final String[]	CONTACTS			= new String[] { Contacts.NAME_RAW_CONTACT_ID, Contacts.DISPLAY_NAME_PRIMARY};
 
-	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP };
+	private static final String[]	PHONES_PROJECTION	= new String[] { Phone.CONTACT_ID, Phone.TYPE, Phone.NUMBER, Contacts.DISPLAY_NAME, Contacts.PHOTO_ID};
 
 	private static final String[]	PHONES_ID			= new String[] { Data.RAW_CONTACT_ID };
 
@@ -246,34 +246,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
-				long lastUpdate = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contact = getContactDataByContactId(contactId);
-				contact.lastUpdate = lastUpdate;
 				contacts.add(contact);
-			} while (idCursor.moveToNext());
-		}
-		idCursor.close();
-		return contacts;
-	}
-
-	/**
-	 * 获取所有联系人 - 详情
-	 *
-	 * @return
-	 */
-	@Override public List<String> getAllPhoneDetailIDs() {
-		List<String> contacts = new ArrayList<>();
-
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("%");
-		stringBuilder.append("");
-		stringBuilder.append("%");
-		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?", new String[] { stringBuilder.toString() }, null);
-		if (idCursor.moveToFirst()) {
-			do {
-				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
-				contacts.add(contactId);
 			} while (idCursor.moveToNext());
 		}
 		idCursor.close();
@@ -299,7 +273,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				contactUser = new ContactUser();
 				contactUser.contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
 				contactUser.name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
-				contactUser.lastUpdateTime = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contacts.add(contactUser);
 			} while (idCursor.moveToNext());
 		}
@@ -342,7 +315,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				contactUser = new ContactUser();
 				contactUser.contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
 				contactUser.name = idCursor.getString(idCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY));
-				contactUser.lastUpdateTime = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contacts.add(contactUser);
 			} while (idCursor.moveToNext());
 		}
@@ -370,7 +342,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contacts;
 	}
 
-	@Override public List<String> getAllPhoneDetailIDs(long time) {
+	@Override public List<String> getAllPhoneDetailIDs() {
 		List<String> contacts = new ArrayList<>();
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -378,8 +350,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append("");
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? AND " + Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " > ?", new String[] {
-				stringBuilder.toString(), String.valueOf(time) }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ? ", new String[] {
+				stringBuilder.toString() }, null);
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
@@ -426,15 +398,12 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		List<ContactDetailModel> contacts = new ArrayList<>();
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) },
-				Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " desc");
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, Contacts.NAME_RAW_CONTACT_ID + " > ?", new String[] { String.valueOf(version) },null);
 		ContactDetailModel contact = null;
 		if (idCursor.moveToFirst()) {
 			do {
 				String contactId = idCursor.getString(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
-				long lastUpdate = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 				contact = getContactDataByContactId(contactId);
-				contact.lastUpdate = lastUpdate;
 				contacts.add(contact);
 			} while (idCursor.moveToNext());
 		}
@@ -453,18 +422,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 		if (idCursor.moveToFirst()) {
 			int contactId = idCursor.getInt(idCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
-			return contactId;
-		} else {
-			return 0;
-		}
-	}
-
-	@Override public long getLastTime() {
-		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS_ID, null, null, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " desc limit 0,1 ");
-
-		if (idCursor.moveToFirst()) {
-			long contactId = idCursor.getLong(idCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 			return contactId;
 		} else {
 			return 0;
@@ -491,10 +448,9 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		List<ContactAddress> contactAddresses = null;
 		ContactAddress contactAddress = null;
 		Cursor contactInfoCursor = context.getContentResolver().query(Data.CONTENT_URI,
-				new String[] { Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.DATA1, Data.DATA2, Contacts.CONTACT_LAST_UPDATED_TIMESTAMP }, Data.RAW_CONTACT_ID + " = ?", new String[] { id }, null);
+				new String[] { Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.DATA1, Data.DATA2 }, Data.RAW_CONTACT_ID + " = ?", new String[] { id }, null);
 
 		if (contactInfoCursor.moveToFirst()) {
-			contactModel.lastUpdate = contactInfoCursor.getLong(contactInfoCursor.getColumnIndex(Contacts.CONTACT_LAST_UPDATED_TIMESTAMP));
 			contactModel.contactId = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.RAW_CONTACT_ID));
 			do {
 				String mimeType = contactInfoCursor.getString(contactInfoCursor.getColumnIndex(Data.MIMETYPE));
