@@ -82,7 +82,7 @@ public final class J2WMethods {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
 				String key = getKey(impl, method, method.getParameterTypes());
-				J2WMethod j2WMethod = loadJ2WMethod(key,impl, method, service);
+				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				// 开始
 				if (!isOpenLog) {
 					if (j2WBizRun != null && j2WMethod.getRunAnnottation()) {
@@ -219,11 +219,11 @@ public final class J2WMethods {
 	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WMethod(String key,Object impl, Method method, Class<T> service) {
+	private <T> J2WMethod loadJ2WMethod(String key, Method method, Class<T> service) {
 		synchronized (methodHandlerCache) {
 			J2WMethod j2WMethod = methodHandlerCache.get(key);
 			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createBizMethod(key,impl, method, service);
+				j2WMethod = J2WMethod.createBizMethod(key, method, service);
 				methodHandlerCache.put(key, j2WMethod);
 			}
 			return j2WMethod;
