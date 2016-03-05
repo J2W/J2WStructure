@@ -1,6 +1,7 @@
 package j2w.team.core;
 
-import j2w.team.modules.methodProxy.J2WMethod;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @创建人 sky
@@ -12,9 +13,9 @@ public interface J2WBizRun {
 	/**
 	 * 执行
 	 * 
-	 * @param j2WMethod
+	 * @param method
 	 * @param impl
 	 * @param args
 	 */
-	Object invoke(J2WMethod j2WMethod, Object impl, Object... args) throws Throwable;
+	Object invoke(Method method, Object impl, Object... args) throws IllegalAccessException, InvocationTargetException;
 }

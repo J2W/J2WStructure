@@ -85,21 +85,12 @@ public final class J2WMethods {
 				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				// 开始
 				if (!isOpenLog) {
-					if (j2WBizRun != null && j2WMethod.getRunAnnottation()) {
-						return j2WBizRun.invoke(j2WMethod, impl, args);
-					} else {
-						return j2WMethod.invoke(impl, args);
-					}
+					return j2WMethod.invoke(impl, args);
 				}
 				enterMethod(method, args);
 				long startNanos = System.nanoTime();
 
-				Object result;
-				if (j2WBizRun != null && j2WMethod.getRunAnnottation()) {
-					result = j2WBizRun.invoke(j2WMethod, impl, args);
-				} else {
-					result = j2WMethod.invoke(impl, args);
-				}
+				Object result = j2WMethod.invoke(impl, args);
 
 				long stopNanos = System.nanoTime();
 				long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
@@ -223,7 +214,7 @@ public final class J2WMethods {
 		synchronized (methodHandlerCache) {
 			J2WMethod j2WMethod = methodHandlerCache.get(key);
 			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createBizMethod(key, method, service);
+				j2WMethod = J2WMethod.createBizMethod(key, j2WBizRun, method, service);
 				methodHandlerCache.put(key, j2WMethod);
 			}
 			return j2WMethod;
