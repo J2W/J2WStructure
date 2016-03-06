@@ -39,11 +39,17 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
 		Intent intent = new Intent();
+		if(activity() == null){
+			return;
+		}
 		intent.setClass(activity(), clazz);
 		intentFromFragment(intent, fragment, requestCode);
 	}
 
 	@Override public void intentFromFragment(Intent intent, Fragment fragment, int requestCode) {
+		if(activity() == null){
+			return;
+		}
 		activity().startActivityFromFragment(fragment, intent, requestCode);
 	}
 
@@ -55,6 +61,9 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitAdd(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
 	}
@@ -66,6 +75,9 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitChildReplace(Fragment srcFragment, int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		if(activity() == null){
+			return;
+		}
 		srcFragment.getChildFragmentManager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
 	}
@@ -73,6 +85,9 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitReplace(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().beginTransaction().replace(layoutId, fragment, fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 				.commitAllowingStateLoss();
 	}
@@ -83,6 +98,9 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void commitHideAndBackStack(Fragment srcFragment, Fragment fragment) {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		if(activity() == null){
+			return;
+		}
 		FragmentTransaction transaction = activity().getSupportFragmentManager().beginTransaction();
 		transaction.hide(srcFragment);
 		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -91,6 +109,9 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void commitDetachAndBackStack(Fragment srcFragment, Fragment fragment) {
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
+		if(activity() == null){
+			return;
+		}
 		FragmentTransaction transaction = activity().getSupportFragmentManager().beginTransaction();
 		transaction.detach(srcFragment);
 		transaction.add(R.id.j2w_home, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName()).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -100,7 +121,9 @@ public class J2WDisplay implements J2WIDisplay {
 	@Override public void commitBackStack(int layoutId, Fragment fragment) {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
-
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
 				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
 
@@ -110,7 +133,9 @@ public class J2WDisplay implements J2WIDisplay {
 		J2WCheckUtils.checkArgument(layoutId > 0, "提交布局ID 不能为空~");
 		J2WCheckUtils.checkArgument(animation > 0, "动画 不能为空~");
 		J2WCheckUtils.checkNotNull(fragment, "fragment不能为空~");
-
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().beginTransaction().add(layoutId, fragment, fragment.getClass().getName()).addToBackStack(fragment.getClass().getName())
 				.setTransition(animation != 0 ? animation : FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commitAllowingStateLoss();
 	}
@@ -144,11 +169,20 @@ public class J2WDisplay implements J2WIDisplay {
 		if (bundle != null) {
 			intent.putExtras(bundle);
 		}
+		if(activity() == null){
+			return;
+		}
 		activity().startActivityFromFragment(fragment,intent,requestCode);
 	}
 
 	@Override public void intentForResult(Class clazz, Bundle bundle, int requestCode) {
+		if(activity() == null){
+			return;
+		}
 		Intent intent = new Intent();
+		if(activity() == null){
+			return;
+		}
 		intent.setClass(activity(), clazz);
 		intentForResult(intent, bundle, requestCode);
 	}
@@ -170,11 +204,17 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentAnimation(Class clazz, int in, int out) {
 		intent(clazz);
+		if(activity() == null){
+			return;
+		}
 		activity().overridePendingTransition(in, out);
 	}
 
 	@Override public void intentAnimation(Class clazz, int in, int out, Bundle bundle) {
 		intent(clazz, bundle);
+		if(activity() == null){
+			return;
+		}
 		activity().overridePendingTransition(in, out);
 	}
 
@@ -183,6 +223,9 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void intentForResultAnimation(Class clazz, View view, Bundle bundle, int requestCode) {
+		if(activity() == null){
+			return;
+		}
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		if (bundle != null) {
@@ -198,6 +241,9 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle, int requestCode) {
 		intentForResult(clazz, bundle, requestCode);
+		if(activity() == null){
+			return;
+		}
 		activity().overridePendingTransition(in, out);
 	}
 
@@ -206,6 +252,9 @@ public class J2WDisplay implements J2WIDisplay {
 		if (options != null) {
 			intent.putExtras(options);
 		}
+		if(activity() == null){
+			return;
+		}
 		activity().startActivityForResult(intent, requestCode);
 	}
 
@@ -213,22 +262,37 @@ public class J2WDisplay implements J2WIDisplay {
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
 		intent.addCategory(Intent.CATEGORY_HOME);
+		if(activity() == null){
+			return;
+		}
 		context().startActivity(intent);
 	}
 
 	@Override public void popBackStack() {
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().popBackStackImmediate();
 	}
 
 	@Override public void popBackStack(Class clazz) {
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().popBackStackImmediate(clazz.getName(), 0);
 	}
 
 	@Override public void popBackStack(String clazzName) {
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().popBackStackImmediate(clazzName, 0);
 	}
 
 	@Override public void popBackStackAll() {
+		if(activity() == null){
+			return;
+		}
 		activity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 	}
 }
