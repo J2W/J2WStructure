@@ -104,7 +104,6 @@ public final class J2WMethods {
 	private void enterMethod(Method method, Object... args) {
 		Class<?> cls = method.getDeclaringClass();
 		String methodName = method.getName();
-		Class[] parameterNames = method.getParameterTypes();
 		Object[] parameterValues = args;
 		StringBuilder builder = new StringBuilder("\u21E2 ");
 		builder.append(methodName).append('(');
@@ -113,7 +112,6 @@ public final class J2WMethods {
 				if (i > 0) {
 					builder.append(", ");
 				}
-				builder.append(parameterNames[i]).append('=');
 				builder.append(Strings.toString(parameterValues[i]));
 			}
 		}

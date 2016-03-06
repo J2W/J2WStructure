@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Hashtable;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
@@ -33,42 +34,37 @@ import j2w.team.view.J2WFragment;
 
 public class J2WStructureManage implements J2WStructureIManage {
 
-	private final SimpleArrayMap<Class<?>, Object>	stackBiz;
+	private final Hashtable<Class<?>, Object>	stackBiz;
 
-	private final SimpleArrayMap<Class<?>, Object>	stackDisplay;
+	private final Hashtable<Class<?>, Object>	stackDisplay;
 
-	private final SimpleArrayMap<Class<?>, Object>	stackHttp;
+	private final Hashtable<Class<?>, Object>	stackHttp;
 
-	private final SimpleArrayMap<Class<?>, Object>	stackImpl;
+	private final Hashtable<Class<?>, Object>	stackImpl;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
-		stackBiz = new SimpleArrayMap<>();
-		stackHttp = new SimpleArrayMap<>();
-		stackDisplay = new SimpleArrayMap<>();
-		stackImpl = new SimpleArrayMap<>();
+		stackBiz = new Hashtable<>();
+		stackHttp = new Hashtable<>();
+		stackDisplay = new Hashtable<>();
+		stackImpl = new Hashtable<>();
 	}
 
 	@Override public void attach(Object view) {
-
-		synchronized (stackBiz) {
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
-			J2WCheckUtils.validateServiceInterface(bizClass);
-			Object impl = getImplClass(bizClass, view);
-			stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass, impl));
-		}
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
+		J2WCheckUtils.validateServiceInterface(bizClass);
+		Object impl = getImplClass(bizClass, view);
+		stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass, impl));
 	}
 
 	@Override public void detach(Object view) {
-		synchronized (stackBiz) {
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
-			J2WCheckUtils.validateServiceInterface(bizClass);
-			J2WIBiz j2WIBiz = (J2WIBiz) stackBiz.get(bizClass);
-			if (j2WIBiz != null) {
-				j2WIBiz.detach();
-			}
-			stackBiz.remove(bizClass);
+		Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
+		J2WCheckUtils.validateServiceInterface(bizClass);
+		J2WIBiz j2WIBiz = (J2WIBiz) stackBiz.get(bizClass);
+		if (j2WIBiz != null) {
+			j2WIBiz.detach();
 		}
+		stackBiz.remove(bizClass);
 	}
 
 	/**
@@ -128,23 +124,19 @@ public class J2WStructureManage implements J2WStructureIManage {
 		J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
 		J2WCheckUtils.validateServiceInterface(displayClazz);
 
-		synchronized (stackDisplay) {
-			if (stackDisplay.get(displayClazz) == null) {
-				Object display = createMainLooper(displayClazz, getImplClass(displayClazz, null));
-				stackDisplay.put(displayClazz, display);
-				return (D) display;
-			} else {
-				return (D) stackDisplay.get(displayClazz);
-			}
+		if (stackDisplay.get(displayClazz) == null) {
+			Object display = createMainLooper(displayClazz, getImplClass(displayClazz, null));
+			stackDisplay.put(displayClazz, display);
+			return (D) display;
+		} else {
+			return (D) stackDisplay.get(displayClazz);
 		}
 	}
 
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		J2WCheckUtils.checkNotNull(biz, "biz接口不能为空～");
-		synchronized (stackBiz) {
-			if (stackBiz.get(biz) != null) {
-				return (B) stackBiz.get(biz);
-			}
+		if (stackBiz.get(biz) != null) {
+			return (B) stackBiz.get(biz);
 		}
 		return null;
 	}
@@ -152,43 +144,37 @@ public class J2WStructureManage implements J2WStructureIManage {
 	@Override public <B extends J2WIBiz> B common(Class<B> service) {
 		J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
 		J2WCheckUtils.validateServiceInterface(service);
-		synchronized (stackBiz) {
-			if(stackBiz.get(service) == null){
-				Object impl = getImplClass(service, null);
-				B b = J2WHelper.methodsProxy().create(service, impl);
-				stackBiz.put(service, b);
-				return b;
-			}else{
-				return (B) stackBiz.get(service);
-			}
+		if (stackBiz.get(service) == null) {
+			Object impl = getImplClass(service, null);
+			B b = J2WHelper.methodsProxy().create(service, impl);
+			stackBiz.put(service, b);
+			return b;
+		} else {
+			return (B) stackBiz.get(service);
 		}
 	}
 
 	@Override public <H> H http(Class<H> httpClazz) {
 		J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
 		J2WCheckUtils.validateServiceInterface(httpClazz);
-		synchronized (stackHttp) {
-			if (stackHttp.get(httpClazz) == null) {
-				Object http = J2WHelper.httpAdapter().create(httpClazz);
-				stackHttp.put(httpClazz, http);
-				return (H) http;
-			} else {
-				return (H) stackHttp.get(httpClazz);
-			}
+		if (stackHttp.get(httpClazz) == null) {
+			Object http = J2WHelper.httpAdapter().create(httpClazz);
+			stackHttp.put(httpClazz, http);
+			return (H) http;
+		} else {
+			return (H) stackHttp.get(httpClazz);
 		}
 	}
 
 	@Override public <P> P impl(Class<P> implClazz) {
 		J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
 		J2WCheckUtils.validateServiceInterface(implClazz);
-		synchronized (stackImpl) {
-			if (stackImpl.get(implClazz) == null) {
-				Object impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz, null));
-				stackImpl.put(implClazz, impl);
-				return (P) impl;
-			} else {
-				return (P) stackImpl.get(implClazz);
-			}
+		if (stackImpl.get(implClazz) == null) {
+			Object impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz, null));
+			stackImpl.put(implClazz, impl);
+			return (P) impl;
+		} else {
+			return (P) stackImpl.get(implClazz);
 		}
 	}
 
@@ -205,6 +191,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 				if (!J2WHelper.isMainLooperThread()) {// 子线程
 					return method.invoke(ui, args);
 				}
+
 				J2WHelper.mainLooper().execute(new Runnable() {
 
 					@Override public void run() {
