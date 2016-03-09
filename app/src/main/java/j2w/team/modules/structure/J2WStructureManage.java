@@ -191,10 +191,9 @@ public class J2WStructureManage implements J2WStructureIManage {
 				if (!J2WHelper.isMainLooperThread()) {// 子线程
 					return method.invoke(ui, args);
 				}
-
-				J2WHelper.mainLooper().execute(new Runnable() {
-
-					@Override public void run() {
+				Runnable runnable = new Runnable() {
+					@Override
+					public void run() {
 						try {
 							method.invoke(ui, args);
 						} catch (Exception throwable) {
@@ -204,7 +203,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 							return;
 						}
 					}
-				});
+				};
+				J2WHelper.mainLooper().execute(runnable);
 				return null;
 			}
 		});
