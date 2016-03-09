@@ -43,6 +43,61 @@ App-build.gradle:
         compile fileTree(dir: 'libs', include: ['*.jar'])
         compile 'j2w.team:structure:1.0.2'
      }
+###静态代理配置
+build.gradle: 
+
+    buildscript {
+        repositories {
+            //从中央库里面获取依赖
+            jcenter()
+        }
+        dependencies {
+            classpath 'org.aspectj:aspectjtools:1.8.1'
+        }
+    }
+    app.gradle
+    dependencies {
+      compile 'org.aspectj:aspectjrt:1.8.6'
+    }
+    
+    //app
+    //android.applicationVariants.all { variant ->
+    //library
+    android.libraryVariants.all { variant ->
+        JavaCompile javaCompile = variant.javaCompile
+        javaCompile.doLast {
+            String[] args = [
+                    "-showWeaveInfo",
+                    "-1.5",
+                    "-inpath", javaCompile.destinationDir.toString(),
+                    "-aspectpath", javaCompile.classpath.asPath,
+                    "-d", javaCompile.destinationDir.toString(),
+                    "-classpath", javaCompile.classpath.asPath,
+                    "-bootclasspath", android.bootClasspath.join(File.pathSeparator)
+            ]
+
+            MessageHandler handler = new MessageHandler(true);
+            new Main().run(args, handler)
+
+            def log = project.logger
+            for (IMessage message : handler.getMessages(null, true)) {
+                switch (message.getKind()) {
+                    case IMessage.ABORT:
+                    case IMessage.ERROR:
+                    case IMessage.FAIL:
+                        log.error message.message, message.thrown
+                        break;
+                    case IMessage.WARNING:
+                    case IMessage.INFO:
+                        log.info message.message, message.thrown
+                        break;
+                    case IMessage.DEBUG:
+                        log.debug message.message, message.thrown
+                        break;
+                }
+            }
+        }
+    }
 
 MVP使用说明帮助
 -----------------------------------
