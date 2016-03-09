@@ -60,6 +60,10 @@ build.gradle:
       compile 'org.aspectj:aspectjrt:1.8.6'
     }
     
+    import org.aspectj.bridge.IMessage
+    import org.aspectj.bridge.MessageHandler
+    import org.aspectj.tools.ajc.Main
+    
     //app
     //android.applicationVariants.all { variant ->
     //library
