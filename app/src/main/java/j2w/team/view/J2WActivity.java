@@ -192,11 +192,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
+	public <D extends J2WIDisplay> D display(Class<D> eClass) {
 		return J2WHelper.structureHelper().display(eClass);
 	}
 
-	protected B biz() {
+	public B biz() {
 		if (b == null) {
 			synchronized (this) {
 				if (b == null) {

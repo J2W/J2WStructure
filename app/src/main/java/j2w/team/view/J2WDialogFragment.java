@@ -216,11 +216,11 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
 
-	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
+	public <D extends J2WIDisplay> D display(Class<D> eClass) {
 		return J2WHelper.structureHelper().display(eClass);
 	}
 
-	protected B biz() {
+	public B biz() {
 		if (b == null) {
 			synchronized (this) {
 				if (b == null) {
