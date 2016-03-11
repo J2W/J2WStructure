@@ -50,9 +50,6 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	 * @return
 	 */
 	protected U ui() {
-		if (u == null) {
-			throw new J2WNotUIPointerException("View层没有显示,就调用了该View的业务~");
-		}
 		return u;
 	}
 
