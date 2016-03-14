@@ -13,11 +13,9 @@ import j2w.team.view.J2WFragment;
  */
 public abstract class J2WBiz<U> implements J2WIBiz {
 
-	private U				u;
+	private U		u;
 
-	private NotCacheBiz notCacheMethods;
-
-	private Object			ui;				// 没有代理的ui
+	private Object	ui; // 没有代理的ui
 
 	protected <H> H http(Class<H> hClass) {
 		return J2WHelper.structureHelper().http(hClass);
@@ -32,16 +30,14 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if (notCacheMethods != null) {
-			if (ui instanceof J2WActivity) {
-				return (C) ((J2WActivity) ui).biz(service);
-			} else if (ui instanceof J2WFragment) {
-				return (C) ((J2WFragment) ui).biz(service);
-			} else if (ui instanceof J2WDialogFragment) {
-				return (C) ((J2WDialogFragment) ui).biz(service);
-			}
+		C c = null;
+		if (ui != null) {
+			c = J2WHelper.structureHelper().biz(ui, service);
 		}
-		return J2WHelper.structureHelper().biz(service);
+		if (c == null) {
+			c = J2WHelper.structureHelper().biz(service);
+		}
+		return c;
 	}
 
 	/**
@@ -56,7 +52,6 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	@Override public void initUI(Object j2WView) {
 		if (j2WView != null) {
 			ui = j2WView;
-			notCacheMethods = j2WView.getClass().getAnnotation(NotCacheBiz.class);
 			Class ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
 			u = (U) J2WHelper.structureHelper().createMainLooper(ui, j2WView);
 		}
@@ -65,6 +60,5 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	@Override public void detach() {
 		ui = null;
 		u = null;
-		notCacheMethods = null;
 	}
 }

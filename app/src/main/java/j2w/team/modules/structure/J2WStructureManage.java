@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
@@ -40,23 +41,24 @@ import j2w.team.view.J2WFragment;
 
 public class J2WStructureManage implements J2WStructureIManage {
 
-	private final Hashtable<Class<?>, Object>						stackDisplay;
+	private final ConcurrentHashMap<Class<?>, Object>							stackDisplay;
 
-	private final Hashtable<Class<?>, Object>						stackHttp;
+	private final ConcurrentHashMap<Class<?>, Object>							stackHttp;
 
-	private final Hashtable<Class<?>, Object>						stackBiz;
+	private final ConcurrentHashMap<Class<?>, Object>							stackBiz;
 
-	private final Hashtable<Class<?>, Object>						stackImpl;
+	private final ConcurrentHashMap<Class<?>, Object>							stackImpl;
 
-	private final Hashtable<Class<?>, Hashtable<Object, Object>>	statckRepeatBiz;
+	private final ConcurrentHashMap<Class<?>, SimpleArrayMap<Integer, Object>>	statckRepeatBiz;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
-		stackHttp = new Hashtable<>();
-		stackBiz = new Hashtable<>();
-		stackDisplay = new Hashtable<>();
-		stackImpl = new Hashtable<>();
-		statckRepeatBiz = new Hashtable<>();
+		stackHttp = new ConcurrentHashMap<>();
+		stackBiz = new ConcurrentHashMap<>();
+		stackDisplay = new ConcurrentHashMap<>();
+		stackImpl = new ConcurrentHashMap<>();
+		statckRepeatBiz = new ConcurrentHashMap<>();
+
 	}
 
 	@Override public void attach(Object view) {
@@ -65,11 +67,11 @@ public class J2WStructureManage implements J2WStructureIManage {
 		Object impl = getImplClass(bizClass, view);
 		Object proxy = J2WHelper.methodsProxy().create(bizClass, impl);
 
-		Hashtable stack = statckRepeatBiz.get(bizClass);
+		SimpleArrayMap stack = statckRepeatBiz.get(bizClass);
 		if (stack == null) {
-			stack = new Hashtable();
+			stack = new SimpleArrayMap();
 		}
-		stack.put(view, proxy);
+		stack.put(view.hashCode(), proxy);
 		statckRepeatBiz.put(bizClass, stack);
 	}
 
@@ -77,15 +79,15 @@ public class J2WStructureManage implements J2WStructureIManage {
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
 		J2WCheckUtils.validateServiceInterface(bizClass);
 
-		Hashtable stack = statckRepeatBiz.get(bizClass);
+		SimpleArrayMap stack = statckRepeatBiz.get(bizClass);
 
 		if (stack != null) {
-			J2WIBiz j2WIBiz = (J2WIBiz) stack.get(view);
+			J2WIBiz j2WIBiz = (J2WIBiz) stack.get(view.hashCode());
 			if (j2WIBiz != null) {
 				j2WIBiz.detach();
 			}
 		}
-		stack.remove(view);
+		stack.remove(view.hashCode());
 		if (stack.size() < 1) {
 			statckRepeatBiz.remove(bizClass);
 		}
@@ -159,20 +161,18 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		J2WCheckUtils.checkNotNull(biz, "biz接口不能为空～");
-		if (statckRepeatBiz.get(biz) != null) {
-			Hashtable stack = statckRepeatBiz.get(biz);
+		SimpleArrayMap stack = statckRepeatBiz.get(biz);
+		if (stack != null) {
+			J2WIBiz j2WIBiz = (J2WIBiz) stack.valueAt(0);
+			return (B) j2WIBiz;
+		}
+		return null;
+	}
 
-			Set<Map.Entry<Object, Object>> entrySet = stack.entrySet();
-
-			// 遍历Set集合中的每一个Entry对象
-			Iterator<Map.Entry<Object, Object>> it = entrySet.iterator();
-			Map.Entry<Object, Object> entry;
-			while (it.hasNext()) {
-				// 取得entry对象
-				entry = it.next();
-				J2WIBiz j2WIBiz = (J2WIBiz) entry.getValue();
-				return (B) j2WIBiz;
-			}
+	@Override public <B extends J2WIBiz> B biz(Object view, Class<B> bizClazz) {
+		SimpleArrayMap stack = statckRepeatBiz.get(bizClazz);
+		if (stack != null) {
+			return (B) stack.get(view.hashCode());
 		}
 		return null;
 	}
@@ -191,18 +191,16 @@ public class J2WStructureManage implements J2WStructureIManage {
 	}
 
 	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
-		Hashtable stack = statckRepeatBiz.get(service);
+		SimpleArrayMap stack = statckRepeatBiz.get(service);
+		if (stack == null) {
+			return null;
+		}
 		List list = new ArrayList();
 
-		Set<Map.Entry<Object, Object>> entrySet = stack.entrySet();
+		int count = stack.size();
 
-		// 遍历Set集合中的每一个Entry对象
-		Iterator<Map.Entry<Object, Object>> it = entrySet.iterator();
-		Map.Entry<Object, Object> entry;
-		while (it.hasNext()) {
-			// 取得entry对象
-			entry = it.next();
-			list.add(entry.getValue());
+		for (int i = 0; i < count; i++) {
+			list.add(stack.valueAt(i));
 		}
 		return list;
 	}
