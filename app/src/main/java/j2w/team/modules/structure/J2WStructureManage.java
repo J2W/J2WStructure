@@ -14,7 +14,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import j2w.team.J2WHelper;
@@ -37,20 +40,20 @@ import j2w.team.view.J2WFragment;
 
 public class J2WStructureManage implements J2WStructureIManage {
 
-	private final Hashtable<Class<?>, Object>	stackBiz;
+	private final Hashtable<Class<?>, Object>						stackDisplay;
 
-	private final Hashtable<Class<?>, Object>	stackDisplay;
+	private final Hashtable<Class<?>, Object>						stackHttp;
 
-	private final Hashtable<Class<?>, Object>	stackHttp;
+	private final Hashtable<Class<?>, Object>						stackBiz;
 
-	private final Hashtable<Class<?>, Object>	stackImpl;
+	private final Hashtable<Class<?>, Object>						stackImpl;
 
-	private final Hashtable<Class<?>, Stack>	statckRepeatBiz;
+	private final Hashtable<Class<?>, Hashtable<Object, Object>>	statckRepeatBiz;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
-		stackBiz = new Hashtable<>();
 		stackHttp = new Hashtable<>();
+		stackBiz = new Hashtable<>();
 		stackDisplay = new Hashtable<>();
 		stackImpl = new Hashtable<>();
 		statckRepeatBiz = new Hashtable<>();
@@ -62,24 +65,30 @@ public class J2WStructureManage implements J2WStructureIManage {
 		Object impl = getImplClass(bizClass, view);
 		Object proxy = J2WHelper.methodsProxy().create(bizClass, impl);
 
-		Stack stack = statckRepeatBiz.get(bizClass);
+		Hashtable stack = statckRepeatBiz.get(bizClass);
 		if (stack == null) {
-			stack = new Stack();
+			stack = new Hashtable();
 		}
-		stack.push(proxy);
-		stackBiz.put(bizClass, proxy);
+		stack.put(view, proxy);
 		statckRepeatBiz.put(bizClass, stack);
 	}
 
 	@Override public void detach(Object view) {
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
 		J2WCheckUtils.validateServiceInterface(bizClass);
-		J2WIBiz j2WIBiz = (J2WIBiz) stackBiz.get(bizClass);
-		if (j2WIBiz != null) {
-			j2WIBiz.detach();
+
+		Hashtable stack = statckRepeatBiz.get(bizClass);
+
+		if (stack != null) {
+			J2WIBiz j2WIBiz = (J2WIBiz) stack.get(view);
+			if (j2WIBiz != null) {
+				j2WIBiz.detach();
+			}
 		}
-		stackBiz.remove(bizClass);
-		statckRepeatBiz.remove(bizClass);
+		stack.remove(view);
+		if (stack.size() < 1) {
+			statckRepeatBiz.remove(bizClass);
+		}
 	}
 
 	/**
@@ -150,8 +159,20 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		J2WCheckUtils.checkNotNull(biz, "biz接口不能为空～");
-		if (stackBiz.get(biz) != null) {
-			return (B) stackBiz.get(biz);
+		if (statckRepeatBiz.get(biz) != null) {
+			Hashtable stack = statckRepeatBiz.get(biz);
+
+			Set<Map.Entry<Object, Object>> entrySet = stack.entrySet();
+
+			// 遍历Set集合中的每一个Entry对象
+			Iterator<Map.Entry<Object, Object>> it = entrySet.iterator();
+			Map.Entry<Object, Object> entry;
+			while (it.hasNext()) {
+				// 取得entry对象
+				entry = it.next();
+				J2WIBiz j2WIBiz = (J2WIBiz) entry.getValue();
+				return (B) j2WIBiz;
+			}
 		}
 		return null;
 	}
@@ -170,12 +191,18 @@ public class J2WStructureManage implements J2WStructureIManage {
 	}
 
 	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
-		Stack stack = statckRepeatBiz.get(service);
+		Hashtable stack = statckRepeatBiz.get(service);
 		List list = new ArrayList();
-		int count = stack.size();
 
-		for (int i = 0; i < count; i++) {
-			list.add(stack.get(i));
+		Set<Map.Entry<Object, Object>> entrySet = stack.entrySet();
+
+		// 遍历Set集合中的每一个Entry对象
+		Iterator<Map.Entry<Object, Object>> it = entrySet.iterator();
+		Map.Entry<Object, Object> entry;
+		while (it.hasNext()) {
+			// 取得entry对象
+			entry = it.next();
+			list.add(entry.getValue());
 		}
 		return list;
 	}
