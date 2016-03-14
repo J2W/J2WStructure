@@ -115,8 +115,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentPause(this);
 		/** 关闭event **/
 		if (j2WBuilder.isOpenEventBus()) {
-			if (J2WHelper.eventBus().isRegistered(this)) {
-				J2WHelper.eventBus().unregister(this);
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
+					J2WHelper.eventBus().unregister(this);
+				}
 			}
 		}
 		// 恢复初始化

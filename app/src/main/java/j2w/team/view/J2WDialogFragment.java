@@ -182,8 +182,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		super.onPause();
 		/** 关闭event **/
 		if (j2WBuilder.isOpenEventBus()) {
-			if (J2WHelper.eventBus().isRegistered(this)) {
-				J2WHelper.eventBus().unregister(this);
+			if (!j2WBuilder.isNotCloseEventBus()) {
+				if (J2WHelper.eventBus().isRegistered(this)) {
+					J2WHelper.eventBus().unregister(this);
+				}
 			}
 		}
 		// 恢复初始化
@@ -196,6 +198,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
+		/** 关闭event **/
+		if (J2WHelper.eventBus().isRegistered(this)) {
+			J2WHelper.eventBus().unregister(this);
+		}
 		// 销毁
 		if (getDialog() != null && getRetainInstance()) {
 			getDialog().setDismissMessage(null);
