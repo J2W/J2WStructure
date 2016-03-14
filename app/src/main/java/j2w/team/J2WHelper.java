@@ -4,6 +4,8 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import java.util.List;
+
 import de.greenrobot.event.EventBus;
 import j2w.team.core.J2WIBiz;
 import j2w.team.core.SynchronousExecutor;
@@ -66,6 +68,17 @@ public class J2WHelper {
 	 */
 	public static final <B extends J2WIBiz> B biz(Class<B> service) {
 		return structureHelper().biz(service);
+	}
+
+	/**
+	 * 获取业务
+	 * 
+	 * @param service
+	 * @param <B>
+	 * @return
+	 */
+	public static final <B extends J2WIBiz> List<B> bizList(Class<B> service) {
+		return structureHelper().bizList(service);
 	}
 
 	/**

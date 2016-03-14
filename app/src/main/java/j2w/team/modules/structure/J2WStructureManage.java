@@ -12,7 +12,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Stack;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
@@ -42,19 +45,30 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	private final Hashtable<Class<?>, Object>	stackImpl;
 
+	private final Hashtable<Class<?>, Stack>	statckRepeatBiz;
+
 	public J2WStructureManage() {
 		/** 初始化集合 **/
 		stackBiz = new Hashtable<>();
 		stackHttp = new Hashtable<>();
 		stackDisplay = new Hashtable<>();
 		stackImpl = new Hashtable<>();
+		statckRepeatBiz = new Hashtable<>();
 	}
 
 	@Override public void attach(Object view) {
 		Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
 		J2WCheckUtils.validateServiceInterface(bizClass);
 		Object impl = getImplClass(bizClass, view);
-		stackBiz.put(bizClass, J2WHelper.methodsProxy().create(bizClass, impl));
+		Object proxy = J2WHelper.methodsProxy().create(bizClass, impl);
+
+		Stack stack = statckRepeatBiz.get(bizClass);
+		if (stack == null) {
+			stack = new Stack();
+		}
+		stack.push(proxy);
+		stackBiz.put(bizClass, proxy);
+		statckRepeatBiz.put(bizClass, stack);
 	}
 
 	@Override public void detach(Object view) {
@@ -65,6 +79,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			j2WIBiz.detach();
 		}
 		stackBiz.remove(bizClass);
+		statckRepeatBiz.remove(bizClass);
 	}
 
 	/**
@@ -154,6 +169,17 @@ public class J2WStructureManage implements J2WStructureIManage {
 		}
 	}
 
+	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
+		Stack stack = statckRepeatBiz.get(service);
+		List list = new ArrayList();
+		int count = stack.size();
+
+		for (int i = 0; i < count; i++) {
+			list.add(stack.get(i));
+		}
+		return list;
+	}
+
 	@Override public <H> H http(Class<H> httpClazz) {
 		J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
 		J2WCheckUtils.validateServiceInterface(httpClazz);
@@ -192,8 +218,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 					return method.invoke(ui, args);
 				}
 				Runnable runnable = new Runnable() {
-					@Override
-					public void run() {
+
+					@Override public void run() {
 						try {
 							method.invoke(ui, args);
 						} catch (Exception throwable) {

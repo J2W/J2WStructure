@@ -4,6 +4,8 @@ import android.support.v4.app.FragmentManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.J2WActivity;
@@ -24,6 +26,8 @@ public interface J2WStructureIManage {
 	<B extends J2WIBiz> B biz(Class<B> bizClazz);
 
 	<B extends J2WIBiz> B common(Class<B> service);
+
+	<B extends J2WIBiz> List<B> bizList(Class<B> service);
 
 	<H> H http(Class<H> httpClazz);
 
