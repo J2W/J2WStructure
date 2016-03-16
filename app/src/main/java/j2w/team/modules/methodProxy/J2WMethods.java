@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
-import j2w.team.core.J2WImplRun;
-import j2w.team.core.J2WMethodProxy;
 import j2w.team.core.plugin.J2WActivityInterceptor;
 import j2w.team.core.plugin.ImplEndInterceptor;
 import j2w.team.core.plugin.BizEndInterceptor;
@@ -49,15 +47,10 @@ public final class J2WMethods {
 
 	final ArrayList<J2WHttpErrorInterceptor>	j2WHttpErrorInterceptor;	// 方法错误拦截器
 
-	final J2WImplRun j2WBizRun;
-
-	private boolean								isOpenLog;
-
-	public J2WMethods(J2WImplRun j2WBizRun, J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
+	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
 			ArrayList<BizEndInterceptor> bizEndInterceptor, ArrayList<ImplStartInterceptor> implStartInterceptors, ArrayList<ImplEndInterceptor> implEndInterceptors,
 			ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
 		this.methodHandlerCache = new SimpleArrayMap<>();
-		this.j2WBizRun = j2WBizRun;
 		this.bizEndInterceptor = bizEndInterceptor;
 		this.bizStartInterceptor = bizStartInterceptor;
 		this.j2WErrorInterceptor = j2WErrorInterceptor;
@@ -66,7 +59,6 @@ public final class J2WMethods {
 		this.j2WHttpErrorInterceptor = j2WHttpErrorInterceptor;
 		this.j2WActivityInterceptor = j2WActivityInterceptor;
 		this.j2WFragmentInterceptor = j2WFragmentInterceptor;
-		this.isOpenLog = J2WHelper.getInstance().isLogOpen();
 	}
 
 	/**
@@ -84,7 +76,7 @@ public final class J2WMethods {
 				String key = getKey(impl, method, method.getParameterTypes());
 				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
 				// 开始
-				if (!isOpenLog) {
+				if (!J2WHelper.getInstance().isLogOpen()) {
 					return j2WMethod.invoke(impl, args);
 				}
 				enterMethod(method, args);
@@ -162,23 +154,18 @@ public final class J2WMethods {
 				for (ImplStartInterceptor item : J2WHelper.methodsProxy().implStartInterceptors) {
 					item.interceptStart(impl.getClass().getName(), service, method, args);
 				}
-				if (!isOpenLog) {
-					if (j2WBizRun != null && method.getAnnotation(J2WMethodProxy.class) != null) {
-						return j2WBizRun.invoke(method, impl, args);
-					}
-					return method.invoke(impl, args);
-				}
-				enterMethod(method, args);
-				long startNanos = System.nanoTime();
 				Object backgroundResult;
-				if (j2WBizRun != null && method.getAnnotation(J2WMethodProxy.class) != null) {
-					backgroundResult = j2WBizRun.invoke(method, impl, args);
-				}else{
+				if (!J2WHelper.getInstance().isLogOpen()) {
 					backgroundResult = method.invoke(impl, args);// 执行
+				}else{
+					enterMethod(method, args);
+					long startNanos = System.nanoTime();
+					backgroundResult = method.invoke(impl, args);// 执行
+					long stopNanos = System.nanoTime();
+					long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
+					exitMethod(method, backgroundResult, lengthMillis);
 				}
-				long stopNanos = System.nanoTime();
-				long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
-				exitMethod(method, backgroundResult, lengthMillis);
+
 				// 业务拦截器 - 后
 				for (ImplEndInterceptor item : J2WHelper.methodsProxy().implEndInterceptors) {
 					item.interceptEnd(impl.getClass().getName(), service, method, args, backgroundResult);
@@ -246,8 +233,6 @@ public final class J2WMethods {
 	}
 
 	public static class Builder {
-
-		private J2WImplRun j2WBizRun;					// 方法执行
 
 		private J2WActivityInterceptor				j2WActivityInterceptor;	// activity拦截器
 
@@ -332,15 +317,11 @@ public final class J2WMethods {
 			}
 		}
 
-		public void setJ2WBizRun(J2WImplRun j2WBizRun) {
-			this.j2WBizRun = j2WBizRun;
-		}
-
 		public J2WMethods build() {
 			// 默认值
 			ensureSaneDefaults();
-			return new J2WMethods(j2WBizRun, j2WActivityInterceptor, j2WFragmentInterceptor, j2WStartInterceptors, bizEndInterceptors, implStartInterceptors, implEndInterceptors,
-					j2WErrorInterceptors, j2WHttpErrorInterceptors);
+			return new J2WMethods(j2WActivityInterceptor, j2WFragmentInterceptor, j2WStartInterceptors, bizEndInterceptors, implStartInterceptors, implEndInterceptors, j2WErrorInterceptors,
+					j2WHttpErrorInterceptors);
 		}
 
 		private void ensureSaneDefaults() {

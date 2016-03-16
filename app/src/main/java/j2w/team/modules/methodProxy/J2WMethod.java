@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import j2w.team.J2WHelper;
-import j2w.team.core.J2WMethodProxy;
 import j2w.team.core.J2WRunnable;
 import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.core.plugin.BizEndInterceptor;
@@ -40,18 +39,7 @@ public final class J2WMethod {
 		// 判断是否是子线程
 		int type = parseBackground(method);
 
-		boolean j2WBizRunAnnotation = parseRunAnnotation(method);
-
-		return new J2WMethod(key, interceptor, method, type, isRepeat, j2WBizRunAnnotation, service);
-	}
-
-	private static boolean parseRunAnnotation(Method method) {
-		J2WMethodProxy j2WRepeat = method.getAnnotation(J2WMethodProxy.class);
-		if (j2WRepeat != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return new J2WMethod(key, interceptor, method, type, isRepeat, service);
 	}
 
 	private static boolean parseRepeat(Method method) {
@@ -196,12 +184,6 @@ public final class J2WMethod {
 		}
 	}
 
-	public boolean getRunAnnottation() {
-		return j2WBizRunAnnotation;
-	}
-
-	boolean			j2WBizRunAnnotation;
-
 	int				type;
 
 	Object			impl;
@@ -235,14 +217,13 @@ public final class J2WMethod {
 	 * @param isRepeat
 	 * @param service
 	 */
-	public J2WMethod(String key, int interceptor, Method method, int type, boolean isRepeat, boolean j2WBizRunAnnotation, Class service) {
+	public J2WMethod(String key, int interceptor, Method method, int type, boolean isRepeat, Class service) {
 		this.key = key;
 		this.interceptor = interceptor;
 		this.type = type;
 		this.isRepeat = isRepeat;
 		this.method = method;
 		this.service = service;
-		this.j2WBizRunAnnotation = j2WBizRunAnnotation;
 		if (type == TYPE_INVOKE_BACKGROUD_HTTP_EXE || type == TYPE_INVOKE_BACKGROUD_SINGLEWORK_EXE || type == TYPE_INVOKE_BACKGROUD_WORK_EXE) {
 			this.methodRunnable = new MethodRunnable();
 		}
