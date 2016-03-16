@@ -46,6 +46,9 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	 * @return
 	 */
 	protected U ui() {
+		if(u == null){
+			throw new J2WNotUIPointerException("视图被销毁");
+		}
 		return u;
 	}
 
