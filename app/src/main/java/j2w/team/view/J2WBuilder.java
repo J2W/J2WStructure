@@ -1372,7 +1372,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			// 设置进度颜色
 			if (getRecyclerviewColorResIds() != null) {
 				J2WCheckUtils.checkNotNull(recyclerviewSwipeContainer, "无法根据布局文件ID,获取recyclerview的SwipRefresh下载刷新布局");
-				recyclerviewSwipeContainer.setColorSchemeResources(getSwipeColorResIds());
+				recyclerviewSwipeContainer.setColorSchemeResources(getRecyclerviewColorResIds());
 			}
 		}
 	}
