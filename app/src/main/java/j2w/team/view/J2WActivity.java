@@ -185,7 +185,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 * @return
 	 */
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		if (j2WBuilder.getToolbarMenuId() > 0) {
+		if (j2WBuilder != null && j2WBuilder.getToolbarMenuId() > 0) {
 			getMenuInflater().inflate(j2WBuilder.getToolbarMenuId(), menu);
 		}
 		return super.onCreateOptionsMenu(menu);
