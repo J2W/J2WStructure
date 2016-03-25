@@ -19,7 +19,6 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 
 	private static final int	TYPE_FOOTER		= Integer.MIN_VALUE + 1;
 
-
 	private boolean				isShowHeader	= true;
 
 	private boolean				isShowFooter	= true;
@@ -110,6 +109,20 @@ public class HeaderRecyclerViewAdapterV2<V extends J2WHolder> extends RecyclerVi
 			return;
 		}
 		mAdaptee.addList(list);
+	}
+
+	public void delete(List list) {
+		if (list == null || list.size() < 1 || mAdaptee.getItems() == null) {
+			return;
+		}
+		mAdaptee.delete(list);
+	}
+
+	public void delete(int position,List list) {
+		if (list == null || list.size() < 1 || mAdaptee.getItems() == null) {
+			return;
+		}
+		mAdaptee.delete(position,list);
 	}
 
 	public void delete(int position) {

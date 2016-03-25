@@ -74,38 +74,45 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void add(int position, Object object) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 		mItems.add(position, object);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
+		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
 		mItems.add(object);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
+		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
 
 	}
 
 	public void addList(int position, List list) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
 		mItems.addAll(position, list);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, list.size());
+		headerRecyclerViewAdapterV1.notifyItemRangeInserted(position, list.size());
 
 	}
 
 	public void addList(List list) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(getItemCount());
+		int postion = getItemCount();
 		mItems.addAll(list);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
+		headerRecyclerViewAdapterV1.notifyItemRangeInserted(postion, list.size());
 	}
 
 	public void delete(int position) {
-		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
 		mItems.remove(position);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
+		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
 	}
 
-	HeaderRecyclerViewAdapterV2	headerRecyclerViewAdapterV1;
+	public void delete(List list) {
+		int position = getItemCount();
+		mItems.removeAll(list);
+		headerRecyclerViewAdapterV1.notifyItemRangeRemoved(position, list.size());
+	}
+
+	public void delete(int position,List list) {
+		mItems.removeAll(list);
+		headerRecyclerViewAdapterV1.notifyItemRangeRemoved(position, list.size());
+	}
+
+	HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV1;
 
 	public void setHeaderRecyclerViewAdapterV2(HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2) {
 		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV2;
