@@ -70,57 +70,57 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 
 	public void setItems(List items) {
 		mItems = items;
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		headerRecyclerViewAdapterV2.notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {
 		mItems.add(position, object);
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
+		headerRecyclerViewAdapterV2.notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
 		mItems.add(object);
-		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
+		headerRecyclerViewAdapterV2.notifyItemInserted(mItems.size());
 
 	}
 
 	public void addList(int position, List list) {
 		mItems.addAll(position, list);
-		headerRecyclerViewAdapterV1.notifyItemRangeInserted(position, list.size());
+		headerRecyclerViewAdapterV2.notifyItemRangeInserted(position, list.size());
 
 	}
 
 	public void addList(List list) {
 		int postion = getItemCount();
 		mItems.addAll(list);
-		headerRecyclerViewAdapterV1.notifyItemRangeInserted(postion, list.size());
+		headerRecyclerViewAdapterV2.notifyItemRangeInserted(postion, list.size());
 	}
 
 	public void delete(int position) {
 		mItems.remove(position);
-		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
+		headerRecyclerViewAdapterV2.notifyItemRemoved(position);
 	}
 
 	public void delete(List list) {
 		int position = getItemCount();
 		mItems.removeAll(list);
-		headerRecyclerViewAdapterV1.notifyItemRangeRemoved(position, list.size());
+		headerRecyclerViewAdapterV2.notifyItemRangeRemoved(position, list.size());
 	}
 
-	public void delete(int position,List list) {
+	public void delete(int position, List list) {
 		mItems.removeAll(list);
-		headerRecyclerViewAdapterV1.notifyItemRangeRemoved(position, list.size());
+		headerRecyclerViewAdapterV2.notifyItemRangeRemoved(position, list.size());
 	}
 
-	HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV1;
+	HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2;
 
 	public void setHeaderRecyclerViewAdapterV2(HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2) {
-		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV2;
+		this.headerRecyclerViewAdapterV2 = headerRecyclerViewAdapterV2;
 	}
 
 	public void clear() {
 		mItems.clear();
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		headerRecyclerViewAdapterV2.notifyDataSetChanged();
 	}
 
 	public T getItem(int position) {
@@ -128,7 +128,7 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void updateData() {
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		headerRecyclerViewAdapterV2.notifyDataSetChanged();
 	}
 
 	public <V extends J2WFragment> V fragment() {
@@ -141,6 +141,15 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 
 	public <D extends J2WDialogFragment> D dialogFragment() {
 		return j2WView.dialogFragment();
+	}
+
+	/**
+	 * 获取适配器
+	 * 
+	 * @return
+	 */
+	protected HeaderRecyclerViewAdapterV2 getAdapter() {
+		return headerRecyclerViewAdapterV2;
 	}
 
 	/**
@@ -178,8 +187,8 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void detach() {
-		if (headerRecyclerViewAdapterV1 != null) {
-			headerRecyclerViewAdapterV1 = null;
+		if (headerRecyclerViewAdapterV2 != null) {
+			headerRecyclerViewAdapterV2 = null;
 		}
 	}
 
@@ -191,10 +200,10 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void isShowHeader(boolean isShowFooter) {
-		headerRecyclerViewAdapterV1.isShowHeader(isShowFooter);
+		headerRecyclerViewAdapterV2.isShowHeader(isShowFooter);
 	}
 
 	public void isShowFooter(boolean isShowFooter) {
-		headerRecyclerViewAdapterV1.isShowFooter(isShowFooter);
+		headerRecyclerViewAdapterV2.isShowFooter(isShowFooter);
 	}
 }
