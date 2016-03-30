@@ -84,7 +84,11 @@ public interface J2WIDisplay {
 
 	void intent(Class clazz);
 
+	void intentNotAnimation(Class clazz);
+
 	void intent(Class clazz, Bundle bundle);
+
+	void intentNotAnimation(Class clazz, Bundle bundle);
 
 	void intent(Intent intent);
 
@@ -92,7 +96,7 @@ public interface J2WIDisplay {
 
 	void intentForResult(Class clazz, int requestCode);
 
-	void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode,Fragment fragment);
+	void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode, Fragment fragment);
 
 	void intentForResult(Class clazz, Bundle bundle, int requestCode);
 
@@ -106,11 +110,11 @@ public interface J2WIDisplay {
 
 	void intentAnimation(Class clazz, int in, int out, Bundle bundle);
 
-	void intentForResultAnimation(Class clazz, View view,int requestCode);
+	void intentForResultAnimation(Class clazz, View view, int requestCode);
 
-	void intentForResultAnimation(Class clazz, View view, Bundle bundle,int requestCode);
+	void intentForResultAnimation(Class clazz, View view, Bundle bundle, int requestCode);
 
-	void intentForResultAnimation(Class clazz, int in, int out,int requestCode);
+	void intentForResultAnimation(Class clazz, int in, int out, int requestCode);
 
-	void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle,int requestCode);
+	void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle, int requestCode);
 }
