@@ -150,12 +150,18 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void intent(Class clazz, Bundle bundle) {
+		if(activity() == null){
+			return;
+		}
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		intent(intent, bundle);
 	}
 
 	@Override public void intentNotAnimation(Class clazz, Bundle bundle) {
+		if(activity() == null){
+			return;
+		}
 		Intent intent = new Intent();
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		intent.setClass(activity(), clazz);
@@ -191,9 +197,6 @@ public class J2WDisplay implements J2WIDisplay {
 			return;
 		}
 		Intent intent = new Intent();
-		if (activity() == null) {
-			return;
-		}
 		intent.setClass(activity(), clazz);
 		intentForResult(intent, bundle, requestCode);
 	}
@@ -205,6 +208,9 @@ public class J2WDisplay implements J2WIDisplay {
 	/** 根据某个View 位置 启动跳转动画 **/
 
 	@Override public void intentAnimation(Class clazz, View view, Bundle bundle) {
+		if (activity() == null) {
+			return;
+		}
 		Intent intent = new Intent();
 		intent.setClass(activity(), clazz);
 		if (bundle != null) {
