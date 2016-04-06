@@ -735,13 +735,21 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	public void recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
-		this.layoutManager = new LinearLayoutManager(j2WView.activity(), direction, reverseLayout == null ? true : false);
+		boolean reverse = false;
+		if(reverseLayout != null && reverseLayout.length > 0){
+			reverse = reverseLayout[0];
+		}
+		this.layoutManager = new LinearLayoutManager(j2WView.activity(), direction, reverse);
 		this.itemDecoration = itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}
 
 	public void recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
-		this.layoutManager = new GridLayoutManager(j2WView.activity(), spanCount, direction, reverseLayout == null ? true : false);
+		boolean reverse = false;
+		if(reverseLayout != null && reverseLayout.length > 0){
+			reverse = reverseLayout[0];
+		}
+		this.layoutManager = new GridLayoutManager(j2WView.activity(), spanCount, direction, reverse);
 		this.itemDecoration = itemDecoration;
 		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
 	}
@@ -1170,7 +1178,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			J2WCheckUtils.checkNotNull(recyclerView, "无法根据布局文件ID,获取recyclerView");
 			J2WCheckUtils.checkNotNull(layoutManager, "LayoutManger不能为空");
 			recyclerView.setLayoutManager(layoutManager);
-
 			if (j2WRVAdapter != null) {
 				// 扩展适配器
 				headerRecyclerViewAdapterV2 = new HeaderRecyclerViewAdapterV2(j2WRVAdapter);
