@@ -172,6 +172,9 @@ public class J2WStructureManage implements J2WStructureIManage {
 	@Override public <B extends J2WIBiz> B biz(Object view, Class<B> bizClazz) {
 		SimpleArrayMap stack = statckRepeatBiz.get(bizClazz);
 		if (stack != null) {
+			if (stack.size() == 1) {
+				return biz(bizClazz);
+			}
 			return (B) stack.get(view.hashCode());
 		}
 		return null;
