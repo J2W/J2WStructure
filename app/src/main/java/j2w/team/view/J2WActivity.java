@@ -196,11 +196,11 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	public B biz() {
-		return (B) J2WHelper.structureHelper().biz(this,bizClass);
+		return (B) J2WHelper.structureHelper().biz(this, bizClass);
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return J2WHelper.structureHelper().biz(service);
+		return J2WHelper.structureHelper().biz(this, service);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {

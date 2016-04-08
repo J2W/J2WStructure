@@ -59,7 +59,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder	j2WBuilder;
+	private J2WBuilder j2WBuilder;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -162,11 +162,11 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	public B biz() {
-		return (B) J2WHelper.structureHelper().biz(this,bizClass);
+		return (B) J2WHelper.structureHelper().biz(this, bizClass);
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return J2WHelper.structureHelper().biz(service);
+		return J2WHelper.structureHelper().biz(this, service);
 	}
 
 	/**

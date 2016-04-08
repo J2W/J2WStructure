@@ -230,7 +230,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return J2WHelper.structureHelper().biz(service);
+		return J2WHelper.structureHelper().biz(this,service);
 	}
 
 	/**
