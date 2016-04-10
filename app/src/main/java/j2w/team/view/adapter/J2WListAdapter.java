@@ -1,5 +1,6 @@
 package j2w.team.view.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
@@ -56,7 +58,7 @@ public class J2WListAdapter extends BaseAdapter {
 		J2WCheckUtils.checkNotNull(j2WAdapterItem, "ListView Item类不存在");
 		this.j2WView = j2WView;
 		this.j2WAdapterItem = j2WAdapterItem;
-		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
+		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public J2WListAdapter(J2WView j2WView, J2WListViewMultiLayout j2WListViewMultiLayout) {
@@ -64,7 +66,7 @@ public class J2WListAdapter extends BaseAdapter {
 		J2WCheckUtils.checkNotNull(j2WListViewMultiLayout, "ListView 多布局接口不存在");
 		this.j2WView = j2WView;
 		this.j2WListViewMultiLayout = j2WListViewMultiLayout;
-		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
+		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public void setItems(List items) {

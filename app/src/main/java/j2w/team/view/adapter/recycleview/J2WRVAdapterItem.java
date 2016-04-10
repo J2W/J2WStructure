@@ -1,11 +1,13 @@
 package j2w.team.view.adapter.recycleview;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.List;
 
+import j2w.team.J2WHelper;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -41,19 +43,19 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	public J2WRVAdapterItem(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
 		this.j2WView = j2WActivity.j2wView();
-		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
+		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public J2WRVAdapterItem(J2WFragment j2WFragment) {
 		J2WCheckUtils.checkNotNull(j2WFragment, "View层不存在");
 		this.j2WView = j2WFragment.j2wView();
-		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
+		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public J2WRVAdapterItem(J2WDialogFragment j2WDialogFragment) {
 		J2WCheckUtils.checkNotNull(j2WDialogFragment, "View层不存在");
 		this.j2WView = j2WDialogFragment.j2wView();
-		this.mLayoutInflater = this.j2WView.activity().getLayoutInflater();
+		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	/**

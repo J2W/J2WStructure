@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
+import j2w.team.core.J2WIBiz;
 import j2w.team.core.plugin.J2WActivityInterceptor;
 import j2w.team.core.plugin.ImplEndInterceptor;
 import j2w.team.core.plugin.BizEndInterceptor;
@@ -28,8 +29,6 @@ import j2w.team.core.plugin.BizStartInterceptor;
  * @类描述 方法代理处理
  */
 public final class J2WMethods {
-
-	final SimpleArrayMap<String, J2WMethod>		methodHandlerCache;
 
 	final J2WActivityInterceptor				j2WActivityInterceptor;
 
@@ -50,7 +49,6 @@ public final class J2WMethods {
 	public J2WMethods(J2WActivityInterceptor j2WActivityInterceptor, J2WFragmentInterceptor j2WFragmentInterceptor, ArrayList<BizStartInterceptor> bizStartInterceptor,
 			ArrayList<BizEndInterceptor> bizEndInterceptor, ArrayList<ImplStartInterceptor> implStartInterceptors, ArrayList<ImplEndInterceptor> implEndInterceptors,
 			ArrayList<J2WErrorInterceptor> j2WErrorInterceptor, ArrayList<J2WHttpErrorInterceptor> j2WHttpErrorInterceptor) {
-		this.methodHandlerCache = new SimpleArrayMap<>();
 		this.bizEndInterceptor = bizEndInterceptor;
 		this.bizStartInterceptor = bizStartInterceptor;
 		this.j2WErrorInterceptor = j2WErrorInterceptor;
@@ -68,21 +66,24 @@ public final class J2WMethods {
 	 * @param <T>
 	 * @return
 	 */
-	public <T> T create(final Class<T> service, Object impl) {
+	public <T> J2WProxy create(final Class<T> service, Object impl) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
+
+		final J2WProxy j2WProxy = new J2WProxy();
+		j2WProxy.impl = (J2WIBiz) impl;
+		j2WProxy.proxy = Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
-				String key = getKey(impl, method, method.getParameterTypes());
-				J2WMethod j2WMethod = loadJ2WMethod(key, method, service);
+
+				J2WMethod j2WMethod = loadJ2WMethod(j2WProxy, method, service);
 				// 开始
 				if (!J2WHelper.getInstance().isLogOpen()) {
-					return j2WMethod.invoke(impl, args);
+					return j2WMethod.invoke(j2WProxy.impl, args);
 				}
 				enterMethod(method, args);
 				long startNanos = System.nanoTime();
 
-				Object result = j2WMethod.invoke(impl, args);
+				Object result = j2WMethod.invoke(j2WProxy.impl, args);
 
 				long stopNanos = System.nanoTime();
 				long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
@@ -91,6 +92,8 @@ public final class J2WMethods {
 				return result;
 			}
 		});
+
+		return j2WProxy;
 	}
 
 	private void enterMethod(Method method, Object... args) {
@@ -139,15 +142,37 @@ public final class J2WMethods {
 	}
 
 	/**
+	 * 获取方法唯一标记
+	 * 
+	 * @param method
+	 * @param classes
+	 * @return
+	 */
+	private String getKey(Method method, Class[] classes) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(method.getName());
+		stringBuilder.append("(");
+		for (Class clazz : classes) {
+			stringBuilder.append(clazz.getSimpleName());
+			stringBuilder.append(",");
+		}
+		if (stringBuilder.length() > 0) {
+			stringBuilder.deleteCharAt(stringBuilder.toString().length() - 1);
+		}
+		stringBuilder.append(")");
+		return stringBuilder.toString();
+	}
+
+	/**
 	 * 创建 IMPL
 	 *
 	 * @param service
 	 * @param <T>
 	 * @return
 	 */
-	public <T> T createImpl(final Class<T> service, Object impl) {
+	public <T> T createImpl(final Class<T> service, final Object impl) {
 		J2WCheckUtils.validateServiceInterface(service);
-		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler(impl) {
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
 				// 业务拦截器 - 前
@@ -157,7 +182,7 @@ public final class J2WMethods {
 				Object backgroundResult;
 				if (!J2WHelper.getInstance().isLogOpen()) {
 					backgroundResult = method.invoke(impl, args);// 执行
-				}else{
+				} else {
 					enterMethod(method, args);
 					long startNanos = System.nanoTime();
 					backgroundResult = method.invoke(impl, args);// 执行
@@ -196,51 +221,33 @@ public final class J2WMethods {
 	/**
 	 * 加载接口
 	 *
-	 * @param key
+	 * @param j2WProxy
 	 * @param method
 	 * @param service
 	 * @param <T>
 	 * @return
 	 */
-	private <T> J2WMethod loadJ2WMethod(String key, Method method, Class<T> service) {
-		synchronized (methodHandlerCache) {
-			J2WMethod j2WMethod = methodHandlerCache.get(key);
+	private <T> J2WMethod loadJ2WMethod(J2WProxy j2WProxy, Method method, Class<T> service) {
+		synchronized (j2WProxy.methodCache) {
+			String methodKey = getKey(method, method.getParameterTypes());
+			J2WMethod j2WMethod = j2WProxy.methodCache.get(methodKey);
 			if (j2WMethod == null) {
-				j2WMethod = J2WMethod.createBizMethod(key, method, service);
-				methodHandlerCache.put(key, j2WMethod);
+				j2WMethod = J2WMethod.createBizMethod(method, service);
+				j2WProxy.methodCache.put(methodKey, j2WMethod);
 			}
 			return j2WMethod;
 		}
 	}
 
-	private String getKey(Object proxy, Method method, Class[] classes) {
-		boolean bool = false;
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(proxy.toString());
-		stringBuilder.append(".");
-		stringBuilder.append(method.getName());
-		stringBuilder.append("(");
-		for (Class clazz : classes) {
-			stringBuilder.append(clazz.getSimpleName());
-			stringBuilder.append(",");
-			bool = true;
-		}
-		if (bool) {
-			stringBuilder = stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-		}
-		stringBuilder.append(")");
-		return stringBuilder.toString();
-	}
-
 	public static class Builder {
 
-		private J2WActivityInterceptor				j2WActivityInterceptor;	// activity拦截器
+		private J2WActivityInterceptor				j2WActivityInterceptor;		// activity拦截器
 
-		private J2WFragmentInterceptor				j2WFragmentInterceptor;	// activity拦截器
+		private J2WFragmentInterceptor				j2WFragmentInterceptor;		// activity拦截器
 
 		private ArrayList<BizStartInterceptor>		j2WStartInterceptors;		// 方法开始拦截器
 
-		private ArrayList<BizEndInterceptor>		bizEndInterceptors;		// 方法结束拦截器
+		private ArrayList<BizEndInterceptor>		bizEndInterceptors;			// 方法结束拦截器
 
 		private ArrayList<ImplStartInterceptor>		implStartInterceptors;		// 方法开始拦截器
 

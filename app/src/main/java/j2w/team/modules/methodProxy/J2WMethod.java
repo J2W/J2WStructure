@@ -31,7 +31,7 @@ public final class J2WMethod {
 
 	public static final int	TYPE_INVOKE_BACKGROUD_WORK_EXE			= 3;
 
-	static J2WMethod createBizMethod(String key, Method method, Class service) {
+	static J2WMethod createBizMethod(Method method, Class service) {
 		// 是否重复
 		boolean isRepeat = parseRepeat(method);
 		// 拦截方法标记
@@ -39,7 +39,7 @@ public final class J2WMethod {
 		// 判断是否是子线程
 		int type = parseBackground(method);
 
-		return new J2WMethod(key, interceptor, method, type, isRepeat, service);
+		return new J2WMethod(interceptor, method, type, isRepeat, service);
 	}
 
 	private static boolean parseRepeat(Method method) {
@@ -89,8 +89,14 @@ public final class J2WMethod {
 		T result = null;
 		if (!isRepeat) {
 			if (isExe) { // 如果存在什么都不做
-				L.tag("J2W-Method");
-				L.i("该方法正在执行 - %s", key);
+				if (J2WHelper.getInstance().isLogOpen()) {
+					L.tag("J2W-Method");
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append(impl.getClass().getSimpleName());
+					stringBuilder.append(".");
+					stringBuilder.append(method.getName());
+					L.i("该方法正在执行 - %s", stringBuilder.toString());
+				}
 				return result;
 			}
 			isExe = true;
@@ -127,10 +133,10 @@ public final class J2WMethod {
 
 	private class MethodRunnable extends J2WRunnable {
 
-		Object[]	objects;
+		Object[] objects;
 
 		public MethodRunnable() {
-			super(key);
+			super("MethodRunnable");
 		}
 
 		public void setArgs(Object[] objects) {
@@ -157,6 +163,7 @@ public final class J2WMethod {
 		for (BizStartInterceptor item : J2WHelper.methodsProxy().bizStartInterceptor) {
 			item.interceptStart(implName, service, method, interceptor, objects);
 		}
+		L.i("存在吗?:"+impl);
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (BizEndInterceptor item : J2WHelper.methodsProxy().bizEndInterceptor) {
@@ -192,8 +199,6 @@ public final class J2WMethod {
 
 	boolean			isRepeat;
 
-	String			key;
-
 	Method			method;
 
 	MethodRunnable	methodRunnable;
@@ -209,7 +214,6 @@ public final class J2WMethod {
 	/**
 	 * 构造函数
 	 *
-	 * @param key
 	 * @param interceptor
 	 * @param method
 	 * @param type
@@ -217,8 +221,7 @@ public final class J2WMethod {
 	 * @param isRepeat
 	 * @param service
 	 */
-	public J2WMethod(String key, int interceptor, Method method, int type, boolean isRepeat, Class service) {
-		this.key = key;
+	public J2WMethod(int interceptor, Method method, int type, boolean isRepeat, Class service) {
 		this.interceptor = interceptor;
 		this.type = type;
 		this.isRepeat = isRepeat;
