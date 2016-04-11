@@ -1247,7 +1247,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 								super.onScrollStateChanged(recyclerView, newState);
 								if (newState == RecyclerView.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
 									if (j2WFooterListener.onScrolledToBottom()) {
-										mLoadMoreRequestedItemCount = j2WRVAdapterItem.getItemCount();
+										mLoadMoreRequestedItemCount = j2WRVAdapter.getItemCount();
 										mLoadMoreIsAtBottom = false;
 									}
 								}
@@ -1257,7 +1257,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 								super.onScrolled(recyclerView, dx, dy);
 								if (layoutManager instanceof LinearLayoutManager) {
 									int lastVisibleItem = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-									mLoadMoreIsAtBottom = j2WRVAdapterItem.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == j2WRVAdapterItem.getItemCount();
+									mLoadMoreIsAtBottom = j2WRVAdapter.getItemCount() > mLoadMoreRequestedItemCount && lastVisibleItem + 1 == j2WRVAdapter.getItemCount();
 								}
 							}
 						});
