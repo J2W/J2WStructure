@@ -42,20 +42,22 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	public J2WRVAdapter(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
 		this.j2WView = j2WActivity.j2wView();
-		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapter(J2WFragment j2WFragment) {
 		J2WCheckUtils.checkNotNull(j2WFragment, "View层不存在");
 		this.j2WView = j2WFragment.j2wView();
-		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapter(J2WDialogFragment j2WDialogFragment) {
 		J2WCheckUtils.checkNotNull(j2WDialogFragment, "View层不存在");
 		this.j2WView = j2WDialogFragment.j2wView();
-		this.mLayoutInflater = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
+
+
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 		V v = newViewHolder(viewGroup, viewType);
