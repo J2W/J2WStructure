@@ -9,6 +9,7 @@ import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureModel;
 
 /**
  * @创建人 sky
@@ -16,6 +17,8 @@ import j2w.team.display.J2WIDisplay;
  * @类描述 服务
  */
 public abstract class J2WService<B extends J2WIBiz> extends Service {
+
+	J2WStructureModel j2WStructureModel;
 
 	@Nullable @Override public IBinder onBind(Intent intent) {
 		return null;
@@ -35,29 +38,30 @@ public abstract class J2WService<B extends J2WIBiz> extends Service {
 
 	@Override public void onCreate() {
 		super.onCreate();
-
-		J2WHelper.structureHelper().attach(this);
+		j2WStructureModel = new J2WStructureModel(this);
+		J2WHelper.structureHelper().attach(j2WStructureModel);
 		/** 初始化 **/
 		initData();
 	}
 
-	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
-		return J2WHelper.structureHelper().display(eClass);
+	public <D extends J2WIDisplay> D display(Class<D> eClass) {
+		return j2WStructureModel.display(eClass);
 	}
 
-	protected B biz() {
-		Class bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		return (B) biz(bizClass);
+	public B biz() {
+		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
+		if (j2WStructureModel.getService().equals(service)) {
+			return (C) j2WStructureModel.getJ2WProxy().proxy;
+		}
 		return J2WHelper.structureHelper().biz(service);
 	}
 
-
 	@Override public void onDestroy() {
 		super.onDestroy();
-		J2WHelper.structureHelper().detach(this);
+		J2WHelper.structureHelper().detach(j2WStructureModel);
 	}
 
 	@Override public int onStartCommand(Intent intent, int flags, int startId) {

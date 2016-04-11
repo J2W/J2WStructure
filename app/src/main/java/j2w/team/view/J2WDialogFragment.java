@@ -36,6 +36,7 @@ import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureModel;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
@@ -60,12 +61,8 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	/** View层编辑器 **/
 	private J2WBuilder			j2WBuilder;
 
-	private B					b;
+	J2WStructureModel j2WStructureModel;
 
-	/**
-	 * 泛型
-	 */
-	Class						bizClass;
 
 	/**
 	 * 定制
@@ -140,15 +137,13 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** 初始化结构 **/
-		J2WHelper.structureHelper().attach(this);
+		j2WStructureModel = new J2WStructureModel(this);
+		J2WHelper.structureHelper().attach(j2WStructureModel);
 		/** 初始化视图 **/
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
-		/** 泛型 **/
-		bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		J2WCheckUtils.validateServiceInterface(bizClass);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
 		// 获取参数-设置是否可取消
@@ -205,7 +200,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		if (getDialog() != null && getRetainInstance()) {
 			getDialog().setDismissMessage(null);
 		}
-		J2WHelper.structureHelper().detach(this);
+		J2WHelper.structureHelper().detach(j2WStructureModel);
 		/** 清空注解view **/
 		ButterKnife.unbind(this);
 		/** 关闭键盘 **/
@@ -221,16 +216,20 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
 
+
 	public <D extends J2WIDisplay> D display(Class<D> eClass) {
-		return J2WHelper.structureHelper().display(eClass);
+		return j2WStructureModel.display(eClass);
 	}
 
 	public B biz() {
-		return (B) J2WHelper.structureHelper().biz(this,bizClass);
+		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return J2WHelper.structureHelper().biz(this,service);
+		if (j2WStructureModel.getService().equals(service)) {
+			return (C) j2WStructureModel.getJ2WProxy().proxy;
+		}
+		return J2WHelper.structureHelper().biz(service);
 	}
 
 	/**

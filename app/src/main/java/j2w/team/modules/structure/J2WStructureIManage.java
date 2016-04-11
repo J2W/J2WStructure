@@ -17,15 +17,13 @@ import j2w.team.view.J2WActivity;
  */
 public interface J2WStructureIManage {
 
-	void attach(Object view);
+	void attach(J2WStructureModel view);
 
-	void detach(Object view);
+	void detach(J2WStructureModel view);
 
 	<D extends J2WIDisplay> D display(Class<D> displayClazz);
 
 	<B extends J2WIBiz> B biz(Class<B> bizClazz);
-
-	<B extends J2WIBiz> B biz(Object view, Class<B> bizClazz);
 
 	<B extends J2WIBiz> B common(Class<B> service);
 
@@ -34,8 +32,6 @@ public interface J2WStructureIManage {
 	<H> H http(Class<H> httpClazz);
 
 	<P> P impl(Class<P> implClazz);
-
-	<D> Object getImplClass(@NotNull Class<D> service, Object ui);
 
 	<T> T createMainLooper(final Class<T> service, Object ui);
 

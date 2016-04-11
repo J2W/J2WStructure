@@ -4,6 +4,7 @@ import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.core.exception.J2WNotUIPointerException;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureModel;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -13,31 +14,28 @@ import j2w.team.view.J2WFragment;
  */
 public abstract class J2WBiz<U> implements J2WIBiz {
 
-	private U		u;
+	private U					u;
 
-	private Object	ui; // 没有代理的ui
+	private J2WStructureModel	j2WStructureModel;
 
 	protected <H> H http(Class<H> hClass) {
-		return J2WHelper.structureHelper().http(hClass);
+		return j2WStructureModel.http(hClass);
 	}
 
 	protected <I> I impl(Class<I> inter) {
-		return J2WHelper.structureHelper().impl(inter);
+		return j2WStructureModel.impl(inter);
 	}
 
 	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
-		return J2WHelper.structureHelper().display(eClass);
+		return j2WStructureModel.display(eClass);
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		C c = null;
-		if (ui != null) {
-			c = J2WHelper.structureHelper().biz(ui, service);
+		if (j2WStructureModel.getService().equals(service)) {
+			return (C) j2WStructureModel.getJ2WProxy().proxy;
+		} else {
+			return J2WHelper.structureHelper().biz(service);
 		}
-		if (c == null) {
-			c = J2WHelper.structureHelper().biz(service);
-		}
-		return c;
 	}
 
 	/**
@@ -61,16 +59,14 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 		return u != null;
 	}
 
-	@Override public void initUI(Object j2WView) {
-		if (j2WView != null) {
-			ui = j2WView;
-			Class ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-			u = (U) J2WHelper.structureHelper().createMainLooper(ui, j2WView);
-		}
+	@Override public void initUI(J2WStructureModel j2WStructureModel) {
+		this.j2WStructureModel = j2WStructureModel;
+		Class ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		u = (U) J2WHelper.structureHelper().createMainLooper(ui, j2WStructureModel.getView());
 	}
 
 	@Override public void detach() {
-		ui = null;
 		u = null;
+		j2WStructureModel = null;
 	}
 }

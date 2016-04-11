@@ -22,6 +22,7 @@ import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
+import j2w.team.modules.structure.J2WStructureModel;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
 import j2w.team.view.adapter.recycleview.J2WRVAdapter;
@@ -55,12 +56,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	 **/
 	private J2WBuilder	j2WBuilder;
 
-	/**
-	 * 泛型
-	 */
-	Class				bizClass;
-
-	B					b;
+	J2WStructureModel	j2WStructureModel;
 
 	/**
 	 * 初始化
@@ -70,7 +66,8 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		/** 初始化结构 **/
-		J2WHelper.structureHelper().attach(this);
+		j2WStructureModel = new J2WStructureModel(this);
+		J2WHelper.structureHelper().attach(j2WStructureModel);
 		/** 初始化堆栈 **/
 		J2WHelper.screenHelper().onCreate(this);
 		/** 活动拦截器 **/
@@ -83,9 +80,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		ButterKnife.bind(this);
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
-		/** 泛型 **/
-		bizClass = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
-		J2WCheckUtils.validateServiceInterface(bizClass);
 		/** 初始化数据 **/
 		initData(getIntent().getExtras());
 	}
@@ -161,7 +155,7 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		j2WBuilder = null;
 		/** 清空注解view **/
 		ButterKnife.unbind(this);
-		J2WHelper.structureHelper().detach(this);
+		J2WHelper.structureHelper().detach(j2WStructureModel);
 		J2WHelper.screenHelper().onDestroy(this);
 		J2WHelper.methodsProxy().activityInterceptor().onDestroy(this);
 		/** 关闭键盘 **/
@@ -194,15 +188,18 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	public <D extends J2WIDisplay> D display(Class<D> eClass) {
-		return J2WHelper.structureHelper().display(eClass);
+		return j2WStructureModel.display(eClass);
 	}
 
 	public B biz() {
-		return (B) J2WHelper.structureHelper().biz(this, bizClass);
+		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		return J2WHelper.structureHelper().biz(this, service);
+		if (j2WStructureModel.getService().equals(service)) {
+			return (C) j2WStructureModel.getJ2WProxy().proxy;
+		}
+		return J2WHelper.structureHelper().biz(service);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {

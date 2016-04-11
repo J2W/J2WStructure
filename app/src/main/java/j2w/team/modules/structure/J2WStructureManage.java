@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import j2w.team.J2WHelper;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.Impl;
-import j2w.team.core.J2WBiz;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.log.L;
@@ -37,15 +35,15 @@ import j2w.team.view.J2WFragment;
 
 public class J2WStructureManage implements J2WStructureIManage {
 
-	private final ConcurrentHashMap<Class<?>, Object>								stackDisplay;
+	private final ConcurrentHashMap<Class<?>, Object>										stackDisplay;
 
-	private final ConcurrentHashMap<Class<?>, Object>								stackHttp;
+	private final ConcurrentHashMap<Class<?>, Object>										stackHttp;
 
-	private final ConcurrentHashMap<Class<?>, Object>								stackBiz;
+	private final ConcurrentHashMap<Class<?>, Object>										stackBiz;
 
-	private final ConcurrentHashMap<Class<?>, Object>								stackImpl;
+	private final ConcurrentHashMap<Class<?>, Object>										stackImpl;
 
-	private final ConcurrentHashMap<Class<?>, SimpleArrayMap<Integer, J2WProxy>>	statckRepeatBiz;
+	private final ConcurrentHashMap<Class<?>, SimpleArrayMap<Integer, J2WStructureModel>>	statckRepeatBiz;
 
 	public J2WStructureManage() {
 		/** 初始化集合 **/
@@ -57,35 +55,34 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	}
 
-	@Override public synchronized void attach(Object view) {
+	@Override public synchronized void attach(J2WStructureModel view) {
 		synchronized (statckRepeatBiz) {
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
-			J2WCheckUtils.validateServiceInterface(bizClass);
-			Object impl = getImplClass(bizClass, view);
-			J2WProxy proxy = J2WHelper.methodsProxy().create(bizClass, impl);
-			SimpleArrayMap<Integer, J2WProxy> stack = statckRepeatBiz.get(bizClass);
+			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(view.getService());
 			if (stack == null) {
 				stack = new SimpleArrayMap();
 			}
-			stack.put(view.hashCode(), proxy);
-			statckRepeatBiz.put(bizClass, stack);
+			stack.put(view.key, view);
+			statckRepeatBiz.put(view.getService(), stack);
 		}
 	}
 
-	@Override public void detach(Object view) {
+	@Override public void detach(J2WStructureModel view) {
 		synchronized (statckRepeatBiz) {
-			Class bizClass = J2WAppUtil.getSuperClassGenricType(view.getClass(), 0);
-			J2WCheckUtils.validateServiceInterface(bizClass);
-			SimpleArrayMap<Integer, J2WProxy> stack = statckRepeatBiz.get(bizClass);
+			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(view.getService());
 			if (stack != null) {
-				J2WProxy j2WProxy = stack.get(view.hashCode());
-				if (j2WProxy != null) {
-					j2WProxy.clearProxy();
+				J2WStructureModel j2WStructureModel = stack.get(view.key);
+				if (j2WStructureModel == null) {
+					return;
 				}
-				stack.remove(view.hashCode());
+				stack.remove(j2WStructureModel.key);
 				if (stack.size() < 1) {
-					statckRepeatBiz.remove(bizClass);
+					statckRepeatBiz.remove(view.getService());
 				}
+				j2WStructureModel.clearAll();
+				j2WStructureModel = null;
+				stackDisplay.clear();
+				stackImpl.clear();
+				stackBiz.clear();
 			}
 		}
 	}
@@ -97,7 +94,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 	 * @param <D>
 	 * @return
 	 */
-	@Override public <D> Object getImplClass(@NotNull Class<D> service, Object ui) {
+	private <D> Object getImplClass(@NotNull Class<D> service) {
 		validateServiceClass(service);
 		try {
 			// 获取注解
@@ -110,10 +107,6 @@ public class J2WStructureManage implements J2WStructureIManage {
 			J2WCheckUtils.checkNotNull(clazz, "业务类为空～");
 			/** 创建类 **/
 			Object o = c.newInstance();
-			// 如果是业务类
-			if (o instanceof J2WBiz) {
-				((J2WBiz) o).initUI(ui);
-			}
 			return o;
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException(String.valueOf(service) + "，没有找到业务类！");
@@ -149,7 +142,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			if (display == null) {
 				J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
 				J2WCheckUtils.validateServiceInterface(displayClazz);
-				display = createMainLooper(displayClazz, getImplClass(displayClazz, null));
+				display = createMainLooper(displayClazz, getImplClass(displayClazz));
 				stackDisplay.put(displayClazz, display);
 			}
 			return display;
@@ -158,37 +151,15 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		synchronized (statckRepeatBiz) {
-			SimpleArrayMap<Integer, J2WProxy> stack = statckRepeatBiz.get(biz);
+			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
 			if (stack == null) {
 				return null;
 			}
-			J2WProxy j2WProxy = stack.valueAt(0);
-			if(j2WProxy == null){
+			J2WStructureModel j2WStructureModel = stack.valueAt(0);
+			if (j2WStructureModel == null) {
 				return null;
 			}
-			return (B) j2WProxy.proxy;
-		}
-	}
-
-	@Override public <B extends J2WIBiz> B biz(Object view, Class<B> bizClazz) {
-		synchronized (statckRepeatBiz) {
-			SimpleArrayMap<Integer, J2WProxy> stack = statckRepeatBiz.get(bizClazz);
-			if (stack == null) {
-				return null;
-			}
-			if (stack.size() == 1) {
-				J2WProxy j2WProxy = stack.valueAt(0);
-				if(j2WProxy == null){
-					return null;
-				}
-				return (B) j2WProxy.proxy;
-			} else {
-				J2WProxy j2WProxy = stack.get(view.hashCode());
-				if(j2WProxy == null){
-					return null;
-				}
-				return (B) j2WProxy.proxy;
-			}
+			return (B) j2WStructureModel.getJ2WProxy().proxy;
 		}
 	}
 
@@ -198,7 +169,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			if (b == null) {
 				J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
 				J2WCheckUtils.validateServiceInterface(service);
-				Object impl = getImplClass(service, null);
+				Object impl = getImplClass(service);
 				J2WProxy j2WProxy = J2WHelper.methodsProxy().create(service, impl);
 				stackBiz.put(service, j2WProxy.proxy);
 				b = (B) j2WProxy.proxy;
@@ -208,17 +179,16 @@ public class J2WStructureManage implements J2WStructureIManage {
 	}
 
 	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
-
 		synchronized (statckRepeatBiz) {
-			SimpleArrayMap<Integer, J2WProxy> stack = statckRepeatBiz.get(service);
+			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(service);
 			if (stack == null) {
 				return null;
 			}
 			List list = new ArrayList();
 			int count = stack.size();
 			for (int i = 0; i < count; i++) {
-				J2WProxy j2WProxy = stack.valueAt(i);
-				list.add(j2WProxy.proxy);
+				J2WStructureModel j2WStructureModel = stack.valueAt(i);
+				list.add(j2WStructureModel.getJ2WProxy().proxy);
 			}
 			return list;
 		}
@@ -227,7 +197,6 @@ public class J2WStructureManage implements J2WStructureIManage {
 	@Override public <H> H http(Class<H> httpClazz) {
 		synchronized (stackHttp) {
 			H http = (H) stackHttp.get(httpClazz);
-
 			if (http == null) {
 				J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
 				J2WCheckUtils.validateServiceInterface(httpClazz);
@@ -245,7 +214,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			if (impl == null) {
 				J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
 				J2WCheckUtils.validateServiceInterface(implClazz);
-				impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz, null));
+				impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz));
 				stackImpl.put(implClazz, impl);
 			}
 			return impl;
