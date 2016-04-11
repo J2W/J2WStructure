@@ -88,52 +88,75 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	public void setItems(List items) {
-		mItems = items;
-
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		if (!J2WCheckUtils.equal(items, mItems)) {
+			mItems = items;
+			notifyDataSetChanged();
+		}
 	}
 
 	public void add(int position, Object object) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
+		if (object == null || getItems() == null || position < 0 || position > getItems().size()) {
+			return;
+		}
 		mItems.add(position, object);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
+		notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(mItems.size());
+		if (object == null || getItems() == null) {
+			return;
+		}
 		mItems.add(object);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
+		notifyItemInserted(mItems.size());
 
 	}
 
 	public void addList(int position, List list) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(position);
+		if (list == null || list.size() < 1 || getItems() == null || position < 0 || position > getItems().size()) {
+			return;
+		}
 		mItems.addAll(position, list);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, list.size());
+		notifyItemRangeInserted(position, list.size());
 
 	}
 
 	public void addList(List list) {
-		headerRecyclerViewAdapterV1.notifyItemInserted(getItemCount());
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
+		int postion = getItemCount();
 		mItems.addAll(list);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(getItemCount() - 1, getItemCount());
+		notifyItemRangeInserted(postion, list.size());
 	}
 
 	public void delete(int position) {
-		headerRecyclerViewAdapterV1.notifyItemRemoved(position);
+		if (getItems() == null || position < 0 || getItems().size() < position) {
+			return;
+		}
 		mItems.remove(position);
-		headerRecyclerViewAdapterV1.notifyItemRangeChanged(position, getItemCount());
+		notifyItemRemoved(position);
 	}
 
-	HeaderRecyclerViewAdapterV1	headerRecyclerViewAdapterV1;
+	public void delete(List list) {
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
+		int position = getItemCount();
+		mItems.removeAll(list);
+		notifyItemRangeRemoved(position, list.size());
+	}
 
-	public void setHeaderRecyclerViewAdapterV1(HeaderRecyclerViewAdapterV1 headerRecyclerViewAdapterV1) {
-		this.headerRecyclerViewAdapterV1 = headerRecyclerViewAdapterV1;
+	public void delete(int position, List list) {
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
+		mItems.removeAll(list);
+		notifyItemRangeRemoved(position, list.size());
 	}
 
 	public void clear() {
 		mItems.clear();
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
 	public T getItem(int position) {
@@ -141,11 +164,11 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	}
 
 	public void updateData() {
-		headerRecyclerViewAdapterV1.notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
-	public HeaderRecyclerViewAdapterV1 adapter() {
-		return headerRecyclerViewAdapterV1;
+	public J2WRVAdapterItem adapter() {
+		return this;
 	}
 
 	/**
@@ -186,16 +209,6 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return j2WView.display(e);
 	}
 
-	public boolean isHeaderAndFooter(int position) {
-		return false;
-	}
-
-	public void detach() {
-		if (headerRecyclerViewAdapterV1 != null) {
-			headerRecyclerViewAdapterV1 = null;
-		}
-	}
-
 	@Override public int getItemCount() {
 		if (mItems == null) {
 			return 0;
@@ -203,4 +216,7 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 		return mItems.size();
 	}
 
+	public boolean isHeaderAndFooter(int position) {
+		return false;
+	}
 }

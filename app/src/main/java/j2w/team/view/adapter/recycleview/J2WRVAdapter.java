@@ -71,58 +71,75 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void setItems(List items) {
-		mItems = items;
-		headerRecyclerViewAdapterV2.notifyDataSetChanged();
+		if (!J2WCheckUtils.equal(items, mItems)) {
+			mItems = items;
+			notifyDataSetChanged();
+		}
 	}
 
 	public void add(int position, Object object) {
+		if (object == null || getItems() == null || position < 0 || position > getItems().size()) {
+			return;
+		}
 		mItems.add(position, object);
-		headerRecyclerViewAdapterV2.notifyItemInserted(position);
+		notifyItemInserted(position);
 	}
 
 	public void add(Object object) {
+		if (object == null || getItems() == null) {
+			return;
+		}
 		mItems.add(object);
-		headerRecyclerViewAdapterV2.notifyItemInserted(mItems.size());
+		notifyItemInserted(mItems.size());
 
 	}
 
 	public void addList(int position, List list) {
+		if (list == null || list.size() < 1 || getItems() == null || position < 0 || position > getItems().size()) {
+			return;
+		}
 		mItems.addAll(position, list);
-		headerRecyclerViewAdapterV2.notifyItemRangeInserted(position, list.size());
+		notifyItemRangeInserted(position, list.size());
 
 	}
 
 	public void addList(List list) {
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
 		int postion = getItemCount();
 		mItems.addAll(list);
-		headerRecyclerViewAdapterV2.notifyItemRangeInserted(postion, list.size());
+		notifyItemRangeInserted(postion, list.size());
 	}
 
 	public void delete(int position) {
+		if (getItems() == null || position < 0 || getItems().size() < position) {
+			return;
+		}
 		mItems.remove(position);
-		headerRecyclerViewAdapterV2.notifyItemRemoved(position);
+		notifyItemRemoved(position);
 	}
 
 	public void delete(List list) {
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
 		int position = getItemCount();
 		mItems.removeAll(list);
-		headerRecyclerViewAdapterV2.notifyItemRangeRemoved(position, list.size());
+		notifyItemRangeRemoved(position, list.size());
 	}
 
 	public void delete(int position, List list) {
+		if (list == null || list.size() < 1 || getItems() == null) {
+			return;
+		}
 		mItems.removeAll(list);
-		headerRecyclerViewAdapterV2.notifyItemRangeRemoved(position, list.size());
-	}
-
-	HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2;
-
-	public void setHeaderRecyclerViewAdapterV2(HeaderRecyclerViewAdapterV2 headerRecyclerViewAdapterV2) {
-		this.headerRecyclerViewAdapterV2 = headerRecyclerViewAdapterV2;
+		notifyItemRangeRemoved(position, list.size());
 	}
 
 	public void clear() {
 		mItems.clear();
-		headerRecyclerViewAdapterV2.notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
 	public T getItem(int position) {
@@ -130,7 +147,7 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void updateData() {
-		headerRecyclerViewAdapterV2.notifyDataSetChanged();
+		notifyDataSetChanged();
 	}
 
 	public <V extends J2WFragment> V fragment() {
@@ -150,8 +167,8 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	 * 
 	 * @return
 	 */
-	protected HeaderRecyclerViewAdapterV2 getAdapter() {
-		return headerRecyclerViewAdapterV2;
+	protected J2WRVAdapter getAdapter() {
+		return this;
 	}
 
 	/**
@@ -184,15 +201,6 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		return j2WView.display(e);
 	}
 
-	public boolean isHeaderAndFooter(int position) {
-		return false;
-	}
-
-	public void detach() {
-		if (headerRecyclerViewAdapterV2 != null) {
-			headerRecyclerViewAdapterV2 = null;
-		}
-	}
 
 	@Override public int getItemCount() {
 		if (mItems == null) {
@@ -201,11 +209,7 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 		return mItems.size();
 	}
 
-	public void isShowHeader(boolean isShowFooter) {
-		headerRecyclerViewAdapterV2.isShowHeader(isShowFooter);
-	}
-
-	public void isShowFooter(boolean isShowFooter) {
-		headerRecyclerViewAdapterV2.isShowFooter(isShowFooter);
+	public boolean isHeaderAndFooter(int position) {
+		return false;
 	}
 }

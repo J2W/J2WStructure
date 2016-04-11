@@ -23,8 +23,8 @@ import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.view.adapter.J2WIViewPagerAdapter;
 import j2w.team.view.adapter.J2WListAdapter;
-import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV1;
-import j2w.team.view.adapter.recycleview.HeaderRecyclerViewAdapterV2;
+import j2w.team.view.adapter.recycleview.J2WRVAdapter;
+import j2w.team.view.adapter.recycleview.J2WRVAdapterItem;
 
 /**
  * @创建人 sky
@@ -287,11 +287,11 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	/********************** RecyclerView业务代码 *********************/
-	@Deprecated protected HeaderRecyclerViewAdapterV1 adapterRecycler() {
+	@Deprecated protected J2WRVAdapterItem adapterRecycler() {
 		return j2WBuilder.getJ2WRVAdapterItem();
 	}
 
-	protected HeaderRecyclerViewAdapterV2 recyclerAdapter() {
+	protected J2WRVAdapter recyclerAdapter() {
 		return j2WBuilder.getJ2WRVAdapterItem2();
 	}
 
