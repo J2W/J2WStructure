@@ -18,11 +18,11 @@ import j2w.team.common.utils.J2WGsonUtils;
  */
 public class GsonConverter implements J2WConverter {
 
-	protected final Gson		gson;
+	protected Gson		gson;
 
-	protected final Charset	charset;
+	protected Charset	charset;
 
-	protected final MediaType	mediaType;
+	protected MediaType	mediaType;
 
 	public GsonConverter() {
 		this(new GsonBuilder().create());
