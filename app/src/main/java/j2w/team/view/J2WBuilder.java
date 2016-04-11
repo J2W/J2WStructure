@@ -1290,7 +1290,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 
 						@Override public int getSpanSize(int position) {
-							return j2WRVAdapter.isHeaderAndFooter(position) ? gridLayoutManager.getSpanCount() : 1;
+							return j2WRVAdapterItem.isHeaderAndFooter(position) ? gridLayoutManager.getSpanCount() : 1;
 						}
 					});
 				}
