@@ -61,8 +61,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	/** View层编辑器 **/
 	private J2WBuilder			j2WBuilder;
 
-	J2WStructureModel j2WStructureModel;
-
+	J2WStructureModel			j2WStructureModel;
 
 	/**
 	 * 定制
@@ -167,7 +166,9 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		super.onResume();
 		/** 判断EventBus 是否注册 **/
 		if (j2WBuilder.isOpenEventBus()) {
-			J2WHelper.eventBus().register(this);
+			if (!J2WHelper.eventBus().isRegistered(this)) {
+				J2WHelper.eventBus().register(this);
+			}
 		}
 		J2WHelper.structureHelper().printBackStackEntry(getFragmentManager());
 	}
@@ -188,23 +189,23 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
-
-		/** 移除builder **/
-		j2WBuilder.detach();
-		j2WBuilder = null;
 		/** 关闭event **/
 		if (J2WHelper.eventBus().isRegistered(this)) {
 			J2WHelper.eventBus().unregister(this);
 		}
-		// 销毁
-		if (getDialog() != null && getRetainInstance()) {
-			getDialog().setDismissMessage(null);
-		}
+		/** 移除builder **/
+		j2WBuilder.detach();
+		j2WBuilder = null;
+
 		J2WHelper.structureHelper().detach(j2WStructureModel);
 		/** 清空注解view **/
 		ButterKnife.unbind(this);
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(getActivity());
+		// 销毁
+		if (getDialog() != null && getRetainInstance()) {
+			getDialog().setDismissMessage(null);
+		}
 	}
 
 	/**
@@ -215,7 +216,6 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	public void setSoftInputMode(int mode) {
 		getActivity().getWindow().setSoftInputMode(mode);
 	}
-
 
 	public <D extends J2WIDisplay> D display(Class<D> eClass) {
 		return j2WStructureModel.display(eClass);
