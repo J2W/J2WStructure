@@ -1369,8 +1369,14 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private void detachRecyclerView() {
 		recyclerView = null;
-		j2WRVAdapterItem = null;
-		j2WRVAdapter = null;
+		if (j2WRVAdapterItem != null) {
+			j2WRVAdapterItem.clearCache();
+			j2WRVAdapterItem = null;
+		}
+		if (j2WRVAdapter != null) {
+			j2WRVAdapter.clearCache();
+			j2WRVAdapter = null;
+		}
 		onHeaderClickListener = null;
 		layoutManager = null;
 		itemAnimator = null;

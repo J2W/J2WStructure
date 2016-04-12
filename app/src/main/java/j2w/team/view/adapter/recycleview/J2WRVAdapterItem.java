@@ -1,16 +1,14 @@
 package j2w.team.view.adapter.recycleview;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import j2w.team.J2WHelper;
+import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
-import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WDialogFragment;
 import j2w.team.view.J2WFragment;
@@ -31,31 +29,26 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	/**
 	 * 数据
 	 */
-	private List				mItems;
+	private List	mItems;
 
 	/**
 	 * 布局加载起
 	 */
-	protected LayoutInflater	mLayoutInflater;
-
-	private J2WView				j2WView;
+	private J2WView	j2WView;
 
 	public J2WRVAdapterItem(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
 		this.j2WView = j2WActivity.j2wView();
-		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapterItem(J2WFragment j2WFragment) {
 		J2WCheckUtils.checkNotNull(j2WFragment, "View层不存在");
 		this.j2WView = j2WFragment.j2wView();
-		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	public J2WRVAdapterItem(J2WDialogFragment j2WDialogFragment) {
 		J2WCheckUtils.checkNotNull(j2WDialogFragment, "View层不存在");
 		this.j2WView = j2WDialogFragment.j2wView();
-		this.mLayoutInflater = j2WView.activity().getLayoutInflater();
 	}
 
 	/**
@@ -218,5 +211,12 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 
 	public boolean isHeaderAndFooter(int position) {
 		return false;
+	}
+
+	public void clearCache() {
+		if (mItems != null) {
+			mItems.clear();
+			mItems = null;
+		}
 	}
 }
