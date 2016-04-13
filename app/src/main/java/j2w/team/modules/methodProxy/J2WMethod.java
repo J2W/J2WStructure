@@ -163,7 +163,6 @@ public final class J2WMethod {
 		for (BizStartInterceptor item : J2WHelper.methodsProxy().bizStartInterceptor) {
 			item.interceptStart(implName, service, method, interceptor, objects);
 		}
-		L.i("存在吗?:"+impl);
 		backgroundResult = method.invoke(impl, objects);// 执行
 		// 业务拦截器 - 后
 		for (BizEndInterceptor item : J2WHelper.methodsProxy().bizEndInterceptor) {
