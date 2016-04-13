@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
@@ -64,8 +66,8 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 	public abstract void bindData(V viewholder, T t, int position, int count);
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-		V v = newViewHolder(viewGroup, viewType);
-		return v;
+		V holder = newViewHolder(viewGroup, viewType);
+		return holder;
 	}
 
 	@Override public void onBindViewHolder(V v, int position) {
@@ -218,5 +220,6 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 			mItems.clear();
 			mItems = null;
 		}
+		ButterKnife.unbind(this);
 	}
 }

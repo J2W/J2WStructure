@@ -1,12 +1,15 @@
 package j2w.team.view.adapter.recycleview;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.J2WIBiz;
@@ -30,9 +33,9 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	/**
 	 * 数据
 	 */
-	private List				mItems;
+	private List		mItems;
 
-	private J2WView				j2WView;
+	private J2WView		j2WView;
 
 	public J2WRVAdapter(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
@@ -50,8 +53,8 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	@Override public V onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-		V v = newViewHolder(viewGroup, viewType);
-		return v;
+		V holder = newViewHolder(viewGroup, viewType);
+		return holder;
 	}
 
 	@Override public void onBindViewHolder(V v, int position) {
@@ -209,5 +212,6 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 			mItems.clear();
 			mItems = null;
 		}
+		ButterKnife.unbind(this);
 	}
 }

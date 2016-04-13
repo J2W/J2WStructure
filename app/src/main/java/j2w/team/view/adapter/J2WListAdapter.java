@@ -237,5 +237,7 @@ public class J2WListAdapter extends BaseAdapter {
 		j2WView = null;
 		j2WAdapterItem = null;
 		j2WListViewMultiLayout = null;
+		/** 清空注解view **/
+		ButterKnife.unbind(this);
 	}
 }

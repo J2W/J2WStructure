@@ -80,7 +80,20 @@ public class J2WStructureManage implements J2WStructureIManage {
 				}
 				j2WStructureModel.clearAll();
 				j2WStructureModel = null;
+
 			}
+		}
+		synchronized (stackImpl) {
+			stackImpl.clear();
+		}
+		synchronized (stackDisplay) {
+			stackDisplay.clear();
+		}
+		synchronized (stackBiz) {
+			stackBiz.clear();
+		}
+		synchronized (stackHttp) {
+			stackHttp.clear();
 		}
 	}
 
