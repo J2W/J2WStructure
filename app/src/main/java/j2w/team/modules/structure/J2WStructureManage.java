@@ -20,6 +20,7 @@ import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.Impl;
 import j2w.team.core.J2WIBiz;
+import j2w.team.core.J2WICommonBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.log.L;
 import j2w.team.modules.methodProxy.J2WProxy;
@@ -39,7 +40,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	private final ConcurrentHashMap<Class<?>, Object>										stackHttp;
 
-	private final ConcurrentHashMap<Class<?>, Object>										stackBiz;
+	private final ConcurrentHashMap<Class<?>, Object>										stackCommonBiz;
 
 	private final ConcurrentHashMap<Class<?>, Object>										stackImpl;
 
@@ -48,7 +49,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 	public J2WStructureManage() {
 		/** 初始化集合 **/
 		stackHttp = new ConcurrentHashMap<>();
-		stackBiz = new ConcurrentHashMap<>();
+		stackCommonBiz = new ConcurrentHashMap<>();
 		stackDisplay = new ConcurrentHashMap<>();
 		stackImpl = new ConcurrentHashMap<>();
 		statckRepeatBiz = new ConcurrentHashMap<>();
@@ -89,8 +90,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 		synchronized (stackDisplay) {
 			stackDisplay.clear();
 		}
-		synchronized (stackBiz) {
-			stackBiz.clear();
+		synchronized (stackCommonBiz) {
+			stackCommonBiz.clear();
 		}
 		synchronized (stackHttp) {
 			stackHttp.clear();
@@ -173,15 +174,15 @@ public class J2WStructureManage implements J2WStructureIManage {
 		}
 	}
 
-	@Override public <B extends J2WIBiz> B common(Class<B> service) {
-		synchronized (stackBiz) {
-			B b = (B) stackBiz.get(service);
+	@Override public <B extends J2WICommonBiz> B common(Class<B> service) {
+		synchronized (stackCommonBiz) {
+			B b = (B) stackCommonBiz.get(service);
 			if (b == null) {
 				J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
 				J2WCheckUtils.validateServiceInterface(service);
 				Object impl = getImplClass(service);
 				J2WProxy j2WProxy = J2WHelper.methodsProxy().create(service, impl);
-				stackBiz.put(service, j2WProxy.proxy);
+				stackCommonBiz.put(service, j2WProxy.proxy);
 				b = (B) j2WProxy.proxy;
 			}
 			return b;

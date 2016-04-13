@@ -8,6 +8,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import j2w.team.core.J2WIBiz;
+import j2w.team.core.J2WICommonBiz;
 import j2w.team.core.SynchronousExecutor;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.J2WModulesManage;
@@ -88,7 +89,7 @@ public class J2WHelper {
 	 * @param <B>
 	 * @return
 	 */
-	public static final <B extends J2WIBiz> B common(Class<B> service) {
+	public static final <B extends J2WICommonBiz> B common(Class<B> service) {
 		return structureHelper().common(service);
 	}
 

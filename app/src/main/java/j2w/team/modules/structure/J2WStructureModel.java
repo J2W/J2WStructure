@@ -27,12 +27,6 @@ public class J2WStructureModel {
 
     private Object view;
 
-    private ConcurrentHashMap<Class<?>, Object> stackHttp;
-
-    private ConcurrentHashMap<Class<?>, Object> stackImpl;
-
-    private ConcurrentHashMap<Class<?>, Object> stackDisplay;
-
     private Class service;
 
     public J2WStructureModel(Object view) {
@@ -53,18 +47,6 @@ public class J2WStructureModel {
     public void clearAll() {
         this.view = null;
         service = null;
-        if (stackHttp != null) {
-            stackHttp.clear();
-            stackHttp = null;
-        }
-        if (stackImpl != null) {
-            stackImpl.clear();
-            stackImpl = null;
-        }
-        if (stackDisplay != null) {
-            stackDisplay.clear();
-            stackDisplay = null;
-        }
         if (j2WProxy != null) {
             j2WProxy.clearProxy();
             j2WProxy = null;
@@ -78,18 +60,8 @@ public class J2WStructureModel {
      * @param <D>
      * @return
      */
-    public synchronized <D extends J2WIDisplay> D display(Class<D> displayClazz) {
-        if (stackDisplay == null) {
-            stackDisplay = new ConcurrentHashMap();
-        }
-        D display = (D) stackDisplay.get(displayClazz);
-        if (display == null) {
-            J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
-            J2WCheckUtils.validateServiceInterface(displayClazz);
-            display = J2WHelper.structureHelper().createMainLooper(displayClazz, getImplClass(displayClazz, null));
-            stackDisplay.put(displayClazz, display);
-        }
-        return display;
+    public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
+        return J2WHelper.structureHelper().display(displayClazz);
     }
 
     /**
@@ -99,18 +71,8 @@ public class J2WStructureModel {
      * @param <H>
      * @return
      */
-    public synchronized <H> H http(Class<H> httpClazz) {
-        if (stackHttp == null) {
-            stackHttp = new ConcurrentHashMap();
-        }
-        H http = (H) stackHttp.get(httpClazz);
-        if (http == null) {
-            J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
-            J2WCheckUtils.validateServiceInterface(httpClazz);
-            http = J2WHelper.httpAdapter().create(httpClazz);
-            stackHttp.put(httpClazz, http);
-        }
-        return http;
+    public <H> H http(Class<H> httpClazz) {
+        return J2WHelper.structureHelper().http(httpClazz);
     }
 
     /**
@@ -120,19 +82,8 @@ public class J2WStructureModel {
      * @param <P>
      * @return
      */
-    public synchronized <P> P impl(Class<P> implClazz) {
-        if (stackImpl == null) {
-            stackImpl = new ConcurrentHashMap();
-        }
-        P impl = (P) stackImpl.get(implClazz);
-
-        if (impl == null) {
-            J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
-            J2WCheckUtils.validateServiceInterface(implClazz);
-            impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz, null));
-            stackImpl.put(implClazz, impl);
-        }
-        return impl;
+    public <P> P impl(Class<P> implClazz) {
+        return J2WHelper.structureHelper().impl(implClazz);
     }
 
     /**

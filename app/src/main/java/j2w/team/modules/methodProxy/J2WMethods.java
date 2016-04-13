@@ -70,7 +70,7 @@ public final class J2WMethods {
 		J2WCheckUtils.validateServiceInterface(service);
 
 		final J2WProxy j2WProxy = new J2WProxy();
-		j2WProxy.impl = (J2WIBiz) impl;
+		j2WProxy.impl = impl;
 		j2WProxy.proxy = Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {

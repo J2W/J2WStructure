@@ -24,7 +24,7 @@ android {
 
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     //外部依赖
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
@@ -35,9 +35,9 @@ dependencies {
     //状态栏
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.google.code.gson:gson:2.5'
     compile 'org.jetbrains:annotations:13.0'
     compile 'com.github.bumptech.glide:okhttp-integration:1.4.0'
+    compile 'com.google.code.gson:gson:2.6.2'
 }
 //打包
 apply from: 'maven-release-aar.gradle'//打包

@@ -11,7 +11,7 @@ import j2w.team.core.J2WIBiz;
  */
 public class J2WProxy {
 
-    public J2WIBiz impl;                                // 实现类
+    public Object impl;                                // 实现类
 
     public Object proxy;                                // 代理类
 
@@ -22,7 +22,9 @@ public class J2WProxy {
      * 清空
      */
     public void clearProxy() {
-        impl.detach();
+        if(impl instanceof J2WIBiz){
+            ((J2WIBiz)impl).detach();
+        }
         impl = null;
         proxy = null;
         methodCache.clear();
