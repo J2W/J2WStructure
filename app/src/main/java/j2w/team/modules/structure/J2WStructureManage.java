@@ -80,8 +80,6 @@ public class J2WStructureManage implements J2WStructureIManage {
 					statckRepeatBiz.remove(view.getService());
 				}
 				j2WStructureModel.clearAll();
-				j2WStructureModel = null;
-
 			}
 		}
 		synchronized (stackImpl) {
@@ -148,88 +146,92 @@ public class J2WStructureManage implements J2WStructureIManage {
 	}
 
 	@Override public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
-		synchronized (stackDisplay) {
-			D display = (D) stackDisplay.get(displayClazz);
-			if (display == null) {
-				J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
-				J2WCheckUtils.validateServiceInterface(displayClazz);
-				display = createMainLooper(displayClazz, getImplClass(displayClazz));
-				stackDisplay.put(displayClazz, display);
+		D display = (D) stackDisplay.get(displayClazz);
+		if (display == null) {
+			synchronized (stackDisplay) {
+				if (display == null) {
+					J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
+					J2WCheckUtils.validateServiceInterface(displayClazz);
+					display = createMainLooper(displayClazz, getImplClass(displayClazz));
+					stackDisplay.put(displayClazz, display);
+				}
 			}
-			return display;
 		}
+		return display;
 	}
 
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
-		synchronized (statckRepeatBiz) {
-			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
-			if (stack == null) {
-				return null;
-			}
-			J2WStructureModel j2WStructureModel = stack.valueAt(0);
-			if (j2WStructureModel == null) {
-				return null;
-			}
-			return (B) j2WStructureModel.getJ2WProxy().proxy;
+		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
+		if (stack == null) {
+			return null;
 		}
+		J2WStructureModel j2WStructureModel = stack.valueAt(0);
+		if (j2WStructureModel == null) {
+			return null;
+		}
+		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	@Override public <B extends J2WICommonBiz> B common(Class<B> service) {
-		synchronized (stackCommonBiz) {
-			B b = (B) stackCommonBiz.get(service);
-			if (b == null) {
-				J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
-				J2WCheckUtils.validateServiceInterface(service);
-				Object impl = getImplClass(service);
-				J2WProxy j2WProxy = J2WHelper.methodsProxy().create(service, impl);
-				stackCommonBiz.put(service, j2WProxy.proxy);
-				b = (B) j2WProxy.proxy;
+		B b = (B) stackCommonBiz.get(service);
+		if (b == null) {
+			synchronized (stackCommonBiz) {
+				if (b == null) {
+					J2WCheckUtils.checkNotNull(service, "biz接口不能为空～");
+					J2WCheckUtils.validateServiceInterface(service);
+					Object impl = getImplClass(service);
+					J2WProxy j2WProxy = J2WHelper.methodsProxy().create(service, impl);
+					stackCommonBiz.put(service, j2WProxy.proxy);
+					b = (B) j2WProxy.proxy;
+				}
 			}
-			return b;
 		}
+		return b;
 	}
 
 	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
-		synchronized (statckRepeatBiz) {
-			SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(service);
-			if (stack == null) {
-				return null;
-			}
-			List list = new ArrayList();
-			int count = stack.size();
-			for (int i = 0; i < count; i++) {
-				J2WStructureModel j2WStructureModel = stack.valueAt(i);
-				list.add(j2WStructureModel.getJ2WProxy().proxy);
-			}
-			return list;
+		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(service);
+		if (stack == null) {
+			return null;
 		}
+		List list = new ArrayList();
+		int count = stack.size();
+		for (int i = 0; i < count; i++) {
+			J2WStructureModel j2WStructureModel = stack.valueAt(i);
+			list.add(j2WStructureModel.getJ2WProxy().proxy);
+		}
+		return list;
 	}
 
 	@Override public <H> H http(Class<H> httpClazz) {
-		synchronized (stackHttp) {
-			H http = (H) stackHttp.get(httpClazz);
-			if (http == null) {
-				J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
-				J2WCheckUtils.validateServiceInterface(httpClazz);
-				http = J2WHelper.httpAdapter().create(httpClazz);
-				stackHttp.put(httpClazz, http);
+		H http = (H) stackHttp.get(httpClazz);
+		if (http == null) {
+			synchronized (stackHttp) {
+				if (http == null) {
+					J2WCheckUtils.checkNotNull(httpClazz, "http接口不能为空");
+					J2WCheckUtils.validateServiceInterface(httpClazz);
+					http = J2WHelper.httpAdapter().create(httpClazz);
+					stackHttp.put(httpClazz, http);
+				}
 			}
-			return http;
 		}
+		return http;
+
 	}
 
 	@Override public <P> P impl(Class<P> implClazz) {
-		synchronized (stackImpl) {
-			P impl = (P) stackImpl.get(implClazz);
-
-			if (impl == null) {
-				J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
-				J2WCheckUtils.validateServiceInterface(implClazz);
-				impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz));
-				stackImpl.put(implClazz, impl);
+		P impl = (P) stackImpl.get(implClazz);
+		if (impl == null) {
+			synchronized (stackImpl) {
+				if (impl == null) {
+					J2WCheckUtils.checkNotNull(implClazz, "impl接口不能为空");
+					J2WCheckUtils.validateServiceInterface(implClazz);
+					impl = J2WHelper.methodsProxy().createImpl(implClazz, getImplClass(implClazz));
+					stackImpl.put(implClazz, impl);
+				}
 			}
-			return impl;
 		}
+		return impl;
 	}
 
 	@Override public <T> T createMainLooper(Class<T> service, final Object ui) {
