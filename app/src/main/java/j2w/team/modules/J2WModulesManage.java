@@ -58,7 +58,7 @@ public class J2WModulesManage {
 		this.j2WThreadPoolManager = new J2WThreadPoolManager();
 		this.synchronousExecutor = new SynchronousExecutor();
 		this.j2WDownloadManager = new J2WDownloadManager();
-		this.j2WToast = new J2WToast(mJ2WApplication);
+		this.j2WToast = new J2WToast();
 		this.contactManage = new ContactManage(mJ2WApplication);
 
 	}

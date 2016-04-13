@@ -1,10 +1,8 @@
 package j2w.team.modules.toast;
 
-import android.content.Context;
 import android.os.Looper;
 import android.widget.Toast;
 
-import j2w.team.J2WApplication;
 import j2w.team.J2WHelper;
 
 /**
@@ -12,15 +10,7 @@ import j2w.team.J2WHelper;
  */
 public class J2WToast {
 
-	private J2WToast() {}
-
-	Context	context;
-
-	public J2WToast(Context context) {
-		this.context = context;
-	}
-
-	private Toast	mToast	= null;
+	private Toast mToast = null;
 
 	/**
 	 * 简单Toast 消息弹出
@@ -72,12 +62,19 @@ public class J2WToast {
 	 */
 	protected void showToast(String text, int duration) {
 		if (mToast == null) {
-			mToast = Toast.makeText(context, text, duration);
+			mToast = Toast.makeText(J2WHelper.getInstance(), text, duration);
 		} else {
 			mToast.setText(text);
 			mToast.setDuration(duration);
 		}
 
 		mToast.show();
+	}
+
+	public void clear() {
+		if (mToast != null) {
+			mToast.cancel();
+			mToast = null;
+		}
 	}
 }

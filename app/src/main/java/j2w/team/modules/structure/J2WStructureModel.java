@@ -51,6 +51,8 @@ public class J2WStructureModel {
             j2WProxy.clearProxy();
             j2WProxy = null;
         }
+        //清空toast
+        J2WHelper.toast().clear();
     }
 
     /**
