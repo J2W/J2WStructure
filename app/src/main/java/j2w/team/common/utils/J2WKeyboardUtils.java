@@ -18,7 +18,13 @@ public class J2WKeyboardUtils {
 	 * @param acitivity
 	 */
 	public static void hideSoftInput(Activity acitivity) {
+		if(acitivity == null){
+			return;
+		}
 		InputMethodManager imm = (InputMethodManager) acitivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		if(acitivity.getWindow() ==null || acitivity.getWindow().getDecorView() == null){
+			return;
+		}
 		imm.hideSoftInputFromWindow(acitivity.getWindow().getDecorView().getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
