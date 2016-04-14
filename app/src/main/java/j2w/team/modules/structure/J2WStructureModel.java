@@ -1,5 +1,7 @@
 package j2w.team.modules.structure;
 
+import android.app.Activity;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -13,6 +15,7 @@ import j2w.team.core.Impl;
 import j2w.team.core.J2WBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.methodProxy.J2WProxy;
+import j2w.team.view.J2WActivity;
 
 /**
  * @创建人 sky
@@ -54,6 +57,10 @@ public class J2WStructureModel {
 	 * 清空
 	 */
 	public void clearAll() {
+		if(view instanceof Activity){
+			// 清空toast
+			J2WHelper.toast().clear();
+		}
 		this.view = null;
 		service = null;
 		j2WProxy.clearProxy();
@@ -64,8 +71,6 @@ public class J2WStructureModel {
 		stackImpl = null;
 		stackDisplay.clear();
 		stackDisplay = null;
-		// 清空toast
-		J2WHelper.toast().clear();
 	}
 
 	/**
