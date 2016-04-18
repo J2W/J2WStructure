@@ -1204,9 +1204,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					});
 				}
 				// 设置Item增加、移除动画
-				if (getItemAnimator() != null) {
-					recyclerView.setItemAnimator(getItemAnimator());
-				}
+				recyclerView.setItemAnimator(getItemAnimator());
 				// 添加分割线
 				if (getItemDecoration() != null) {
 					recyclerView.addItemDecoration(getItemDecoration());
