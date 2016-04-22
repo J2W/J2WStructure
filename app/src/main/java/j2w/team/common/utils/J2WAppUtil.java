@@ -351,5 +351,17 @@ public final class J2WAppUtil {
 		return false;
 	}
 
-
+	/**
+	 * 后台唤醒到前台
+	 * 
+	 * @param context
+	 * @param clazz
+	 */
+	public static void awaken(Context context, Class clazz) {
+		Intent mainIntent = new Intent(context, clazz);
+		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		mainIntent.setAction(Intent.ACTION_MAIN);
+		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		context.startActivity(mainIntent);
+	}
 }
