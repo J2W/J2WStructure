@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import j2w.team.J2WHelper;
+import j2w.team.modules.log.L;
 
 /**
  * Created by sky on 15/1/29 程序工具包
@@ -328,4 +330,26 @@ public final class J2WAppUtil {
 
 		activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 	}
+
+	/**
+	 * 判断是否运行
+	 * 
+	 * @param context
+	 * @param packageName
+	 * @return
+	 */
+	public static boolean isAppAlive(Context context, String packageName) {
+		ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> processInfos = activityManager.getRunningAppProcesses();
+		for (int i = 0; i < processInfos.size(); i++) {
+			if (processInfos.get(i).processName.equals(packageName)) {
+				L.i("J2WNotificationLaunch", String.format("the %s is running, isAppAlive return true", packageName));
+				return true;
+			}
+		}
+		L.i("J2WNotificationLaunch", String.format("the %s is not running, isAppAlive return false", packageName));
+		return false;
+	}
+
+
 }
