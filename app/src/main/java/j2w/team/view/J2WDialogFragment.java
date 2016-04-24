@@ -97,6 +97,10 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		return false;
 	}
 
+	protected void setDialogCancel(boolean flg) {
+		getDialog().setCanceledOnTouchOutside(flg);
+	}
+
 	protected boolean isFull() {
 		return false;
 	}
@@ -146,7 +150,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		/** 状态栏颜色 **/
 		j2WBuilder.initTint();
 		// 获取参数-设置是否可取消
-		getDialog().setCanceledOnTouchOutside(isCancel());
+		setDialogCancel(isCancel());
 		getDialog().setOnKeyListener(this);
 		return view;
 	}

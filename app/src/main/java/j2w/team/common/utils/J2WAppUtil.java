@@ -9,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
 import android.provider.Settings;
@@ -357,11 +358,14 @@ public final class J2WAppUtil {
 	 * @param context
 	 * @param clazz
 	 */
-	public static void awaken(Context context, Class clazz) {
+	public static void awaken(Context context, Class clazz,Bundle bundle) {
 		Intent mainIntent = new Intent(context, clazz);
 		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		mainIntent.setAction(Intent.ACTION_MAIN);
 		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		if(bundle != null){
+			mainIntent.putExtras(bundle);
+		}
 		context.startActivity(mainIntent);
 	}
 }
