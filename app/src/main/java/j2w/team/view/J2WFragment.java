@@ -11,11 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -73,8 +70,6 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
-		/** 状态栏颜色 **/
-		j2WBuilder.initTint();
 		/** 初始化点击事件 **/
 		view.setOnTouchListener(this);// 设置点击事件
 		return view;
@@ -277,11 +272,6 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
 
-	}
-
-	public SystemBarTintManager tintManager() {
-
-		return j2WBuilder.getTintManager();
 	}
 
 	/********************** RecyclerView业务代码 *********************/

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="J2WTheme" />
+
+
+    <style name="J2WTheme.Default" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/j2w_click_pressed</item>
+        <item name="colorPrimaryDark">@color/j2w_click_pressed</item>
+        <item name="colorAccent">@color/j2w_click_pressed</item>
+        <item name="android:progressBarStyle">@style/J2W.Layout.Wrap.ProgressBar</item>
+        <!-- 列表分割线-->
+        <!--<item name="RecyclerViewDivider">@drawable/j2w_default_divider</item>-->
+        <!--<item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>-->
+
+        <!-- 按下效果 -->
+        <!--<item name="selectableItemBackground">@drawable/j2w_click_selector</item>-->
+        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>-->
+    </style>
+
+    <!-- Special themes -->
+    <style name="J2WTheme.Default.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/j2w_click_pressed</item>
+        <item name="colorPrimaryDark">@color/j2w_click_pressed</item>
+        <item name="colorAccent">@color/j2w_click_pressed</item>
+        <item name="android:progressBarStyle">@style/J2W.Layout.Wrap.ProgressBar</item>
+        <!-- 列表分割线-->
+        <item name="RecyclerViewDivider">@drawable/j2w_default_divider</item>
+        <item name="RecyclerViewGridDivider">@drawable/j2w_default_divider</item>
+
+        <!-- 按下效果 -->
+        <!--<item name="selectableItemBackground">@drawable/j2w_click_selector</item>-->
+        <!--<item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>-->
+    </style>
+
+</resources>

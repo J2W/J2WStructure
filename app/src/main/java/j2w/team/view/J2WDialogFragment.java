@@ -22,15 +22,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -147,8 +144,6 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this, view);
-		/** 状态栏颜色 **/
-		j2WBuilder.initTint();
 		// 获取参数-设置是否可取消
 		setDialogCancel(isCancel());
 		getDialog().setOnKeyListener(this);
@@ -296,10 +291,6 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
 		return j2WBuilder.getToolbar();
-	}
-
-	public SystemBarTintManager tintManager() {
-		return j2WBuilder.getTintManager();
 	}
 
 	/********************** RecyclerView业务代码 *********************/

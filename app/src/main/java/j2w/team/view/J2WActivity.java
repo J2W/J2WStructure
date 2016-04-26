@@ -2,6 +2,7 @@ package j2w.team.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -10,13 +11,15 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
-import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -76,10 +79,21 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         j2WBuilder = new J2WBuilder(this, inflater);
         setContentView(build(j2WBuilder).create());
+        /** 状态栏高度 **/
+        ViewGroup contentFrameLayout = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+        View parentView = contentFrameLayout.getChildAt(0);
+        if (parentView != null && Build.VERSION.SDK_INT >= 14) {
+            parentView.setFitsSystemWindows(true);
+        }
+        /** 状态栏颜色 **/
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        // enable status bar tint
+        tintManager.setStatusBarTintEnabled(true);
+        // enable navigation bar tint
+        tintManager.setNavigationBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(j2WBuilder.getTintColor());
         /** 初始化所有组建 **/
         ButterKnife.bind(this);
-        /** 状态栏颜色 **/
-        j2WBuilder.initTint();
         /** 初始化数据 **/
         initData(getIntent().getExtras());
     }
@@ -238,10 +252,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
         return j2WBuilder.getJ2WView();
     }
 
-    public boolean isOpenTint() {
-        return j2WBuilder.isTintColor();
-    }
-
     /**********************
      * Actionbar业务代码
      *********************/
@@ -281,10 +291,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
      *********************/
     public Toolbar toolbar() {
         return j2WBuilder.getToolbar();
-    }
-
-    public SystemBarTintManager tintManager() {
-        return j2WBuilder.getTintManager();
     }
 
     /**********************

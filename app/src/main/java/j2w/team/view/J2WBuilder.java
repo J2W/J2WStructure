@@ -17,8 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
@@ -27,8 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
@@ -307,10 +303,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 	private int						tintColor;
 
-	private int						stateHight;
-
-	private SystemBarTintManager	tintManager;
-
 	int getTintColor() {
 		return tintColor;
 	}
@@ -321,30 +313,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	public void tintColor(int tintColor) {
 		this.tintColor = tintColor;
-	}
-
-	public void initTint() {
-		if (isTintColor()) {
-			// TODO 临时修改
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-				Window win = j2WView.activity().getWindow();
-				WindowManager.LayoutParams winParams = win.getAttributes();
-				final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-				winParams.flags |= bits;
-				win.setAttributes(winParams);
-			}
-			tintManager = new SystemBarTintManager(j2WView.activity());
-			tintManager.setStatusBarTintEnabled(true);
-			tintManager.setStatusBarTintResource(tintColor);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-				Window win = j2WView.activity().getWindow();
-				win.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
-			}
-		}
-	}
-
-	SystemBarTintManager getTintManager() {
-		return tintManager;
 	}
 
 	/**
@@ -885,9 +853,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			j2WView.detach();
 			j2WView = null;
 		}
-		if (tintManager != null) {
-			tintManager = null;
-		}
 		// 基础清除
 		detachLayout();
 		// actionbar清除
@@ -980,7 +945,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		layoutLoading = null;
 		dragEdge = null;
 		listener = null;
-		tintManager = null;
 	}
 
 	/**
