@@ -1,7 +1,6 @@
 package j2w.team.display;
 
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -11,16 +10,12 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import j2w.team.J2WHelper;
-import j2w.team.modules.log.L;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.structure.R;
 import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WFragment;
-import j2w.team.view.J2WView;
 
 /**
  * @创建人 sky
@@ -34,7 +29,12 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public J2WActivity activity() {
-		return J2WHelper.screenHelper().getCurrentIsRunningActivity();
+		J2WActivity j2WActivity = J2WHelper.screenHelper().getCurrentIsRunningActivity();
+		if(j2WActivity != null){
+			return j2WActivity;
+		}else{
+			return J2WHelper.screenHelper().getCurrentActivity();
+		}
 	}
 
 	@Override public void intentFromFragment(Class clazz, Fragment fragment, int requestCode) {
