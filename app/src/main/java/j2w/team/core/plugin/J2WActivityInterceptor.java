@@ -3,6 +3,7 @@ package j2w.team.core.plugin;
 import android.os.Bundle;
 
 import j2w.team.view.J2WActivity;
+import j2w.team.view.J2WBuilder;
 
 /**
  * @创建人 sky
@@ -10,6 +11,8 @@ import j2w.team.view.J2WActivity;
  * @类描述 activity拦截器
  */
 public interface J2WActivityInterceptor {
+
+	void build(J2WBuilder initialJ2WBuilder);
 
 	void onCreate(J2WActivity j2WIView, Bundle bundle,Bundle savedInstanceState);
 
@@ -26,6 +29,11 @@ public interface J2WActivityInterceptor {
 	void onRestart(J2WActivity j2WIView);
 
 	J2WActivityInterceptor NONE = new J2WActivityInterceptor() {
+		@Override
+		public void build(J2WBuilder initialJ2WBuilder) {
+
+		}
+
 		@Override
 		public void onCreate(J2WActivity j2WIView, Bundle bundle, Bundle savedInstanceState) {
 
