@@ -188,6 +188,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
+		detach();
 		/** 关闭event **/
 		if (J2WHelper.eventBus().isRegistered(this)) {
 			J2WHelper.eventBus().unregister(this);
@@ -206,6 +207,11 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			getDialog().setDismissMessage(null);
 		}
 	}
+
+	/**
+	 * 清空
+	 */
+	protected void detach() {}
 
 	/**
 	 * 设置输入法

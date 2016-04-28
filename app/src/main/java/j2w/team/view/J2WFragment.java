@@ -129,6 +129,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	@Override public void onDestroyView() {
 		super.onDestroyView();
+		detach();
 		if (J2WHelper.eventBus().isRegistered(this)) {
 			J2WHelper.eventBus().unregister(this);
 		}
@@ -141,6 +142,10 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(getActivity());
 	}
+	/**
+	 * 清空
+	 */
+	protected void detach() {}
 
 	@Override public void onDestroy() {
 		super.onDestroy();
