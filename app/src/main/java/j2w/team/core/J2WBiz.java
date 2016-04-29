@@ -16,30 +16,18 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	private J2WStructureModel	j2WStructureModel;
 
 	protected <H> H http(Class<H> hClass) {
-		if(j2WStructureModel == null){
-			throw new J2WNotUIPointerException("视图被销毁");
-		}
 		return j2WStructureModel.http(hClass);
 	}
 
 	protected <I> I impl(Class<I> inter) {
-		if(j2WStructureModel == null){
-			throw new J2WNotUIPointerException("视图被销毁");
-		}
 		return j2WStructureModel.impl(inter);
 	}
 
 	protected <D extends J2WIDisplay> D display(Class<D> eClass) {
-		if(j2WStructureModel == null){
-			throw new J2WNotUIPointerException("视图被销毁");
-		}
 		return j2WStructureModel.display(eClass);
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if(j2WStructureModel == null){
-			throw new J2WNotUIPointerException("视图被销毁");
-		}
 		if (j2WStructureModel.getService().equals(service)) {
 			return (C) j2WStructureModel.getJ2WProxy().proxy;
 		} else {
