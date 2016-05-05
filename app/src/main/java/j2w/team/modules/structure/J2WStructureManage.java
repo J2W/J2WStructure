@@ -201,7 +201,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 		int count = stack.size();
 		for (int i = 0; i < count; i++) {
 			J2WStructureModel j2WStructureModel = stack.valueAt(i);
-			if (j2WStructureModel == null ||j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+			if (j2WStructureModel == null || j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
 				list.add(createNullService(service));
 			} else {
 				list.add(j2WStructureModel.getJ2WProxy().proxy);
@@ -285,6 +285,10 @@ public class J2WStructureManage implements J2WStructureIManage {
 					stringBuilder.append("]");
 					L.tag(service.getSimpleName());
 					L.i(stringBuilder.toString());
+				}
+				if (method.getReturnType().equals(int.class) || method.getReturnType().equals(long.class) || method.getReturnType().equals(float.class)
+						|| method.getReturnType().equals(double.class)) {
+					return 0;
 				}
 				return null;
 			}
