@@ -37,6 +37,7 @@ public interface J2WStructureIManage {
 
 	<T> T createMainLooper(final Class<T> service, Object ui);
 
+	<U> U createNullService(final Class<U> service);
 	/**
 	 * 拦截back 交给 fragment onKeyBack
 	 *

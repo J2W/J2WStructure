@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -223,20 +224,29 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	public <D extends J2WIDisplay> D display(Class<D> eClass) {
+		if (j2WStructureModel == null || j2WStructureModel.getView() == null) {
+			return J2WHelper.display(eClass);
+		}
 		return j2WStructureModel.display(eClass);
 	}
 
 	public B biz() {
+		if (j2WStructureModel == null || j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+			Class service = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+			return (B) J2WHelper.structureHelper().createNullService(service);
+		}
 		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if (j2WStructureModel.getService().equals(service)) {
+		if (j2WStructureModel != null && service.equals(j2WStructureModel.getService())) {
+			if (j2WStructureModel == null || j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+				return J2WHelper.structureHelper().createNullService(service);
+			}
 			return (C) j2WStructureModel.getJ2WProxy().proxy;
 		}
-		return J2WHelper.structureHelper().biz(service);
+		return J2WHelper.biz(service);
 	}
-
 	/**
 	 * 创建menu
 	 *

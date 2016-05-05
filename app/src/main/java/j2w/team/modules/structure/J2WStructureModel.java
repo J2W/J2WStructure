@@ -15,7 +15,6 @@ import j2w.team.core.Impl;
 import j2w.team.core.J2WBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.methodProxy.J2WProxy;
-import j2w.team.view.J2WActivity;
 
 /**
  * @创建人 sky
@@ -81,6 +80,10 @@ public class J2WStructureModel {
 	 * @return
 	 */
 	public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
+		if(stackDisplay == null){
+			return J2WHelper.display(displayClazz);
+		}
+
 		D display = (D) stackDisplay.get(displayClazz);
 		if (display == null) {
 			synchronized (stackDisplay) {
@@ -92,7 +95,6 @@ public class J2WStructureModel {
 				}
 			}
 		}
-
 		return display;
 	}
 
@@ -114,6 +116,9 @@ public class J2WStructureModel {
 					stackHttp.put(httpClazz, http);
 				}
 			}
+		}
+		if (http == null) {
+			http = J2WHelper.structureHelper().createNullService(httpClazz);
 		}
 		return http;
 	}

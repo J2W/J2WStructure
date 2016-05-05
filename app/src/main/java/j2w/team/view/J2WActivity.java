@@ -20,6 +20,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
 import j2w.team.J2WHelper;
+import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WViewPager;
@@ -78,8 +79,8 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		/** 初始化视图 **/
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		j2WBuilder = new J2WBuilder(this, inflater);
-        /** 拦截Builder**/
-        J2WHelper.methodsProxy().activityInterceptor().build(j2WBuilder);
+		/** 拦截Builder **/
+		J2WHelper.methodsProxy().activityInterceptor().build(j2WBuilder);
 		setContentView(build(j2WBuilder).create());
 		/** 状态栏高度 **/
 		ViewGroup contentFrameLayout = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
@@ -209,18 +210,28 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	}
 
 	public <D extends J2WIDisplay> D display(Class<D> eClass) {
+		if (j2WStructureModel == null || j2WStructureModel.getView() == null) {
+			return J2WHelper.display(eClass);
+		}
 		return j2WStructureModel.display(eClass);
 	}
 
 	public B biz() {
+		if (j2WStructureModel == null || j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+			Class service = J2WAppUtil.getSuperClassGenricType(getClass(), 0);
+			return (B) J2WHelper.structureHelper().createNullService(service);
+		}
 		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if (j2WStructureModel.getService().equals(service)) {
+		if (j2WStructureModel != null && service.equals(j2WStructureModel.getService())) {
+			if (j2WStructureModel == null || j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+				return J2WHelper.structureHelper().createNullService(service);
+			}
 			return (C) j2WStructureModel.getJ2WProxy().proxy;
 		}
-		return J2WHelper.structureHelper().biz(service);
+		return J2WHelper.biz(service);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event) {

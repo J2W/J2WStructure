@@ -163,11 +163,14 @@ public class J2WStructureManage implements J2WStructureIManage {
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
 		if (stack == null) {
-			return null;
+			return createNullService(biz);
 		}
 		J2WStructureModel j2WStructureModel = stack.valueAt(0);
 		if (j2WStructureModel == null) {
-			return null;
+			return createNullService(biz);
+		}
+		if (j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+			return createNullService(biz);
 		}
 		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
@@ -191,14 +194,18 @@ public class J2WStructureManage implements J2WStructureIManage {
 
 	@Override public <B extends J2WIBiz> List<B> bizList(Class<B> service) {
 		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(service);
-		if (stack == null) {
-			return null;
-		}
 		List list = new ArrayList();
+		if (stack == null) {
+			return list;
+		}
 		int count = stack.size();
 		for (int i = 0; i < count; i++) {
 			J2WStructureModel j2WStructureModel = stack.valueAt(i);
-			list.add(j2WStructureModel.getJ2WProxy().proxy);
+			if (j2WStructureModel == null ||j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+				list.add(createNullService(service));
+			} else {
+				list.add(j2WStructureModel.getJ2WProxy().proxy);
+			}
 		}
 		return list;
 	}
@@ -216,7 +223,6 @@ public class J2WStructureManage implements J2WStructureIManage {
 			}
 		}
 		return http;
-
 	}
 
 	@Override public <P> P impl(Class<P> implClazz) {
@@ -261,6 +267,25 @@ public class J2WStructureManage implements J2WStructureIManage {
 					}
 				};
 				J2WHelper.mainLooper().execute(runnable);
+				return null;
+			}
+		});
+	}
+
+	public <U> U createNullService(final Class<U> service) {
+		J2WCheckUtils.validateServiceInterface(service);
+		return (U) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
+
+			@Override public Object invoke(Object proxy, Method method, Object... args) {
+				if (J2WHelper.getInstance().isLogOpen()) {
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.append("UI被销毁,回调接口继续执行");
+					stringBuilder.append("方法[");
+					stringBuilder.append(method.getName());
+					stringBuilder.append("]");
+					L.tag(service.getSimpleName());
+					L.i(stringBuilder.toString());
+				}
 				return null;
 			}
 		});
