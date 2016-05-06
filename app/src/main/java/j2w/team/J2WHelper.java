@@ -27,7 +27,7 @@ import j2w.team.modules.toast.J2WToast;
  */
 public class J2WHelper {
 
-	protected volatile static J2WModulesManage	mJ2WModulesManage	= null;
+	protected volatile static J2WModulesManage mJ2WModulesManage = null;
 
 	/**
 	 * 单例模式-初始化J2WHelper
@@ -72,6 +72,17 @@ public class J2WHelper {
 	}
 
 	/**
+	 * 业务是否存在
+	 * 
+	 * @param service
+	 * @param <B>
+	 * @return true 存在 false 不存在
+	 */
+	public static final <B extends J2WIBiz> boolean isExist(Class<B> service) {
+		return structureHelper().isExist(service);
+	}
+
+	/**
 	 * 获取业务
 	 * 
 	 * @param service
@@ -109,7 +120,8 @@ public class J2WHelper {
 	 * 获取实现类
 	 * 
 	 * @param implClazz
-	 * @param <P>
+	 * @param
+	 * 			<P>
 	 * @return
 	 */
 	public static final <P> P impl(Class<P> implClazz) {

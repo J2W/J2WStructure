@@ -175,6 +175,21 @@ public class J2WStructureManage implements J2WStructureIManage {
 		return (B) j2WStructureModel.getJ2WProxy().proxy;
 	}
 
+	@Override public <B extends J2WIBiz> boolean isExist(Class<B> biz) {
+		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
+		if (stack == null) {
+			return false;
+		}
+		J2WStructureModel j2WStructureModel = stack.valueAt(0);
+		if (j2WStructureModel == null) {
+			return false;
+		}
+		if (j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override public <B extends J2WICommonBiz> B common(Class<B> service) {
 		B b = (B) stackCommonBiz.get(service);
 		if (b == null) {

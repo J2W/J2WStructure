@@ -13,6 +13,7 @@ import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.core.Impl;
 import j2w.team.core.J2WBiz;
+import j2w.team.core.J2WIBiz;
 import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.methodProxy.J2WProxy;
 

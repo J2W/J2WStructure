@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import j2w.team.J2WHelper;
 import j2w.team.modules.contact.bean.ContactUser;
 import j2w.team.modules.log.L;
 import j2w.team.modules.contact.bean.ContactAddress;
@@ -42,7 +43,7 @@ import j2w.team.modules.contact.bean.ContactWebsite;
  */
 public class ContactManage implements J2WIContact, J2WIWriteContact {
 
-	private final Context	context;
+	private final Context context;
 
 	public ContactManage(Context context) {
 		this.context = context;
@@ -543,8 +544,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contactModel;
 	}
 
-	@Override public void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException,
-			OperationApplicationException {
+	@Override public void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails)
+			throws RemoteException, OperationApplicationException {
 		ContentResolver resolver = context.getContentResolver();
 		Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
 
@@ -609,8 +610,13 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				operations.add(operation6);
 			}
 		}
-
-		resolver.applyBatch("com.android.contacts", operations);
+		try {
+			resolver.applyBatch("com.android.contacts", operations);
+		} catch (Exception e) {
+			if (J2WHelper.getInstance().isLogOpen()) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override public void updateSystemContact(String id, String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails)
@@ -725,15 +731,21 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			}
 		}
 		if (operations.size() > 0) {
+			try {
 
-			ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-			for (ContentProviderResult s : rsDelete) {
-				L.i(s.toString());
-			}
-			ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+				ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+				for (ContentProviderResult s : rsDelete) {
+					L.i(s.toString());
+				}
+				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
 
-			for (ContentProviderResult s : rs) {
-				L.i(s.toString());
+				for (ContentProviderResult s : rs) {
+					L.i(s.toString());
+				}
+			} catch (Exception e) {
+				if (J2WHelper.getInstance().isLogOpen()) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -1005,15 +1017,20 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				}
 			}
 			if (operations.size() > 0) {
+				try {
+					ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+					for (ContentProviderResult s : rsDelete) {
+						L.i(s.toString());
+					}
+					ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
 
-				ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-				for (ContentProviderResult s : rsDelete) {
-					L.i(s.toString());
-				}
-				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-
-				for (ContentProviderResult s : rs) {
-					L.i(s.toString());
+					for (ContentProviderResult s : rs) {
+						L.i(s.toString());
+					}
+				} catch (Exception e) {
+					if (J2WHelper.getInstance().isLogOpen()) {
+						e.printStackTrace();
+					}
 				}
 			}
 

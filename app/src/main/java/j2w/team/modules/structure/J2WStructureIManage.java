@@ -27,6 +27,8 @@ public interface J2WStructureIManage {
 
 	<B extends J2WIBiz> B biz(Class<B> bizClazz);
 
+	<B extends J2WIBiz> boolean isExist(Class<B> bizClazz);
+
 	<B extends J2WICommonBiz> B common(Class<B> service);
 
 	<B extends J2WIBiz> List<B> bizList(Class<B> service);
