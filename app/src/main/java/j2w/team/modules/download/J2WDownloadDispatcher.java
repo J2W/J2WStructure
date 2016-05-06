@@ -392,8 +392,6 @@ public class J2WDownloadDispatcher extends Thread {
 
 			transferData(j2WDownloadRequest, bis, bos);
 
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 
 			try {

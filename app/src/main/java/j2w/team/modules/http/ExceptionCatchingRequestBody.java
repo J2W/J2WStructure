@@ -25,11 +25,11 @@ class ExceptionCatchingRequestBody extends ResponseBody {
 		return delegate.contentType();
 	}
 
-	@Override public long contentLength() throws IOException {
+	@Override public long contentLength() {
 		return delegate.contentLength();
 	}
 
-	@Override public BufferedSource source() throws IOException {
+	@Override public BufferedSource source() {
 		return Okio.buffer(new ForwardingSource(delegate.source()) {
 
 			@Override public long read(Buffer sink, long byteCount) throws IOException {

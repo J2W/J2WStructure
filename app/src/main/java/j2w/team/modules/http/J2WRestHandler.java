@@ -51,7 +51,7 @@ public class J2WRestHandler implements InvocationHandler {
 				return null;
 			case URL:
 				J2WUrl j2WUrl = new J2WUrl();
-				j2WUrl.url = request.httpUrl().toString();
+				j2WUrl.url = request.urlString();
 				return j2WUrl;
 			default:
 				throw new IllegalStateException("未知的反应类型: " + methodInfo.executionType);
