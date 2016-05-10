@@ -12,6 +12,8 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 
 	private U					u;
 
+	private Class				ui;
+
 	private J2WStructureModel	j2WStructureModel;
 
 	protected <H> H http(Class<H> hClass) {
@@ -60,6 +62,21 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	}
 
 	/**
+	 * View层 回调
+	 * 
+	 * @param clazz
+	 * @param <V>
+	 * @return
+	 */
+	protected <V> V ui(Class<V> clazz) {
+		if (clazz.equals(ui)) {
+			return (V) ui();
+		} else {
+			return J2WHelper.structureHelper().createNullService(clazz);
+		}
+	}
+
+	/**
 	 * View层 是否存在
 	 * 
 	 * @return
@@ -70,12 +87,13 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 
 	@Override public void initUI(J2WStructureModel j2WStructureModel) {
 		this.j2WStructureModel = j2WStructureModel;
-		Class ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
+		ui = J2WAppUtil.getSuperClassGenricType(this.getClass(), 0);
 		u = (U) J2WHelper.structureHelper().createMainLooper(ui, j2WStructureModel.getView());
 	}
 
 	@Override public void detach() {
 		u = null;
+		ui = null;
 		j2WStructureModel = null;
 	}
 }
