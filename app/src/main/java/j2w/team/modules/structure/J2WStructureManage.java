@@ -301,8 +301,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 					L.tag(service.getSimpleName());
 					L.i(stringBuilder.toString());
 				}
-				if (method.getReturnType().equals(int.class) || method.getReturnType().equals(long.class) || method.getReturnType().equals(float.class)
-						|| method.getReturnType().equals(double.class)) {
+				if (method.getReturnType().equals(int.class) || method.getReturnType().equals(long.class) || method.getReturnType().equals(float.class) || method.getReturnType().equals(double.class)) {
 					return 0;
 				}
 				return null;

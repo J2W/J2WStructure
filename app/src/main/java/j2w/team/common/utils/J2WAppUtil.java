@@ -74,6 +74,30 @@ public final class J2WAppUtil {
 	}
 
 	/**
+	 * 获取泛型类型
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public static Class getClassGenricType(final Class clazz,final int index) {
+		Type type = clazz.getGenericSuperclass();
+
+		if(!(type instanceof ParameterizedType)){
+			return null;
+		}
+		//强制类型转换
+		ParameterizedType pType = (ParameterizedType)type;
+
+		Type[] tArgs = pType.getActualTypeArguments();
+
+		if(tArgs.length < 1){
+			return null;
+		}
+
+		return (Class) tArgs[index];
+	}
+
+	/**
 	 * 通过反射, 获得定义Class时声明的父类的泛型参数的类型. 如无法找到, 返回Object.class. 1.因为获取泛型类型-所以增加逻辑判定
 	 */
 	public static Class<Object> getSuperClassGenricType(final Class clazz, final int index) {
@@ -358,12 +382,12 @@ public final class J2WAppUtil {
 	 * @param context
 	 * @param clazz
 	 */
-	public static void awaken(Context context, Class clazz,Bundle bundle) {
+	public static void awaken(Context context, Class clazz, Bundle bundle) {
 		Intent mainIntent = new Intent(context, clazz);
 		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		mainIntent.setAction(Intent.ACTION_MAIN);
 		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-		if(bundle != null){
+		if (bundle != null) {
 			mainIntent.putExtras(bundle);
 		}
 		context.startActivity(mainIntent);

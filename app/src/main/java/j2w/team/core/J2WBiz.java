@@ -38,7 +38,12 @@ public abstract class J2WBiz<U> implements J2WIBiz {
 	}
 
 	public <C extends J2WIBiz> C biz(Class<C> service) {
-		if (j2WStructureModel != null && service.equals(j2WStructureModel.getService())) {
+		if (j2WStructureModel != null && j2WStructureModel.isSupterClass(service)) {
+			if (j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
+				return J2WHelper.structureHelper().createNullService(service);
+			}
+			return (C) j2WStructureModel.getJ2WProxy().proxy;
+		} else if (j2WStructureModel != null && service.equals(j2WStructureModel.getService())) {
 			if (j2WStructureModel.getJ2WProxy() == null || j2WStructureModel.getJ2WProxy().proxy == null) {
 				return J2WHelper.structureHelper().createNullService(service);
 			}
