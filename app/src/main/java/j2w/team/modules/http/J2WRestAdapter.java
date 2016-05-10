@@ -86,16 +86,17 @@ public class J2WRestAdapter {
 		// 创建动态代理-网络层
 		J2WRestHandler j2WRestHandler = new J2WRestHandler(this, getMethodInfoCache(service), service.getSimpleName());
 		// 创建代理类并返回
-		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[]{service},j2WRestHandler);
+		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, j2WRestHandler);
 
 	}
+
 	/**
 	 * 验证类 - 判断是否是一个接口
 	 *
 	 * @param service
 	 * @param <T>
 	 */
-	private  <T> void validateServiceClass(Class<T> service) {
+	private <T> void validateServiceClass(Class<T> service) {
 		if (service == null || !service.isInterface()) {
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append(service);
@@ -110,12 +111,13 @@ public class J2WRestAdapter {
 	 * @param service
 	 * @param <T>
 	 */
-	private  <T> void validateInterfaceServiceClass(Class<T> service) {
+	private <T> void validateInterfaceServiceClass(Class<T> service) {
 		if (service.getInterfaces().length > 0) {
 			throw new IllegalArgumentException("接口不能继承其它接口");
 		}
 
 	}
+
 	/**
 	 * 取消请求
 	 *
@@ -123,6 +125,37 @@ public class J2WRestAdapter {
 	 */
 	public void cancel(String requestCode) {
 		client.cancel(requestCode);
+	}
+
+	/**
+	 * 设置超时
+	 * 
+	 * @param timeOut
+	 */
+	public void setTimeOut(int timeOut) {
+		client.setConnectTimeout(timeOut, TimeUnit.SECONDS);// 连接超时
+		client.setReadTimeout(timeOut, TimeUnit.SECONDS);// 读取超时
+		client.setWriteTimeout(timeOut, TimeUnit.SECONDS);// 写入超时
+
+		client.getConnectTimeout();
+	}
+
+	/**
+	 * 获取网络服务
+	 * 
+	 * @return
+	 */
+	public OkHttpClient client() {
+		return client;
+	}
+
+	/**
+	 * 超时
+	 * 
+	 * @return
+	 */
+	public int connectTimeOut() {
+		return client.getConnectTimeout();
 	}
 
 	/**
