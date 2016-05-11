@@ -1,5 +1,6 @@
 package j2w.team.modules.contact;
 
+import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentResolver;
@@ -267,7 +268,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append(name);
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?   COLLATE NOCASE", new String[] { stringBuilder.toString() }, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?   COLLATE NOCASE", new String[]{stringBuilder.toString()}, null);
 		ContactUser contactUser;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -751,7 +752,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 	}
 
 	@Override public void wirteAndUpdateSystemContact(ContactDetailModel contactDetailModel) throws RemoteException, OperationApplicationException {
-
 		if (contactDetailModel == null) {
 			return;
 		}
@@ -762,8 +762,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			// 第一个参数：内容提供者的主机名
 			// 第二个参数：要执行的操作
 			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-			// 操作1.添加Google账号，这里值为null，表示不添加
-			ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue("account_name", null)// account_name:Google账号
+//			// 操作1.添加Google账号，这里值为null，表示不添加
+			ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue("account_name",null)// account_name:Google账号
 					.build();
 			operations.add(operation);
 
@@ -790,7 +790,6 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			}
 
 			if (!TextUtils.isEmpty(contactDetailModel.networkPhone)) {
-
 				ContentProviderOperation item = ContentProviderOperation.newInsert(uri).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
 						.withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/sip_address").withValue(ContactsContract.Data.DATA1, contactDetailModel.networkPhone).build();
 				operations.add(item);
@@ -855,7 +854,19 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 					operations.add(contentProviderOperation);
 				}
 			}
-			resolver.applyBatch("com.android.contacts", operations);
+
+			try {
+				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+				if(J2WHelper.getInstance().isLogOpen()){
+					for(ContentProviderResult item : rs){
+						L.i(item.toString());
+					}
+				}
+			} catch (Exception e) {
+				if (J2WHelper.getInstance().isLogOpen()) {
+					e.printStackTrace();
+				}
+			}
 		} else {// 更新
 			String id = contactDetailModel.contactId;
 			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
@@ -1019,13 +1030,17 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			if (operations.size() > 0) {
 				try {
 					ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-					for (ContentProviderResult s : rsDelete) {
-						L.i(s.toString());
+					if(J2WHelper.getInstance().isLogOpen()) {
+
+						for (ContentProviderResult s : rsDelete) {
+							L.i(s.toString());
+						}
 					}
 					ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-
-					for (ContentProviderResult s : rs) {
-						L.i(s.toString());
+					if(J2WHelper.getInstance().isLogOpen()) {
+						for (ContentProviderResult s : rs) {
+							L.i(s.toString());
+						}
 					}
 				} catch (Exception e) {
 					if (J2WHelper.getInstance().isLogOpen()) {
