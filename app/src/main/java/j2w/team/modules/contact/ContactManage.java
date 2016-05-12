@@ -44,7 +44,7 @@ import j2w.team.modules.contact.bean.ContactWebsite;
  */
 public class ContactManage implements J2WIContact, J2WIWriteContact {
 
-	private final Context context;
+	private final Context	context;
 
 	public ContactManage(Context context) {
 		this.context = context;
@@ -268,7 +268,7 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		stringBuilder.append(name);
 		stringBuilder.append("%");
 		ContentResolver contentResolver = context.getContentResolver();
-		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?   COLLATE NOCASE", new String[]{stringBuilder.toString()}, null);
+		Cursor idCursor = contentResolver.query(Contacts.CONTENT_URI, CONTACTS, Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?   COLLATE NOCASE", new String[] { stringBuilder.toString() }, null);
 		ContactUser contactUser;
 		if (idCursor.moveToFirst()) {
 			do {
@@ -545,8 +545,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 		return contactModel;
 	}
 
-	@Override public void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails)
-			throws RemoteException, OperationApplicationException {
+	@Override public void writeSystemContact(String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails) throws RemoteException,
+			OperationApplicationException {
 		ContentResolver resolver = context.getContentResolver();
 		Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
 
@@ -762,8 +762,9 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			// 第一个参数：内容提供者的主机名
 			// 第二个参数：要执行的操作
 			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
-//			// 操作1.添加Google账号，这里值为null，表示不添加
-			ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue("account_name",null)// account_name:Google账号
+			// // 操作1.添加Google账号，这里值为null，表示不添加
+			ContentProviderOperation operation = ContentProviderOperation.newInsert(uri).withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+					.withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null).withYieldAllowed(true)// account_name:Google账号
 					.build();
 			operations.add(operation);
 
@@ -857,8 +858,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 
 			try {
 				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-				if(J2WHelper.getInstance().isLogOpen()){
-					for(ContentProviderResult item : rs){
+				if (J2WHelper.getInstance().isLogOpen()) {
+					for (ContentProviderResult item : rs) {
 						L.i(item.toString());
 					}
 				}
@@ -1030,14 +1031,14 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			if (operations.size() > 0) {
 				try {
 					ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-					if(J2WHelper.getInstance().isLogOpen()) {
+					if (J2WHelper.getInstance().isLogOpen()) {
 
 						for (ContentProviderResult s : rsDelete) {
 							L.i(s.toString());
 						}
 					}
 					ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-					if(J2WHelper.getInstance().isLogOpen()) {
+					if (J2WHelper.getInstance().isLogOpen()) {
 						for (ContentProviderResult s : rs) {
 							L.i(s.toString());
 						}
