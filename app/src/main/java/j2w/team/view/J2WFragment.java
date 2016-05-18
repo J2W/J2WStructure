@@ -53,7 +53,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	protected abstract void initData(Bundle savedInstanceState);
 
 	/** View层编辑器 **/
-	private J2WBuilder j2WBuilder;
+	private J2WBuilder	j2WBuilder;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -128,8 +128,8 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override public void onDestroyView() {
-		super.onDestroyView();
+	@Override public void onDetach() {
+		super.onDetach();
 		detach();
 		if (J2WHelper.eventBus().isRegistered(this)) {
 			J2WHelper.eventBus().unregister(this);
@@ -143,6 +143,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(getActivity());
 	}
+
 	/**
 	 * 清空
 	 */
