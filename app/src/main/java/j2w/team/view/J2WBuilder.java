@@ -381,6 +381,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isOpenCustomToolbar = true;
 	}
 
+	public void toolbarLayoutId(int toolbarLayoutId) {
+		this.toolbarLayoutId = toolbarLayoutId;
+	}
+
 	public void toolbarDrawerId(int toolbarDrawerId) {
 		this.toolbarDrawerId = toolbarDrawerId;
 	}
