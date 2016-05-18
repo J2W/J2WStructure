@@ -128,6 +128,22 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * 显示隐藏切换
+	 * 
+	 * @param hidden
+	 */
+	@Override public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if (!j2WBuilder.isViewPager()) {
+			if (hidden) { // 隐藏
+				onInvisible();
+			} else {// 显示
+				onVisible();
+			}
+		}
+	}
+
 	@Override public void onDetach() {
 		super.onDetach();
 		detach();

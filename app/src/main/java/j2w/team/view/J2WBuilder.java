@@ -253,7 +253,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	/**
 	 * 键盘
 	 */
-	private boolean autoShouldHideInput = true;
+	private boolean	autoShouldHideInput	= true;
 
 	public void autoKeyBoard(boolean auto) {
 		this.autoShouldHideInput = auto;
@@ -301,7 +301,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	/**
 	 * TintManger
 	 */
-	private int						tintColor;
+	private int	tintColor;
 
 	int getTintColor() {
 		return tintColor;
@@ -611,7 +611,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private RecyclerView.ItemAnimator									itemAnimator;					// 动画
 
-	private RecyclerView.ItemDecoration									itemDecoration;					// 分割线
+	private RecyclerView.ItemDecoration									itemDecoration;				// 分割线
 
 	private SwipeRefreshLayout											recyclerviewSwipeContainer;
 
@@ -762,6 +762,10 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	// 获取
 	int getViewpagerId() {
 		return viewpagerId;
+	}
+
+	boolean isViewPager() {
+		return viewpagerId > 0;
 	}
 
 	int getTabsId() {
