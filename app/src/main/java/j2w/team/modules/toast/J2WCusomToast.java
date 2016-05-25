@@ -60,11 +60,11 @@ public abstract class J2WCusomToast {
 			J2WHelper.mainLooper().execute(new Runnable() {
 
 				@Override public void run() {
-					cusomShow(msg);
+					cusomShow(msg, Toast.LENGTH_SHORT);
 				}
 			});
 		} else {
-			cusomShow(msg);
+			cusomShow(msg, Toast.LENGTH_SHORT);
 		}
 	}
 
@@ -73,18 +73,40 @@ public abstract class J2WCusomToast {
 	 * 
 	 * @param msg
 	 */
-	protected void cusomShow(String msg) {
+	public void show(final String msg, final int duration) {
+		// 判断是否在主线程
+		boolean isMainLooper = Looper.getMainLooper().getThread() != Thread.currentThread();
+
+		if (isMainLooper) {
+			J2WHelper.mainLooper().execute(new Runnable() {
+
+				@Override public void run() {
+					cusomShow(msg, duration);
+				}
+			});
+		} else {
+			cusomShow(msg, duration);
+		}
+	}
+
+	/**
+	 * 显示
+	 *
+	 * @param msg
+	 * @param duration
+	 */
+	protected void cusomShow(String msg, int duration) {
 		if (mToast == null) {
 			mToast = new Toast(J2WHelper.getInstance());
 			LayoutInflater inflate = (LayoutInflater) J2WHelper.getInstance().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = inflate.inflate(layoutId(), null);
 			mToast.setView(v);
 			init(v, msg);
-			mToast.setDuration(Toast.LENGTH_SHORT);
+			mToast.setDuration(duration);
 			mToast.setGravity(getGravity(), 0, 0);
 		} else {
 			init(v, msg);
-			mToast.setDuration(Toast.LENGTH_SHORT);
+			mToast.setDuration(duration);
 			mToast.setGravity(getGravity(), 0, 0);
 		}
 		mToast.show();
