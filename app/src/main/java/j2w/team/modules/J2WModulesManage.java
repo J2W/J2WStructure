@@ -8,6 +8,7 @@ import j2w.team.J2WApplication;
 import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.contact.ContactManage;
 import j2w.team.modules.download.J2WDownloadManager;
+import j2w.team.modules.file.J2WFileCacheManage;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.log.L;
 import j2w.team.modules.methodProxy.J2WMethods;
@@ -50,6 +51,8 @@ public class J2WModulesManage {
 
 	private J2WRestAdapter				mJ2WRestAdapter;		// 网络适配器
 
+	private J2WFileCacheManage			j2WFileCacheManage;	// 文件缓存管理器
+
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = j2WApplication;
 		this.bus = EventBus.getDefault();
@@ -60,7 +63,7 @@ public class J2WModulesManage {
 		this.j2WDownloadManager = new J2WDownloadManager();
 		this.j2WToast = new J2WToast();
 		this.contactManage = new ContactManage(mJ2WApplication);
-
+		this.j2WFileCacheManage = new J2WFileCacheManage();
 	}
 
 	public J2WApplication getJ2WApplication() {
@@ -145,5 +148,9 @@ public class J2WModulesManage {
 			}
 		}
 		return j2WSystemUiHider;
+	}
+
+	public J2WFileCacheManage getJ2WFileCacheManage() {
+		return j2WFileCacheManage;
 	}
 }

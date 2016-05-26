@@ -14,6 +14,7 @@ import j2w.team.display.J2WIDisplay;
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
+import j2w.team.modules.file.J2WFileCacheManage;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.screen.J2WScreenManager;
@@ -27,7 +28,7 @@ import j2w.team.modules.toast.J2WToast;
  */
 public class J2WHelper {
 
-	protected volatile static J2WModulesManage mJ2WModulesManage = null;
+	protected volatile static J2WModulesManage	mJ2WModulesManage	= null;
 
 	/**
 	 * 单例模式-初始化J2WHelper
@@ -120,8 +121,7 @@ public class J2WHelper {
 	 * 获取实现类
 	 * 
 	 * @param implClazz
-	 * @param
-	 * 			<P>
+	 * @param <P>
 	 * @return
 	 */
 	public static final <P> P impl(Class<P> implClazz) {
@@ -274,5 +274,14 @@ public class J2WHelper {
 	 */
 	public static final boolean isMainLooperThread() {
 		return Looper.getMainLooper().getThread() != Thread.currentThread();
+	}
+
+	/**
+	 * 文件缓存管理器
+	 * 
+	 * @return
+	 */
+	public static final J2WFileCacheManage fileCacheManage() {
+		return mJ2WModulesManage.getJ2WFileCacheManage();
 	}
 }

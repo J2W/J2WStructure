@@ -24,7 +24,7 @@ android {
 
 }
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     //外部依赖
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -38,7 +38,8 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp-integration:1.4.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-io:1.3.2'
 }
-//打包
 apply from: 'maven-release-aar.gradle'//打包
 
