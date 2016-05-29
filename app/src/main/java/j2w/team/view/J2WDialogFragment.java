@@ -70,6 +70,15 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	protected abstract J2WBuilder build(J2WBuilder initialJ2WBuilder);
 
 	/**
+	 * 数据
+	 *
+	 * @param savedInstanceState
+	 */
+	protected void createData(Bundle savedInstanceState) {
+
+	}
+
+	/**
 	 * 初始化数据
 	 *
 	 * @param savedInstanceState
@@ -158,7 +167,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 			window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		}
-
+		createData(savedInstanceState);
 		initData(getArguments());
 	}
 

@@ -45,6 +45,15 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	protected abstract J2WBuilder build(J2WBuilder initialJ2WBuilder);
 
 	/**
+	 * 数据
+	 *
+	 * @param savedInstanceState
+	 */
+	protected void createData(Bundle savedInstanceState) {
+
+	}
+
+	/**
 	 * 初始化数据
 	 *
 	 * @param savedInstanceState
@@ -79,6 +88,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		J2WHelper.methodsProxy().fragmentInterceptor().onFragmentCreated(this, getArguments(), savedInstanceState);
+		createData(savedInstanceState);
 		initData(getArguments());
 	}
 

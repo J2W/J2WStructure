@@ -48,6 +48,15 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 	protected abstract J2WBuilder build(J2WBuilder initialJ2WBuilder);
 
 	/**
+	 * 数据
+	 * 
+	 * @param savedInstanceState
+	 */
+	protected void createData(Bundle savedInstanceState) {
+
+	}
+
+	/**
 	 * 初始化数据
 	 *
 	 * @param savedInstanceState
@@ -97,6 +106,8 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		tintManager.setStatusBarTintResource(j2WBuilder.getTintColor());
 		/** 初始化所有组建 **/
 		ButterKnife.bind(this);
+		/** 初始化数据 **/
+		createData(savedInstanceState);
 		/** 初始化数据 **/
 		initData(getIntent().getExtras());
 	}
