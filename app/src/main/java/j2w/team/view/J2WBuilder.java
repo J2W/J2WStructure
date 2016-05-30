@@ -884,8 +884,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 			contentRoot.setBackgroundColor(contentRootColor);
 		}
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+
+
+		// 内容
+		if (getLayoutId() > 0) {
+			layoutContent = mInflater.inflate(getLayoutId(), null, false);
+			J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
+			contentRoot.addView(layoutContent, layoutParams);
+		}
+
 		// 如果swiplayout打开
 		if (isOpenSwipBackLayout()) {
+			contentRoot.removeView(layoutContent);
+
 			J2WSwipeBackLayout j2WSwipeBackLayout = new J2WSwipeBackLayout(j2WView.activity());
 			j2WSwipeBackLayout.setId(R.id.j2w_swipe_layout);
 			if (getDragEdge() != null) {
@@ -895,14 +906,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 				j2WSwipeBackLayout.setOnSwipeBackListener(getListener());
 			}
 			j2WSwipeBackLayout.addView(layoutContent, layoutParams);
+			contentRoot.addView(j2WSwipeBackLayout,layoutParams);
 			layoutContent = j2WSwipeBackLayout;
-		}
-
-		// 内容
-		if (getLayoutId() > 0) {
-			layoutContent = mInflater.inflate(getLayoutId(), null, false);
-			J2WCheckUtils.checkNotNull(layoutContent, "无法根据布局文件ID,获取layoutContent");
-			contentRoot.addView(layoutContent, layoutParams);
 		}
 
 		// 进度条
