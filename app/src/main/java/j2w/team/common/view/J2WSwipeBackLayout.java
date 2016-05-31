@@ -13,12 +13,15 @@ import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 2015.8.18 创建
  */
-public class J2WSwipeBackLayout  extends ViewGroup {
+public class J2WSwipeBackLayout extends ViewGroup {
 
-	private static final String TAG = "SwipeBackLayout";
+	private static final String	TAG	= "SwipeBackLayout";
 
 	public enum DragEdge {
 		LEFT,
@@ -30,40 +33,39 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		BOTTOM
 	}
 
-	private DragEdge dragEdge = DragEdge.TOP;
+	private DragEdge	dragEdge	= DragEdge.TOP;
 
 	public void setDragEdge(DragEdge dragEdge) {
 		this.dragEdge = dragEdge;
 	}
 
+	private static final double		AUTO_FINISHED_SPEED_LIMIT	= 2000.0;
 
-	private static final double AUTO_FINISHED_SPEED_LIMIT = 2000.0;
+	private final ViewDragHelper	viewDragHelper;
 
-	private final ViewDragHelper viewDragHelper;
+	private View					target;
 
-	private View target;
+	private View					scrollChild;
 
-	private View scrollChild;
+	private int						verticalDragRange			= 0;
 
-	private int verticalDragRange = 0;
+	private int						horizontalDragRange			= 0;
 
-	private int horizontalDragRange = 0;
+	private int						draggingState				= 0;
 
-	private int draggingState = 0;
-
-	private int draggingOffset;
+	private int						draggingOffset;
 
 	/**
 	 * Whether allow to pull this layout.
 	 */
-	private boolean enablePullToBack = true;
+	private boolean					enablePullToBack			= true;
 
-	private static final float BACK_FACTOR = 0.5f;
+	private static final float		BACK_FACTOR					= 0.5f;
 
 	/**
 	 * the anchor of calling finish.
 	 */
-	private float finishAnchor = 0;
+	private float					finishAnchor				= 0;
 
 	/**
 	 * Set the anchor of calling finish.
@@ -74,7 +76,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		finishAnchor = offset;
 	}
 
-	private boolean enableFlingBack = true;
+	private boolean	enableFlingBack	= true;
 
 	/**
 	 * Whether allow to finish activity by fling the layout.
@@ -85,15 +87,10 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		enableFlingBack = b;
 	}
 
-	private SwipeBackListener swipeBackListener;
+	private List<SwipeBackListener>	swipeBackListener	= new ArrayList<>();
 
-	@Deprecated
-	public void setOnPullToBackListener(SwipeBackListener listener) {
-		swipeBackListener = listener;
-	}
-
-	public void setOnSwipeBackListener(SwipeBackListener listener) {
-		swipeBackListener = listener;
+	public void addOnSwipeBackListener(SwipeBackListener listener) {
+		swipeBackListener.add(listener);
 	}
 
 	public J2WSwipeBackLayout(Context context) {
@@ -152,8 +149,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		}
 	}
 
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+	@Override protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		int width = getMeasuredWidth();
 		int height = getMeasuredHeight();
 		if (getChildCount() == 0) return;
@@ -169,8 +165,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		child.layout(childLeft, childTop, childRight, childBottom);
 	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	@Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		if (getChildCount() > 1) {
 			throw new IllegalStateException("SwipeBackLayout must contains only one direct child.");
@@ -183,8 +178,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		}
 	}
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	@Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		verticalDragRange = h;
 		horizontalDragRange = w;
@@ -214,8 +208,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		}
 	}
 
-	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
+	@Override public boolean onInterceptTouchEvent(MotionEvent ev) {
 		boolean handled = false;
 		ensureTarget();
 		if (isEnabled()) {
@@ -226,14 +219,12 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		return !handled ? super.onInterceptTouchEvent(ev) : handled;
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	@Override public boolean onTouchEvent(MotionEvent event) {
 		viewDragHelper.processTouchEvent(event);
 		return true;
 	}
 
-	@Override
-	public void computeScroll() {
+	@Override public void computeScroll() {
 		if (viewDragHelper.continueSettling(true)) {
 			ViewCompat.postInvalidateOnAnimation(this);
 		}
@@ -263,23 +254,19 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 
 	private class ViewDragHelperCallBack extends ViewDragHelper.Callback {
 
-		@Override
-		public boolean tryCaptureView(View child, int pointerId) {
+		@Override public boolean tryCaptureView(View child, int pointerId) {
 			return child == target && enablePullToBack;
 		}
 
-		@Override
-		public int getViewVerticalDragRange(View child) {
+		@Override public int getViewVerticalDragRange(View child) {
 			return verticalDragRange;
 		}
 
-		@Override
-		public int getViewHorizontalDragRange(View child) {
+		@Override public int getViewHorizontalDragRange(View child) {
 			return horizontalDragRange;
 		}
 
-		@Override
-		public int clampViewPositionVertical(View child, int top, int dy) {
+		@Override public int clampViewPositionVertical(View child, int top, int dy) {
 
 			int result = 0;
 
@@ -296,8 +283,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 			return result;
 		}
 
-		@Override
-		public int clampViewPositionHorizontal(View child, int left, int dx) {
+		@Override public int clampViewPositionHorizontal(View child, int left, int dx) {
 
 			int result = 0;
 
@@ -314,12 +300,10 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 			return result;
 		}
 
-		@Override
-		public void onViewDragStateChanged(int state) {
+		@Override public void onViewDragStateChanged(int state) {
 			if (state == draggingState) return;
 
-			if ((draggingState == ViewDragHelper.STATE_DRAGGING || draggingState == ViewDragHelper.STATE_SETTLING) &&
-					state == ViewDragHelper.STATE_IDLE) {
+			if ((draggingState == ViewDragHelper.STATE_DRAGGING || draggingState == ViewDragHelper.STATE_SETTLING) && state == ViewDragHelper.STATE_IDLE) {
 				// the view stopped from moving.
 				if (draggingOffset == getDragRange()) {
 					finish();
@@ -329,9 +313,7 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 			draggingState = state;
 		}
 
-
-		@Override
-		public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+		@Override public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
 			switch (dragEdge) {
 				case TOP:
 				case BOTTOM:
@@ -345,20 +327,21 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 					break;
 			}
 
-			//The proportion of the sliding.
+			// The proportion of the sliding.
 			float fractionAnchor = (float) draggingOffset / finishAnchor;
 			if (fractionAnchor >= 1) fractionAnchor = 1;
 
 			float fractionScreen = (float) draggingOffset / (float) getDragRange();
 			if (fractionScreen >= 1) fractionScreen = 1;
 
-			if (swipeBackListener != null) {
-				swipeBackListener.onViewPositionChanged(fractionAnchor, fractionScreen);
+			if (swipeBackListener != null && swipeBackListener.size() > 0) {
+				for (SwipeBackListener item : swipeBackListener) {
+					item.onViewPositionChanged(fractionAnchor, fractionScreen);
+				}
 			}
 		}
 
-		@Override
-		public void onViewReleased(View releasedChild, float xvel, float yvel) {
+		@Override public void onViewReleased(View releasedChild, float xvel, float yvel) {
 			if (draggingOffset == 0) return;
 
 			if (draggingOffset == getDragRange()) return;
@@ -432,8 +415,10 @@ public class J2WSwipeBackLayout  extends ViewGroup {
 		/**
 		 * Return scrolled fraction of the layout.
 		 *
-		 * @param fractionAnchor relative to the anchor.
-		 * @param fractionScreen relative to the screen.
+		 * @param fractionAnchor
+		 *            relative to the anchor.
+		 * @param fractionScreen
+		 *            relative to the screen.
 		 */
 		void onViewPositionChanged(float fractionAnchor, float fractionScreen);
 

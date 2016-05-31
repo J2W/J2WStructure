@@ -3,4 +3,5 @@
     <color name="j2w_click_pressed">#bb7555B0</color>
     <color name="j2w_click_longpressed">#ff6545a0</color>
     <color name="j2w_click_focused">#426545a0</color>
+    <color name="j2w_black_p50">#7f000000</color>
 </resources>

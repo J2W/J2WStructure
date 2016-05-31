@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -268,6 +269,8 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 */
 
 	private boolean									isOpenSwipBackLayout;
+
+	private ImageView								ivShadow;
 
 	private J2WSwipeBackLayout.DragEdge				dragEdge;
 
@@ -885,7 +888,6 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		}
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 
-
 		// 内容
 		if (getLayoutId() > 0) {
 			layoutContent = mInflater.inflate(getLayoutId(), null, false);
@@ -899,14 +901,23 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 			J2WSwipeBackLayout j2WSwipeBackLayout = new J2WSwipeBackLayout(j2WView.activity());
 			j2WSwipeBackLayout.setId(R.id.j2w_swipe_layout);
+			ivShadow = new ImageView(j2WView.activity());
+			ivShadow.setBackgroundColor(j2WView.activity().getResources().getColor(R.color.j2w_black_p50));
+			j2WSwipeBackLayout.addOnSwipeBackListener(new J2WSwipeBackLayout.SwipeBackListener() {
+
+				@Override public void onViewPositionChanged(float fractionAnchor, float fractionScreen) {
+					ivShadow.setAlpha(1 - fractionScreen);
+				}
+			});
 			if (getDragEdge() != null) {
 				j2WSwipeBackLayout.setDragEdge(getDragEdge());
 			}
 			if (getListener() != null) {
-				j2WSwipeBackLayout.setOnSwipeBackListener(getListener());
+				j2WSwipeBackLayout.addOnSwipeBackListener(getListener());
 			}
 			j2WSwipeBackLayout.addView(layoutContent, layoutParams);
-			contentRoot.addView(j2WSwipeBackLayout,layoutParams);
+			contentRoot.addView(ivShadow, layoutParams);
+			contentRoot.addView(j2WSwipeBackLayout, layoutParams);
 			layoutContent = j2WSwipeBackLayout;
 		}
 
@@ -958,6 +969,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		layoutLoading = null;
 		dragEdge = null;
 		listener = null;
+		ivShadow = null;
 	}
 
 	/**
