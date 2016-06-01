@@ -1,6 +1,7 @@
 package j2w.team.core.plugin;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import j2w.team.view.J2WActivity;
 import j2w.team.view.J2WBuilder;
@@ -14,7 +15,7 @@ public interface J2WActivityInterceptor {
 
 	void build(J2WBuilder initialJ2WBuilder);
 
-	void onCreate(J2WActivity j2WIView, Bundle bundle,Bundle savedInstanceState);
+	void onCreate(J2WActivity j2WIView, Bundle bundle, Bundle savedInstanceState);
 
 	void onStart(J2WActivity j2WIView);
 
@@ -28,46 +29,45 @@ public interface J2WActivityInterceptor {
 
 	void onRestart(J2WActivity j2WIView);
 
-	J2WActivityInterceptor NONE = new J2WActivityInterceptor() {
-		@Override
-		public void build(J2WBuilder initialJ2WBuilder) {
+	void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 
-		}
+	J2WActivityInterceptor	NONE	= new J2WActivityInterceptor() {
 
-		@Override
-		public void onCreate(J2WActivity j2WIView, Bundle bundle, Bundle savedInstanceState) {
+										@Override public void build(J2WBuilder initialJ2WBuilder) {
 
-		}
+										}
 
-		@Override
-		public void onStart(J2WActivity j2WIView) {
+										@Override public void onCreate(J2WActivity j2WIView, Bundle bundle, Bundle savedInstanceState) {
 
-		}
+										}
 
-		@Override
-		public void onResume(J2WActivity j2WIView) {
+										@Override public void onStart(J2WActivity j2WIView) {
 
-		}
+										}
 
-		@Override
-		public void onPause(J2WActivity j2WIView) {
+										@Override public void onResume(J2WActivity j2WIView) {
 
-		}
+										}
 
-		@Override
-		public void onStop(J2WActivity j2WIView) {
+										@Override public void onPause(J2WActivity j2WIView) {
 
-		}
+										}
 
-		@Override
-		public void onDestroy(J2WActivity j2WIView) {
+										@Override public void onStop(J2WActivity j2WIView) {
 
-		}
+										}
 
-		@Override
-		public void onRestart(J2WActivity j2WIView) {
+										@Override public void onDestroy(J2WActivity j2WIView) {
 
-		}
-	};
+										}
+
+										@Override public void onRestart(J2WActivity j2WIView) {
+
+										}
+
+										@Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+										}
+									};
 
 }

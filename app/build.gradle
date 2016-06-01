@@ -3,12 +3,12 @@
 apply plugin: 'android-library'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '24.0.0 rc3'
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 205
         versionName "2.0.5"
     }
@@ -26,11 +26,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //外部依赖
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
     //状态栏
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
