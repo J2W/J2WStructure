@@ -79,18 +79,18 @@ public final class J2WAppUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static Class getClassGenricType(final Class clazz,final int index) {
+	public static Class getClassGenricType(final Class clazz, final int index) {
 		Type type = clazz.getGenericSuperclass();
 
-		if(!(type instanceof ParameterizedType)){
+		if (!(type instanceof ParameterizedType)) {
 			return null;
 		}
-		//强制类型转换
-		ParameterizedType pType = (ParameterizedType)type;
+		// 强制类型转换
+		ParameterizedType pType = (ParameterizedType) type;
 
 		Type[] tArgs = pType.getActualTypeArguments();
 
-		if(tArgs.length < 1){
+		if (tArgs.length < 1) {
 			return null;
 		}
 
@@ -212,6 +212,16 @@ public final class J2WAppUtil {
 	public static final DisplayMetrics getWindowsSize(FragmentActivity activity) {
 		DisplayMetrics dm = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+		return dm;
+	}
+
+	/**
+	 * 获取手机宽高
+	 * 
+	 * @return
+	 */
+	public static final DisplayMetrics getWindowsSize() {
+		DisplayMetrics dm = J2WHelper.getInstance().getResources().getDisplayMetrics();
 		return dm;
 	}
 
