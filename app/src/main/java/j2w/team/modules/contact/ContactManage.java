@@ -611,13 +611,8 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				operations.add(operation6);
 			}
 		}
-		try {
-			resolver.applyBatch("com.android.contacts", operations);
-		} catch (Exception e) {
-			if (J2WHelper.getInstance().isLogOpen()) {
-				e.printStackTrace();
-			}
-		}
+		resolver.applyBatch("com.android.contacts", operations);
+
 	}
 
 	@Override public void updateSystemContact(String id, String name, String organization, String note, List<ContactPhone> phone, List<ContactAddress> address, List<ContactEmail> emails)
@@ -732,22 +727,16 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 			}
 		}
 		if (operations.size() > 0) {
-			try {
-
-				ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-				for (ContentProviderResult s : rsDelete) {
-					L.i(s.toString());
-				}
-				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-
-				for (ContentProviderResult s : rs) {
-					L.i(s.toString());
-				}
-			} catch (Exception e) {
-				if (J2WHelper.getInstance().isLogOpen()) {
-					e.printStackTrace();
-				}
+			ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+			for (ContentProviderResult s : rsDelete) {
+				L.i(s.toString());
 			}
+			ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+
+			for (ContentProviderResult s : rs) {
+				L.i(s.toString());
+			}
+
 		}
 	}
 
@@ -856,18 +845,13 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				}
 			}
 
-			try {
-				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-				if (J2WHelper.getInstance().isLogOpen()) {
-					for (ContentProviderResult item : rs) {
-						L.i(item.toString());
-					}
-				}
-			} catch (Exception e) {
-				if (J2WHelper.getInstance().isLogOpen()) {
-					e.printStackTrace();
+			ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+			if (J2WHelper.getInstance().isLogOpen()) {
+				for (ContentProviderResult item : rs) {
+					L.i(item.toString());
 				}
 			}
+
 		} else {// 更新
 			String id = contactDetailModel.contactId;
 			ArrayList<ContentProviderOperation> operations = new ArrayList<>();
@@ -1029,25 +1013,20 @@ public class ContactManage implements J2WIContact, J2WIWriteContact {
 				}
 			}
 			if (operations.size() > 0) {
-				try {
-					ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
-					if (J2WHelper.getInstance().isLogOpen()) {
+				ContentProviderResult rsDelete[] = resolver.applyBatch(ContactsContract.AUTHORITY, operationsDelete);
+				if (J2WHelper.getInstance().isLogOpen()) {
 
-						for (ContentProviderResult s : rsDelete) {
-							L.i(s.toString());
-						}
-					}
-					ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
-					if (J2WHelper.getInstance().isLogOpen()) {
-						for (ContentProviderResult s : rs) {
-							L.i(s.toString());
-						}
-					}
-				} catch (Exception e) {
-					if (J2WHelper.getInstance().isLogOpen()) {
-						e.printStackTrace();
+					for (ContentProviderResult s : rsDelete) {
+						L.i(s.toString());
 					}
 				}
+				ContentProviderResult rs[] = resolver.applyBatch(ContactsContract.AUTHORITY, operations);
+				if (J2WHelper.getInstance().isLogOpen()) {
+					for (ContentProviderResult s : rs) {
+						L.i(s.toString());
+					}
+				}
+
 			}
 
 		}
