@@ -321,24 +321,24 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 	/********************** Actionbar业务代码 *********************/
 	public Toolbar toolbar() {
-		return j2WBuilder.getToolbar();
+		return j2WBuilder == null ? null : j2WBuilder.getToolbar();
 	}
 
 	/********************** RecyclerView业务代码 *********************/
 	@Deprecated protected J2WRVAdapterItem adapterRecycler() {
-		return j2WBuilder.getJ2WRVAdapterItem();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WRVAdapterItem();
 	}
 
 	protected J2WRVAdapter recyclerAdapter() {
-		return j2WBuilder.getJ2WRVAdapterItem2();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WRVAdapterItem2();
 	}
 
 	protected RecyclerView.LayoutManager recyclerLayoutManager() {
-		return j2WBuilder.getLayoutManager();
+		return j2WBuilder == null ? null : j2WBuilder.getLayoutManager();
 	}
 
 	protected RecyclerView recyclerView() {
-		return j2WBuilder.getRecyclerView();
+		return j2WBuilder == null ? null : j2WBuilder.getRecyclerView();
 	}
 
 	/********************** ListView业务代码 *********************/
@@ -381,27 +381,27 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	}
 
 	protected J2WListAdapter adapter() {
-		return j2WBuilder.getAdapter();
+		return j2WBuilder == null ? null : j2WBuilder.getAdapter();
 	}
 
 	protected ListView listView() {
-		return j2WBuilder.getListView();
+		return j2WBuilder == null ? null : j2WBuilder.getListView();
 	}
 
 	/********************** View业务代码 *********************/
 
 	public J2WView j2wView() {
-		return j2WBuilder.getJ2WView();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WView();
 	}
 
 	/********************** ViewPager业务代码 *********************/
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
-		return j2WBuilder.getViewPagerAdapter();
+		return j2WBuilder == null ? null :j2WBuilder.getViewPagerAdapter();
 	}
 
 	protected J2WViewPager viewPager() {
-		return j2WBuilder.getViewPager();
+		return j2WBuilder == null ? null :j2WBuilder.getViewPager();
 	}
 
 	/**
