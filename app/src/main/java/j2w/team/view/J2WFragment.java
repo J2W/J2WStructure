@@ -1,6 +1,7 @@
 package j2w.team.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -108,6 +109,11 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 		}
 		J2WHelper.structureHelper().printBackStackEntry(getFragmentManager());
 		listLoadMoreOpen();
+	}
+
+	@Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		J2WHelper.methodsProxy().activityInterceptor().onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
 
 	@Override public void onPause() {
@@ -276,7 +282,7 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	public J2WView j2wView() {
-		return j2WBuilder == null ? null :j2WBuilder.getJ2WView();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WView();
 	}
 
 	/********************** Actionbar业务代码 *********************/
@@ -319,19 +325,19 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 
 	/********************** RecyclerView业务代码 *********************/
 	@Deprecated protected J2WRVAdapterItem adapterRecycler() {
-		return j2WBuilder == null ? null :j2WBuilder.getJ2WRVAdapterItem();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WRVAdapterItem();
 	}
 
 	protected J2WRVAdapter recyclerAdapter() {
-		return j2WBuilder == null ? null :j2WBuilder.getJ2WRVAdapterItem2();
+		return j2WBuilder == null ? null : j2WBuilder.getJ2WRVAdapterItem2();
 	}
 
 	protected RecyclerView.LayoutManager recyclerLayoutManager() {
-		return j2WBuilder == null ? null :j2WBuilder.getLayoutManager();
+		return j2WBuilder == null ? null : j2WBuilder.getLayoutManager();
 	}
 
 	public RecyclerView recyclerView() {
-		return j2WBuilder == null ? null :j2WBuilder.getRecyclerView();
+		return j2WBuilder == null ? null : j2WBuilder.getRecyclerView();
 	}
 
 	/********************** ListView业务代码 *********************/
@@ -374,21 +380,21 @@ public abstract class J2WFragment<B extends J2WIBiz> extends Fragment implements
 	}
 
 	protected J2WListAdapter adapter() {
-		return j2WBuilder == null ? null :j2WBuilder.getAdapter();
+		return j2WBuilder == null ? null : j2WBuilder.getAdapter();
 	}
 
 	protected ListView listView() {
-		return j2WBuilder == null ? null :j2WBuilder.getListView();
+		return j2WBuilder == null ? null : j2WBuilder.getListView();
 	}
 
 	/********************** ViewPager业务代码 *********************/
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
-		return j2WBuilder == null ? null :j2WBuilder.getViewPagerAdapter();
+		return j2WBuilder == null ? null : j2WBuilder.getViewPagerAdapter();
 	}
 
 	protected J2WViewPager viewPager() {
-		return j2WBuilder == null ? null :j2WBuilder.getViewPager();
+		return j2WBuilder == null ? null : j2WBuilder.getViewPager();
 	}
 
 	/**

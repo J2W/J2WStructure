@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -397,11 +398,11 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	/********************** ViewPager业务代码 *********************/
 
 	protected J2WIViewPagerAdapter viewPagerAdapter() {
-		return j2WBuilder == null ? null :j2WBuilder.getViewPagerAdapter();
+		return j2WBuilder == null ? null : j2WBuilder.getViewPagerAdapter();
 	}
 
 	protected J2WViewPager viewPager() {
-		return j2WBuilder == null ? null :j2WBuilder.getViewPager();
+		return j2WBuilder == null ? null : j2WBuilder.getViewPager();
 	}
 
 	/**
@@ -506,6 +507,11 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		J2WHelper.methodsProxy().activityInterceptor().onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
 
 	/**
