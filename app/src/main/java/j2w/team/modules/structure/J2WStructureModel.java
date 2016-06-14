@@ -1,7 +1,5 @@
 package j2w.team.modules.structure;
 
-import android.app.Activity;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -76,10 +74,6 @@ public class J2WStructureModel {
      * 清空
      */
     public void clearAll() {
-        if (view instanceof Activity) {
-            // 清空toast
-            J2WHelper.toast().clear();
-        }
         this.view = null;
         service = null;
         j2WProxy.clearProxy();
