@@ -195,147 +195,149 @@ MVP使用说明帮助
 
     J2WActivity
 
-        import android.os.Bundle;
-        import j2w.team.core.Impl;
-        import j2w.team.view.J2WBuilder;
-        import j2w.team.view.J2WActivity;
+    import android.os.Bundle;
+    import j2w.team.core.Impl;
+    import j2w.team.view.J2WBuilder;
+    import j2w.team.view.J2WActivity;
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述 你的UI
-         */
-        public class ${NAME}Activity extends J2WActivity<I${NAME}Biz> implements I${NAME}Activity {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述 你的UI
+     */
+    public class ${NAME}Activity extends J2WActivity<I${NAME}Biz> implements I${NAME}Activity {
 
-        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
-        		return j2WBuilder;
-        	}
+    	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+    		return j2WBuilder;
+    	}
 
-        	@Override protected void initData(Bundle bundle) {
+    	@Override protected void initData(Bundle bundle) {
 
-        	}
+    	}
 
-        }
-        @Impl(${NAME}Activity.class)
-        interface I${NAME}Activity {
+    }
+    @Impl(${NAME}Activity.class)
+    interface I${NAME}Activity {
 
-        }
+    }
 
     J2WFragment
 
-        import android.os.Bundle;
-        import j2w.team.core.Impl;
-        import j2w.team.view.J2WBuilder;
-        import j2w.team.view.J2WFragment;
+    import android.os.Bundle;
+    import j2w.team.core.Impl;
+    import j2w.team.view.J2WBuilder;
+    import j2w.team.view.J2WFragment;
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述 你的UI
-         */
-        public class ${NAME}Fragment extends J2WFragment<I${NAME}Biz> implements I${NAME}Fragment {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述 你的UI
+     */
+    public class ${NAME}Fragment extends J2WFragment<I${NAME}Biz> implements I${NAME}Fragment {
 
-        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
-        		return j2WBuilder;
-        	}
+        @Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+            return j2WBuilder;
+        }
 
-        	@Override protected void initData(Bundle bundle) {
-
-        	}
+        @Override protected void initData(Bundle bundle) {
 
         }
-        @Impl(${NAME}Fragment.class)
-        interface I${NAME}Fragment {
 
-        }
+    }
+    @Impl(${NAME}Fragment.class)
+    interface I${NAME}Fragment {
+
+    }
 
     J2WDialogFragment
 
-        import android.os.Bundle;
-        import j2w.team.core.Impl;
-        import j2w.team.view.J2WBuilder;
-        import j2w.team.view.J2WDialogFragment;
+    import android.os.Bundle;
+    import j2w.team.core.Impl;
+    import j2w.team.view.J2WBuilder;
+    import j2w.team.view.J2WDialogFragment;
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述 你的UI
-         */
-        public class ${NAME}DialogFragment extends J2WDialogFragment<I${NAME}Biz> implements I${NAME}DialogFragment {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述 你的UI
+     */
+    public class ${NAME}DialogFragment extends J2WDialogFragment<I${NAME}Biz> implements I${NAME}DialogFragment {
 
-        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
-        		return j2WBuilder;
-        	}
+        @Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+            return j2WBuilder;
+        }
 
-        	@Override protected void initData(Bundle bundle) {
-
-        	}
+        @Override protected void initData(Bundle bundle) {
 
         }
-        @Impl(${NAME}DialogFragment.class)
-        interface I${NAME}DialogFragment {
 
-        }
+    }
+    @Impl(${NAME}DialogFragment.class)
+    interface I${NAME}DialogFragment {
+
+    }
 
     J2WIBiz - Activity , Fragment , DialogFragment
 
-        Activity
+    Activity
 
-        import j2w.team.core.Impl;
-        import j2w.team.core.J2WBiz;
-        import j2w.team.core.J2WIBiz;
+    import j2w.team.core.Impl;
+    import j2w.team.core.J2WBiz;
+    import j2w.team.core.J2WIBiz;
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述你的业务
-         */
-        @Impl(${NAME}Biz.class)
-        public interface I${NAME}Biz extends J2WIBiz {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述你的业务
+     */
+    @Impl(${NAME}Biz.class)
+    public interface I${NAME}Biz extends J2WIBiz {
 
-        }
-        class ${NAME}Biz extends J2WBiz<I${NAME}Activity> implements I${NAME}Biz
-        {
+    }
+    class ${NAME}Biz extends J2WBiz<I${NAME}Activity> implements I${NAME}Biz
+    {
 
-        }
+    }
 
-        Fragment
+    DialogFragment
 
-        import j2w.team.core.Impl;
-        import j2w.team.core.J2WBiz;
-        import j2w.team.core.J2WIBiz;
+    import j2w.team.core.Impl;
+    import j2w.team.core.J2WBiz;
+    import j2w.team.core.J2WIBiz;
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述你的业务
-         */
-        @Impl(${NAME}Biz.class)
-        public interface I${NAME}Biz extends J2WIBiz {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述你的业务
+     */
+    @Impl(${NAME}Biz.class)
+    public interface I${NAME}Biz extends J2WIBiz {
 
-        }
-        class ${NAME}Biz extends J2WBiz<I${NAME}DialogFragment> implements I${NAME}Biz
-        {
+    }
+    class ${NAME}Biz extends J2WBiz<I${NAME}DialogFragment> implements I${NAME}Biz
+    {
 
-        }
+    }
 
-        DialogFragment
 
-        import j2w.team.core.Impl;
-        import j2w.team.core.J2WBiz;
-        import j2w.team.core.J2WIBiz;
+    Fragment
 
-        /**
-         * @创建人 ${USER}
-         * @创建时间 ${DATE} ${TIME}
-         * @类描述 一句话描述你的业务
-         */
-        @Impl(${NAME}Biz.class)
-        public interface I${NAME}Biz extends J2WIBiz {
+    import j2w.team.core.Impl;
+    import j2w.team.core.J2WBiz;
+    import j2w.team.core.J2WIBiz;
 
-        }
-        class ${NAME}Biz extends J2WBiz<I${NAME}DialogFragment> implements I${NAME}Biz
-        {
+    /**
+     * @创建人 ${USER}
+     * @创建时间 ${DATE} ${TIME}
+     * @类描述 一句话描述你的业务
+     */
+    @Impl(${NAME}Biz.class)
+    public interface I${NAME}Biz extends J2WIBiz {
 
-        }
+    }
+    class ${NAME}Biz extends J2WBiz<I${NAME}Fragment> implements I${NAME}Biz
+    {
+
+    }
+
 
