@@ -16,7 +16,7 @@ Project-build.gradle
              jcenter()
          }
          dependencies {
-             classpath 'com.android.tools.build:gradle:1.2.3'
+             classpath 'com.android.tools.build:gradle:2.1.2'
          }
      }
 
@@ -41,7 +41,7 @@ App-build.gradle:
 
      dependencies {
         compile fileTree(dir: 'libs', include: ['*.jar'])
-        compile 'j2w.team:structure:1.0.2'
+        compile 'j2w.team:structure:2.0.6'
      }
 ###静态代理配置
 build.gradle: 
@@ -186,152 +186,153 @@ MVP使用说明帮助
 
 
 
-## J2WHelper 帮助API说明
+## Android studio 模板
 
-[J2WThreadPoolManager threadPoolHelper() //获取线程池](https://github.com/J2W/J2WStructure/wiki/ThreadPoolHelper)
+    Editor->File and Code Templates-> + (添加)
 
-[SynchronousExecutor mainLooper() //获取主线程](https://github.com/J2W/J2WStructure/wiki/MainLooper)
+    J2WActivity
 
-    J2WApplication getInstance() //获取Application全局上下文
+        import android.os.Bundle;
+        import j2w.team.core.Impl;
+        import j2w.team.view.J2WBuilder;
+        import j2w.team.view.J2WActivity;
 
-    J2WRestAdapter httpAdapter() //获取网络适配器,创建接口实例
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述 你的UI
+         */
+        public class ${NAME}Activity extends J2WActivity<I${NAME}Biz> implements I${NAME}Activity {
 
-    J2WIScreenManager screenHelper() //获取Activity堆栈管理
+        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+        		return j2WBuilder;
+        	}
 
-    J2WDownloadManager downloader() //获取下载管理器，用于下载文件
+        	@Override protected void initData(Bundle bundle) {
 
-    PicassoTools picassoHelper() //获取Picasso图片下载，已经做了很多优化的第三方图片下载
+        	}
 
-    eventPost(event) //发送Event
+        }
+        @Impl(${NAME}Activity.class)
+        interface I${NAME}Activity {
 
-## J2WBuilder 使用API说明
+        }
 
-### 状态栏颜色
+    J2WFragment
 
-	j2WBuilder.tintColor(R.color.theme_color);
+        import android.os.Bundle;
+        import j2w.team.core.Impl;
+        import j2w.team.view.J2WBuilder;
+        import j2w.team.view.J2WFragment;
 
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述 你的UI
+         */
+        public class ${NAME}Fragment extends J2WFragment<I${NAME}Biz> implements I${NAME}Fragment {
 
-### Toobar
+        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+        		return j2WBuilder;
+        	}
 
+        	@Override protected void initData(Bundle bundle) {
 
-    样式修改 - 重写
+        	}
 
-        <style name="J2WToolbar.Custom">
-           <!-- 设置该属性解决空白部分 默认 16dp-->
-           <item name="contentInsetStart">16dp</item>
-           <item name="android:layout_width">match_parent</item>
-           <item name="android:layout_height">?actionBarSize</item>
-           <item name="android:background">?colorPrimary</item>
-        </style>
+        }
+        @Impl(${NAME}Fragment.class)
+        interface I${NAME}Fragment {
 
-    文字颜色 - 添加
-        <style name="MyAppTheme" parent="AppTheme">
-            <item name="colorPrimary">@color/default_color</item>
-            <item name="colorPrimaryDark">@color/default_color</item>
-            <item name="colorAccent">@color/default_color</item>
-            <!-- 文字颜色 -->
-            <item name="android:textColorPrimary">@android:color/white</item>
-            <!-- Menu文字颜色 -->
-            <item name="android:actionMenuTextColor">@android:color/black</item>
-        </style>
+        }
 
-    toolbarDrawerId(int toolbarDrawerId); //设置DrawerLayout ID， 与Toolbar联动
+    J2WDialogFragment
 
-    toolbarMenuListener(Toolbar.OnMenuItemClickListener menuListener); //设置MENU 点击事件
+        import android.os.Bundle;
+        import j2w.team.core.Impl;
+        import j2w.team.view.J2WBuilder;
+        import j2w.team.view.J2WDialogFragment;
 
-    toolbarIsOpen(boolean isOpenToolbar); //设置是否打开Toolbar
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述 你的UI
+         */
+        public class ${NAME}DialogFragment extends J2WDialogFragment<I${NAME}Biz> implements I${NAME}DialogFragment {
 
-    toolbarMenuId(int toolbarMenuId);//设置MENU布局
+        	@Override protected J2WBuilder build(J2WBuilder j2WBuilder) {
+        		return j2WBuilder;
+        	}
 
-### EventBus
+        	@Override protected void initData(Bundle bundle) {
 
-    isOpenEventBus(boolean isOpenEventBus) // 设置是否打开EventBus
+        	}
 
-### ListView
+        }
+        @Impl(${NAME}DialogFragment.class)
+        interface I${NAME}DialogFragment {
 
-    listHeaderLayoutId(int listHeaderLayoutId); //设置头布局
+        }
 
-    listFooterLayoutId(int listFooterLayoutId); //设置尾布局
+    J2WIBiz - Activity , Fragment , DialogFragment
 
-    listViewOnItemClick(AdapterView.OnItemClickListener itemListener); //设置列表点击事件
+        Activity
 
-    listViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener);//设置列表长按事件
+        import j2w.team.core.Impl;
+        import j2w.team.core.J2WBiz;
+        import j2w.team.core.J2WIBiz;
 
-    listViewId(int listId, J2WAdapterItem j2WAdapterItem); //设置列表ID 和 适配器Item
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述你的业务
+         */
+        @Impl(${NAME}Biz.class)
+        public interface I${NAME}Biz extends J2WIBiz {
 
-    listViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout); //设置列表ID 和 多布局接口
+        }
+        class ${NAME}Biz extends J2WBiz<I${NAME}Activity> implements I${NAME}Biz
+        {
 
-    listSwipRefreshId(int swipRefreshId, J2WRefreshListener j2WRefreshListener); //设置 下拉刷新布局ID  和 事件(包含加载更多)
+        }
 
-    listSwipeColorResIds(int... colorResIds); //设置下拉刷新控件颜色
+        Fragment
 
-### RecyclerView (替代 ListView GridView)
+        import j2w.team.core.Impl;
+        import j2w.team.core.J2WBiz;
+        import j2w.team.core.J2WIBiz;
 
-[J2WRVAdapterItem生成方法 点击查看说明](https://github.com/J2W/J2WStructure/wiki/J2WRVAdapterItem)
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述你的业务
+         */
+        @Impl(${NAME}Biz.class)
+        public interface I${NAME}Biz extends J2WIBiz {
 
-    recyclerviewId(int recyclerviewId); //设置View ID
+        }
+        class ${NAME}Biz extends J2WBiz<I${NAME}DialogFragment> implements I${NAME}Biz
+        {
 
-    recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem)//设置适配器 ，多布局可在适配器里实现
+        }
 
-    //线性布局管理器
-    参数:1.列表方向, 2.分割线, 3.动画, 4.列表反转
-    recyclerviewLinearLayoutManager(int direction, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout)
+        DialogFragment
 
-    //Grid布局管理器
-    参数:1.列表方向, 2.多少列  3.分割线, 4.动画, 4.列表反转
-    recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout)
+        import j2w.team.core.Impl;
+        import j2w.team.core.J2WBiz;
+        import j2w.team.core.J2WIBiz;
 
-    //瀑布布局管理器
-    参数:1.列表方向, 2.多少列  3.分割线, 4.动画, 4.列表反转
-    recyclerviewStaggeredGridyoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout)
+        /**
+         * @创建人 ${USER}
+         * @创建时间 ${DATE} ${TIME}
+         * @类描述 一句话描述你的业务
+         */
+        @Impl(${NAME}Biz.class)
+        public interface I${NAME}Biz extends J2WIBiz {
 
-    ecyclerviewSwipRefreshId(int recyclerviewSwipRefreshId, J2WRefreshListener recyclerviewJ2WRefreshListener);//设置 下拉刷新布局ID  和 事件(包含加载更多)
+        }
+        class ${NAME}Biz extends J2WBiz<I${NAME}DialogFragment> implements I${NAME}Biz
+        {
 
-    recyclerviewColorResIds(int... recyclerviewColorResIds)//下拉刷新控件 颜色
-
-### ViewPager
-
-    //ViewPager
-
-    //设置TabId 和 类型
-    1、J2WBuilder.TABS_TYPE_CUSTOM - 自定义  2、J2WBuilder.TABS_TYPE_COUNT -  数量
-    3、J2WBuilder.TABS_TYPE_ICON   - 图标    4、J2WBuilder.TABS_TYPE_DEFAULT - 默认
-    viewPagerTabsId(int tabsId, int tabsType)
-
-    tabsCustomListener(J2WTabsCustomListener j2WTabsCustomListener) // 如果tabsType ＝ J2WBuilder.TABS_TYPE_CUSTOM  必须实现
-
-    viewPagerId(int viewpagerId, FragmentManager fragmentManager); //设置VP 布局ID 和 碎片管理器
-
-    viewPagerChangeListener(J2WViewPagerChangeListener viewPagerChangeListener) //设置滑动事件
-
-    viewPageroffScreenPageLimit(int viewPageroffScreenPageLimit) //设置预加载数量 最小 1
-
-    //Tabs
-
-    tabsShouldExpand(boolean tabsShouldExpand) //设置Tab是自动填充满屏幕的
-
-    tabsDividerColor(int tabsDividerColor) //设置Tab的分割线是透明的
-
-    tabsUnderlineHeight(int tabsUnderlineHeight)//设置Tab底部线的高度
-
-    tabsUnderlineColor(int tabsUnderlineColor) //设置Tab底部线的颜色
-
-    tabsIndicatorHeight(int tabsIndicatorHeight) //设置Tab Indicator 指示灯的高度
-
-    tabsIndicatorColor(int tabsIndicatorColor) //设置Tab Indicator 指示灯的颜色
-
-    tabsTextSize(int tabsTextSize) // 设置Tab 文字大小
-
-    tabsSelectedTextColor(int tabsSelectedTextColor) // 设置选中Tab文字的颜色
-
-    tabsTextColor(int tabsTextColor) // 设置Tab的文字颜色
-
-    tabsBackgroundResource(int tabsBackgroundResource) // 背景颜色
-
-    tabsTabBackground(int tabsTabBackground) //Tabs Item 背景颜色
-
-    tabsTabWidth(int tabsTabWidth) // 设置每个Tab宽度
-
-    tabsIsCurrentItemAnimation(boolean tabsIsCurrentItemAnimation)  // 设置切换是否有动画
-
+        }
 
