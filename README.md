@@ -113,82 +113,85 @@ MVP使用说明帮助
 
     public abstract boolean isLogOpen() //是否打印日志 true 打印 false  不打印
 
+        /**
+    	 * 设置全局异常
+    	 *
+    	 * @return
+    	 */
+    	@Override public Thread.UncaughtExceptionHandler getExceptionHandler() {
+    		return new ExceptionHandler();
+    	}
 
-#### Activity 生命周期公共回调方法 说明:可以重写下面方法来做公共的事情
+    	/**
+    	 * 自定义管理器
+    	 *
+    	 * @return
+    	 */
+    	@Override public J2WModulesManage getModulesManage() {
+    		return new KMModulesManage(this);
+    	}
 
-    onSaveInstanceState(J2WActivity j2WIView, Bundle outState)
+    	/**
+    	 * 自定义帮助类 默认 J2WHelper
+    	 *
+    	 * @param j2WModulesManage
+    	 */
+    	@Override public void initHelper(J2WModulesManage j2WModulesManage) {
+    		Helper.with(j2WModulesManage);
+    	}
 
-    onCreate(J2WActivity j2WIView, Bundle bundle)
+    	/**
+    	 * 网络适配器
+    	 *
+    	 * @param builder
+    	 * @return
+    	 */
+    	@Override public J2WRestAdapter getRestAdapter(J2WRestAdapter.Builder builder) {
+    		builder.setEndpoint(new KMURLEndpoint());
+    		builder.setRequestInterceptor(new KMRequestInterceptor());
+    		builder.setResponseInterceptor(new KMResponseInterceptor());
+    		builder.setConverter(new KMConverter());
+    		builder.setCookieManage(new KMCookieHandler());
+    		builder.setTimeOut(60);
+    		return builder.build();
+    	}
 
-    onStart(J2WActivity j2WIView)
+    	/**
+    	 * 拦截器配置
+    	 *
+    	 * @param builder
+    	 * @return
+    	 */
+    	@Override public J2WMethods getMethodInterceptor(J2WMethods.Builder builder) {
+    		builder.setActivityInterceptor(new KMActivityInterceptor());
+    		builder.setFragmentInterceptor(new KMFragmentInterceptor());
+    		builder.addStartInterceptor(new KMMethodStartInterceptor());
+    		builder.addEndInterceptor(new KMMethodEndInterceptor());
+    		builder.addEndImplInterceptor(new KMDBMethodImplEndInterceptor());
+    		builder.addEndImplInterceptor(new KMActionImplEndInterceptor());
+    		builder.addErrorInterceptor(new KMMethodErrorInterceptor());
+    		builder.addHttpErrorInterceptor(new KMHttpErrorInterceptor());
+    		return builder.build();
+    	}
 
-    onResume(J2WActivity j2WIView)
+    	/** ***** 公共进度布局 *********/
+    	@Override public int layoutLoading() {
+    		return 0;
+    	}
 
-    onPause(J2WActivity j2WIView)
+    	@Override public int layoutEmpty() {
+    		return 0;
+    	}
 
-    onStop(J2WActivity j2WIView)
+    	@Override public int layoutBizError() {
+    		return 0;
+    	}
 
-    onDestroy(J2WActivity j2WIView)
+    	@Override public int layoutHttpError() {
+    		return 0;
+    	}
 
-    onRestart(J2WActivity j2WIView)
-
-    //状态布局 - 加载
-    @Override public int layoutLoading() {
-    	return R.layout.j2w_fragment_loading;
-    }
-    //状态布局 - 空布局
-    @Override public int layoutEmpty() {
-    	return R.layout.j2w_fragment_empty;
-    }
-    //状态布局 - 业务错误布局
-    @Override public int layoutBizError() {
-    	return R.layout.j2w_fragment_bizerror;
-    }
-    //状态布局 - 网络错误布局
-    @Override public int layoutHttpError() {
-    	return R.layout.j2w_fragment_error;
-    }
-
-## View : J2WActivity<J2WIDisplay> Biz : J2WBiz<AndroidIDisplay>
-
-#### Display 说明:  Intent跳转,toolbar,DrawerView 统一控制
-
-    接口 : 继承 J2WIDisplay
-    实现类: 继承 J2WDisplay
-    使用 : super.display()
-
-#### BIZ  业务处理
-
-    接口 : 继承 J2WIBiz 并 注解 @Impl(实现类)   //必须要写
-    实现类: 继承 J2WBiz
-    使用 : super.biz(MainIBiz.class)   //参数:业务接口Class
-    API提供:
-        1. 方法 @Background(BackgroundType.HTTP) 注解 子线程执行方法 注: @Background 默认网络线程池
-                参数类型     BackgroundType.HTTP        并行 网络线程池
-                            BackgroundType.Work        并行 工作线程池
-                            BackgroundType.SINGLEWORK  串行 工作线程池
-        2. 方法 @J2WRepeat(true) 注解  方法是否可以重复执行  注: 默认可以重复执行
-        3. 方法执行完毕后,需要回调View层进行更新UI
-               提供方法: super.ui(HomeUI.class) //参数:显示层接口Class
-
-    提供 ：所有方法拦截
-    createImpl(Interface.class);
-    注解 ：@Interceptor　Interface接口 方法
-    J2WBiz 统一回调  interceptorImpl(Class clazz) 方法
-#### UI 显示层处理
-
-    接口 : 注解 @Impl(实现类)   //必须要写
-    实现类: 继承 J2WActivity 或 J2WFragment
-    使用 : super.ui(HomeUI.class) //参数:显示层接口Class
-    API提供
-        1.需要执行业务处理时，调用业务接口进行处理
-            提供方法 : super.biz(MainIBiz.class)   //参数:业务接口Class
-
-
-
-## Android studio 模板
-
-    Editor->File and Code Templates-> + (添加)
+## Android studio 模板 Editor->File and Code Templates-> + (添加)
 
     J2WActivity
 
