@@ -710,7 +710,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		}
 		this.layoutManager = new LinearLayoutManager(j2WView.activity(), direction, reverse);
 		this.itemDecoration = itemDecoration;
-		this.itemAnimator = itemAnimator == null ? new DefaultItemAnimator() : itemAnimator;
+		this.itemAnimator = itemAnimator;
 	}
 
 	public void recyclerviewGridLayoutManager(int direction, int spanCount, RecyclerView.ItemDecoration itemDecoration, RecyclerView.ItemAnimator itemAnimator, boolean... reverseLayout) {
@@ -1282,9 +1282,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 					});
 				}
 				// 设置Item增加、移除动画
-				if (getItemAnimator() != null) {
-					recyclerView.setItemAnimator(getItemAnimator());
-				}
+				recyclerView.setItemAnimator(getItemAnimator());
 				// 添加分割线
 				if (getItemDecoration() != null) {
 					recyclerView.addItemDecoration(getItemDecoration());
