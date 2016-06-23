@@ -15,7 +15,6 @@ import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.contact.J2WIContact;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.file.J2WFileCacheManage;
-import j2w.team.modules.hotfix.J2WFix;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.methodProxy.J2WMethods;
 import j2w.team.modules.screen.J2WScreenManager;
@@ -286,12 +285,4 @@ public class J2WHelper {
 		return mJ2WModulesManage.getJ2WFileCacheManage();
 	}
 
-	/**
-	 * 热修复
-	 * 
-	 * @return
-	 */
-	public static final J2WFix hotFix() {
-		return mJ2WModulesManage.getJ2WFix();
-	}
 }

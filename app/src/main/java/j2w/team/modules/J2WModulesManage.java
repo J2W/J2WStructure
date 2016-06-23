@@ -9,7 +9,6 @@ import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.contact.ContactManage;
 import j2w.team.modules.download.J2WDownloadManager;
 import j2w.team.modules.file.J2WFileCacheManage;
-import j2w.team.modules.hotfix.J2WFix;
 import j2w.team.modules.http.J2WRestAdapter;
 import j2w.team.modules.log.L;
 import j2w.team.modules.methodProxy.J2WMethods;
@@ -54,8 +53,6 @@ public class J2WModulesManage {
 
 	private J2WFileCacheManage			j2WFileCacheManage;	// 文件缓存管理器
 
-	private J2WFix						j2WFix;				// 热修复
-
 	public J2WModulesManage(J2WApplication j2WApplication) {
 		this.mJ2WApplication = j2WApplication;
 		this.bus = EventBus.getDefault();
@@ -67,7 +64,6 @@ public class J2WModulesManage {
 		this.j2WToast = new J2WToast();
 		this.contactManage = new ContactManage(mJ2WApplication);
 		this.j2WFileCacheManage = new J2WFileCacheManage();
-		this.j2WFix = new J2WFix();
 	}
 
 	public J2WApplication getJ2WApplication() {
@@ -156,9 +152,5 @@ public class J2WModulesManage {
 
 	public J2WFileCacheManage getJ2WFileCacheManage() {
 		return j2WFileCacheManage;
-	}
-
-	public J2WFix getJ2WFix() {
-		return j2WFix;
 	}
 }
