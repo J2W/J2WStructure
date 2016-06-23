@@ -106,8 +106,10 @@ public class J2WStructureModel {
                 if (display == null) {
                     J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
                     J2WCheckUtils.validateServiceInterface(displayClazz);
-                    display = J2WHelper.structureHelper().createMainLooper(displayClazz, getImplClass(displayClazz));
-                    stackDisplay.put(displayClazz, display);
+                    Object impl = getImplClass(displayClazz);
+                    J2WProxy j2WProxy = J2WHelper.methodsProxy().createDisplay(displayClazz, impl);
+                    stackDisplay.put(displayClazz, j2WProxy.proxy);
+                    display = (D) j2WProxy.proxy;
                 }
             }
         }

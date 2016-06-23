@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import j2w.team.J2WHelper;
 import j2w.team.common.utils.J2WAppUtil;
 import j2w.team.common.utils.J2WCheckUtils;
@@ -61,6 +62,8 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 	private J2WBuilder			j2WBuilder;
 
 	J2WStructureModel			j2WStructureModel;
+
+	private Unbinder			unbinder;
 
 	/**
 	 * 定制
@@ -154,7 +157,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 		j2WBuilder = new J2WBuilder(this, inflater);
 		View view = build(j2WBuilder).create();
 		/** 初始化所有组建 **/
-		ButterKnife.bind(this, view);
+		unbinder = ButterKnife.bind(this, view);
 		// 获取参数-设置是否可取消
 		setDialogCancel(isCancel());
 		getDialog().setOnKeyListener(this);
@@ -215,7 +218,7 @@ public abstract class J2WDialogFragment<B extends J2WIBiz> extends DialogFragmen
 
 		J2WHelper.structureHelper().detach(j2WStructureModel);
 		/** 清空注解view **/
-		ButterKnife.unbind(this);
+		unbinder.unbind();
 		/** 关闭键盘 **/
 		J2WKeyboardUtils.hideSoftInput(getActivity());
 		// 销毁

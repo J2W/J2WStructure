@@ -212,6 +212,5 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 			mItems.clear();
 			mItems = null;
 		}
-		ButterKnife.unbind(this);
 	}
 }

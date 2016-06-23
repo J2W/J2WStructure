@@ -220,6 +220,5 @@ public abstract class J2WRVAdapterItem<T, V extends J2WViewHolder> extends Recyc
 			mItems.clear();
 			mItems = null;
 		}
-		ButterKnife.unbind(this);
 	}
 }

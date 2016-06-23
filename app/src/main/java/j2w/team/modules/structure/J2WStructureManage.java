@@ -145,21 +145,6 @@ public class J2WStructureManage implements J2WStructureIManage {
 		}
 	}
 
-	@Override public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
-		D display = (D) stackDisplay.get(displayClazz);
-		if (display == null) {
-			synchronized (stackDisplay) {
-				if (display == null) {
-					J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
-					J2WCheckUtils.validateServiceInterface(displayClazz);
-					display = createMainLooper(displayClazz, getImplClass(displayClazz));
-					stackDisplay.put(displayClazz, display);
-				}
-			}
-		}
-		return display;
-	}
-
 	@Override public <B extends J2WIBiz> B biz(Class<B> biz) {
 		SimpleArrayMap<Integer, J2WStructureModel> stack = statckRepeatBiz.get(biz);
 		if (stack == null) {
@@ -188,6 +173,23 @@ public class J2WStructureManage implements J2WStructureIManage {
 			return false;
 		}
 		return true;
+	}
+
+	@Override public <D extends J2WIDisplay> D display(Class<D> displayClazz) {
+		D display = (D) stackDisplay.get(displayClazz);
+		if (display == null) {
+			synchronized (stackDisplay) {
+				if (display == null) {
+					J2WCheckUtils.checkNotNull(displayClazz, "display接口不能为空");
+					J2WCheckUtils.validateServiceInterface(displayClazz);
+					Object impl = getImplClass(displayClazz);
+					J2WProxy j2WProxy = J2WHelper.methodsProxy().createDisplay(displayClazz, impl);
+					stackDisplay.put(displayClazz, j2WProxy.proxy);
+					display = (D) j2WProxy.proxy;
+				}
+			}
+		}
+		return display;
 	}
 
 	@Override public <B extends J2WICommonBiz> B common(Class<B> service) {

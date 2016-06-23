@@ -1,6 +1,7 @@
 package j2w.team;
 
 import android.app.Application;
+import android.content.Context;
 
 import j2w.team.modules.J2WModulesManage;
 import j2w.team.modules.http.J2WRestAdapter;
@@ -66,11 +67,8 @@ public abstract class J2WApplication extends Application implements J2WIViewComm
 		return Thread.getDefaultUncaughtExceptionHandler();
 	}
 
-	/**
-	 * 应用程序启动首先被执行
-	 */
-	@Override public void onCreate() {
-		super.onCreate();
+	@Override protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
 		// 初始化
 		mJ2WModulesManage = getModulesManage();
 		// 初始化Application

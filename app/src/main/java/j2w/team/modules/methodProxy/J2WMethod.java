@@ -24,6 +24,8 @@ public final class J2WMethod {
 	// 执行方法
 	public static final int	TYPE_INVOKE_EXE							= 0;
 
+	public static final int	TYPE_DISPLAY_INVOKE_EXE					= 4;
+
 	// 执行后台方法
 	public static final int	TYPE_INVOKE_BACKGROUD_HTTP_EXE			= 1;
 
@@ -40,6 +42,18 @@ public final class J2WMethod {
 		int type = parseBackground(method);
 
 		return new J2WMethod(interceptor, method, type, isRepeat, service);
+	}
+
+	static <T> J2WMethod createDisplayMethod(Method method, Class<T> service) {
+		// 是否重复
+		boolean isRepeat = parseRepeat(method);
+		// 拦截方法标记
+		int interceptor = parseInterceptor(method);
+		// 判断是否是子线程
+		int type = TYPE_DISPLAY_INVOKE_EXE;
+
+		return new J2WMethod(interceptor, method, type, isRepeat, service);
+
 	}
 
 	private static boolean parseRepeat(Method method) {
@@ -109,6 +123,10 @@ public final class J2WMethod {
 				defaultMethod(args);
 				result = (T) backgroundResult;
 				break;
+			case TYPE_DISPLAY_INVOKE_EXE:
+				displayMethod(args);
+				result = (T) backgroundResult;
+				break;
 			default:
 				if (isRepeat) {
 					methodRunnable = new MethodRunnable();
@@ -133,7 +151,7 @@ public final class J2WMethod {
 
 	private class MethodRunnable extends J2WRunnable {
 
-		Object[] objects;
+		Object[]	objects;
 
 		public MethodRunnable() {
 			super("MethodRunnable");
@@ -148,6 +166,16 @@ public final class J2WMethod {
 		}
 	}
 
+	private void displayMethod(Object[] objects) {
+		try {
+			exeDisplayMethod(method, impl, objects);
+		} catch (Throwable throwable) {
+			exeError(method, throwable);
+		} finally {
+			isExe = false;
+		}
+	}
+
 	private void defaultMethod(Object[] objects) {
 		try {
 			exeMethod(method, impl, objects);
@@ -155,6 +183,50 @@ public final class J2WMethod {
 			exeError(method, throwable);
 		} finally {
 			isExe = false;
+		}
+	}
+
+	private void exeDisplayMethod(final Method method, final Object impl, final Object[] objects) throws InvocationTargetException, IllegalAccessException {
+		boolean isExe = true;
+		// 业务拦截器 - 前
+		if (J2WHelper.methodsProxy().displayStartInterceptor != null) {
+			isExe = J2WHelper.methodsProxy().displayStartInterceptor.interceptStart(implName, service, method, interceptor, objects);
+		}
+
+		if (isExe) {
+			// 如果是主线程 - 直接执行
+			if (!J2WHelper.isMainLooperThread()) { // 主线程
+				backgroundResult = method.invoke(impl, objects);
+				return;
+			}
+			Runnable runnable = new Runnable() {
+
+				@Override public void run() {
+					try {
+						method.invoke(impl, objects);
+					} catch (Exception throwable) {
+						if (J2WHelper.getInstance().isLogOpen()) {
+							throwable.printStackTrace();
+						}
+						return;
+					}
+				}
+			};
+			J2WHelper.mainLooper().execute(runnable);
+			backgroundResult = null;// 执行
+			// 业务拦截器 - 后
+			if (J2WHelper.methodsProxy().displayEndInterceptor != null) {
+				J2WHelper.methodsProxy().displayEndInterceptor.interceptEnd(implName, service, method, interceptor, objects, backgroundResult);
+			}
+		} else {
+			if (J2WHelper.getInstance().isLogOpen()) {
+				L.tag("J2W-Method-Display");
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append(impl.getClass().getSimpleName());
+				stringBuilder.append(".");
+				stringBuilder.append(method.getName());
+				L.i("该方法被过滤 - %s", stringBuilder.toString());
+			}
 		}
 	}
 

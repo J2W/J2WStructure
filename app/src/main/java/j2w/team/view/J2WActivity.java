@@ -182,8 +182,6 @@ public abstract class J2WActivity<B extends J2WIBiz> extends AppCompatActivity {
 		/** 移除builder **/
 		j2WBuilder.detach();
 		j2WBuilder = null;
-		/** 清空注解view **/
-		ButterKnife.unbind(this);
 		J2WHelper.structureHelper().detach(j2WStructureModel);
 		J2WHelper.screenHelper().onDestroy(this);
 		J2WHelper.methodsProxy().activityInterceptor().onDestroy(this);
