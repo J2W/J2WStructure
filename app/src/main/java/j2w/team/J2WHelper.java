@@ -4,9 +4,10 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import j2w.team.core.J2WIBiz;
 import j2w.team.core.J2WICommonBiz;
 import j2w.team.core.SynchronousExecutor;

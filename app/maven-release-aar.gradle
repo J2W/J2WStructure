@@ -5,6 +5,11 @@ ext {
     PUBLISH_GROUP_ID = 'j2w.team'
     PUBLISH_ARTIFACT_ID = 'structure'
     PUBLISH_VERSION = android.defaultConfig.versionName
+    targetSdkVersion = 24
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.0'
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_7
+    targetCompatibilityVersion = JavaVersion.VERSION_1_7
 }
 // 3.maven-路径
 uploadArchives {

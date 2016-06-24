@@ -3,7 +3,8 @@ package j2w.team.modules;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
 import j2w.team.J2WApplication;
 import j2w.team.core.SynchronousExecutor;
 import j2w.team.modules.contact.ContactManage;
