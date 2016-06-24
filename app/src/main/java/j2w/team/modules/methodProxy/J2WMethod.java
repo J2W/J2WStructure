@@ -220,12 +220,20 @@ public final class J2WMethod {
 			}
 		} else {
 			if (J2WHelper.getInstance().isLogOpen()) {
-				L.tag("J2W-Method-Display");
-				StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append(impl.getClass().getSimpleName());
-				stringBuilder.append(".");
-				stringBuilder.append(method.getName());
-				L.i("该方法被过滤 - %s", stringBuilder.toString());
+				Object[] parameterValues = objects;
+				StringBuilder builder = new StringBuilder("\u21E2 ");
+				builder.append(method.getName()).append('(');
+				if (parameterValues != null) {
+					for (int i = 0; i < parameterValues.length; i++) {
+						if (i > 0) {
+							builder.append(", ");
+						}
+						builder.append(Strings.toString(parameterValues[i]));
+					}
+				}
+
+				builder.append(')');
+				L.i("该方法被过滤 - %s", builder.toString());
 			}
 		}
 	}
