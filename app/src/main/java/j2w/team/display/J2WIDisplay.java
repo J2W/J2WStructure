@@ -84,6 +84,8 @@ public interface J2WIDisplay {
 
 	void intent(Class clazz);
 
+	void intent(String clazzName);
+
 	void intentNotAnimation(Class clazz);
 
 	void intent(Class clazz, Bundle bundle);

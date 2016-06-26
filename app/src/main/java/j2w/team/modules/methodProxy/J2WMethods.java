@@ -83,6 +83,11 @@ public final class J2WMethods {
 		j2WProxy.proxy = Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
+				// 如果有返回值 - 直接执行
+				if (!method.getReturnType().equals(void.class)) {
+					return method.invoke(j2WProxy.impl, args);
+
+				}
 
 				J2WMethod j2WMethod = loadJ2WMethod(j2WProxy, method, service);
 				// 开始
@@ -120,7 +125,11 @@ public final class J2WMethods {
 		j2WProxy.proxy = Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
+				// 如果有返回值 - 直接执行
+				if (!method.getReturnType().equals(void.class)) {
+					return method.invoke(j2WProxy.impl, args);
 
+				}
 				J2WMethod j2WMethod = loadDisplayJ2WMethod(j2WProxy, method, service);
 				// 开始
 				if (!J2WHelper.getInstance().isLogOpen()) {
@@ -308,13 +317,13 @@ public final class J2WMethods {
 
 	public static class Builder {
 
-		private J2WActivityInterceptor				j2WActivityInterceptor;	// activity拦截器
+		private J2WActivityInterceptor				j2WActivityInterceptor;		// activity拦截器
 
-		private J2WFragmentInterceptor				j2WFragmentInterceptor;	// activity拦截器
+		private J2WFragmentInterceptor				j2WFragmentInterceptor;		// activity拦截器
 
 		private ArrayList<BizStartInterceptor>		j2WStartInterceptors;		// 方法开始拦截器
 
-		private ArrayList<BizEndInterceptor>		bizEndInterceptors;		// 方法结束拦截器
+		private ArrayList<BizEndInterceptor>		bizEndInterceptors;			// 方法结束拦截器
 
 		private ArrayList<ImplStartInterceptor>		implStartInterceptors;		// 方法开始拦截器
 

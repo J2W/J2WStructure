@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface DisplayEndInterceptor {
 
-	<T> void interceptEnd(String viewName, Class<T> service, Method method, int interceptor, Object[] objects, Object backgroundResult);
+	<T> void interceptEnd(String viewName, Class<T> service, Method method, int interceptor, String intent, Object[] objects, Object backgroundResult);
 
 }

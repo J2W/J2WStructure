@@ -1,5 +1,7 @@
 package j2w.team.modules.methodProxy;
 
+import android.content.Intent;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -151,7 +153,7 @@ public final class J2WMethod {
 
 	private class MethodRunnable extends J2WRunnable {
 
-		Object[]	objects;
+		Object[] objects;
 
 		public MethodRunnable() {
 			super("MethodRunnable");
@@ -188,9 +190,22 @@ public final class J2WMethod {
 
 	private void exeDisplayMethod(final Method method, final Object impl, final Object[] objects) throws InvocationTargetException, IllegalAccessException {
 		boolean isExe = true;
+		String clazzName = null;
 		// 业务拦截器 - 前
 		if (J2WHelper.methodsProxy().displayStartInterceptor != null) {
-			isExe = J2WHelper.methodsProxy().displayStartInterceptor.interceptStart(implName, service, method, interceptor, objects);
+			String name = method.getName();
+			if (name.startsWith("intent")) {
+				Object object = objects[0];
+				if (object != null) {
+					if (object instanceof Class) {
+						clazzName = ((Class) object).getName();
+					} else if (object instanceof Intent) {
+						clazzName = ((Intent) object).getComponent().getClassName();
+					}
+				}
+			}
+
+			isExe = J2WHelper.methodsProxy().displayStartInterceptor.interceptStart(implName, service, method, interceptor, clazzName, objects);
 		}
 
 		if (isExe) {
@@ -216,7 +231,7 @@ public final class J2WMethod {
 			backgroundResult = null;// 执行
 			// 业务拦截器 - 后
 			if (J2WHelper.methodsProxy().displayEndInterceptor != null) {
-				J2WHelper.methodsProxy().displayEndInterceptor.interceptEnd(implName, service, method, interceptor, objects, backgroundResult);
+				J2WHelper.methodsProxy().displayEndInterceptor.interceptEnd(implName, service, method, interceptor, clazzName, objects, backgroundResult);
 			}
 		} else {
 			if (J2WHelper.getInstance().isLogOpen()) {

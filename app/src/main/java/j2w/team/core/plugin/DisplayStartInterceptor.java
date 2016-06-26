@@ -9,6 +9,6 @@ import java.lang.reflect.Method;
  */
 public interface DisplayStartInterceptor {
 
-	<T> boolean interceptStart(String viewName, Class<T> service, Method method, int interceptor, Object[] objects);
+	<T> boolean interceptStart(String viewName, Class<T> service, Method method, int interceptor,String intent, Object[] objects);
 
 }

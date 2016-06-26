@@ -30,9 +30,9 @@ public class J2WDisplay implements J2WIDisplay {
 
 	@Override public J2WActivity activity() {
 		J2WActivity j2WActivity = J2WHelper.screenHelper().getCurrentIsRunningActivity();
-		if(j2WActivity != null){
+		if (j2WActivity != null) {
 			return j2WActivity;
-		}else{
+		} else {
 			return J2WHelper.screenHelper().getCurrentActivity();
 		}
 	}
@@ -145,12 +145,21 @@ public class J2WDisplay implements J2WIDisplay {
 		intent(clazz, null);
 	}
 
+	@Override public void intent(String clazzName) {
+		if (activity() == null || clazzName == null) {
+			return;
+		}
+		Intent intent = new Intent();
+		intent.setClassName(J2WHelper.getInstance(), clazzName);
+		activity().startActivity(intent);
+	}
+
 	@Override public void intentNotAnimation(Class clazz) {
 		intentNotAnimation(clazz, null);
 	}
 
 	@Override public void intent(Class clazz, Bundle bundle) {
-		if(activity() == null){
+		if (activity() == null) {
 			return;
 		}
 		Intent intent = new Intent();
@@ -159,7 +168,7 @@ public class J2WDisplay implements J2WIDisplay {
 	}
 
 	@Override public void intentNotAnimation(Class clazz, Bundle bundle) {
-		if(activity() == null){
+		if (activity() == null) {
 			return;
 		}
 		Intent intent = new Intent();
