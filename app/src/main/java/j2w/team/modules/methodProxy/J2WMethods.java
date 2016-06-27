@@ -211,7 +211,7 @@ public final class J2WMethods {
 			stringBuilder.append(clazz.getSimpleName());
 			stringBuilder.append(",");
 		}
-		if (stringBuilder.length() > 1) {
+		if (stringBuilder.length() > 2) {
 			stringBuilder.deleteCharAt(stringBuilder.toString().length() - 1);
 		}
 		stringBuilder.append(")");
