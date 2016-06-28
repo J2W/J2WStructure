@@ -40,15 +40,16 @@
         <!--<item name="android:listChoiceBackgroundIndicator">@drawable/j2w_click_selector</item>-->
     </style>
 
-    <style name="J2WToolbar" parent="Widget.AppCompat.Toolbar" />
+    <style name="J2WToolbar" />
 
     <style name="J2WToolbar.Custom">
         <!-- 设置该属性解决空白部分 默认 16dp-->
-        <item name="contentInsetStart">16dp</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?actionBarSize</item>
         <item name="android:background">?colorPrimary</item>
-        <item name="theme">@style/J2WToolbar.Theme</item>
+        <item name="android:theme">@style/J2WToolbar.Theme</item>
     </style>
 
     <style name="J2WToolbar.Theme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
