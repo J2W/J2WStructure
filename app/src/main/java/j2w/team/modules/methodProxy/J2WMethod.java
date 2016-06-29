@@ -195,7 +195,7 @@ public final class J2WMethod {
 		if (J2WHelper.methodsProxy().displayStartInterceptor != null) {
 			String name = method.getName();
 			if (name.startsWith("intent")) {
-				Object object = objects == null ? null : objects[0];
+				Object object = objects == null || objects.length < 1 ? null : objects[0];
 				if (object != null) {
 					if (object instanceof Class) {
 						clazzName = ((Class) object).getName();
