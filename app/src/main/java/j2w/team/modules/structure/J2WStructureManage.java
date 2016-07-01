@@ -262,10 +262,13 @@ public class J2WStructureManage implements J2WStructureIManage {
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
 
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-				// 如果有返回值 - 直接执行
-				if (!method.getReturnType().equals(void.class)) {
-					return method.invoke(ui, args);
+				// 如果是实现类 直接执行方法
+				if (method.getDeclaringClass() == Object.class) {
+					L.tag("J2W-Method");
+					L.i("直接执行: " + method.getName());
+					return method.invoke(this, args);
 				}
+
 				// 如果是主线程 - 直接执行
 				if (!J2WHelper.isMainLooperThread()) {// 子线程
 					return method.invoke(ui, args);
@@ -293,7 +296,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 		J2WCheckUtils.validateServiceInterface(service);
 		return (U) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
 
-			@Override public Object invoke(Object proxy, Method method, Object... args) {
+			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
+
 				if (J2WHelper.getInstance().isLogOpen()) {
 					StringBuilder stringBuilder = new StringBuilder();
 					stringBuilder.append("UI被销毁,回调接口继续执行");
@@ -303,8 +307,11 @@ public class J2WStructureManage implements J2WStructureIManage {
 					L.tag(service.getSimpleName());
 					L.i(stringBuilder.toString());
 				}
-				if (method.getReturnType().equals(int.class) || method.getReturnType().equals(long.class) || method.getReturnType().equals(float.class) || method.getReturnType().equals(double.class)) {
-					return 0;
+				// 如果是实现类 直接执行方法
+				if (method.getDeclaringClass() == Object.class) {
+					L.tag("J2W-Method");
+					L.i("直接执行: " + method.getName());
+					return method.invoke(this, args);
 				}
 				return null;
 			}
