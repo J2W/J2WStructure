@@ -264,7 +264,7 @@ public class J2WStructureManage implements J2WStructureIManage {
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 				// 如果有返回值 - 直接执行
 				if (!method.getReturnType().equals(void.class)) {
-					return method.invoke(this, args);
+					return method.invoke(ui, args);
 				}
 
 				// 如果是主线程 - 直接执行
@@ -305,8 +305,22 @@ public class J2WStructureManage implements J2WStructureIManage {
 					L.tag(service.getSimpleName());
 					L.i(stringBuilder.toString());
 				}
-				// 如果有返回值 - 直接执行
-				return method.invoke(this, args);
+
+				if (method.getReturnType().equals(int.class) || method.getReturnType().equals(long.class) || method.getReturnType().equals(float.class) || method.getReturnType().equals(double.class)
+						|| method.getReturnType().equals(short.class)) {
+					return 0;
+				}
+
+				if (method.getReturnType().equals(boolean.class)) {
+					return false;
+				}
+				if (method.getReturnType().equals(byte.class)) {
+					return Byte.parseByte(null);
+				}
+				if (method.getReturnType().equals(char.class)) {
+					return ' ';
+				}
+				return null;
 			}
 		});
 	}

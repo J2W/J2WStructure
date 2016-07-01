@@ -86,7 +86,7 @@ public final class J2WMethods {
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
 				// 如果有返回值 - 直接执行
 				if (!method.getReturnType().equals(void.class)) {
-					return method.invoke(this, args);
+					return method.invoke(j2WProxy.impl, args);
 				}
 
 				J2WMethod j2WMethod = loadJ2WMethod(j2WProxy, method, service);
