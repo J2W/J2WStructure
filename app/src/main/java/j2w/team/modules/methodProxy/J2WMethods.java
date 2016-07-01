@@ -84,10 +84,8 @@ public final class J2WMethods {
 		j2WProxy.proxy = Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new J2WInvocationHandler() {
 
 			@Override public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
-				// 如果是实现类 直接执行方法
-				if (method.getDeclaringClass() == Object.class) {
-					L.tag("J2W-Method");
-					L.i("直接执行: " + method.getName());
+				// 如果有返回值 - 直接执行
+				if (!method.getReturnType().equals(void.class)) {
 					return method.invoke(this, args);
 				}
 

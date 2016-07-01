@@ -262,10 +262,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 		return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service }, new InvocationHandler() {
 
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-				// 如果是实现类 直接执行方法
-				if (method.getDeclaringClass() == Object.class) {
-					L.tag("J2W-Method");
-					L.i("直接执行: " + method.getName());
+				// 如果有返回值 - 直接执行
+				if (!method.getReturnType().equals(void.class)) {
 					return method.invoke(this, args);
 				}
 
@@ -307,13 +305,8 @@ public class J2WStructureManage implements J2WStructureIManage {
 					L.tag(service.getSimpleName());
 					L.i(stringBuilder.toString());
 				}
-				// 如果是实现类 直接执行方法
-				if (method.getDeclaringClass() == Object.class) {
-					L.tag("J2W-Method");
-					L.i("直接执行: " + method.getName());
-					return method.invoke(this, args);
-				}
-				return null;
+				// 如果有返回值 - 直接执行
+				return method.invoke(this, args);
 			}
 		});
 	}
