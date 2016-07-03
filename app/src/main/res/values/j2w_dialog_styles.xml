@@ -203,4 +203,10 @@
         <item name="android:textColor">@color/j2w_textColor_primary_dark</item>
     </style>
 
+    <!--EasyDialog-->
+    <style name="J2W.EasyDialog" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></style>
+    <style name="J2W.EasyDialog.Fullscreen" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"></style>
+
+    <style name="J2W.EasyDialog.Translucent" parent="@android:style/Theme.Translucent.NoTitleBar"></style>
+
 </resources>

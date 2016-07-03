@@ -3,10 +3,16 @@ package j2w.team.display;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.AnimatorRes;
+import android.support.annotation.IntegerRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+
+import org.jetbrains.annotations.NotNull;
 
 import j2w.team.core.Impl;
 import j2w.team.view.J2WActivity;
@@ -36,7 +42,7 @@ public interface J2WIDisplay {
 	 * @param fragment
 	 * @param requestCode
 	 */
-	void intentFromFragment(Class clazz, Fragment fragment, int requestCode);
+	void intentFromFragment(@NotNull Class clazz, @NotNull Fragment fragment, int requestCode);
 
 	/**
 	 * 跳转
@@ -45,7 +51,7 @@ public interface J2WIDisplay {
 	 * @param fragment
 	 * @param requestCode
 	 */
-	void intentFromFragment(Intent intent, Fragment fragment, int requestCode);
+	void intentFromFragment(@NotNull Intent intent, @NotNull Fragment fragment, int requestCode);
 
 	/**
 	 * home键
@@ -54,69 +60,69 @@ public interface J2WIDisplay {
 
 	void popBackStack();
 
-	void popBackStack(Class clazz);
+	void popBackStack(@NotNull Class clazz);
 
-	void popBackStack(String clazzName);
+	void popBackStack(@NotNull String clazzName);
 
 	void popBackStackAll();
 
-	void commitAdd(Fragment fragment);
+	void commitAdd(@NotNull Fragment fragment);
 
-	void commitAdd(int layoutId, Fragment fragment);
+	void commitAdd(@LayoutRes int layoutId, @NotNull Fragment fragment);
 
-	void commitReplace(Fragment fragment);
+	void commitReplace(@NotNull Fragment fragment);
 
-	void commitChildReplace(Fragment srcFragment, int layoutId, Fragment fragment);
+	void commitChildReplace(@NotNull Fragment srcFragment, @LayoutRes int layoutId, @NotNull Fragment fragment);
 
-	void commitReplace(int layoutId, Fragment fragment);
+	void commitReplace(@LayoutRes int layoutId, @NotNull Fragment fragment);
 
-	void commitBackStack(Fragment fragment);
+	void commitBackStack(@NotNull Fragment fragment);
 
-	void commitHideAndBackStack(Fragment srcFragment, Fragment fragment);
+	void commitHideAndBackStack(@NotNull Fragment srcFragment, @NotNull Fragment fragment);
 
-	void commitDetachAndBackStack(Fragment srcFragment, Fragment fragment);
+	void commitDetachAndBackStack(@NotNull Fragment srcFragment, @NotNull Fragment fragment);
 
-	void commitBackStack(int layoutId, Fragment fragment);
+	void commitBackStack(@LayoutRes int layoutId, @NotNull Fragment fragment);
 
-	void commitBackStack(int layoutId, Fragment fragment, int animation);
+	void commitBackStack(@LayoutRes int layoutId, @NotNull Fragment fragment, int animation);
 
 	/** 跳转intent **/
 
-	void intent(Class clazz);
+	void intent(@NotNull Class clazz);
 
-	void intent(String clazzName);
+	void intent(@NotNull String clazzName);
 
-	void intentNotAnimation(Class clazz);
+	void intentNotAnimation(@NotNull Class clazz);
 
-	void intent(Class clazz, Bundle bundle);
+	void intent(@NotNull Class clazz, Bundle bundle);
 
-	void intentNotAnimation(Class clazz, Bundle bundle);
+	void intentNotAnimation(@NotNull Class clazz, @NotNull Bundle bundle);
 
-	void intent(Intent intent);
+	void intent(@NotNull Intent intent);
 
-	void intent(Intent intent, Bundle options);
+	void intent(@NotNull Intent intent, @NotNull Bundle options);
 
-	void intentForResult(Class clazz, int requestCode);
+	void intentForResult(@NotNull Class clazz, int requestCode);
 
-	void intentForResultFromFragment(Class clazz, Bundle bundle, int requestCode, Fragment fragment);
+	void intentForResultFromFragment(@NotNull Class clazz, Bundle bundle, int requestCode, @NotNull Fragment fragment);
 
-	void intentForResult(Class clazz, Bundle bundle, int requestCode);
+	void intentForResult(@NotNull Class clazz, @NotNull Bundle bundle, int requestCode);
 
-	void intentForResult(Intent intent, int requestCod);
+	void intentForResult(@NotNull Intent intent, int requestCod);
 
-	void intentForResult(Intent intent, Bundle options, int requestCode);
+	void intentForResult(@NotNull Intent intent, @NotNull Bundle options, int requestCode);
 
-	void intentAnimation(Class clazz, View view, Bundle bundle);
+	void intentAnimation(@NotNull Class clazz, @NotNull View view, Bundle bundle);
 
-	void intentAnimation(Class clazz, int in, int out);
+	void intentAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out);
 
-	void intentAnimation(Class clazz, int in, int out, Bundle bundle);
+	void intentAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, @NonNull Bundle bundle);
 
-	void intentForResultAnimation(Class clazz, View view, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @NotNull View view, int requestCode);
 
-	void intentForResultAnimation(Class clazz, View view, Bundle bundle, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @NotNull View view, @NotNull Bundle bundle, int requestCode);
 
-	void intentForResultAnimation(Class clazz, int in, int out, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, int requestCode);
 
-	void intentForResultAnimation(Class clazz, int in, int out, Bundle bundle, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, @NonNull Bundle bundle, int requestCode);
 }

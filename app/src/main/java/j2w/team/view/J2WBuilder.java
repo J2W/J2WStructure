@@ -2,6 +2,12 @@ package j2w.team.view;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,6 +40,7 @@ import j2w.team.common.utils.J2WCheckUtils;
 import j2w.team.common.utils.J2WKeyboardUtils;
 import j2w.team.common.view.J2WSwipeBackLayout;
 import j2w.team.common.view.J2WViewPager;
+import j2w.team.modules.methodProxy.Background;
 import j2w.team.structure.R;
 import j2w.team.view.adapter.J2WAdapterItem;
 import j2w.team.view.adapter.J2WListAdapter;
@@ -72,7 +79,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 * @param j2WActivity
 	 * @param inflater
 	 */
-	public J2WBuilder(J2WActivity j2WActivity, LayoutInflater inflater) {
+	public J2WBuilder(@NonNull J2WActivity j2WActivity, @NonNull LayoutInflater inflater) {
 		j2WView = new J2WView();
 		j2WView.initUI(j2WActivity);
 		this.mInflater = inflater;
@@ -84,7 +91,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 * @param j2WFragment
 	 * @param inflater
 	 */
-	public J2WBuilder(J2WFragment j2WFragment, LayoutInflater inflater) {
+	public J2WBuilder(@NonNull J2WFragment j2WFragment, @NonNull LayoutInflater inflater) {
 		j2WView = new J2WView();
 		j2WView.initUI(j2WFragment);
 		this.mInflater = inflater;
@@ -96,13 +103,13 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	 * @param j2WDialogFragment
 	 * @param inflater
 	 */
-	public J2WBuilder(J2WDialogFragment j2WDialogFragment, LayoutInflater inflater) {
+	public J2WBuilder(@NonNull J2WDialogFragment j2WDialogFragment, @NonNull LayoutInflater inflater) {
 		j2WView = new J2WView();
 		j2WView.initUI(j2WDialogFragment);
 		this.mInflater = inflater;
 	}
 
-	public J2WView getJ2WView() {
+	@Nullable public J2WView getJ2WView() {
 		return j2WView;
 	}
 
@@ -119,11 +126,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return layoutId;
 	}
 
-	public void layoutId(int layoutId) {
+	public void layoutId(@LayoutRes int layoutId) {
 		this.layoutId = layoutId;
 	}
 
-	public void layoutColor(int color) {
+	public void layoutColor(@ColorRes int color) {
 		this.contentRootColor = color;
 	}
 
@@ -152,19 +159,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	private View		layoutHttpError;
 
 	// 设置
-	public void layoutLoadingId(int layoutLoadingId) {
+	public void layoutLoadingId(@LayoutRes int layoutLoadingId) {
 		this.layoutLoadingId = layoutLoadingId;
 	}
 
-	public void layoutEmptyId(int layoutEmptyId) {
+	public void layoutEmptyId(@LayoutRes int layoutEmptyId) {
 		this.layoutEmptyId = layoutEmptyId;
 	}
 
-	public void layoutBizErrorId(int layoutBizErrorId) {
+	public void layoutBizErrorId(@LayoutRes int layoutBizErrorId) {
 		this.layoutBizErrorId = layoutBizErrorId;
 	}
 
-	public void layoutHttpErrorId(int layoutHttpErrorId) {
+	public void layoutHttpErrorId(@LayoutRes int layoutHttpErrorId) {
 		this.layoutHttpErrorId = layoutHttpErrorId;
 	}
 
@@ -228,7 +235,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		changeShowAnimation(layoutHttpError, true);
 	}
 
-	void changeShowAnimation(View view, boolean visible) {
+	void changeShowAnimation(@NonNull View view, boolean visible) {
 		if (view == null) {
 			return;
 		}
@@ -254,7 +261,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	/**
 	 * 键盘
 	 */
-	private boolean	autoShouldHideInput	= true;
+	private boolean autoShouldHideInput = true;
 
 	public void autoKeyBoard(boolean auto) {
 		this.autoShouldHideInput = auto;
@@ -280,11 +287,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isOpenSwipBackLayout = isOpenSwipBackLayout;
 	}
 
-	public void swipBackDragEdge(J2WSwipeBackLayout.DragEdge dragEdge) {
+	public void swipBackDragEdge(@NonNull J2WSwipeBackLayout.DragEdge dragEdge) {
 		this.dragEdge = dragEdge;
 	}
 
-	public void swipBackListener(J2WSwipeBackLayout.SwipeBackListener listener) {
+	public void swipBackListener(@NonNull J2WSwipeBackLayout.SwipeBackListener listener) {
 		this.listener = listener;
 	}
 
@@ -293,18 +300,18 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return isOpenSwipBackLayout;
 	}
 
-	J2WSwipeBackLayout.DragEdge getDragEdge() {
+	@Nullable J2WSwipeBackLayout.DragEdge getDragEdge() {
 		return dragEdge;
 	}
 
-	J2WSwipeBackLayout.SwipeBackListener getListener() {
+	@Nullable J2WSwipeBackLayout.SwipeBackListener getListener() {
 		return listener;
 	}
 
 	/**
 	 * TintManger
 	 */
-	private int	tintColor;
+	private int tintColor;
 
 	int getTintColor() {
 		return tintColor;
@@ -314,7 +321,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return tintColor > 0;
 	}
 
-	public void tintColor(int tintColor) {
+	public void tintColor(@ColorRes int tintColor) {
 		this.tintColor = tintColor;
 	}
 
@@ -369,42 +376,42 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return toolbarDrawerId;
 	}
 
-	Toolbar getToolbar() {
+	@Nullable Toolbar getToolbar() {
 		return toolbar;
 	}
 
-	Toolbar.OnMenuItemClickListener getMenuListener() {
+	@Nullable Toolbar.OnMenuItemClickListener getMenuListener() {
 		return menuListener;
 	}
 
 	// 设置
 
-	public void toolbarId(int toolbarId) {
+	public void toolbarId(@IdRes int toolbarId) {
 		this.toolbarId = toolbarId;
 		this.isOpenCustomToolbar = true;
 	}
 
-	public void toolbarLayoutId(int toolbarLayoutId) {
+	public void toolbarLayoutId(@LayoutRes int toolbarLayoutId) {
 		this.toolbarLayoutId = toolbarLayoutId;
 	}
 
-	public void toolbarDrawerId(int toolbarDrawerId) {
+	public void toolbarDrawerId(@DrawableRes int toolbarDrawerId) {
 		this.toolbarDrawerId = toolbarDrawerId;
 	}
 
-	public void toolbarMenuListener(Toolbar.OnMenuItemClickListener menuListener) {
+	public void toolbarMenuListener(@NonNull Toolbar.OnMenuItemClickListener menuListener) {
 		this.menuListener = menuListener;
 	}
 
-	public void toolbarIsBack(boolean isOpenToolbarBack) {
+	public void toolbarIsBack(@NonNull boolean isOpenToolbarBack) {
 		this.isOpenToolbarBack = isOpenToolbarBack;
 	}
 
-	public void toolbarIsOpen(boolean isOpenToolbar) {
+	public void toolbarIsOpen(@NonNull boolean isOpenToolbar) {
 		this.isOpenToolbar = isOpenToolbar;
 	}
 
-	public void toolbarMenuId(int toolbarMenuId) {
+	public void toolbarMenuId(@IdRes int toolbarMenuId) {
 		this.toolbarMenuId = toolbarMenuId;
 	}
 
@@ -479,19 +486,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return listId;
 	}
 
-	J2WAdapterItem getJ2WAdapterItem() {
+	@Nullable J2WAdapterItem getJ2WAdapterItem() {
 		return j2WAdapterItem;
 	}
 
-	J2WListViewMultiLayout getJ2WListViewMultiLayout() {
+	@Nullable J2WListViewMultiLayout getJ2WListViewMultiLayout() {
 		return j2WListViewMultiLayout;
 	}
 
-	AdapterView.OnItemClickListener getItemListener() {
+	@Nullable AdapterView.OnItemClickListener getItemListener() {
 		return itemListener;
 	}
 
-	AdapterView.OnItemLongClickListener getItemLongListener() {
+	@Nullable AdapterView.OnItemLongClickListener getItemLongListener() {
 		return itemLongListener;
 	}
 
@@ -503,12 +510,12 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return listFooterLayoutId;
 	}
 
-	J2WListAdapter getAdapter() {
+	@Nullable J2WListAdapter getAdapter() {
 		J2WCheckUtils.checkNotNull(j2WListAdapter, "适配器没有初始化");
 		return j2WListAdapter;
 	}
 
-	ListView getListView() {
+	@Nullable ListView getListView() {
 		J2WCheckUtils.checkNotNull(listView, "没有设置布局文件ID,无法获取ListView");
 		return listView;
 	}
@@ -522,33 +529,33 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	// 设置
-	public void listHeaderLayoutId(int listHeaderLayoutId) {
+	public void listHeaderLayoutId(@LayoutRes int listHeaderLayoutId) {
 		this.listHeaderLayoutId = listHeaderLayoutId;
 	}
 
-	public void listFooterLayoutId(int listFooterLayoutId) {
+	public void listFooterLayoutId(@LayoutRes int listFooterLayoutId) {
 		this.listFooterLayoutId = listFooterLayoutId;
 	}
 
-	public void listViewOnItemClick(AdapterView.OnItemClickListener itemListener) {
+	public void listViewOnItemClick(@NonNull AdapterView.OnItemClickListener itemListener) {
 		this.itemListener = itemListener;
 	}
 
-	public void listViewOnItemLongClick(AdapterView.OnItemLongClickListener itemLongListener) {
+	public void listViewOnItemLongClick(@NonNull AdapterView.OnItemLongClickListener itemLongListener) {
 		this.itemLongListener = itemLongListener;
 	}
 
-	public void listViewId(int listId, J2WAdapterItem j2WAdapterItem) {
+	public void listViewId(@IdRes int listId, @NonNull J2WAdapterItem j2WAdapterItem) {
 		this.listId = listId;
 		this.j2WAdapterItem = j2WAdapterItem;
 	}
 
-	public void listViewId(int listId, J2WListViewMultiLayout j2WListViewMultiLayout) {
+	public void listViewId(@IdRes int listId, @NonNull J2WListViewMultiLayout j2WListViewMultiLayout) {
 		this.listId = listId;
 		this.j2WListViewMultiLayout = j2WListViewMultiLayout;
 	}
 
-	public void listSwipRefreshId(int swipRefreshId, J2WRefreshListener j2WRefreshListener) {
+	public void listSwipRefreshId(@IdRes int swipRefreshId, @NonNull J2WRefreshListener j2WRefreshListener) {
 		this.swipRefreshId = swipRefreshId;
 		this.j2WRefreshListener = j2WRefreshListener;
 	}
@@ -618,7 +625,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 
 	private RecyclerView.ItemAnimator									itemAnimator;					// 动画
 
-	private RecyclerView.ItemDecoration									itemDecoration;				// 分割线
+	private RecyclerView.ItemDecoration									itemDecoration;					// 分割线
 
 	private SwipeRefreshLayout											recyclerviewSwipeContainer;
 
@@ -642,19 +649,19 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return j2WRVAdapterItem;
 	}
 
-	J2WRVAdapter getJ2WRVAdapterItem2() {
+	@Nullable J2WRVAdapter getJ2WRVAdapterItem2() {
 		return j2WRVAdapter;
 	}
 
-	public RecyclerView.LayoutManager getLayoutManager() {
+	@Nullable public RecyclerView.LayoutManager getLayoutManager() {
 		return layoutManager;
 	}
 
-	RecyclerView.ItemAnimator getItemAnimator() {
+	@Nullable RecyclerView.ItemAnimator getItemAnimator() {
 		return itemAnimator;
 	}
 
-	RecyclerView.ItemDecoration getItemDecoration() {
+	@Nullable RecyclerView.ItemDecoration getItemDecoration() {
 		return itemDecoration;
 	}
 
@@ -671,35 +678,35 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	// 设置
-	public void recyclerviewId(int recyclerviewId) {
+	public void recyclerviewId(@IdRes int recyclerviewId) {
 		this.recyclerviewId = recyclerviewId;
 	}
 
-	public void recyclerviewLoadingMore(J2WFooterListener j2WFooterListener) {
+	public void recyclerviewLoadingMore(@NonNull J2WFooterListener j2WFooterListener) {
 		this.j2WFooterListener = j2WFooterListener;
 	}
 
-	public void recyclerviewStickyHeaderClick(StickyRecyclerHeadersTouchListener.OnHeaderClickListener onHeaderClickListener) {
+	public void recyclerviewStickyHeaderClick(@NonNull StickyRecyclerHeadersTouchListener.OnHeaderClickListener onHeaderClickListener) {
 		this.onHeaderClickListener = onHeaderClickListener;
 	}
 
-	@Deprecated public void recyclerviewAdapterItem(J2WRVAdapterItem j2WRVAdapterItem) {
+	@Deprecated public void recyclerviewAdapterItem(@NonNull J2WRVAdapterItem j2WRVAdapterItem) {
 		this.j2WRVAdapterItem = j2WRVAdapterItem;
 	}
 
-	public void recyclerviewAdapter(J2WRVAdapter j2WRVAdapter) {
+	public void recyclerviewAdapter(@NonNull J2WRVAdapter j2WRVAdapter) {
 		this.j2WRVAdapter = j2WRVAdapter;
 	}
 
-	public void recyclerviewGridManager(GridLayoutManager gridLayoutManager) {
+	public void recyclerviewGridManager(@NonNull GridLayoutManager gridLayoutManager) {
 		this.layoutManager = gridLayoutManager;
 	}
 
-	public void recyclerviewLinearManager(LinearLayoutManager linearLayoutManager) {
+	public void recyclerviewLinearManager(@NonNull LinearLayoutManager linearLayoutManager) {
 		this.layoutManager = linearLayoutManager;
 	}
 
-	public void recyclerviewAnimator(RecyclerView.ItemAnimator itemAnimator) {
+	public void recyclerviewAnimator(@NonNull RecyclerView.ItemAnimator itemAnimator) {
 		this.itemAnimator = itemAnimator;
 	}
 
@@ -733,7 +740,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.recyclerviewColorResIds = recyclerviewColorResIds;
 	}
 
-	public void recyclerviewSwipRefreshId(int recyclerviewSwipRefreshId, J2WRefreshListener recyclerviewJ2WRefreshListener) {
+	public void recyclerviewSwipRefreshId(@IdRes int recyclerviewSwipRefreshId, @NonNull J2WRefreshListener recyclerviewJ2WRefreshListener) {
 		this.recyclerviewSwipRefreshId = recyclerviewSwipRefreshId;
 		this.recyclerviewJ2WRefreshListener = recyclerviewJ2WRefreshListener;
 	}
@@ -791,38 +798,38 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return viewPageroffScreenPageLimit;
 	}
 
-	J2WViewPagerChangeListener getViewPagerChangeListener() {
+	@Nullable J2WViewPagerChangeListener getViewPagerChangeListener() {
 		return viewPagerChangeListener;
 	}
 
-	J2WTabsCustomListener getJ2WTabsCustomListener() {
+	@Nullable J2WTabsCustomListener getJ2WTabsCustomListener() {
 		return j2WTabsCustomListener;
 	}
 
-	J2WViewPagerAdapter getViewPagerAdapter() {
+	@Nullable J2WViewPagerAdapter getViewPagerAdapter() {
 		return j2WViewPagerAdapter;
 	}
 
-	public J2WViewPager getViewPager() {
+	@Nullable public J2WViewPager getViewPager() {
 		return j2WViewPager;
 	}
 
 	// 设置
-	public void viewPagerId(int viewpagerId, FragmentManager fragmentManager) {
+	public void viewPagerId(@IdRes int viewpagerId,@NonNull FragmentManager fragmentManager) {
 		this.viewpagerId = viewpagerId;
 		this.fragmentManager = fragmentManager;
 	}
 
-	public void viewPagerTabsId(int tabsId, int tabsType) {
+	public void viewPagerTabsId(@IdRes int tabsId, int tabsType) {
 		this.tabsId = tabsId;
 		this.tabsType = tabsType;
 	}
 
-	public void viewPagerChangeListener(J2WViewPagerChangeListener viewPagerChangeListener) {
+	public void viewPagerChangeListener(@NonNull  J2WViewPagerChangeListener viewPagerChangeListener) {
 		this.viewPagerChangeListener = viewPagerChangeListener;
 	}
 
-	public void tabsCustomListener(J2WTabsCustomListener j2WTabsCustomListener) {
+	public void tabsCustomListener(@NonNull J2WTabsCustomListener j2WTabsCustomListener) {
 		this.j2WTabsCustomListener = j2WTabsCustomListener;
 	}
 
@@ -830,7 +837,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.viewPageroffScreenPageLimit = viewPageroffScreenPageLimit;
 	}
 
-	public void tabsCustomLayout(int customLayout, int... showItems) {
+	public void tabsCustomLayout(@LayoutRes int customLayout, int... showItems) {
 		this.customLayout = customLayout;
 		this.showItems = showItems;
 	}

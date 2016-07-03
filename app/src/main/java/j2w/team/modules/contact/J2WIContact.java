@@ -1,6 +1,7 @@
 package j2w.team.modules.contact;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface J2WIContact extends J2WIWriteContact {
 	 * @param id
 	 * @return
 	 */
-	Bitmap getContactPhotoByContactId(String id);
+	Bitmap getContactPhotoByContactId(@NonNull String id);
 
 	/**
 	 * 根据名称搜索
