@@ -6,6 +6,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -411,7 +412,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.isOpenToolbar = isOpenToolbar;
 	}
 
-	public void toolbarMenuId(@IdRes int toolbarMenuId) {
+	public void toolbarMenuId(@MenuRes int toolbarMenuId) {
 		this.toolbarMenuId = toolbarMenuId;
 	}
 
@@ -815,7 +816,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	}
 
 	// 设置
-	public void viewPagerId(@IdRes int viewpagerId,@NonNull FragmentManager fragmentManager) {
+	public void viewPagerId(@IdRes int viewpagerId, @NonNull FragmentManager fragmentManager) {
 		this.viewpagerId = viewpagerId;
 		this.fragmentManager = fragmentManager;
 	}
@@ -825,7 +826,7 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		this.tabsType = tabsType;
 	}
 
-	public void viewPagerChangeListener(@NonNull  J2WViewPagerChangeListener viewPagerChangeListener) {
+	public void viewPagerChangeListener(@NonNull J2WViewPagerChangeListener viewPagerChangeListener) {
 		this.viewPagerChangeListener = viewPagerChangeListener;
 	}
 

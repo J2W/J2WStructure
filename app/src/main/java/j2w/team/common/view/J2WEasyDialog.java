@@ -243,22 +243,22 @@ public class J2WEasyDialog {
 	}
 
 	public int getTriangleBottom() {
-		return 0;
+		return R.drawable.j2w_triangle_bottom;
 	}
 
 	public int getTriangleTop() {
-		return 0;
+		return R.drawable.j2w_triangle_top;
 	}
 
 	public int getTriangleLeft() {
-		return 0;
+		return R.drawable.j2w_triangle_left;
 	}
 
 	public int getTriangleRight() {
-		return 0;
+		return R.drawable.j2w_triangle_right;
 	}
     public int getTriangId(){
-        return 0;
+        return R.id.shape_id;
     }
 
 	/**

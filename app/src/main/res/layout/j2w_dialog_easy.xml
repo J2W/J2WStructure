@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
     >
 
-    <!--android:background="@drawable/triangle_bottom"-->
+    <!--android:background="@drawable/j2w_triangle_bottom"-->
 
     <RelativeLayout
         android:id="@+id/rlParentForAnimate"
@@ -24,6 +24,7 @@
             android:clickable="true"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:background="@drawable/j2w_round_corner_bg"
             android:orientation="horizontal" />
 
     </RelativeLayout>
