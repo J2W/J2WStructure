@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RotateDrawable;
@@ -103,10 +104,14 @@ public class J2WEasyDialog {
 		initDialog(context);
 	}
 
+	public int getDialogEasyLayout(){
+		return R.layout.j2w_dialog_easy;
+	}
+
 	private void initDialog(final Context context) {
 		this.context = context;
 		LayoutInflater layoutInflater = ((Activity) context).getLayoutInflater();
-		View dialogView = layoutInflater.inflate(R.layout.j2w_dialog_easy, null);
+		View dialogView = layoutInflater.inflate(getDialogEasyLayout(), null);
 		ViewTreeObserver viewTreeObserver = dialogView.getViewTreeObserver();
 		viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -155,7 +160,7 @@ public class J2WEasyDialog {
 		}
 	};
 
-	public int getStyle(){
+	public int getStyle() {
 		return isFullScreen() ? R.style.J2W_EasyDialog_Fullscreen : R.style.J2W_EasyDialog_Translucent;
 	}
 
@@ -170,7 +175,7 @@ public class J2WEasyDialog {
 	 * 初始化默认值
 	 */
 	private void ini() {
-		this.setLocation(new int[] { 0, 0 }).setGravity(GRAVITY_BOTTOM).setTouchOutsideDismiss(true).setOutsideColor(Color.TRANSPARENT).setBackgroundColor(Color.BLUE).setMatchParent(true)
+		this.setLocation(new int[] { 0, 0 }).setGravity(GRAVITY_BOTTOM).setTouchOutsideDismiss(true).setOutsideColor(Color.TRANSPARENT).setMatchParent(true)
 				.setMarginLeftAndRight(24, 24);
 	}
 
@@ -192,6 +197,7 @@ public class J2WEasyDialog {
 		setLayout(view);
 		return this;
 	}
+
 
 	/**
 	 * 设置三角形所在的位置
@@ -257,9 +263,23 @@ public class J2WEasyDialog {
 	public int getTriangleRight() {
 		return R.drawable.j2w_triangle_right;
 	}
-    public int getTriangId(){
-        return R.id.shape_id;
-    }
+
+	public int getTriangId() {
+		return R.id.shape_id;
+	}
+
+	public J2WEasyDialog setTriangColor(int color) {
+		if (ivTriangle != null && getTriangId() != 0) {
+			LayerDrawable drawableTriangle = (LayerDrawable) ivTriangle.getBackground();
+			GradientDrawable shapeTriangle = (GradientDrawable) (((RotateDrawable) drawableTriangle.findDrawableByLayerId(getTriangId())).getDrawable());
+			if (shapeTriangle != null) {
+				shapeTriangle.setColor(color);
+			} else {
+				Toast.makeText(context, "shape is null", Toast.LENGTH_SHORT).show();
+			}
+		}
+		return this;
+	}
 
 	/**
 	 * 设置显示的内容在上方还是下方，如果设置错误，默认是在下方
@@ -295,9 +315,8 @@ public class J2WEasyDialog {
 	}
 
 	public int getBackgroudResourece() {
-		return 0;
+		return R.drawable.j2w_round_corner_bg;
 	}
-
 	/**
 	 * 设置是否填充屏幕，如果不填充就适应布局内容的宽度，显示内容的位置会尽量随着三角形的位置居中
 	 */
@@ -357,17 +376,6 @@ public class J2WEasyDialog {
 	 */
 	public J2WEasyDialog setBackgroundColor(int color) {
 		backgroundColor = color;
-        if(ivTriangle != null && getTriangId() != 0){
-            LayerDrawable drawableTriangle = (LayerDrawable) ivTriangle.getBackground();
-            GradientDrawable shapeTriangle = (GradientDrawable) (((RotateDrawable) drawableTriangle.findDrawableByLayerId(getTriangId())).getDrawable());
-            if (shapeTriangle != null) {
-                shapeTriangle.setColor(color);
-            } else {
-                Toast.makeText(context, "shape is null", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(context, "TriangId is null", Toast.LENGTH_SHORT).show();
-        }
 
 		GradientDrawable drawableRound = (GradientDrawable) llContent.getBackground();
 		if (drawableRound != null) {
@@ -375,6 +383,8 @@ public class J2WEasyDialog {
 		}
 		return this;
 	}
+
+
 
 	/**
 	 * 显示提示框
@@ -697,7 +707,7 @@ public class J2WEasyDialog {
 	 */
 	public interface OnEasyDialogDismissed {
 
-		public void onDismissed();
+		void onDismissed();
 	}
 
 	private OnEasyDialogShow onEasyDialogShow;
@@ -712,6 +722,6 @@ public class J2WEasyDialog {
 	 */
 	public interface OnEasyDialogShow {
 
-		public void onShow();
+		void onShow();
 	}
 }

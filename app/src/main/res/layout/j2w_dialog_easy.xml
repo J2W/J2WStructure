@@ -24,7 +24,6 @@
             android:clickable="true"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@drawable/j2w_round_corner_bg"
             android:orientation="horizontal" />
 
     </RelativeLayout>
