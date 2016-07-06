@@ -312,7 +312,11 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	/**
 	 * TintManger
 	 */
-	private int tintColor;
+	private int		tintColor;
+
+	private boolean	statusBarEnabled			= true;
+
+	private boolean	navigationBarTintEnabled	= true;
 
 	int getTintColor() {
 		return tintColor;
@@ -322,8 +326,24 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 		return tintColor > 0;
 	}
 
+	public boolean getStatusBarTintEnabled() {
+		return statusBarEnabled;
+	}
+
+	public boolean getNavigationBarTintEnabled() {
+		return navigationBarTintEnabled;
+	}
+
 	public void tintColor(@ColorRes int tintColor) {
 		this.tintColor = tintColor;
+	}
+
+	public void tintStatusBarEnabled(boolean isStatusBar) {
+		this.statusBarEnabled = isStatusBar;
+	}
+
+	public void tintNavigationBarEnabled(boolean isNavigationBar) {
+		this.navigationBarTintEnabled = isNavigationBar;
 	}
 
 	/**
@@ -1435,4 +1455,5 @@ public class J2WBuilder implements AbsListView.OnScrollListener {
 	@Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 		mLoadMoreIsAtBottom = totalItemCount > mLoadMoreRequestedItemCount && firstVisibleItem + visibleItemCount == totalItemCount;
 	}
+
 }
