@@ -104,7 +104,7 @@ public class J2WEasyDialog {
 		initDialog(context);
 	}
 
-	public int getDialogEasyLayout(){
+	public int getDialogEasyLayout() {
 		return R.layout.j2w_dialog_easy;
 	}
 
@@ -175,8 +175,7 @@ public class J2WEasyDialog {
 	 * 初始化默认值
 	 */
 	private void ini() {
-		this.setLocation(new int[] { 0, 0 }).setGravity(GRAVITY_BOTTOM).setTouchOutsideDismiss(true).setOutsideColor(Color.TRANSPARENT).setMatchParent(true)
-				.setMarginLeftAndRight(24, 24);
+		this.setLocation(new int[] { 0, 0 }).setGravity(GRAVITY_BOTTOM).setTouchOutsideDismiss(true).setOutsideColor(Color.TRANSPARENT).setMatchParent(true).setMarginLeftAndRight(24, 24);
 	}
 
 	/**
@@ -197,7 +196,6 @@ public class J2WEasyDialog {
 		setLayout(view);
 		return this;
 	}
-
 
 	/**
 	 * 设置三角形所在的位置
@@ -317,6 +315,7 @@ public class J2WEasyDialog {
 	public int getBackgroudResourece() {
 		return R.drawable.j2w_round_corner_bg;
 	}
+
 	/**
 	 * 设置是否填充屏幕，如果不填充就适应布局内容的宽度，显示内容的位置会尽量随着三角形的位置居中
 	 */
@@ -383,8 +382,6 @@ public class J2WEasyDialog {
 		}
 		return this;
 	}
-
-
 
 	/**
 	 * 显示提示框
@@ -581,14 +578,38 @@ public class J2WEasyDialog {
 		}
 	}
 
+	int	triangXPlus;
+
+	int	triangXMinues;
+
+	int	triangYPlus;
+
+	int	triangYMinues;
+
+	public void setTriangleXPlus(int value) {
+		this.triangXPlus = value;
+	}
+
+	public void setTriangleXMinues(int value) {
+		this.triangXMinues = value;
+	}
+
+	public void setTriangleYPlus(int value) {
+		this.triangYPlus = value;
+	}
+
+	public void setTriangleYMinues(int value) {
+		this.triangYMinues = value;
+	}
+
 	/**
 	 * 根据x，y，重新设置控件的位置 因为setX setY为0的时候，都是在状态栏以下的，所以app不是全屏的话，需要扣掉状态栏的高度
 	 */
 	private void relocation(int[] location) {
 		float statusBarHeight = isFullScreen() ? 0.0f : getStatusBarHeight();
 
-		ivTriangle.setX(location[0] - ivTriangle.getWidth() / 2);
-		ivTriangle.setY(location[1] - ivTriangle.getHeight() / 2 - statusBarHeight);
+		ivTriangle.setX(location[0] - ivTriangle.getWidth() / 2 + triangXPlus - triangXMinues);
+		ivTriangle.setY(location[1] - ivTriangle.getHeight() / 2 - statusBarHeight + triangYPlus - triangYMinues);
 		switch (gravity) {
 			case GRAVITY_BOTTOM:
 				llContent.setY(location[1] - ivTriangle.getHeight() / 2 - statusBarHeight + ivTriangle.getHeight());
