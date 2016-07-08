@@ -3,21 +3,15 @@ package j2w.team.display;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.AnimatorRes;
-import android.support.annotation.IntegerRes;
+import android.support.annotation.AnimRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import org.jetbrains.annotations.NotNull;
 
-import j2w.team.core.Impl;
 import j2w.team.view.J2WActivity;
-import j2w.team.view.J2WFragment;
-import j2w.team.view.J2WView;
 
 /**
  * @创建人 sky
@@ -114,15 +108,15 @@ public interface J2WIDisplay {
 
 	void intentAnimation(@NotNull Class clazz, @NotNull View view, Bundle bundle);
 
-	void intentAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out);
+	void intentAnimation(@NotNull Class clazz, @AnimRes int in, @AnimRes int out);
 
-	void intentAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, @NonNull Bundle bundle);
+	void intentAnimation(@NotNull Class clazz, @AnimRes int in, @AnimRes int out, @NonNull Bundle bundle);
 
 	void intentForResultAnimation(@NotNull Class clazz, @NotNull View view, int requestCode);
 
 	void intentForResultAnimation(@NotNull Class clazz, @NotNull View view, @NotNull Bundle bundle, int requestCode);
 
-	void intentForResultAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @AnimRes int in, @AnimRes int out, int requestCode);
 
-	void intentForResultAnimation(@NotNull Class clazz, @AnimatorRes int in, @AnimatorRes int out, @NonNull Bundle bundle, int requestCode);
+	void intentForResultAnimation(@NotNull Class clazz, @AnimRes int in, @AnimRes int out, @NonNull Bundle bundle, int requestCode);
 }
