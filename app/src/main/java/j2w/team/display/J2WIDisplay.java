@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -62,13 +63,13 @@ public interface J2WIDisplay {
 
 	void commitAdd(@NotNull Fragment fragment);
 
-	void commitAdd(@LayoutRes int layoutId, @NotNull Fragment fragment);
+	void commitAdd(@IdRes int layoutId, @NotNull Fragment fragment);
 
 	void commitReplace(@NotNull Fragment fragment);
 
-	void commitChildReplace(@NotNull Fragment srcFragment, @LayoutRes int layoutId, @NotNull Fragment fragment);
+	void commitChildReplace(@NotNull Fragment srcFragment, @IdRes int layoutId, @NotNull Fragment fragment);
 
-	void commitReplace(@LayoutRes int layoutId, @NotNull Fragment fragment);
+	void commitReplace(@IdRes int layoutId, @NotNull Fragment fragment);
 
 	void commitBackStack(@NotNull Fragment fragment);
 
@@ -76,9 +77,9 @@ public interface J2WIDisplay {
 
 	void commitDetachAndBackStack(@NotNull Fragment srcFragment, @NotNull Fragment fragment);
 
-	void commitBackStack(@LayoutRes int layoutId, @NotNull Fragment fragment);
+	void commitBackStack(@IdRes int layoutId, @NotNull Fragment fragment);
 
-	void commitBackStack(@LayoutRes int layoutId, @NotNull Fragment fragment, int animation);
+	void commitBackStack(@IdRes int layoutId, @NotNull Fragment fragment, int animation);
 
 	/** 跳转intent **/
 
