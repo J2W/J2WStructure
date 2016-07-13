@@ -60,10 +60,8 @@ public class J2WListAdapter extends BaseAdapter {
 	}
 
 	public void setItems(List items) {
-		if (!J2WCheckUtils.equal(items, mItems)) {
-			mItems = items;
-			notifyDataSetChanged();
-		}
+		mItems = items;
+		notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {

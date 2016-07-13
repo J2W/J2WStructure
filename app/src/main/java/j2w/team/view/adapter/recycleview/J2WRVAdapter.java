@@ -33,9 +33,9 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	/**
 	 * 数据
 	 */
-	private List		mItems;
+	private List	mItems;
 
-	private J2WView		j2WView;
+	private J2WView	j2WView;
 
 	public J2WRVAdapter(J2WActivity j2WActivity) {
 		J2WCheckUtils.checkNotNull(j2WActivity, "View层不存在");
@@ -66,10 +66,8 @@ public abstract class J2WRVAdapter<T, V extends J2WHolder> extends RecyclerView.
 	}
 
 	public void setItems(List items) {
-		if (!J2WCheckUtils.equal(items, mItems)) {
-			mItems = items;
-			notifyDataSetChanged();
-		}
+		mItems = items;
+		notifyDataSetChanged();
 	}
 
 	public void add(int position, Object object) {
