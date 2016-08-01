@@ -1,5 +1,6 @@
 package j2w.team.modules.structure;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.SimpleArrayMap;
@@ -264,17 +265,26 @@ public class J2WStructureManage implements J2WStructureIManage {
 			@Override public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 				// 如果有返回值 - 直接执行
 				if (!method.getReturnType().equals(void.class)) {
+                    if(ui == null){
+                        return null;
+                    }
 					return method.invoke(ui, args);
 				}
 
 				// 如果是主线程 - 直接执行
 				if (!J2WHelper.isMainLooperThread()) {// 子线程
+                    if(ui == null){
+                        return null;
+                    }
 					return method.invoke(ui, args);
 				}
 				Runnable runnable = new Runnable() {
 
 					@Override public void run() {
 						try {
+                            if(ui == null){
+                                return;
+                            }
 							method.invoke(ui, args);
 						} catch (Exception throwable) {
 							if (J2WHelper.getInstance().isLogOpen()) {
